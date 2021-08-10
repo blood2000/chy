@@ -13,7 +13,7 @@
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 300px"
+            style="width: 250px"
             size="small"
             @change="datechoose"
           />
@@ -24,9 +24,25 @@
             placeholder="请输入货主企业名称"
             clearable
             size="small"
-            style="width: 272px"
+            style="width: 250px"
             @keyup.enter.native="handleQuery"
           />
+        </el-form-item>
+        <el-form-item label="团队" prop="marketId">
+          <el-select
+            v-model="queryParams.marketId"
+            clearable
+            filterable
+            size="small"
+            style="width: 250px"
+          >
+            <el-option
+              v-for="dict in MarketOptions"
+              :key="dict.marketId"
+              :label="dict.market"
+              :value="dict.marketId"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -52,6 +68,10 @@
         <p class="count">{{ capacityCount.addShipment || 0 }}</p>
       </div>
       <div class="count-box blue">
+        <p class="label">在跑货主：</p>
+        <p class="count">{{ capacityCount.nowShipment || 0 }}</p>
+      </div>
+      <div class="count-box blue">
         <p class="label">新增司机：</p>
         <p class="count">{{ capacityCount.addDriver || 0 }}</p>
       </div>
@@ -62,6 +82,10 @@
       <div class="count-box green">
         <p class="label">总运单数：</p>
         <p class="count">{{ waybillCount.sumWaybillCount || 0 }}</p>
+      </div>
+      <div class="count-box green">
+        <p class="label">接单数：</p>
+        <p class="count">{{ waybillCount.sumReceiveCount || 0 }}</p>
       </div>
       <div class="count-box green">
         <p class="label">已装货：</p>
@@ -106,11 +130,14 @@
           <h5 class="companyName">
             <img src="../../../../src/assets/images/icon/company.png" alt="">
             <span>{{ item.companyName }}</span>
+            <span class="area">（{{ item.marketName }}）</span>
           </h5>
           <el-table highlight-current-row :data="item.shipmentRelatedInfoVoList">
             <el-table-column label="货主" align="left" prop="companyName" min-width="150" />
+            <!-- <el-table-column label="团队" align="left" prop="marketName" /> -->
             <el-table-column label="货源单号" align="left" prop="mainOrderNumber" min-width="120" />
             <el-table-column label="总运单数" align="left" prop="waybillCount" />
+            <el-table-column label="接单数" align="left" prop="receiveCount" />
             <el-table-column label="已装货" align="left" prop="loadingNum" />
             <el-table-column label="已卸货" align="left" prop="unloadingNum" />
             <el-table-column label="已核算" align="left" prop="settledNum" />
@@ -127,7 +154,7 @@
 
 <script>
 import { pickerOptions } from '@/utils/dateRange';
-import { capacityStatisticsCount, waybillStatisticsCount, waybillStatisticsList } from '@/api/data/capacity';
+import { capacityStatisticsCount, waybillStatisticsCount, getMarket, waybillStatisticsList } from '@/api/data/capacity';
 import DataNull from '@/components/DataNull/index';
 const dTime = '2021-07-04 00:00:00';
 export default {
@@ -149,7 +176,8 @@ export default {
       showSearch: true,
       total: 0,
       queryParams: {
-        companyName: ''
+        companyName: '',
+        marketId: undefined
       },
       timeParams: {
         beginTime: null,
@@ -159,7 +187,8 @@ export default {
       infoList: [],
       capacityCount: {},
       waybillCount: {},
-      exportLoading: false
+      exportLoading: false,
+      MarketOptions: []
     };
   },
   mounted() {
@@ -167,6 +196,7 @@ export default {
     this.timeParams.endTime = this.parseTime(new Date(), '{y}-{m}-{d}');
     this.receiveTime = [this.timeParams.beginTime, this.timeParams.endTime];
     this.getList();
+    this.getMarketList();
     this.getCapacityCount();
     this.getWaybillCount();
   },
@@ -205,13 +235,14 @@ export default {
       this.loading = true;
       waybillStatisticsList(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
         this.infoList = response.data || [];
+        this.capacityCount.nowShipment = this.infoList.length;
         this.loading = false;
       });
     },
     /** 查询运力统计 */
     getCapacityCount() {
       capacityStatisticsCount(Object.assign({}, this.queryParams, this.timeParams)).then(response => {
-        this.capacityCount = response.data || {};
+        this.capacityCount = Object.assign({}, this.capacityCount, response.data);
       });
     },
     /** 查询运单统计 */
@@ -226,6 +257,12 @@ export default {
       this.download('/transportation/capacityStatistics/export', Object.assign({}, this.queryParams, this.timeParams), `2.0运力`).then(() => {
         this.exportLoading = false;
       });
+    },
+    /** 团队信息 */
+    getMarketList() {
+      getMarket().then((response) => {
+        this.MarketOptions = response.data;
+      });
     }
   }
 };
@@ -239,14 +276,14 @@ export default {
   font-size: 0;
   .count-box{
     display: inline-block;
-    width: calc(11.11% - 18px);
+    width: calc(9.1% - 14px);
     height: 72px;
     position: relative;
     background-color: #fff;
     padding: 10px 0 10px 20px;
     margin-bottom: 15px;
     &:not(:last-child){
-      margin-right: 20px;
+      margin-right: 15px;
     }
     >.label{
       font-size: 14px;
@@ -315,9 +352,17 @@ export default {
       vertical-align: middle;
       margin-bottom: 20px;
       margin-top: 28px;
-      >img, >span{
+      >img{
         vertical-align: middle;
         margin-right: 16px;
+      }
+      >span{
+        vertical-align: middle;
+        margin-right: 0px;
+      }
+      >.area{
+        font-size: 16px;
+        font-weight: normal;
       }
     }
   }
