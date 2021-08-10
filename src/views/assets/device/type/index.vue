@@ -31,7 +31,7 @@
       <el-col :xl="19" :lg="18" :md="16" :sm="15" :xs="24">
         <div class="device-info-right">
           <div v-show="showSearch" class="device-info-right-top">
-            <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80  px">
+            <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
               <el-form-item label="类型名称" prop="typeName">
                 <el-input
                   v-model="queryParams.typeName"
@@ -132,13 +132,18 @@
                   <span>{{ parseTime(scope.row.createTime) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="操作" align="center" fixed="left" width="160">
+              <el-table-column label="操作" align="center" fixed="left" width="180">
                 <template slot-scope="scope">
                   <el-button
                     size="mini"
                     type="text"
                     @click="handleUpdate(scope.row)"
                   >修改</el-button>
+                  <el-button
+                    size="mini"
+                    type="text"
+                    @click="handleConfig(scope.row)"
+                  >配置</el-button>
                   <el-button
                     size="mini"
                     type="text"
@@ -174,10 +179,10 @@
           />
         </el-form-item>
         <el-form-item label="类型名称" prop="typeName">
-          <el-input v-model="form.typeName" placeholder="请输入类型名称" />
+          <el-input v-model="form.typeName" placeholder="请输入类型名称" clearable />
         </el-form-item>
         <el-form-item label="类型标识" prop="typeKeys">
-          <el-input v-model="form.typeKeys" placeholder="请输入类型标识" />
+          <el-input v-model="form.typeKeys" placeholder="请输入类型标识" clearable />
         </el-form-item>
         <!-- <el-form-item label="对象类型" prop="objectType">
           <el-select
@@ -552,6 +557,12 @@ export default {
         objectType: 2
       };
       this.resetForm('form');
+    },
+    /** 打开配置页 */
+    handleConfig(row) {
+      this.$router.push({
+        path: '/device/type/config/' + row.code
+      });
     }
   }
 };

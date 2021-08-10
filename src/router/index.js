@@ -117,6 +117,19 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/device',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'type/config/:code',
+        component: (resolve) => require(['@/views/assets/device/type/config'], resolve),
+        name: 'DeviceConfig',
+        meta: { title: '设备属性', icon: '' }
+      }
+    ]
+  },
+  {
     path: '/job',
     component: Layout,
     hidden: true,
