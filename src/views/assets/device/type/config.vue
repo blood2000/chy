@@ -356,6 +356,8 @@
               <el-input v-else v-model="form.defaultValue" placeholder="请输入默认值" clearable />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="20">
           <el-col :span="12">
             <el-form-item label="" prop="isList">
               <el-checkbox v-model="form.isList">是否在列表显示</el-checkbox>
