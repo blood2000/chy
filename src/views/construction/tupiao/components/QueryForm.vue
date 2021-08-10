@@ -13,7 +13,6 @@
       >
         <el-select
           v-model="queryParams.projectCode"
-          clearable
           size="small"
           filterable
           style="width: 185px"
