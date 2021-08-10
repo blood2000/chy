@@ -11,9 +11,9 @@
         label="选择项目"
         prop="projectCode"
       >
+        <!-- clearable -->
         <el-select
           v-model="queryParams.projectCode"
-          clearable
           size="small"
           filterable
           style="width: 185px"
@@ -21,7 +21,7 @@
           @change="$emit('handleQuery')"
         >
           <el-option
-            v-for="item in projectList"
+            v-for="item in projectListOP"
             :key="item.id + item.code"
             :label="item.projectName"
             :value="item.code"
@@ -45,12 +45,13 @@
 
       <el-form-item
         label="考勤日期"
-        prop="attendanceTime"
+        prop="attendanceMonth"
       >
         <el-date-picker
-          v-model="queryParams.attendanceTime"
+          v-model="queryParams.attendanceMonth"
           :picker-options="{disabledDate}"
           type="month"
+          :clearable="false"
           value-format="yyyy-MM"
           placeholder="选择考勤月份"
           style="width: 228px"
@@ -80,6 +81,7 @@
         </el-select>
       </el-form-item>
       <el-form-item
+        v-if="queryParams.attendanceStatus"
         label="班次"
         prop="schedule"
       >
@@ -115,7 +117,7 @@
           plain
           icon="el-icon-refresh"
           size="mini"
-          @click="queryParams.pageNum = 1; resetForm('queryForm');$emit('handleQuery');"
+          @click="queryParams.pageNum = 1; resetForm('queryForm'); $emit('handleQuery'); $emit('initPickerOptions');"
         >
           重置
         </el-button>
@@ -127,7 +129,7 @@
 
 <script>
 import { pickerOptions } from '@/utils/dateRange';
-import { webGetMachineProjectList } from '@/api/construction/comon';
+
 export default {
   props: {
     value: {
@@ -141,12 +143,16 @@ export default {
     attendanceStatusOp: {
       type: Array,
       default: () => []
+    },
+    projectListOP: {
+      type: Array,
+      default: () => []
     }
   },
   data() {
     return {
-      pickerOptions,
-      'projectList': []
+      pickerOptions
+      // 'projectList': []
     };
   },
   computed: {
@@ -160,14 +166,10 @@ export default {
     }
   },
   created() {
-    this.initData();
+
   },
   methods: {
-    // 初始化搜索数据
-    async initData() {
-      const res = await webGetMachineProjectList();
-      this.projectList = res.data;
-    },
+
 
     //
     disabledDate: (time) => {

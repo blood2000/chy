@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm v-model="queryParams" :shift-op="shift_op" :attendance-status-op="attendanceStatus_op" @handleQuery="queryParams.pageNum = 1;getList()" />
+      <QueryForm v-model="queryParams" :shift-op="shift_op" :attendance-status-op="attendanceStatus_op" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" @initPickerOptions="queryParams.projectCode=projectList[0].code" />
     </div>
 
     <div class="app-container">
@@ -25,7 +25,7 @@
           </span>
         </el-col>
 
-        <el-col v-if="false" :span="1.5" class="fr">
+        <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar
@@ -36,21 +36,24 @@
 
       <MoreRefactorTable :loading="loading" :summary="false" :data="list" :table-columns-config="tableColumnsConfig" :morelist="morelist" indexfixed>
 
+        <!-- <template #nickName="{row}">
+          <span>{{ row.nickName || '--' }} [{{ row.phonenumber }}]</span>
+        </template> -->
+
         <template v-for="(item, index) in morelist[0].children" #[item.prop]="{row}">
           <!-- <template v-for="(item, index) in morelist[0].children" :slot="item.prop" slot-scope="{row}"> -->
           <div :key="index">
             <el-popover
-              v-if="true"
-              placement="top"
+              v-if="row[item.prop] && (row[item.prop].split(';'))[1]"
+              placement="right"
               title="考勤备注"
               width="300"
               trigger="click"
-              :content="row.sighowiheio"
+              :content="(row[item.prop].split(';'))[1]"
             >
-              <div slot="reference" class="triangleL shou">{{ selectDictLabel(lebshift_op, row[item.prop] + '') }}</div>
+              <div slot="reference" class="triangleL shou">{{ (row[item.prop].split(';'))[0] }}</div>
             </el-popover>
-
-            <span v-else>{{ selectDictLabel(lebshift_op, row[item.prop] + '') }}</span>
+            <span v-else>{{ isTedate? (((new Date().getMonth()) >= index || row[item.prop] !== '缺')? row[item.prop]:undefined) : row[item.prop] }}</span>
           </div>
         </template>
       </MoreRefactorTable>
@@ -71,25 +74,13 @@ import QueryForm from './components/QueryForm';
 import { floor } from '@/utils/ddc';
 import { getLocalStorage } from '@/utils/auth';
 
-import { getMachineWorkingList, getMachineWorkingapi } from '@/api/construction/manhour';
-
+import { getEmployeeAttendanceList, getEmployeeAttendanceApi } from '@/api/construction/attendance';
+import { webGetMachineProjectList } from '@/api/construction/comon';
 
 export default {
-  name: 'Manhour', // 机械工时登记
+  name: 'Attendance', // 机械工时登记
 
   components: { QueryForm },
-
-  // attendanceStatus	0未出勤，1出勤，2请假，3矿工或者离职，4未开工或合理休假，5加班
-  // attendanceTime	考勤日期		false	 string
-  // createTime	创建时间		false	 string
-  // isAsc	desc or asc		false	 string
-  // keyWord	关键字检索		false	 string
-  // orderByColumn	按什么排序		false	 string
-  // orgCode	机构code		false	 string
-  // pageNum	页数		false	integer(int32)
-  // pageSize	每页大小		false	integer(int32)
-  // schedule	班次 0白班1夜班
-  // projectCode	项目code		false	string
   data() {
     return {
       // 搜索显隐
@@ -109,7 +100,8 @@ export default {
 
         projectCode: undefined,
         keyWord: undefined,
-        attendanceTime: new Date().getFullYear() + '-01', // 默认当前年一月
+
+        attendanceMonth: this.parseTime(new Date(), '{y}-{m}'), // new Date().getFullYear() + '-01', // 默认当前年一月
 
         attendanceStatus: undefined, // 考勤类型
         schedule: undefined // 班次
@@ -132,11 +124,13 @@ export default {
         { dictValue: 1, dictLabel: '已完成' }
       ],
 
+
+      projectList: [],
       // schedule	班次 0白班1夜班
       shift_op: [
-        { dictLabel: '白班', dictValue: '0' },
-        { dictLabel: '晚班', dictValue: '1' },
-        { dictLabel: '连班', dictValue: '2' }
+        // { dictLabel: '白班', dictValue: '0' },
+        // { dictLabel: '晚班', dictValue: '1' },
+        // { dictLabel: '连班', dictValue: '2' }
       ],
       lebshift_op: [
         { dictLabel: '白', dictValue: '1' },
@@ -151,35 +145,59 @@ export default {
       ],
       // attendanceStatus	0 未出勤 ，1 出勤 ，2 请假 ，3 矿工或者离职 ，4 未开工或合理休假 ，5 加班
       attendanceStatus_op: [
-        { dictLabel: '未出勤', dictValue: '0' },
-        { dictLabel: '出勤', dictValue: '1' },
-        { dictLabel: '请假', dictValue: '2' },
-        { dictLabel: '矿工或者离职', dictValue: '3' },
-        { dictLabel: '未开工或合理休假', dictValue: '4' },
-        { dictLabel: '加班', dictValue: '5' }
+        // { dictLabel: '未出勤', dictValue: '0' },
+        // { dictLabel: '出勤', dictValue: '1' },
+        // { dictLabel: '请假', dictValue: '2' },
+        // { dictLabel: '矿工或者离职', dictValue: '3' },
+        // { dictLabel: '未开工或合理休假', dictValue: '4' },
+        // { dictLabel: '加班', dictValue: '5' }
       ],
 
       floor // 工具
     };
   },
 
+  // one	一号	string
+  // two	二号
+  // three	三号	string
+  // four	四号	string
+  // five	五号	string
+  // six	六号	string
+  // seven	七号	string
+  // eight	八号	string
+  // nine	九号	string
+  // ten	十号	string
+  // eleven	十一号	string
+  // twelve	十二号	string
+  // thirteen	十三号	string
+  // fourteen	十四号	string
+  // fifteen	十五号	string
+  // sixteen	十六号	string
+  // seventeen	十七号	string
+  // eighteen	十八号	string
+  // nineteen	十九号	string
+  // twenty	二十号	string
+  // twentyOne	二一号	string
+  // twentyTwo	二二号	string
+  // twentyThree	二三号	string
+  // twentyFour	二四号	string
+  // twentyFive	二五号	string
+  // twentySix	二六号	string
+  // twentySeven	二七号	string
+  // twentyEight	二八号	string
+  // twentyNine	二九号	string
+  // thirty	三十号	string
+  // thirtyOne	三一号	string
+
   computed: {
+    isTedate() {
+      return this.parseTime(new Date(), '{y}-{m}') === this.queryParams.attendanceMonth;
+    },
+
     api() {
-      return getMachineWorkingapi + '4545';
+      return getEmployeeAttendanceApi + '4545';
     },
     morelist() {
-      // // const tab1 = [];
-      // const tab2 = [];
-      // const tab3 = [];
-
-      // this.tableColumns.forEach(e => {
-      //   if (e.pid === 2) {
-      //     tab2.push(e);
-      //   } else if (e.pid === 3) {
-      //     tab3.push(e);
-      //   }
-      // });
-
       return [
         {
           label: '日期',
@@ -189,7 +207,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '1',
-              prop: 'rijiqi1',
+              prop: 'one',
               sortNum: 0,
               tooltip: true,
               width: '50'
@@ -199,7 +217,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '2',
-              prop: 'rijiqi2',
+              prop: 'two',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -209,7 +227,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '3',
-              prop: 'rijiqi3',
+              prop: 'three',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -219,7 +237,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '4',
-              prop: 'rijiqi4',
+              prop: 'four',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -229,7 +247,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '5',
-              prop: 'rijiqi1',
+              prop: 'five',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -239,7 +257,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '6',
-              prop: 'rijiqi1',
+              prop: 'six',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -249,7 +267,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '7',
-              prop: 'rijiqi1',
+              prop: 'seven',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -259,7 +277,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '8',
-              prop: 'rijiqi1',
+              prop: 'eight',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -269,7 +287,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '9',
-              prop: 'rijiqi1',
+              prop: 'nine',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -279,7 +297,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '10',
-              prop: 'rijiqi1',
+              prop: 'ten',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -289,7 +307,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '11',
-              prop: 'rijiqi1',
+              prop: 'eleven',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -299,7 +317,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '12',
-              prop: 'rijiqi1',
+              prop: 'twelve',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -309,7 +327,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '13',
-              prop: 'rijiqi1',
+              prop: 'thirteen',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -319,7 +337,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '14',
-              prop: 'rijiqi1',
+              prop: 'fourteen',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -329,7 +347,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '15',
-              prop: 'rijiqi1',
+              prop: 'fifteen',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -339,7 +357,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '16',
-              prop: 'rijiqi1',
+              prop: 'sixteen',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -349,7 +367,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '17',
-              prop: 'rijiqi1',
+              prop: 'seventeen',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -359,7 +377,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '18',
-              prop: 'rijiqi1',
+              prop: 'eighteen',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -369,7 +387,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '19',
-              prop: 'rijiqi1',
+              prop: 'nineteen',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -379,7 +397,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '20',
-              prop: 'rijiqi1',
+              prop: 'twenty',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -389,7 +407,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '21',
-              prop: 'rijiqi1',
+              prop: 'twentyOne',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -399,7 +417,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '22',
-              prop: 'rijiqi1',
+              prop: 'twentyTwo',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -409,7 +427,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '23',
-              prop: 'rijiqi1',
+              prop: 'twentyThree',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -419,7 +437,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '24',
-              prop: 'rijiqi1',
+              prop: 'twentyFour',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -429,7 +447,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '25',
-              prop: 'rijiqi1',
+              prop: 'twentyFive',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -439,7 +457,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '26',
-              prop: 'rijiqi1',
+              prop: 'twentySix',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -449,7 +467,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '27',
-              prop: 'rijiqi1',
+              prop: 'twentySeven',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -459,7 +477,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '28',
-              prop: 'rijiqi1',
+              prop: 'twentyEight',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -469,7 +487,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '29',
-              prop: 'rijiqi1',
+              prop: 'twentyNine',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -479,7 +497,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '30',
-              prop: 'rijiqi1',
+              prop: 'thirty',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -489,7 +507,7 @@ export default {
               isChild: true,
               isShow: true,
               label: '31',
-              prop: 'rijiqi1',
+              prop: 'thirtyOne',
               sortNum: 7,
               tooltip: true,
               width: '50'
@@ -499,7 +517,7 @@ export default {
         {
           label: '合计',
           fixed: 'right',
-          width: '150',
+          width: '300',
           children: [
             {
               pid: 3,
@@ -516,10 +534,43 @@ export default {
               pid: 3,
               isChild: true,
               isShow: true,
-              label: '连班',
-              prop: 'lqingiqbiiop',
-              sortNum: 310,
+              label: '加班',
+              prop: 'workOvertime',
               fixed: 'right',
+              sortNum: 300,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 3,
+              isChild: true,
+              isShow: true,
+              label: '旷工',
+              prop: 'absenteeism',
+              fixed: 'right',
+              sortNum: 300,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 3,
+              isChild: true,
+              isShow: true,
+              label: '缺勤',
+              prop: 'absent',
+              fixed: 'right',
+              sortNum: 300,
+              tooltip: true,
+              width: '50'
+            },
+            {
+              pid: 3,
+              isChild: true,
+              isShow: true,
+              label: '休假',
+              prop: 'vacation',
+              fixed: 'right',
+              sortNum: 300,
               tooltip: true,
               width: '50'
             },
@@ -538,27 +589,28 @@ export default {
         }
       ];
     },
+
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
       return [
-        {
-          pid: 1,
-          isChild: false,
-          isShow: true,
-          label: '岗位',
-          prop: 'sighowiheio',
-          sortNum: 0,
-          fixed: 'left',
-          tooltip: true,
-          width: '120'
-        },
+        // {
+        //   pid: 1,
+        //   isChild: false,
+        //   isShow: true,
+        //   label: '岗位',
+        //   prop: 'sighowiheio',
+        //   sortNum: 0,
+        //   fixed: 'left',
+        //   tooltip: true,
+        //   width: '120'
+        // },
         {
           pid: 1,
           isChild: false,
           isShow: true,
           label: '姓名',
           fixed: 'left',
-          prop: 'xiangijij',
+          prop: 'nickName',
           sortNum: 0,
           tooltip: true,
           width: '120'
@@ -568,20 +620,34 @@ export default {
 
     queParams() {
       return {
-        ...this.queryParams
-        // bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
-        // endCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
-        // receiveTime: undefined
+        ...this.queryParams,
+        attendanceStatus: this.queryParams.attendanceStatus ? this.queryParams.attendanceStatus : undefined,
+        schedule: this.queryParams.attendanceStatus ? this.queryParams.schedule : undefined
       };
     }
   },
 
   created() {
+    this.initData();
     this.tabColInit();
     this.getList();
   },
 
   methods: {
+    // 初始化搜索数据
+    async initData() {
+      const res = await webGetMachineProjectList();
+      this.projectList = res.data;
+      this.queryParams.projectCode = this.projectList[0].code;
+
+      this.getDicts('work-shift').then((response) => {
+        this.shift_op = response.data;
+      });
+
+      this.getDicts('attendance-type').then((response) => {
+        this.attendanceStatus_op = response.data;
+      });
+    },
 
     // 初始表头
     tabColInit() {
@@ -592,17 +658,19 @@ export default {
     // 初始数据
     async getList() {
       this.loading = true;
-      getMachineWorkingList(this.queParams).then(res => {
-        this.list = [{ sighowiheio: '主管', rijiqi1: '1', rijiqi2: '2', rijiqi3: '2', rijiqi4: '3' }] || res.data.list;
+      getEmployeeAttendanceList(this.queParams).then(res => {
+        this.list = res.data.list;
         this.total = res.data.total;
         this.loading = false;
       }).catch(() => { this.loading = false; });
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/kydsz/machineWork/web—getMachineWorkingListExport', this.queParams, `机械工时登记`);
+      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, `考勤`);
       this.exportLoading = false;
     }
+
+
   }
 };
 </script>
