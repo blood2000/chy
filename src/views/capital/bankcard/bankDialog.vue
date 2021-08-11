@@ -277,17 +277,10 @@ export default {
     },
     // 查询人员列表
     getUserList() {
-      if (this.userCode) {
-        listUser(this.queryParams).then(response => {
-          this.personLoading = false;
-          this.personOptions = [...this.personOptions, ...response.rows];
-        });
-      } else {
-        listAllUser(this.queryParams).then(response => {
-          this.personLoading = false;
-          this.personOptions = [...this.personOptions, ...response.rows];
-        });
-      }
+      listAllUser(this.queryParams).then(response => {
+        this.personLoading = false;
+        this.personOptions = [...this.personOptions, ...response.rows];
+      });
     },
     // 选择人员远程搜索列表触底事件
     loadmore() {
