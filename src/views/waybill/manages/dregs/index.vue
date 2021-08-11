@@ -4,11 +4,11 @@
       <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
         <el-form-item
           label="发货企业"
-          prop="companyCode"
+          prop="shipperCode"
           style="margin-bottom:0"
         >
           <FilterableSelect
-            v-model="queryParams.companyCode"
+            v-model="queryParams.shipperCode"
             clearable
             style="width:228px"
             placeholder="请输入发货企业"
@@ -20,7 +20,7 @@
               key: 'rows'
             }"
             :show-key="{
-              value: 'orgCode',
+              value: 'code',
               label: 'companyName',
             }"
             :keywords="'searchValue'"
@@ -49,7 +49,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item v-show="!isShipment" label="发货企业" prop="deliveryCompany">
+        <el-form-item v-if="false" v-show="!isShipment" label="发货企业" prop="deliveryCompany">
           <el-input
             v-model.trim="queryParams.deliveryCompany"
             placeholder="请输入发货企业"
@@ -230,6 +230,7 @@
             clearable
             style="width:228px"
             placeholder="请输入渣土场"
+            :requer-msg="isShipment?null:'请先选择发货企业！'"
             :is-sure-key="'orgCode'"
             :axios="{
               queryFn:listForWeb,
@@ -259,6 +260,7 @@
             clearable
             style="width:228px"
             placeholder="请输入项目名称"
+            :requer-msg="isShipment?null:'请先选择发货企业！'"
             :is-sure-key="'companyCode'"
             :axios="{
               queryFn:listInfo,
@@ -650,6 +652,7 @@ export default {
         'driverPhone': null,
         'status': null,
         'teamName': null,
+        'shipperCode': undefined,
         'ztcCode': null,
         'projectCode': null
       },
