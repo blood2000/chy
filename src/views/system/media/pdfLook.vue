@@ -1,12 +1,12 @@
 <template>
   <el-dialog :visible="visible" width="60%" :title="title" :close-on-click-modal="false" append-to-body @close="cancel">
-      <pdf
-              ref="pdf"
-              v-for="i in numPages"
-              :key="i"
-              :src="src"
-              :page="i"
-      ></pdf>
+    <pdf
+      v-for="i in numPages"
+      ref="pdf"
+      :key="i"
+      :src="src"
+      :page="i"
+    />
   </el-dialog>
 </template>
 
@@ -28,6 +28,11 @@ export default {
       default: ''
     }
   },
+  data() {
+    return {
+      numPages: null
+    };
+  },
   computed: {
     visible: {
       get() {
@@ -44,11 +49,6 @@ export default {
         this.getNumPages();
       }
     }
-  },
-  data() {
-    return {
-      numPages: null
-    };
   },
   methods: {
     getNumPages() {
