@@ -1,5 +1,6 @@
 import request from '@/utils/request';
 
+/** ============================设备类型管理============================ */
 // 设备类型目录树
 export function getDeviceTypeTree(data) {
   return request({
@@ -52,15 +53,7 @@ export function delDriverType(codes) {
   });
 }
 
-// 设备类型目录+设备类型树
-export function getDeviceTypeTreeAll(data) {
-  return request({
-    url: '/assets/device/type/tree',
-    method: 'post',
-    data: data
-  });
-}
-
+/** ============================设备属性管理============================ */
 // 设备属性列表
 export function getDeviceFieldList(data) {
   return request({
@@ -100,6 +93,67 @@ export function getDeviceFieldDetail(code) {
 export function delDriverField(codes) {
   return request({
     url: `/assets/device/field/${codes}`,
+    method: 'delete'
+  });
+}
+
+/** ============================设备信息管理============================ */
+// 设备类型目录+设备类型树
+export function getDeviceTypeTreeAll(data) {
+  return request({
+    url: '/assets/device/type/tree',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取设备列表
+export function getDeviceInfoList(data) {
+  return request({
+    url: `/assets/device/info/list`,
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取设备属性
+export function getDeviceForm(typeCode) {
+  return request({
+    url: `/assets/device/info/getForm/${typeCode}`,
+    method: 'post'
+  });
+}
+
+// 新增设备
+export function addDeviceInfo(data) {
+  return request({
+    url: '/assets/device/info',
+    method: 'post',
+    data: data
+  });
+}
+
+// 修改设备
+export function updateDeviceInfo(data) {
+  return request({
+    url: '/assets/device/info',
+    method: 'put',
+    data: data
+  });
+}
+
+// 获取设备信息
+export function getDeviceDetail(code) {
+  return request({
+    url: `/assets/device/info/${code}`,
+    method: 'get'
+  });
+}
+
+// 删除设备
+export function delDriverInfo(codes) {
+  return request({
+    url: `/assets/device/info/${codes}`,
     method: 'delete'
   });
 }
