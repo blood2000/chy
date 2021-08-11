@@ -176,6 +176,8 @@ export default {
 
         const ret = await action.readUserInfoAndreadData();
 
+        console.log(ret);
+
         // 读卡失败
         if (!ret.success) {
           this.errorCount++;
@@ -267,8 +269,13 @@ export default {
         this.setLocalStorage(this.carId, { [this.userInfo.issuing_pc]: { data: this.IClist, meter: this.meter, userMark: this.userMark, userInfo: this.userInfo }}); // 本地存储
         // console.log(this.getLocalStorage(this.carId));
 
-        // 后端交互
-        this.initData();
+        // 后端交互(处理一下, 如果只有用户数据, 没有运单数据的情况)
+        if (this.IClist && this.IClist.length > 0) {
+          this.initData();
+        } else {
+          this.msgWarning(ret.msg || '无运单相关信息');
+          this.loading = false;
+        }
       }, () => {
         this.loading = false;
         this.$emit('update:open', false);
@@ -326,6 +333,7 @@ export default {
         });
         this.loading = false;
       } catch (error) {
+        console.log(error);
         this.loading = false;
       }
     },
