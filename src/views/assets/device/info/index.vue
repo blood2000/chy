@@ -116,7 +116,7 @@
                 </template>
               </el-table-column>
               <el-table-column v-for="item in devicefield" :key="item.code" :label="item.fieldCnname" :prop="item.fieldMappingName" align="center" />
-              <el-table-column label="创建时间" align="center" prop="create_time">
+              <el-table-column label="创建时间" align="center" prop="create_time" width="160">
                 <template slot-scope="scope">
                   <span>{{ parseTime(scope.row.create_time) }}</span>
                 </template>
