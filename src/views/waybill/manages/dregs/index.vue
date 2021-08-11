@@ -1,44 +1,44 @@
 <template>
   <div>
-    <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
-      <el-form-item
-        label="发货企业"
-        prop="companyCode"
-        style="margin-bottom:0"
-      >
-        <FilterableSelect
-          v-model="queryParams.companyCode"
-          clearable
-          style="width:228px"
-          placeholder="请输入发货企业"
-          :axios="{
-            queryFn:shipmentList,
-            queryData:{
-              authStatus: undefined
-            },
-            key: 'rows'
-          }"
-          :show-key="{
-            value: 'orgCode',
-            label: 'companyName',
-          }"
-          :keywords="'searchValue'"
-          @selected="(data)=>{ shipmentCode= data.code; orgCode=data.orgCode; companyCode = data.companyCode; $emit('handleQuery')}"
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+      <div v-if="!isShipment" class="app-container" style="display: flex; align-items: center;">
+        <el-form-item
+          label="发货企业"
+          prop="companyCode"
+          style="margin-bottom:0"
         >
-          <template #default="{row}">
-            <span>{{ row.companyName }}</span>
-          </template>
-        </FilterableSelect>
-      </el-form-item>
+          <FilterableSelect
+            v-model="queryParams.companyCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入发货企业"
+            :axios="{
+              queryFn:shipmentList,
+              queryData:{
+                authStatus: undefined
+              },
+              key: 'rows'
+            }"
+            :show-key="{
+              value: 'orgCode',
+              label: 'companyName',
+            }"
+            :keywords="'searchValue'"
+            @selected="(data)=>{ shipmentCode= data.code; orgCode=data.orgCode; companyCode = data.companyCode; handleQuery()}"
+          >
+            <template #default="{row}">
+              <span>{{ row.companyName }}</span>
+            </template>
+          </FilterableSelect>
+        </el-form-item>
 
-      <span v-if="!shipmentCode" class="g-color-warning">
-        <i class="el-icon-warning" />
-        您还未选择货主
-      </span>
-    </div>
-    <div v-show="showSearch" class="app-container app-container--search">
+        <span v-if="!shipmentCode" class="g-color-warning">
+          <i class="el-icon-warning" />
+          您还未选择货主
+        </span>
+      </div>
+      <div v-show="showSearch" class="app-container app-container--search">
 
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
         <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
             v-model.trim="queryParams.orderClient"
@@ -234,7 +234,7 @@
             :axios="{
               queryFn:listForWeb,
               queryData:{
-                orgCode: undefined
+                orgCode: orgCode
               },
               key: 'data'
             }"
@@ -243,7 +243,7 @@
               label: 'name',
             }"
             :keywords="'name'"
-            @selected="(data)=>{ $emit('handleQuery')}"
+            @selected="(data)=>{ handleQuery() }"
           >
             <template #default="{row}">
               <span>{{ row.name }}</span>
@@ -265,7 +265,8 @@
               queryData:{
                 isAsc:'desc',
                 orderByColumn:'t0.id',
-                companyCode:undefined
+                companyCode:companyCode,
+                shipmentCode: !isShipment? shipmentCode: undefined
               }
             }"
             :show-key="{
@@ -274,7 +275,7 @@
               telphone: ''
             }"
             :keywords="'projectName'"
-            @selected="(data)=>{ $emit('handleQuery') }"
+            @selected="(data)=>{ handleQuery() }"
           >
             <template #default="{row}">
               <span>{{ row.projectName }}</span>
@@ -296,8 +297,8 @@
             @click="resetQuery"
           >重置</el-button>
         </el-form-item>
-      </el-form>
-    </div>
+      </div>
+    </el-form>
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
@@ -522,6 +523,8 @@ import RemarkDialog from '../remarkDialog';
 import { getUserInfo } from '@/utils/auth';
 import { pickerOptions } from '@/utils/dateRange';
 
+
+import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
 import { listForWeb } from '@/api/listForWeb/index'; // 获取渣土(搜索用)
 import { listInfo } from '@/api/enterprise/project'; // 获取渣土项目(搜索用)
 import FilterableSelect from '@/components/FilterableSelect'; // 远程组件
@@ -667,6 +670,7 @@ export default {
       shipmentCode: undefined,
       companyCode: undefined,
       orgCode: undefined,
+      shipmentList,
       listForWeb,
       listInfo
     };
@@ -758,7 +762,7 @@ export default {
     // 导出
     handleExport() {
       this.loadingExport = true;
-      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `运输单管理`).then(res => {
+      this.download('/transportation/waybill/manageDregsListExport', { ...this.queryParams }, `渣土运输单管理`).then(res => {
         this.loadingExport = false;
       });
     },
