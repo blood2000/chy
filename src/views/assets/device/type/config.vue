@@ -483,7 +483,18 @@ export default {
           { required: true, message: '中文名称不能为空', trigger: ['blur', 'change'] }
         ],
         fieldMappingName: [
-          { required: true, message: '映射字段不能为空', trigger: ['blur', 'change'] }
+          { required: true, message: '映射字段不能为空', trigger: ['blur', 'change'] },
+          { validator: (rule, value, callback) => {
+            if (value === undefined || value === null || value === '') {
+              callback();
+            }
+            const ptr_match = /^h([1-9]|[1-9][0-9]|100)$/;
+            if (!ptr_match.test(value)) {
+              callback(new Error('映射字段只能是h1-h100'));
+            } else {
+              callback();
+            }
+          }, trigger: ['change', 'blur'] }
         ],
         fieldType: [
           { required: true, message: '字段类型不能为空', trigger: ['blur', 'change'] }
