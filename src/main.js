@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Cookies from 'js-cookie';
 import Element from 'element-ui';
 import './assets/styles/element-variables.scss';
+import 'pl-table/themes/index.css';
 import '@/assets/styles/index.scss'; // global css
 import '@/assets/styles/ddc.scss'; // ddc css
 import '@/assets/font/index.scss'; // 自定义字体,只在数据大屏用到,不影响其他页面的加载速度
@@ -12,7 +13,6 @@ import store from './store';
 import router from './router';
 // pl表格
 import plTable from 'pl-table';
-import 'pl-table/themes/index.css';
 Vue.use(plTable);
 // 自定义指令
 import permission from './directive/permission';
