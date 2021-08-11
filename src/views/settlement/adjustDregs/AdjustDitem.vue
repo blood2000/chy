@@ -35,14 +35,12 @@
 
       <el-table-column width="80" label="装货数量" align="left" prop="loadWeight">
         <template slot-scope="{row}">
-          <!-- <span>{{ scope.row.loadWeight }}</span> -->
           <span>{{ floor(row.loadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
 
       <el-table-column width="80" label="卸货数量" align="left" prop="unloadWeight">
         <template slot-scope="{row}">
-          <!-- <span>{{ scope.row.unloadWeight }}</span> -->
           <span>{{ floor(row.unloadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
         </template>
       </el-table-column>
@@ -74,9 +72,7 @@
             @focus="$emit('isLoading', true)"
             @blur="$emit('isLoading', false)"
           />
-          <!-- @keyup.native="getDeliveryCashFee($event,[scope.row])" -->
         </template>
-        <!-- @keydown.ctrl.86.native="handlerKeydown($event,[scope.row])" -->
       </el-table-column>
 
       <el-table-column width="173" label="增减值" align="center" prop="increaseDes" fixed="right">
@@ -119,6 +115,10 @@ export default {
       type: Array,
       default: () => []
     },
+    isAgain: {
+      type: Number,
+      default: 0
+    },
     open: [Boolean]
   },
 
@@ -126,6 +126,8 @@ export default {
     return {
       loading: false,
       deliveryCashFee: undefined,
+
+      oldList: [], // 拷贝一份
 
       floor,
       changeFee: null,
@@ -141,7 +143,6 @@ export default {
   computed: {
     adjustlist() {
       return this.list;
-      // return JSON.parse(JSON.stringify(this.list));
     },
 
     isPiliang() {
@@ -153,12 +154,18 @@ export default {
     open(b) {
       if (!b) {
         this.deliveryCashFee = undefined;
+        this.oldList = [];
       }
     }
   },
 
   created() {
     this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
+  },
+
+  updated() {
+    // 对驳回的单独处理
+    this.oldList.length <= 0 && (this.oldList = JSON.parse(JSON.stringify(this.list)));
   },
 
   methods: {
@@ -168,13 +175,24 @@ export default {
         e.deliveryCashFee = this.deliveryCashFee;
         e.increaseDes = 0;
       });
+
+      // 驳回, 同步旧的金额
+      this.oldList.forEach(e => {
+        e.deliveryCashFee = this.deliveryCashFee;
+      });
       this.handlerChangev(this.adjustlist);
-      // this.getDeliveryCashFee(undefined, this.adjustlist);
     },
 
     // 单条修改
     handlerChangev(arr, mark) {
+      // mark === 1 单独修改触发
       if (mark && mark === 1) {
+        // 驳回, 同步旧的金额
+        this.oldList.forEach(e => {
+          if (e.waybillNo === arr[0].waybillNo) {
+            e.deliveryCashFee = arr[0].deliveryCashFee;
+          }
+        });
         arr[0].increaseDes = 0;
       }
 
@@ -188,26 +206,6 @@ export default {
       }
     },
 
-    // 获取数据
-    // async getDeliveryCashFee(event, arr) {
-    //   // 过滤其他的键盘事件
-    //   if (event) {
-    //     if (this.loading || (!(/^[0-9]*$/.test(event.key - 0)) && event.key !== 'ArrowUp' && event.key !== 'ArrowDown' && event.key !== 'Backspace' && event.key !== 'v')) return;
-    //   }
-
-
-    //   this.que = {
-    //     deliveryCashFee: (event ? event.target.value - 0 : arr[0].deliveryCashFee), //	金额		false
-    //     waybillCodeList: arr.map(e => e.waybillCode)//	运单ids
-    //   };
-
-    //   if (this.isRealNum(this.que.deliveryCashFee)) {
-    //     this.changeFee(arr);
-    //   }
-    // },
-
-
-
     // 防抖=需要带参数,避免和原方法冲突
     newDebounceFun(callback, time) {
       var timer;
@@ -218,7 +216,7 @@ export default {
         }, time);
       };
     },
-
+    // 防抖
     async setDeliveryCashFee(arr) {
       this.loading = true;
       this.$emit('isLoading', true);
@@ -259,26 +257,9 @@ export default {
         this.$emit('isLoading', false);
       }
     },
-
-    /* 处理路耗展示 */
-    _lossAllowScope(value, bool) {
-      if (value) {
-        const arr = value.match(/\d+(\.\d+)?/g);
-
-        arr[0] = (arr[0] - 0) === 0 ? 0 : -arr[0];
-        arr[1] = arr[1] - 0;
-        if (bool) {
-          arr[0] = this.floor(arr[0] / 1000, 6);
-          arr[1] = this.floor(arr[1] / 1000, 6);
-        }
-
-        return JSON.stringify(arr);
-      }
-    },
-
+    // 工具-判断
     isRealNum(val) {
     // isNaN()函数 把空串 空格 以及NUll 按照0来处理 所以先去除，
-
       if (val === '' || val == null) {
         return false;
       }
@@ -290,15 +271,14 @@ export default {
         return false;
       }
     },
-
     // 增减
     handlerInOrDe(row) {
-      // console.log(row.deliveryCashFee);
-      // console.log(this.deliveryCashFee - 0);
-      // this.deliveryCashFee = this.deliveryCashFee ? this.deliveryCashFee : 0;
-
-      const deliveryCashFee = this.deliveryCashFee ? (this.deliveryCashFee - 0) : 0;
-      row.deliveryCashFee = deliveryCashFee + row.increaseDes;
+      //   const deliveryCashFee = this.deliveryCashFee ? (this.deliveryCashFee - 0) : 0;
+      //   row.deliveryCashFee = deliveryCashFee + row.increaseDes;
+      //   this.handlerChangev([row]);
+      // 8/11 更改chj
+      const oldRow = this.oldList.filter(e => e.waybillNo === row.waybillNo)[0] || {};
+      row.deliveryCashFee = (oldRow.deliveryCashFee || 0) + row.increaseDes;
       this.handlerChangev([row]);
     }
   }

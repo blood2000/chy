@@ -489,7 +489,7 @@ export default {
     'formData.tin6_1': {
       handler(value) {
         if (!value) return;
-        console.log(value);
+        // console.log(value);
         this.$store.commit('orders/SET_TIMELIST', value);
         // this.$emit('goods', [obj || this._zhaovalue(this.tin2Option, value)]);
       },

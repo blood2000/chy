@@ -214,7 +214,7 @@
             @click="handleWaybill(row)"
           >查看运单</el-button>
           <el-button
-            v-hasPermi="['waybill:nullify:remove']"
+            v-hasPermi="['transportation:waybillOper:invalidRejected']"
             size="mini"
             type="text"
             @click="handleLog(row)"

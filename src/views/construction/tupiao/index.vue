@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm v-model="queryParams" @handleQuery="queryParams.pageNum = 1;getList()" />
+      <QueryForm v-model="queryParams" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
     </div>
 
     <div class="app-container">
@@ -55,6 +55,7 @@ import QueryForm from './components/QueryForm';
 import { floor } from '@/utils/ddc';
 
 import { getProjectTicketList, getProjectTicketApi } from '@/api/construction/tupiao';
+import { webGetMachineProjectList } from '@/api/construction/comon';
 export default {
   name: 'Tupiao', // 工地土票列表
 
@@ -88,6 +89,9 @@ export default {
       'list': [],
       // 多选
       'selections': [],
+
+      //
+      projectList: [],
       // 登录信息
       getUserInfo,
       floor // 工具
@@ -245,17 +249,25 @@ export default {
         ...this.queryParams,
         bigSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
         endSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
-        receiveTime: undefined
+        receiveTime: undefined,
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName
       };
     }
   },
 
   created() {
     this.tabColInit();
-    this.getList();
+    this.initData();
   },
 
   methods: {
+    // 初始化搜索数据
+    async initData() {
+      const res = await webGetMachineProjectList();
+      this.projectList = res.data;
+      this.queryParams.projectCode = this.projectList[0].code;
+      this.getList();
+    },
     // 初始表头
     tabColInit() {
       const tabCol = getLocalStorage(this.api);
@@ -280,8 +292,15 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', this.queParams, `工地土票列表`, 'application/json');
+      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_工地土票列表`);
       this.exportLoading = false;
+    },
+
+    // 根据value匹配数组中的一项
+    _zhaovalue(arr, value, key = 'dictValue') {
+      return (arr.filter(e => {
+        return e[key] === value;
+      }))[0];
     }
   }
 };
