@@ -97,7 +97,7 @@
 
 <script>
 import { addBank, updateBank } from '@/api/capital/bankcard';
-import { listUser } from '@/api/system/user';
+import { listUser, listAllUser } from '@/api/system/user';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
@@ -277,10 +277,17 @@ export default {
     },
     // 查询人员列表
     getUserList() {
-      listUser(this.queryParams).then(response => {
-        this.personLoading = false;
-        this.personOptions = [...this.personOptions, ...response.rows];
-      });
+      if (this.userCode) {
+        listUser(this.queryParams).then(response => {
+          this.personLoading = false;
+          this.personOptions = [...this.personOptions, ...response.rows];
+        });
+      } else {
+        listAllUser(this.queryParams).then(response => {
+          this.personLoading = false;
+          this.personOptions = [...this.personOptions, ...response.rows];
+        });
+      }
     },
     // 选择人员远程搜索列表触底事件
     loadmore() {
