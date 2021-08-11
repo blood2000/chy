@@ -172,8 +172,6 @@ const CardReader = {
       const arr2 = arr[2].split(';');
       const data = {};
 
-      console.log(arr[0] + '|' + arr[1] + '|' === '1000|3|');
-
       if (arr[0] + '|' + arr[1] + '|' === '1000|3|') {
         key = [
           // 'user_name', // 张三 用户姓名
@@ -1321,12 +1319,24 @@ CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._
     ret = CardReader.fn.getResult(ret);
     if (ret.code !== '9000') {
       await CardReader.action.error();
+      // return {
+      //   ...ret,
+      //   userInfo,
+      //   success: false,
+      //   codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
+      //   msg: '无02文件夹'
+      // };
       return {
         ...ret,
-        userInfo,
-        success: false,
         codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
-        msg: '无02文件夹'
+        code: '9000',
+        msg: `无运单相关信息`,
+        success: true,
+        userInfo,
+        dataList: [],
+        GetCardNo,
+        meter,
+        userMark
       };
     }
     ret = await CardReader.fn.apdu((() => ['00', 'B0', CardReader.fn.numToHex16(1 | 0x80), '00', '00'].join(''))());
