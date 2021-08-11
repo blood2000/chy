@@ -138,10 +138,10 @@ export default {
       jimiChecked: false,
       jimiMark: undefined,
       jmLocation: [],
-      // 查询参数 map_type:GOOGOLE或BAIDU
+      // 查询参数 mapType:GOOGOLE或BAIDU
       queryParams: {
         imeis: '', // 867567047562525
-        map_type: 'GOOGLE'
+        mapType: 'GOOGLE'
       },
       // 中交兴路相关参数
       zjxlChecked: false,
@@ -253,12 +253,11 @@ export default {
     jimiLocation() {
       jimiLocation(this.queryParams).then(response => {
         // console.log(response);
-        this.windowContent.gpsTime = response.data.result[0].gpsTime;
-        this.windowContent.imeis = response.data.result[0].imei;
-        this.location = response.data.result.map(function(response) {
+        this.windowContent.gpsTime = response.data[0].gpsTime;
+        this.windowContent.imeis = response.data[0].imei;
+        this.location = response.data.map(function(response) {
           return [response.lng, response.lat];
         });
-        console.log(this.location);
         this.jmLocation = this.location[0];
         // this.markers[0].position = this.location[0];
         if (this.jmLocation.length > 0) {
@@ -273,7 +272,7 @@ export default {
       const that = this;
       that.jimiMark = new AMap.Marker({
         position: that.jmLocation,
-        ...this.marker
+        ...that.marker
       });
       that.jimiMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       that.$refs.map.$$getInstance().setFitView([that.jimiMark]); // 执行定位

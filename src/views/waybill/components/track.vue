@@ -131,11 +131,11 @@ export default {
       },
       jmMark: undefined, // 几米车辆定位
       jmTimePoor: undefined, // 几米轨迹时间差
-      jimiQueryParams: { // jimi查询参数 map_type:GOOGOLE或BAIDU
-        begin_time: '', // 2021-07-31 00:00:00
-        end_time: '', // 2021-08-02 17:00:00
+      jimiQueryParams: { // jimi查询参数 mapType:GOOGOLE或BAIDU
+        beginTime: '', // 2021-07-31 00:00:00
+        endTime: '', // 2021-08-02 17:00:00
         imeis: '', // 868120274644936
-        map_type: 'GOOGLE'
+        mapType: 'GOOGLE'
       },
       // 中交兴路轨迹相关参数
       zjChecked: false, // 是否显示中交兴路轨迹
@@ -321,9 +321,10 @@ export default {
     },
     // 几米循环判断开始时间与结束时间
     getJimiTime() {
-      this.jmTimePoor = new Date(this.jimiQueryParams.end_time).getTime() - new Date(this.jimiQueryParams.begin_time).getTime();
+      this.jmTimePoor = new Date(this.jimiQueryParams.endTime).getTime() - new Date(this.jimiQueryParams.beginTime).getTime();
+
       if (this.jmTimePoor > 24 * 60 * 60 * 1000 * 2) {
-        this.jimiQueryParams.end_time = this.parseTime(new Date(this.jimiQueryParams.begin_time).getTime() + 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.jimiQueryParams.endTime = this.parseTime(new Date(this.jimiQueryParams.beginTime).getTime() + 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getJimi();
       } else if (this.jmTimePoor === 0) {
         console.log(this.jmTracklist);
@@ -357,17 +358,17 @@ export default {
     // 获取硬件轨迹
     getJimi() {
       jimiTrackLocation(this.jimiQueryParams).then(response => {
-        // console.log(response.data.result);
-        if (response.data.result) {
+        // console.log(response.data);
+        if (response.data) {
           this.jmTracklist = [
             ...this.jmTracklist,
-            ...response.data.result.map(function(response) {
+            ...response.data.map(function(response) {
               return [response.lng, response.lat];
             })
           ];
         }
-        this.jimiQueryParams.begin_time = this.jimiQueryParams.end_time;
-        this.jimiQueryParams.end_time = this.parseTime(this.queryEndtime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.jimiQueryParams.beginTime = this.jimiQueryParams.endTime;
+        this.jimiQueryParams.endTime = this.parseTime(this.queryEndtime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getJimiTime();
       });
     },
@@ -577,18 +578,18 @@ export default {
         }
         // 获取查询轨迹时间
         this.time = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-        this.jimiQueryParams.begin_time = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.jimiQueryParams.beginTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.zjxlQueryParams.qryBtm = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.zjxlAddParams.startTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
         if (this.wayBillInfo.signTime) {
-          this.jimiQueryParams.end_time = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+          this.jimiQueryParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlAddParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
           this.queryEndtime = new Date(this.wayBillInfo.signTime);
         } else {
-          this.jimiQueryParams.end_time = this.time;
+          this.jimiQueryParams.endTime = this.time;
           this.zjxlQueryParams.qryEtm = this.time;
           this.zjxlAddParams.endTime = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();

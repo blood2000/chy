@@ -6,10 +6,10 @@
 .el-checkbox__input.is-disabled + span.el-checkbox__label,
 .el-select .el-input.is-disabled .el-input__inner,
 .el-textarea.is-disabled .el-textarea__inner{
-	color: #333 !important;
+	color: #333;
 }
 
 .el-input.is-disabled .el-input__inner, 
 .el-textarea.is-disabled .el-textarea__inner{
-  background-color: rgba(245, 247, 250, 0.7) !important;
+  background-color: rgba(245, 247, 250, 0.7);
 }
