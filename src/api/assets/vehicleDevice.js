@@ -41,3 +41,11 @@ export function getDevice(code) {
     method: 'get'
   });
 }
+
+export function listAll(data) {
+  return request({
+    url: '/assets/device/info/listAll',
+    method: 'post',
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'create_time' }, data)
+  });
+}
