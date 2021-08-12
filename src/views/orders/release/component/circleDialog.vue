@@ -170,7 +170,6 @@ export default {
     },
     // 关闭弹窗
     close() {
-      console.log('关闭..');
       this.$emit('update:open', false);
     }
   }
