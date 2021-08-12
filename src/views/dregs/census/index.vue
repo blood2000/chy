@@ -68,14 +68,6 @@
                   <el-col :span="5">
                     <p style="line-height: 30px">车次：<span class="num">{{ projectStatistic.trainNumber }}</span></p>
                   </el-col>
-                  <el-button
-                    class="fr"
-                    type="primary"
-                    icon="el-icon-download"
-                    size="mini"
-                    :loading="exportLoading"
-                    @click="handleExport"
-                  >导出</el-button>
                 </el-row>
                 <el-collapse v-model="vechicleCode" accordion class="census-collapse" @change="changeProjectCollapse">
                   <el-collapse-item v-for="(item, index) in projectStatisticList" :key="index" :name="item.vehicleCode">
@@ -96,6 +88,14 @@
               </div>
               <!-- 2.进出明细 -->
               <div v-if="activeTab === '进出明细'" class="tab-page">
+                <el-button
+                  class="mb10"
+                  type="primary"
+                  icon="el-icon-download"
+                  size="mini"
+                  :loading="exportLoadingDetail"
+                  @click="handleExportDetail"
+                >导出</el-button>
                 <el-table v-loading="inOutLoading" highlight-current-row :data="inOutList">
                   <el-table-column type="index" label="编号" width="60" />
                   <el-table-column label="车牌号" align="left" prop="licenseNumber" />
@@ -132,6 +132,14 @@
                   <el-col :span="5">
                     <p style="line-height: 30px">合计: <span class="num">{{ muckardTotal }}</span></p>
                   </el-col>
+                  <el-button
+                    class="fr"
+                    type="primary"
+                    icon="el-icon-download"
+                    size="mini"
+                    :loading="exportLoadingMudtail"
+                    @click="handleExportMudtail"
+                  >导出</el-button>
                 </el-row>
                 <el-collapse v-model="muckardCollapse" class="census-collapse">
                   <el-collapse-item v-for="(item, index) in muckardList" :key="index" :name="item.licenseNumber">
@@ -195,7 +203,8 @@ export default {
       projectStatistic: {},
       projectStatisticLoading: false,
       projectStatisticList: [],
-      exportLoading: false,
+      exportLoadingDetail: false,
+      exportLoadingMudtail: false,
       // 车辆明细
       vehicleQuery: {
         // pageNum: 1,
@@ -356,15 +365,25 @@ export default {
       });
     },
     /** 项目统计导出按钮操作 */
-    async handleExport() {
-      this.exportLoading = true;
+    async handleExportDetail() {
+      this.exportLoadingDetail = true;
       const params = {
         projectCode: this.projectCode,
         queryDate: this.queryDate,
         waybillClasses: this.waybillClasses
       };
-      await this.download('/transportation/statistics/listVechicleDetailsExport', params, `项目统计`);
-      this.exportLoading = false;
+      await this.download('/transportation/statistics/getInOutDetailsExport', params, `明细统计`);
+      this.exportLoadingDetail = false;
+    },
+    async handleExportMudtail() {
+      this.exportLoadingMudtail = true;
+      const params = {
+        projectCode: this.projectCode,
+        queryDate: this.queryDate,
+        waybillClasses: this.waybillClasses
+      };
+      await this.download('/transportation/statistics/getStatisticsMudtailExport', params, `泥尾统计`);
+      this.exportLoadingMudtail = false;
     }
   }
 };
