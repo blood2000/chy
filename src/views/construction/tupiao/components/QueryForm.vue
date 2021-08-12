@@ -3,6 +3,7 @@
     ref="queryForm"
     :model="queryParams"
     :inline="true"
+    size="small"
     label-width="98px"
   >
     <div class="app-container app-container--search">
@@ -13,7 +14,6 @@
       >
         <el-select
           v-model="queryParams.projectCode"
-          size="small"
           filterable
           style="width: 185px"
           placeholder="请选择选择项目"
@@ -36,7 +36,6 @@
           v-model="queryParams.ticketName"
           placeholder="请输入土票名称"
           clearable
-          size="small"
           style="width: 185px"
           @keyup.enter.native="$emit('handleQuery')"
         />
@@ -50,7 +49,6 @@
           v-model="queryParams.receiveSite"
           placeholder="请输入接收工地"
           clearable
-          size="small"
           style="width: 185px"
           @keyup.enter.native="$emit('handleQuery')"
         />
@@ -79,7 +77,6 @@
         <el-button
           type="primary"
           icon="el-icon-search"
-          size="mini"
           @click="$emit('handleQuery')"
         >
           搜索
@@ -88,7 +85,6 @@
           type="primary"
           plain
           icon="el-icon-refresh"
-          size="mini"
           @click="queryParams.pageNum = 1; resetForm('queryForm');$emit('handleQuery');"
         >
           重置

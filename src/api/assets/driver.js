@@ -122,3 +122,12 @@ export function applyDriverList(data) {
     data: data
   });
 }
+
+// 重新激活
+export function reRegistered(query) {
+  return request({
+    url: '/analysis/mybank/dark/reRegistered',
+    method: 'get',
+    params: query
+  });
+}
