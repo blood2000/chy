@@ -222,7 +222,7 @@ export default {
     /** 获取猎鹰定位 */
     lieyingLocation() {
       axios.get('https://tsapi.amap.com/v1/track/terminal/lastpoint', { params: this.lieyingQueryParams }).then(response => {
-        console.log(response);
+        // console.log(response);
         if (response.data.data.location) {
           this.windowContent.gpsTime = this.parseTime(response.data.data.locatetime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.lyLocation = response.data.data.location.split(',');
@@ -287,12 +287,12 @@ export default {
     zjxlLocation() {
       zjxlLocation(this.zjxlQueryParams).then(response => {
         var str = JSON.parse(response.msg);
-        console.log(str);
+        // console.log(str);
         if (str.result) {
           this.windowContent.adr = str.result.adr;
           this.windowContent.gpsTime = this.parseTime(new Date(str.result.utc - 0), '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjLocation = this.wgs84_to_gcj02(str.result.lon / 600000, str.result.lat / 600000);
-          console.log(this.zjLocation);
+          // console.log(this.zjLocation);
           this.zjMark();
         } else {
           this.msgInfo('暂无北斗定位！');
@@ -322,6 +322,8 @@ export default {
     // 关闭弹窗
     close() {
       this.lieyingChecked = false;
+      this.jimiChecked = false;
+      this.zjxlChecked = false;
       this.$emit('update:open', false);
     },
     // 表单赋值
@@ -344,7 +346,7 @@ export default {
         // 猎鹰参数赋值
         if (this.wayBillInfo.trackNumber) {
           const trackNumber = this.wayBillInfo.trackNumber.split('|');
-          console.log(trackNumber);
+          // console.log(trackNumber);
           this.lieyingQueryParams = {
             ...this.lieyingQueryParams,
             key: trackNumber[0],
@@ -352,11 +354,11 @@ export default {
             tid: trackNumber[2], // tid为终端唯一编号
             trid: trackNumber[3] // trid为轨迹唯一编号
           };
-          console.log(this.lieyingQueryParams);
+          // console.log(this.lieyingQueryParams);
         }
         this.lieyingChecked = true;
       });
-      console.log(data);
+      // console.log(data);
       if (data.status === 2) {
         this.windowContent.status = '负载中';
       } else {
