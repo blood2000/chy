@@ -115,6 +115,23 @@
                   >下载</el-button>
                 </template>
               </el-table-column>
+             <!-- <el-table-column label="编码" align="center" prop="deviceNumber"></el-table-column>-->
+              <el-table-column label="设备编码" align="center" prop="factory_only_code"></el-table-column>
+              <el-table-column label="状态" align="center" prop="status" width="100px">
+                  <template slot-scope="scope">
+                      <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
+                  </template>
+              </el-table-column>
+               <el-table-column label="激活状态" align="center" prop="activation_flag">
+                    <template slot-scope="scope">
+                        <span>{{ selectDictLabel(activationFlagOptions, scope.row.activation_flag) }}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="过期状态" align="center" prop="expire_flag">
+                    <template slot-scope="scope">
+                        <span>{{ selectDictLabel(expireFlagOptions, scope.row.expire_flag) }}</span>
+                    </template>
+                </el-table-column>
               <el-table-column v-for="item in devicefield" :key="item.code" :label="item.fieldCnname" :prop="item.fieldMappingName" align="center" />
               <el-table-column label="创建时间" align="center" prop="create_time" width="160">
                 <template slot-scope="scope">
@@ -310,11 +327,16 @@ export default {
       exportLoading: false,
       // 设备状态字典
       statusOptions: [
+        { dictLabel: '离线', dictValue: 0 },
+        { dictLabel: '在线', dictValue: 1 }
+      ],
+      activationFlagOptions: [
         { dictLabel: '未激活', dictValue: 0 },
-        { dictLabel: '正常', dictValue: 1 },
-        { dictLabel: '异常', dictValue: 2 },
-        { dictLabel: '维修', dictValue: 3 },
-        { dictLabel: '下架', dictValue: 4 }
+        { dictLabel: '激活', dictValue: 1 }
+      ],
+      expireFlagOptions: [
+        { dictLabel: '过期', dictValue: 0 },
+        { dictLabel: '未过期', dictValue: 1 }
       ],
       // 厂家字典
       vendorOptions: [],

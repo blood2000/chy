@@ -80,6 +80,7 @@
             />
           </el-select>
         </el-form-item>
+        <!--  预留字段：默认为1 -->
         <!-- <el-form-item label="字段类型" prop="fieldType">
           <el-select
             v-model="queryParams.fieldType"
@@ -180,38 +181,38 @@
         <el-table-column label="中文名称" align="center" prop="fieldCnname" width="120" />
         <el-table-column label="英文名称" align="center" prop="fieldEnname" />
         <el-table-column label="映射字段" align="center" prop="fieldMappingName" />
-        <el-table-column label="字段类型" align="center" prop="fieldType" :formatter="fieldTypeFormat" />
+<!--        <el-table-column label="字段类型" align="center" prop="fieldType" :formatter="fieldTypeFormat" />-->
         <el-table-column label="表单类型" align="center" prop="fieldFormType" :formatter="fieldFormTypeFormat" />
         <el-table-column label="字段排序" align="center" prop="fieldSort" />
         <el-table-column label="数据类型" align="center" prop="fieldAttribute" :formatter="fieldAttributeFormat" />
         <el-table-column label="小数点位数" align="center" prop="fieldDit" />
         <el-table-column label="数据长度" align="center" prop="fieldLength" />
         <el-table-column label="默认值" align="center" prop="defaultValue" />
-        <el-table-column label="是否在列表显示" align="center" prop="isList">
+        <el-table-column label="列表显示" align="center" prop="isList">
           <template slot-scope="scope">
             <i v-if="scope.row.isList === 0" class="el-icon-success g-color-blue" />
             <i v-else class="el-icon-error g-color-gray" />
           </template>
         </el-table-column>
-        <el-table-column label="是否作为查询字段" align="center" prop="isQuery">
+        <el-table-column label="查询字段" align="center" prop="isQuery">
           <template slot-scope="scope">
             <i v-if="scope.row.isQuery === 0" class="el-icon-success g-color-blue" />
             <i v-else class="el-icon-error g-color-gray" />
           </template>
         </el-table-column>
-        <el-table-column label="是否只读" align="center" prop="isRead">
+        <el-table-column label="只读" align="center" prop="isRead">
           <template slot-scope="scope">
             <i v-if="scope.row.isRead === 0" class="el-icon-success g-color-blue" />
             <i v-else class="el-icon-error g-color-gray" />
           </template>
         </el-table-column>
-        <el-table-column label="是否必填" align="center" prop="isRequire">
+        <el-table-column label="必填" align="center" prop="isRequire">
           <template slot-scope="scope">
             <i v-if="scope.row.isRequire === 0" class="el-icon-success g-color-blue" />
             <i v-else class="el-icon-error g-color-gray" />
           </template>
         </el-table-column>
-        <el-table-column label="是否展示" align="center" prop="isShow">
+        <el-table-column label="显示" align="center" prop="isShow">
           <template slot-scope="scope">
             <i v-if="scope.row.isShow === 0" class="el-icon-success g-color-blue" />
             <i v-else class="el-icon-error g-color-gray" />
@@ -267,7 +268,7 @@
               <el-input v-model="form.fieldMappingName" placeholder="请输入映射字段" clearable />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+         <!-- <el-col :span="12">
             <el-form-item label="字段类型" prop="fieldType">
               <el-select
                 v-model="form.fieldType"
@@ -283,7 +284,12 @@
                 />
               </el-select>
             </el-form-item>
-          </el-col>
+          </el-col>-->
+            <el-col :span="12">
+                <el-form-item label="字段排序" prop="fieldSort">
+                    <el-input-number v-model="form.fieldSort" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
+                </el-form-item>
+            </el-col>
           <el-col :span="12">
             <el-form-item label="表单类型" prop="fieldFormType">
               <el-select
@@ -299,11 +305,6 @@
                   :value="dict.dictValue"
                 />
               </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="字段排序" prop="fieldSort">
-              <el-input-number v-model="form.fieldSort" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -439,7 +440,7 @@ export default {
       // 表单类型字典
       fieldFormTypeOptions: [
         { dictLabel: '文本型', dictValue: 1 },
-        { dictLabel: '只读型', dictValue: 2 },
+        /* { dictLabel: '只读型', dictValue: 2 },*/
         { dictLabel: '日期型', dictValue: 3 },
         { dictLabel: '下拉框型', dictValue: 4 },
         { dictLabel: '单选框型', dictValue: 5 },
@@ -496,9 +497,9 @@ export default {
             }
           }, trigger: ['change', 'blur'] }
         ],
-        fieldType: [
+        /*  fieldType: [
           { required: true, message: '字段类型不能为空', trigger: ['blur', 'change'] }
-        ],
+        ],*/
         fieldFormType: [
           { required: true, message: '表单类型不能为空', trigger: ['blur', 'change'] }
         ],
@@ -528,9 +529,9 @@ export default {
       return this.selectDictLabel(this.fieldFormTypeOptions, row.fieldFormType);
     },
     // 字段类型字典翻译
-    fieldTypeFormat(row, column) {
+    /* fieldTypeFormat(row, column) {
       return this.selectDictLabel(this.fieldTypeOptions, row.fieldType);
-    },
+    },*/
     // 数据类型字典翻译
     fieldAttributeFormat(row, column) {
       return this.selectDictLabel(this.fieldAttributeOptions, row.fieldAttribute);
@@ -666,11 +667,11 @@ export default {
         fieldDit: undefined,
         fieldEnname: undefined,
         fieldFormType: undefined,
-        fieldLength: undefined,
+        fieldLength: 255,
         fieldMappingName: undefined,
         fieldRemark: undefined,
-        fieldSort: undefined,
-        fieldType: undefined,
+        fieldSort: 1,
+        fieldType: 1,
         isList: undefined,
         isQuery: undefined,
         isRead: undefined,
