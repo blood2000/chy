@@ -425,7 +425,7 @@
 
       </div>
       <!-- 设置电子围栏弹窗 -->
-      <circle-dialog ref="CircleDialog" :open.sync="circledialog" :value="radius" :title="title" :lnglat="lnglat" @refresh="changeElect" />
+      <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :title="title" :lnglat="lnglat" @refresh="changeElect" />
       <!-- 打开弹框 -->
       <el-dialog
         :close-on-click-modal="false"
