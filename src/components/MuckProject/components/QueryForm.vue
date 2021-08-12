@@ -86,7 +86,7 @@
         >
           <!--   -->
           <template #default="{row}">
-            <span>{{ row.name }}</span>
+            <span>{{ row.name +' - '+ row.goodsName }}</span>
           </template>
         </FilterableSelect>
       </el-form-item>

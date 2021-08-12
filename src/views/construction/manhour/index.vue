@@ -258,12 +258,14 @@ export default {
     },
 
     queParams() {
+      const shift = this.shift_op.find(e => e.dictValue === this.queryParams.schedule) || {};
       return {
         ...this.queryParams,
         bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
         endCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
         receiveTime: undefined,
-        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName,
+        scheduleName: shift.dictLabel
 
       };
     }

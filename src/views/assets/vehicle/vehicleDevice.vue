@@ -7,30 +7,44 @@
           icon="el-icon-plus"
           size="mini"
           @click="handleAdd"
-        >新增</el-button>
+        >绑定</el-button>
       </el-col>
     </el-row>
     <el-table v-loading="loading" highlight-current-row border :data="dataList">
       <el-table-column label="厂商" align="center" prop="vendorName" />
-      <el-table-column label="车牌号" align="center" prop="licenseNumber" />
-      <el-table-column label="设备IMEI" align="center" prop="deviceImei" />
-      <el-table-column label="创建时间" align="center" prop="createTime">
-        <template slot-scope="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-      </el-table-column>
+      <el-table-column label="设备标识" align="center" prop="factoryOnlyCode" />
+        <el-table-column label="状态" align="center" prop="status" width="100px">
+            <template slot-scope="scope">
+                <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="激活状态" align="center" prop="activationFlag">
+            <template slot-scope="scope">
+                <span>{{ selectDictLabel(activationFlagOptions, scope.row.activationFlag) }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="过期状态" align="center" prop="expireFlag">
+            <template slot-scope="scope">
+                <span>{{ selectDictLabel(expireFlagOptions, scope.row.expireFlag) }}</span>
+            </template>
+        </el-table-column>
+        <el-table-column label="创建时间" align="center" prop="createTime" width="160">
+            <template slot-scope="scope">
+                <span>{{ parseTime(scope.row.createTime) }}</span>
+            </template>
+        </el-table-column>
       <el-table-column v-if="vehicleCode" label="操作" align="center" fixed="left" prop="edit">
         <template slot-scope="scope">
-          <el-button
+         <!-- <el-button
             size="mini"
             type="text"
             @click="handleEdit(scope.row)"
-          >编辑</el-button>
+          >编辑</el-button>-->
           <el-button
             size="mini"
             type="text"
             @click="handleDel(scope.row)"
-          >删除</el-button>
+          >解绑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -60,8 +74,8 @@
         </el-row>
         <el-row>
           <el-col :span="24">
-            <el-form-item label="设备IMEI码" prop="deviceImei">
-              <el-input v-model="form.deviceImei" placeholder="请输入设备IMEI码" />
+            <el-form-item label="设备" prop="deviceCode">
+<!--              <el-input v-model="form.deviceImei" placeholder="请输入设备IMEI码" />-->
             </el-form-item>
           </el-col>
         </el-row>
@@ -97,16 +111,27 @@ export default {
         vehicleCode: undefined
       },
       form: {
-        licenseNumber: undefined,
         vendorCode: undefined,
         vehicleCode: undefined,
-        deviceImei: undefined
+        deviceCode: undefined
       },
       open: false,
       title: '',
       deviceVendorOptions: [],
       buttonLoading: false,
       nowLicenseNumber: undefined,
+      statusOptions: [
+        { dictLabel: '离线', dictValue: 0 },
+        { dictLabel: '在线', dictValue: 1 }
+      ],
+      activationFlagOptions: [
+        { dictLabel: '未激活', dictValue: 0 },
+        { dictLabel: '激活', dictValue: 1 }
+      ],
+      expireFlagOptions: [
+        { dictLabel: '过期', dictValue: 0 },
+        { dictLabel: '未过期', dictValue: 1 }
+      ],
       rules: {
         vendorCode: [
           { required: true, message: '设备厂商不能为空', trigger: 'blur,change' }
@@ -145,7 +170,7 @@ export default {
     handleAdd() {
       this.open = true;
       this.form.vehicleCode = this.vehicleCode;
-      this.title = '新增车辆设备';
+      this.title = '绑定车辆设备';
     },
     handleEdit(row) {
       this.open = true;
@@ -156,7 +181,7 @@ export default {
       // this.form = row;
     },
     handleDel(row) {
-      this.$confirm('是否确认删除设备IMEI为"' + row.deviceImei + '"的数据项?', '警告', {
+      this.$confirm('是否确认解绑设备为"' + row.factoryOnlyCode + '"的数据项?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
