@@ -157,3 +157,47 @@ export function delDriverInfo(codes) {
     method: 'delete'
   });
 }
+
+/** ============================设备字段字典管理============================ */
+// 设备字段字典列表
+export function getDeviceFieldOptionList(data) {
+  return request({
+    url: 'assets/device/field/options/list',
+    method: 'post',
+    data: data
+  });
+}
+
+// 新增设备字段字典
+export function addDeviceFieldOption(data) {
+  return request({
+    url: '/assets/device/field/options',
+    method: 'post',
+    data: data
+  });
+}
+
+// 编辑设备字段字典
+export function updateDeviceFieldOption(data) {
+  return request({
+    url: '/assets/device/field/options',
+    method: 'put',
+    data: data
+  });
+}
+
+// 获取设备字段字典
+export function getDeviceFieldOptionDetail(code) {
+  return request({
+    url: `/assets/device/field/options/${code}`,
+    method: 'get'
+  });
+}
+
+// 删除设备字段字典
+export function delDriverFieldOption(codes) {
+  return request({
+    url: `/assets/device/field/options/{codes}`,
+    method: 'delete'
+  });
+}
