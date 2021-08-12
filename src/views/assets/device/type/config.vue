@@ -232,6 +232,12 @@
               @click="handleUpdate(scope.row)"
             >修改</el-button>
             <el-button
+              v-if="scope.row.fieldFormType === 4 || scope.row.fieldFormType === 5"
+              size="mini"
+              type="text"
+              @click="handleSetOptions(scope.row)"
+            >字典</el-button>
+            <el-button
               size="mini"
               type="text"
               @click="handleDelete(scope.row)"
@@ -249,7 +255,7 @@
       />
     </div>
 
-    <!-- 添加或修改（列表）设备类型对话框 -->
+    <!-- 添加或修改设备属性对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" style="width: 98%">
         <el-row :gutter="20">
@@ -396,14 +402,21 @@
         <el-button @click="cancel">取 消</el-button>
       </div>
     </el-dialog>
+
+    <!-- 配置字典弹窗 -->
+    <set-option :self-open.sync="setOptionOpen" :field-code="fieldCode" />
   </div>
 </template>
 
 <script>
 import { getDeviceTypeList, getDeviceFieldList, addDeviceField, updateDeviceField, getDeviceFieldDetail, delDriverField } from '@/api/assets/device.js';
+import SetOption from './setOption';
 
 export default {
   name: 'DeviceConfig',
+  components: {
+    SetOption
+  },
   data() {
     return {
       // 遮罩层
@@ -506,7 +519,10 @@ export default {
         fieldAttribute: [
           { required: true, message: '数据类型不能为空', trigger: ['blur', 'change'] }
         ]
-      }
+      },
+      // 字典管理
+      setOptionOpen: false,
+      fieldCode: null
     };
   },
   created() {
@@ -582,6 +598,11 @@ export default {
         this.open = true;
         this.title = '修改设备属性';
       });
+    },
+    /** 字典管理 */
+    handleSetOptions(row) {
+      this.fieldCode = row.code;
+      this.setOptionOpen = true;
     },
     /** 表单字段值处理 */
     changeValueType() {

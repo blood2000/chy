@@ -145,8 +145,9 @@ export default {
     // 修改半径
     handlerAdjust({ type, target, radius }) {
       // console.log('修改半径' + radius);
-      this.radius = radius;
-      // console.log('you' + this.radius);
+
+      this.radius = radius < 200 ? 200 : radius;
+      this.$emit('input', this.radius);
     },
 
     circleEdit(lnglat, oldLnglat) {

@@ -68,6 +68,14 @@
                   <el-col :span="5">
                     <p style="line-height: 30px">车次：<span class="num">{{ projectStatistic.trainNumber }}</span></p>
                   </el-col>
+                  <!-- <el-button
+                    class="fr"
+                    type="primary"
+                    icon="el-icon-download"
+                    size="mini"
+                    :loading="exportLoading"
+                    @click="handleExport"
+                  >导出</el-button> -->
                 </el-row>
                 <el-collapse v-model="vechicleCode" accordion class="census-collapse" @change="changeProjectCollapse">
                   <el-collapse-item v-for="(item, index) in projectStatisticList" :key="index" :name="item.vehicleCode">
@@ -187,6 +195,7 @@ export default {
       projectStatistic: {},
       projectStatisticLoading: false,
       projectStatisticList: [],
+      exportLoading: false,
       // 车辆明细
       vehicleQuery: {
         // pageNum: 1,
@@ -345,6 +354,17 @@ export default {
         this.projectLoading = false;
         this.muckardLoading = false;
       });
+    },
+    /** 项目统计导出按钮操作 */
+    async handleExport() {
+      this.exportLoading = true;
+      const params = {
+        projectCode: this.projectCode,
+        queryDate: this.queryDate,
+        waybillClasses: this.waybillClasses
+      };
+      await this.download('/transportation/statistics/listVechicleDetailsExport', params, `项目统计`);
+      this.exportLoading = false;
     }
   }
 };
@@ -456,7 +476,7 @@ export default {
       .total_bg{
         background: #F8F9FA;
         border-radius: 4px;
-        padding: 15px 20px 13px;
+        padding: 15px 15px 10px 20px;
         margin-bottom: 10px;
         .num{
           font-size: 16px;

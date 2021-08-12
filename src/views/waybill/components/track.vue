@@ -185,7 +185,7 @@ export default {
         if (this.wayBillInfo.trackNumber) {
           this.getLieyingTime();
         } else {
-          this.msgInfo('暂无APP定位！');
+          this.msgInfo('暂无APP轨迹！');
         }
       } else {
         const that = this;
@@ -327,7 +327,7 @@ export default {
         this.jimiQueryParams.endTime = this.parseTime(new Date(this.jimiQueryParams.beginTime).getTime() + 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getJimi();
       } else if (this.jmTimePoor === 0) {
-        console.log(this.jmTracklist);
+        // console.log(this.jmTracklist);
         if (this.jmTracklist.length !== 0) {
           // 绘制轨迹
           const that = this;
