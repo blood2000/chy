@@ -41,16 +41,16 @@
         <div class="device-info-right">
           <div v-show="showSearch" class="device-info-right-top">
             <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-              <!-- <el-form-item label="设备名称" prop="name">
+              <el-form-item label="设备标识" prop="factoryOnlyCode">
                 <el-input
-                  v-model="queryParams.name"
-                  placeholder="请输入设备名称"
+                  v-model="queryParams.factoryOnlyCode"
+                  placeholder="请输入设备标识"
                   clearable
                   size="small"
                   style="width: 200px"
                   @keyup.enter.native="handleQuery"
                 />
-              </el-form-item> -->
+              </el-form-item>
               <el-form-item label="设备状态" prop="status">
                 <el-select
                   v-model="queryParams.status"
@@ -67,6 +67,38 @@
                   />
                 </el-select>
               </el-form-item>
+                <el-form-item label="激活状态" prop="activationFlag">
+                    <el-select
+                            v-model="queryParams.activationFlag"
+                            clearable
+                            filterable
+                            style="width: 100%"
+                            size="small"
+                    >
+                        <el-option
+                                v-for="dict in activationFlagOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="过期状态" prop="expireFlag">
+                    <el-select
+                            v-model="queryParams.expireFlag"
+                            clearable
+                            filterable
+                            style="width: 100%"
+                            size="small"
+                    >
+                        <el-option
+                                v-for="dict in expireFlagOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
               <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -198,7 +230,7 @@
             v-else-if="item.fieldFormType === 2"
             v-model="form[item.fieldMappingName]"
             controls-position="right"
-            :precision="item.fieldDit"
+            :precision="item.fieldDit ? item.fieldDit : 0"
             :step="1"
             :min="0"
             style="width: 100%"
@@ -224,7 +256,7 @@
           >
             <el-option
               v-for="dict in item.optionList"
-              :key="dict.code"
+              :key="dict.optionValue"
               :label="dict.optionName"
               :value="dict.optionValue"
             />
@@ -236,7 +268,7 @@
           >
             <el-radio
               v-for="dict in item.optionList"
-              :key="dict.code"
+              :key="dict.optionValue"
               :label="dict.optionValue"
               :disabled="item.isRead === 0"
             >{{ dict.optionName }}</el-radio>
@@ -349,7 +381,9 @@ export default {
         pageNum: 1,
         pageSize: 10,
         typeCode: undefined,
-        name: undefined,
+        factoryOnlyCode: undefined,
+        activationFlag: undefined,
+        expireFlag: undefined,
         status: undefined
       },
       exportLoading: false,
@@ -472,7 +506,12 @@ export default {
         // 动态表单
         this.addDeviceField = response.data.deviceFieldInfoVoList;
         this.addDeviceField.forEach(el => {
-          this.$set(this.form, el.fieldMappingName, el.defaultValue);
+          // 复选框回显特殊处理
+          if (el.fieldFormType === 6) {
+            this.$set(this.form, el.fieldMappingName, !!(el.defaultValue === 'true'));
+          } else {
+            this.$set(this.form, el.fieldMappingName, el.defaultValue);
+          }
         });
       });
     },
@@ -487,7 +526,12 @@ export default {
         // 动态表单
         this.addDeviceField = response.data.deviceFieldInfoVoList;
         this.addDeviceField.forEach(el => {
-          this.$set(this.form, el.fieldMappingName, el.value);
+          // 复选框回显特殊处理
+          if (el.fieldFormType === 6) {
+            this.$set(this.form, el.fieldMappingName, !!(el.value === 'true'));
+          } else {
+            this.$set(this.form, el.fieldMappingName, el.value);
+          }
         });
       });
     },
@@ -597,7 +641,13 @@ export default {
   }
 }
 
+/* 二维码样式 */
 .device-qr-Code{
   width: 180px;
+}
+
+/* 计数器样式 */
+.el-input-number ::v-deep.el-input__inner{
+  text-align: left;
 }
 </style>

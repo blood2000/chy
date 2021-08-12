@@ -64,7 +64,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否展示" prop="isShow	">
+        <el-form-item label="是否展示" prop="isShow">
           <el-select
             v-model="queryParams.isShow"
             clearable
@@ -80,55 +80,6 @@
             />
           </el-select>
         </el-form-item>
-        <!--  预留字段：默认为1 -->
-        <!-- <el-form-item label="字段类型" prop="fieldType">
-          <el-select
-            v-model="queryParams.fieldType"
-            clearable
-            filterable
-            size="small"
-            style="width: 240px"
-          >
-            <el-option
-              v-for="dict in fieldTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item label="表单类型" prop="fieldFormType">
-          <el-select
-            v-model="queryParams.fieldFormType"
-            clearable
-            filterable
-            size="small"
-            style="width: 240px"
-          >
-            <el-option
-              v-for="dict in fieldFormTypeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item> -->
-        <!-- <el-form-item label="数据类型" prop="fieldAttribute">
-          <el-select
-            v-model="queryParams.fieldAttribute"
-            clearable
-            filterable
-            size="small"
-            style="width: 240px"
-          >
-            <el-option
-              v-for="dict in fieldAttributeOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -164,15 +115,6 @@
             @click="handleDelete"
           >删除</el-button>
         </el-col>
-        <!-- <el-col :span="1.5">
-          <el-button
-            type="warning"
-            icon="el-icon-download"
-            size="mini"
-            :loading="exportLoading"
-            @click="handleExport"
-          >导出</el-button>
-        </el-col> -->
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
@@ -183,10 +125,9 @@
         <el-table-column label="映射字段" align="center" prop="fieldMappingName" />
         <!-- <el-table-column label="字段类型" align="center" prop="fieldType" :formatter="fieldTypeFormat" /> -->
         <el-table-column label="表单类型" align="center" prop="fieldFormType" :formatter="fieldFormTypeFormat" />
-        <el-table-column label="字段排序" align="center" prop="fieldSort" />
-        <!-- <el-table-column label="数据类型" align="center" prop="fieldAttribute" :formatter="fieldAttributeFormat" /> -->
-        <el-table-column label="小数点位数" align="center" prop="fieldDit" />
         <el-table-column label="数据长度" align="center" prop="fieldLength" />
+        <el-table-column label="字段排序" align="center" prop="fieldSort" />
+        <el-table-column label="小数点位数" align="center" prop="fieldDit" />
         <el-table-column label="默认值" align="center" prop="defaultValue" />
         <el-table-column label="列表显示" align="center" prop="isList">
           <template slot-scope="scope">
@@ -303,6 +244,7 @@
                 clearable
                 filterable
                 style="width: 100%"
+                @change="changeAttribute"
               >
                 <el-option
                   v-for="dict in fieldFormTypeOptions"
@@ -313,38 +255,23 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <!-- <el-col :span="12">
-            <el-form-item label="数据类型" prop="fieldAttribute">
-              <el-select
-                v-model="form.fieldAttribute"
-                clearable
-                filterable
-                style="width: 100%"
-                @change="changeAttribute"
-              >
-                <el-option
-                  v-for="dict in fieldAttributeOptions"
-                  :key="dict.dictValue"
-                  :label="dict.dictLabel"
-                  :value="dict.dictValue"
-                />
-              </el-select>
+          <el-col :span="12">
+            <el-form-item label="数据长度" prop="fieldLength">
+              <el-input-number v-model="form.fieldLength" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
             </el-form-item>
-          </el-col> -->
+          </el-col>
           <el-col v-if="form.fieldFormType === 2" :span="12">
             <el-form-item label="小数点位数" prop="fieldDit">
               <el-input-number v-model="form.fieldDit" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="数据长度" prop="fieldLength">
-              <el-input-number v-model="form.fieldLength" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="默认值" prop="defaultValue">
+              <!-- 1.input -->
+              <el-input v-if="form.fieldFormType === 1" v-model="form.defaultValue" placeholder="请输入默认值" clearable />
+              <!-- 2.number -->
               <el-input-number
-                v-if="form.fieldFormType === 2"
+                v-else-if="form.fieldFormType === 2"
                 v-model="form.defaultValue"
                 controls-position="right"
                 :precision="form.fieldDit ? form.fieldDit : 0"
@@ -352,6 +279,7 @@
                 :min="0"
                 style="width: 100%"
               />
+              <!-- 3.date -->
               <el-date-picker
                 v-else-if="form.fieldFormType === 3"
                 v-model="form.defaultValue"
@@ -360,6 +288,37 @@
                 placeholder="请选择默认值"
                 style="width: 100%"
               />
+              <!-- 4.select -->
+              <el-select
+                v-else-if="form.fieldFormType === 4 && form.optionList && form.optionList.length > 0"
+                v-model="form.defaultValue"
+                clearable
+                filterable
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="dict in form.optionList"
+                  :key="dict.optionValue"
+                  :label="dict.optionName"
+                  :value="dict.optionValue"
+                />
+              </el-select>
+              <!-- 5.radio -->
+              <el-radio-group
+                v-else-if="form.fieldFormType === 5 && form.optionList && form.optionList.length > 0"
+                v-model="form.defaultValue"
+              >
+                <el-radio
+                  v-for="dict in form.optionList"
+                  :key="dict.optionValue"
+                  :label="dict.optionValue"
+                >{{ dict.optionName }}</el-radio>
+              </el-radio-group>
+              <!-- 6.checkbox -->
+              <el-checkbox v-else-if="form.fieldFormType === 6" v-model="form.defaultValue">是否勾选</el-checkbox>
+              <!-- 7.img -->
+              <upload-image v-else-if="form.fieldFormType === 7" v-model="form.defaultValue" />
+              <!-- else -->
               <el-input v-else v-model="form.defaultValue" placeholder="请输入默认值" clearable />
             </el-form-item>
           </el-col>
@@ -411,11 +370,13 @@
 <script>
 import { getDeviceTypeList, getDeviceFieldList, addDeviceField, updateDeviceField, getDeviceFieldDetail, delDriverField } from '@/api/assets/device.js';
 import SetOption from './setOption';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'DeviceConfig',
   components: {
-    SetOption
+    SetOption,
+    UploadImage
   },
   data() {
     return {
@@ -441,9 +402,8 @@ export default {
         fieldCnname: undefined,
         fieldEnname: undefined,
         fieldMappingName: undefined,
-        // fieldAttribute: undefined,
-        fieldType: undefined,
-        fieldFormType: undefined
+        isRequire: undefined,
+        isShow: undefined
       },
       exportLoading: false,
       // 设备类型字典
@@ -465,13 +425,6 @@ export default {
         { dictLabel: '设备字段', dictValue: 1 },
         { dictLabel: '扩展字段', dictValue: 2 },
         { dictLabel: '扩展元属性', dictValue: 3 }
-      ],
-      // 数据类型字典
-      fieldAttributeOptions: [
-        { dictLabel: '字符串型', dictValue: 1 },
-        { dictLabel: '整数型', dictValue: 2 },
-        { dictLabel: '小数型', dictValue: 3 },
-        { dictLabel: '日期型', dictValue: 4 }
       ],
       // 是否在列表显示字典
       isListOptions: [
@@ -517,9 +470,6 @@ export default {
         fieldFormType: [
           { required: true, message: '表单类型不能为空', trigger: ['blur', 'change'] }
         ]
-        /* fieldAttribute: [
-          { required: true, message: '数据类型不能为空', trigger: ['blur', 'change'] }
-        ] */
       },
       // 字典管理
       setOptionOpen: false,
@@ -549,10 +499,6 @@ export default {
     /* fieldTypeFormat(row, column) {
       return this.selectDictLabel(this.fieldTypeOptions, row.fieldType);
     },*/
-    // 数据类型字典翻译
-    fieldAttributeFormat(row, column) {
-      return this.selectDictLabel(this.fieldAttributeOptions, row.fieldAttribute);
-    },
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
@@ -596,6 +542,10 @@ export default {
       getDeviceFieldDetail(ids).then(response => {
         this.form = response.data;
         this.changeValueType();
+        // 复选框回显特殊处理
+        if (this.form.fieldFormType === 6) {
+          this.form.defaultValue = !!(this.form.defaultValue === 'true');
+        }
         this.open = true;
         this.title = '修改设备属性';
       });
@@ -626,16 +576,6 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
-      });
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.exportLoading = true;
-      const params = Object.assign({}, this.queryParams);
-      params.pageSize = undefined;
-      params.pageNum = undefined;
-      this.download('', params, `设备属性`).then(() => {
-        this.exportLoading = false;
       });
     },
     /** 提交按钮 */
@@ -684,7 +624,6 @@ export default {
       this.form = {
         code: undefined,
         defaultValue: undefined,
-        // fieldAttribute: undefined,
         fieldCnname: undefined,
         fieldDit: undefined,
         fieldEnname: undefined,
@@ -693,7 +632,7 @@ export default {
         fieldMappingName: undefined,
         fieldRemark: undefined,
         fieldSort: 1,
-        fieldType: 1,
+        fieldType: 1, // 预留字段：默认为1
         isList: undefined,
         isQuery: undefined,
         isRead: undefined,
