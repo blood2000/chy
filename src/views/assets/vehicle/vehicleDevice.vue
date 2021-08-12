@@ -61,7 +61,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="设备厂商" prop="vendorCode">
-              <el-select v-model="form.vendorCode" placeholder="请选择" @change="changeVendor" clearable filterable style="width: 100%">
+              <el-select v-model="form.vendorCode" placeholder="请选择" clearable filterable style="width: 100%" @change="changeVendor">
                 <el-option
                   v-for="dict in deviceVendorOptions"
                   :key="dict.dictValue"
@@ -75,23 +75,24 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="设备" prop="deviceCode">
-                <el-select
-                        style="width: 100%"
-                        clearable
-                        v-model="form.deviceCode"
-                        filterable
-                        remote
-                        reserve-keyword
-                        placeholder="请输入设备编码"
-                        :remote-method="remoteMethod"
-                        :loading="loading">
-                    <el-option
-                            v-for="item in deviceList"
-                            :key="item.code"
-                            :label="item.factoryOnlyCode"
-                            :value="item.code">
-                    </el-option>
-                </el-select>
+              <el-select
+                v-model="form.deviceCode"
+                style="width: 100%"
+                clearable
+                filterable
+                remote
+                reserve-keyword
+                placeholder="请输入设备编码"
+                :remote-method="remoteMethod"
+                :loading="loading"
+              >
+                <el-option
+                  v-for="item in deviceList"
+                  :key="item.code"
+                  :label="item.factoryOnlyCode"
+                  :value="item.code"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>

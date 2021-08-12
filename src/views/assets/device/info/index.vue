@@ -296,7 +296,7 @@
         </el-form-item>
 
         <!-- 固定字段 -->
-        <el-form-item label="厂家编码" prop="vendorCode">
+        <el-form-item label="厂家" prop="vendorCode">
           <el-select
             v-model="form.vendorCode"
             clearable
@@ -304,7 +304,7 @@
             style="width: 100%"
           >
             <el-option
-              v-for="dict in vendorOptions"
+              v-for="dict in deviceVendorOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -414,7 +414,7 @@ export default {
         { dictLabel: '未过期', dictValue: 1 }
       ],
       // 厂家字典
-      vendorOptions: [],
+      deviceVendorOptions: [],
       // 新增/编辑
       title: '',
       open: false,
@@ -438,9 +438,15 @@ export default {
     }
   },
   mounted() {
+    this.getDictsList();
     this.getTree();
   },
   methods: {
+    getDictsList() {
+      this.getDicts('device_vendors').then(response => {
+        this.deviceVendorOptions = response.data;
+      });
+    },
     /** 查询设备类型树 */
     getTree() {
       const _this = this;
