@@ -89,7 +89,8 @@ export default {
         ztcCode: undefined, //	渣土场	query	false
         projectCode: undefined, // 项目
         receiveTime: [],
-        cardBatchNo: undefined // 卡批次
+        cardBatchNo: undefined, // 卡批次
+        waybillClasses: undefined // 班次
       },
       isShipment: true,
       tableColumnsConfig: [],
