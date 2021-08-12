@@ -68,14 +68,14 @@
                   <el-col :span="5">
                     <p style="line-height: 30px">车次：<span class="num">{{ projectStatistic.trainNumber }}</span></p>
                   </el-col>
-                  <!-- <el-button
+                  <el-button
                     class="fr"
                     type="primary"
                     icon="el-icon-download"
                     size="mini"
                     :loading="exportLoading"
                     @click="handleExport"
-                  >导出</el-button> -->
+                  >导出</el-button>
                 </el-row>
                 <el-collapse v-model="vechicleCode" accordion class="census-collapse" @change="changeProjectCollapse">
                   <el-collapse-item v-for="(item, index) in projectStatisticList" :key="index" :name="item.vehicleCode">

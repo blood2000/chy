@@ -10,6 +10,16 @@ export function listManages(query) {
   });
 }
 
+// 查询渣土运单列表
+export const listDregsManagesApi = '/transportation/waybill/managesDregsList';
+export function listDregsManages(query) {
+  return request({
+    url: listDregsManagesApi,
+    method: 'get',
+    params: query
+  });
+}
+
 // 标记异常
 export function waybillAbnormal(data) {
   return request({
