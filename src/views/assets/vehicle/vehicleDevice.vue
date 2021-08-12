@@ -61,7 +61,7 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="设备厂商" prop="vendorCode">
-              <el-select v-model="form.vendorCode" placeholder="请选择" clearable filterable style="width: 100%">
+              <el-select v-model="form.vendorCode" placeholder="请选择" @change="changeVendor" clearable filterable style="width: 100%">
                 <el-option
                   v-for="dict in deviceVendorOptions"
                   :key="dict.dictValue"
@@ -75,7 +75,23 @@
         <el-row>
           <el-col :span="24">
             <el-form-item label="设备" prop="deviceCode">
-<!--              <el-input v-model="form.deviceImei" placeholder="请输入设备IMEI码" />-->
+                <el-select
+                        style="width: 100%"
+                        clearable
+                        v-model="form.deviceCode"
+                        filterable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入设备编码"
+                        :remote-method="remoteMethod"
+                        :loading="loading">
+                    <el-option
+                            v-for="item in deviceList"
+                            :key="item.code"
+                            :label="item.factoryOnlyCode"
+                            :value="item.code">
+                    </el-option>
+                </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -88,7 +104,7 @@
   </div>
 </template>
 <script>
-import { listDevice, addDevice, updateDevice, delDevice, getDevice } from '@/api/assets/vehicleDevice';
+import { listDevice, addDevice, updateDevice, delDevice, getDevice, listAll } from '@/api/assets/vehicleDevice';
 export default {
   props: {
     vehicleCode: {
@@ -109,6 +125,11 @@ export default {
         pageNum: 1,
         pageSize: 10,
         vehicleCode: undefined
+      },
+      dataParams: {
+        vendorCode: undefined,
+        factoryOnlyCode: undefined,
+        isfilterBinding: 1
       },
       form: {
         vendorCode: undefined,
@@ -136,10 +157,11 @@ export default {
         vendorCode: [
           { required: true, message: '设备厂商不能为空', trigger: 'blur,change' }
         ],
-        deviceImei: [
-          { required: true, message: '设备IMEI码不能为空', trigger: 'blur' }
+        deviceCode: [
+          { required: true, message: '设备不能为空', trigger: 'blur,change' }
         ]
-      }
+      },
+      deviceList: []
     };
   },
   watch: {
@@ -155,6 +177,25 @@ export default {
     }
   },
   methods: {
+    getDeviceList() {
+      listAll(this.dataParams).then(response => {
+        this.loading = false;
+        this.deviceList = response.rows;
+      });
+    },
+    remoteMethod(query) {
+      if (query !== '') {
+        this.loading = true;
+        this.dataParams.factoryOnlyCode = query;
+        this.deviceList = [];
+        this.getDeviceList();
+      } else {
+        this.deviceList = [];
+      }
+    },
+    changeVendor(value) {
+      this.dataParams.vendorCode = value;
+    },
     getDictsList() {
       this.getDicts('device_vendors').then(response => {
         this.deviceVendorOptions = response.data;
@@ -225,6 +266,11 @@ export default {
         vendorCode: undefined,
         vehicleCode: undefined,
         deviceImei: undefined
+      };
+      this.dataParams = {
+        vendorCode: undefined,
+        factoryOnlyCode: undefined,
+        isfilterBinding: 1
       };
       this.resetForm('form');
     }
