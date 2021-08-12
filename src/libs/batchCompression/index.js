@@ -3,7 +3,7 @@ import axios from 'axios';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import { parseTime } from '@/utils/ddc';
-const getFile = (url) => {
+export const getFile = (url) => {
   return new Promise((resolve, reject) => {
     axios({
       method: 'get',

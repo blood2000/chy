@@ -101,6 +101,16 @@
                   @click="handleDelete"
                 >删除</el-button>
               </el-col>
+              <el-col :span="1.5">
+                <el-button
+                  type="warning"
+                  icon="el-icon-magic-stick"
+                  size="mini"
+                  :disabled="multiple"
+                  :loading="downloadLoading"
+                  @click="handleDownloadAll"
+                >批量下载二维码</el-button>
+              </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
 
@@ -305,6 +315,9 @@ import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { downImgApi } from '@/api/system/image';
 import UploadImage from '@/components/UploadImage/index';
+import JSZip from 'jszip';
+import FileSaver from 'file-saver';
+import { getFile } from '@/libs/batchCompression';
 
 export default {
   name: 'DeviceInfo',
@@ -379,7 +392,10 @@ export default {
         ]
       },
       // 动态表单
-      addDeviceField: []
+      addDeviceField: [],
+      // 批量下载二维码
+      downloadLoading: false,
+      selectList: []
     };
   },
   watch: {
@@ -459,6 +475,7 @@ export default {
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.code);
       this.names = selection.map(item => item.name);
+      this.selectList = selection;
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -575,6 +592,37 @@ export default {
         fileName: `${row.factory_only_code}_二维码`
       };
       this.download(downImgApi, params, `${row.factory_only_code}_二维码`, null, '.jpg');
+    },
+    // 批量下载二维码
+    async handleDownloadAll() {
+      this.msgInfo('导出中，请稍候');
+      this.downloadLoading = true;
+      const zip = new JSZip();
+      const cache = {};
+      const promises = [];
+      await this.selectList.forEach(item => {
+        const str = (item.device_qr_code.split('.com'))[1];
+        const promise = getFile(`/pdf${str}`).then(data => { // 下载文件, 并存成ArrayBuffer对象
+          const file_name = item.factory_only_code + '.jpg';
+          zip.file(file_name, data, {
+            binary: true
+          }); // 逐个添加文件
+          cache[file_name] = data;
+        });
+        promises.push(promise);
+      });
+      Promise.all(promises).then(() => {
+        zip.generateAsync({
+          type: 'blob'
+        }).then(content => { // 生成二进制流
+          this.msgSuccess('导出成功');
+          this.downloadLoading = false;
+          FileSaver.saveAs(content, '设备二维码_' + this.parseTime(new Date(), '{y}{m}{d}{h}{i}') + '.zip'); // 利用file-saver保存文件
+        });
+      }).catch(() => {
+        this.msgError('导出失败');
+        this.downloadLoading = false;
+      });
     }
   }
 };
