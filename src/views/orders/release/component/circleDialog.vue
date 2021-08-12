@@ -93,14 +93,16 @@ export default {
           // console.log(o.getCenter());
           // this.$refs.map.$$getInstance();
           // console.log(this.$refs.map);
-          o.getCity(result => {});
-          // console.log(this.$refs.map.$amap.setFitView(markers));
+          o.getCity(result => { console.log(result); });
         },
         'moveend': () => {
         },
         'zoomchange': () => {
         },
-        'click': (e) => {}
+        'click': (e) => {},
+        complete: () => {
+          this.$refs.map.$$getInstance().setFitView();
+        }
       },
       radius: 200
       // visible: false
@@ -135,6 +137,11 @@ export default {
   // created() {
   //   this.center = this.lnglat;
   // },
+  updated() {
+    if (this.$refs.map.$$getInstance()) {
+      this.$refs.map.$$getInstance().setFitView();
+    }
+  },
 
   methods: {
     // 移动动mak点
