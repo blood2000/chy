@@ -198,7 +198,7 @@
             v-else-if="item.fieldFormType === 2"
             v-model="form[item.fieldMappingName]"
             controls-position="right"
-            :precision="item.fieldDit"
+            :precision="item.fieldDit ? item.fieldDit : 0"
             :step="1"
             :min="0"
             style="width: 100%"
@@ -224,7 +224,7 @@
           >
             <el-option
               v-for="dict in item.optionList"
-              :key="dict.code"
+              :key="dict.optionValue"
               :label="dict.optionName"
               :value="dict.optionValue"
             />
@@ -236,7 +236,7 @@
           >
             <el-radio
               v-for="dict in item.optionList"
-              :key="dict.code"
+              :key="dict.optionValue"
               :label="dict.optionValue"
               :disabled="item.isRead === 0"
             >{{ dict.optionName }}</el-radio>
@@ -472,7 +472,12 @@ export default {
         // 动态表单
         this.addDeviceField = response.data.deviceFieldInfoVoList;
         this.addDeviceField.forEach(el => {
-          this.$set(this.form, el.fieldMappingName, el.defaultValue);
+          // 复选框回显特殊处理
+          if (el.fieldFormType === 6) {
+            this.$set(this.form, el.fieldMappingName, !!(el.defaultValue === 'true'));
+          } else {
+            this.$set(this.form, el.fieldMappingName, el.defaultValue);
+          }
         });
       });
     },
@@ -487,7 +492,12 @@ export default {
         // 动态表单
         this.addDeviceField = response.data.deviceFieldInfoVoList;
         this.addDeviceField.forEach(el => {
-          this.$set(this.form, el.fieldMappingName, el.value);
+          // 复选框回显特殊处理
+          if (el.fieldFormType === 6) {
+            this.$set(this.form, el.fieldMappingName, !!(el.value === 'true'));
+          } else {
+            this.$set(this.form, el.fieldMappingName, el.value);
+          }
         });
       });
     },
@@ -597,7 +607,13 @@ export default {
   }
 }
 
+/* 二维码样式 */
 .device-qr-Code{
   width: 180px;
+}
+
+/* 计数器样式 */
+.el-input-number ::v-deep.el-input__inner{
+  text-align: left;
 }
 </style>

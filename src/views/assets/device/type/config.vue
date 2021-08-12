@@ -183,10 +183,10 @@
         <el-table-column label="映射字段" align="center" prop="fieldMappingName" />
         <!-- <el-table-column label="字段类型" align="center" prop="fieldType" :formatter="fieldTypeFormat" /> -->
         <el-table-column label="表单类型" align="center" prop="fieldFormType" :formatter="fieldFormTypeFormat" />
+        <el-table-column label="数据长度" align="center" prop="fieldLength" />
         <el-table-column label="字段排序" align="center" prop="fieldSort" />
         <!-- <el-table-column label="数据类型" align="center" prop="fieldAttribute" :formatter="fieldAttributeFormat" /> -->
         <el-table-column label="小数点位数" align="center" prop="fieldDit" />
-        <el-table-column label="数据长度" align="center" prop="fieldLength" />
         <el-table-column label="默认值" align="center" prop="defaultValue" />
         <el-table-column label="列表显示" align="center" prop="isList">
           <template slot-scope="scope">
@@ -303,6 +303,7 @@
                 clearable
                 filterable
                 style="width: 100%"
+                @change="changeAttribute"
               >
                 <el-option
                   v-for="dict in fieldFormTypeOptions"
@@ -311,6 +312,11 @@
                   :value="dict.dictValue"
                 />
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="数据长度" prop="fieldLength">
+              <el-input-number v-model="form.fieldLength" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
             </el-form-item>
           </el-col>
           <!-- <el-col :span="12">
@@ -337,14 +343,12 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="数据长度" prop="fieldLength">
-              <el-input-number v-model="form.fieldLength" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
             <el-form-item label="默认值" prop="defaultValue">
+              <!-- 1.input -->
+              <el-input v-if="form.fieldFormType === 1" v-model="form.defaultValue" placeholder="请输入默认值" clearable />
+              <!-- 2.number -->
               <el-input-number
-                v-if="form.fieldFormType === 2"
+                v-else-if="form.fieldFormType === 2"
                 v-model="form.defaultValue"
                 controls-position="right"
                 :precision="form.fieldDit ? form.fieldDit : 0"
@@ -352,6 +356,7 @@
                 :min="0"
                 style="width: 100%"
               />
+              <!-- 3.date -->
               <el-date-picker
                 v-else-if="form.fieldFormType === 3"
                 v-model="form.defaultValue"
@@ -360,6 +365,37 @@
                 placeholder="请选择默认值"
                 style="width: 100%"
               />
+              <!-- 4.select -->
+              <el-select
+                v-else-if="form.fieldFormType === 4 && form.optionList && form.optionList.length > 0"
+                v-model="form.defaultValue"
+                clearable
+                filterable
+                style="width: 100%"
+              >
+                <el-option
+                  v-for="dict in form.optionList"
+                  :key="dict.optionValue"
+                  :label="dict.optionName"
+                  :value="dict.optionValue"
+                />
+              </el-select>
+              <!-- 5.radio -->
+              <el-radio-group
+                v-else-if="form.fieldFormType === 5 && form.optionList && form.optionList.length > 0"
+                v-model="form.defaultValue"
+              >
+                <el-radio
+                  v-for="dict in form.optionList"
+                  :key="dict.optionValue"
+                  :label="dict.optionValue"
+                >{{ dict.optionName }}</el-radio>
+              </el-radio-group>
+              <!-- 6.checkbox -->
+              <el-checkbox v-else-if="form.fieldFormType === 6" v-model="form.defaultValue">是否勾选</el-checkbox>
+              <!-- 7.img -->
+              <upload-image v-else-if="form.fieldFormType === 7" v-model="form.defaultValue" />
+              <!-- else -->
               <el-input v-else v-model="form.defaultValue" placeholder="请输入默认值" clearable />
             </el-form-item>
           </el-col>
@@ -411,11 +447,13 @@
 <script>
 import { getDeviceTypeList, getDeviceFieldList, addDeviceField, updateDeviceField, getDeviceFieldDetail, delDriverField } from '@/api/assets/device.js';
 import SetOption from './setOption';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'DeviceConfig',
   components: {
-    SetOption
+    SetOption,
+    UploadImage
   },
   data() {
     return {
@@ -596,6 +634,10 @@ export default {
       getDeviceFieldDetail(ids).then(response => {
         this.form = response.data;
         this.changeValueType();
+        // 复选框回显特殊处理
+        if (this.form.fieldFormType === 6) {
+          this.form.defaultValue = !!(this.form.defaultValue === 'true');
+        }
         this.open = true;
         this.title = '修改设备属性';
       });
