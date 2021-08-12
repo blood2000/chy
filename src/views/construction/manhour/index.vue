@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm ref="QueryForm" v-model="queryParams" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
+      <QueryForm ref="QueryForm" v-model="queryParams" :shift-op="shift_op" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
     </div>
 
     <div class="app-container">
@@ -91,7 +91,8 @@ export default {
 
         projectCode: undefined,
         phone: undefined,
-        receiveTime: [] // 时间
+        receiveTime: [], // 时间
+        schedule: undefined
 
       },
 
@@ -102,6 +103,7 @@ export default {
       getUserInfo,
       //
       projectList: [],
+      shift_op: [],
 
       // 表格字典
       auditStatus_op: [
@@ -158,7 +160,7 @@ export default {
         },
         {
           'label': '车数',
-          'prop': 'number',
+          'prop': 'actualNumber',
           'isShow': true,
           'sortNum': 50,
           'width': '60',
@@ -214,7 +216,15 @@ export default {
         },
         {
           'label': '作业工时',
-          'prop': 'hours',
+          'prop': 'totalHours',
+          'isShow': true,
+          'sortNum': 80,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '班次',
+          'prop': 'scheduleName',
           'isShow': true,
           'sortNum': 80,
           'width': '90',
@@ -248,12 +258,14 @@ export default {
     },
 
     queParams() {
+      const shift = this.shift_op.find(e => e.dictValue === this.queryParams.schedule) || {};
       return {
         ...this.queryParams,
         bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
         endCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
         receiveTime: undefined,
-        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName,
+        scheduleName: shift.dictLabel
 
       };
     }
@@ -267,6 +279,10 @@ export default {
   methods: {
     // 初始化搜索数据
     async initData() {
+      this.getDicts('work-shift').then((response) => {
+        this.shift_op = response.data;
+      });
+
       const res = await webGetMachineProjectList();
       this.projectList = res.data;
       this.queryParams.projectCode = this.projectList[0].code;

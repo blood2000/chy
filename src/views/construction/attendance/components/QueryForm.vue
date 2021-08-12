@@ -4,6 +4,7 @@
     :model="queryParams"
     :inline="true"
     label-width="120px"
+    size="small"
   >
     <div class="app-container app-container--search">
 
@@ -14,7 +15,6 @@
         <!-- clearable -->
         <el-select
           v-model="queryParams.projectCode"
-          size="small"
           filterable
           style="width: 185px"
           placeholder="请选择项目"
@@ -37,7 +37,6 @@
           v-model="queryParams.keyWord"
           placeholder="请输入成员姓名/手机"
           clearable
-          size="small"
           style="width: 185px"
           @keyup.enter.native="$emit('handleQuery')"
         />
@@ -66,7 +65,6 @@
         <el-select
           v-model="queryParams.attendanceStatus"
           clearable
-          size="small"
           filterable
           style="width: 185px"
           placeholder="请选择考勤类型"
@@ -88,7 +86,6 @@
         <el-select
           v-model="queryParams.schedule"
           clearable
-          size="small"
           filterable
           style="width: 185px"
           placeholder="请选择班次"
@@ -107,7 +104,6 @@
         <el-button
           type="primary"
           icon="el-icon-search"
-          size="mini"
           @click="$emit('handleQuery')"
         >
           搜索
@@ -116,7 +112,6 @@
           type="primary"
           plain
           icon="el-icon-refresh"
-          size="mini"
           @click="queryParams.pageNum = 1; resetForm('queryForm'); $emit('handleQuery'); $emit('initPickerOptions');"
         >
           重置

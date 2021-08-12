@@ -41,16 +41,16 @@
         <div class="device-info-right">
           <div v-show="showSearch" class="device-info-right-top">
             <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-              <!-- <el-form-item label="设备名称" prop="name">
+              <el-form-item label="设备标识" prop="factoryOnlyCode">
                 <el-input
-                  v-model="queryParams.name"
-                  placeholder="请输入设备名称"
+                  v-model="queryParams.factoryOnlyCode"
+                  placeholder="请输入设备标识"
                   clearable
                   size="small"
                   style="width: 200px"
                   @keyup.enter.native="handleQuery"
                 />
-              </el-form-item> -->
+              </el-form-item>
               <el-form-item label="设备状态" prop="status">
                 <el-select
                   v-model="queryParams.status"
@@ -67,6 +67,38 @@
                   />
                 </el-select>
               </el-form-item>
+                <el-form-item label="激活状态" prop="activationFlag">
+                    <el-select
+                            v-model="queryParams.activationFlag"
+                            clearable
+                            filterable
+                            style="width: 100%"
+                            size="small"
+                    >
+                        <el-option
+                                v-for="dict in activationFlagOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="过期状态" prop="expireFlag">
+                    <el-select
+                            v-model="queryParams.expireFlag"
+                            clearable
+                            filterable
+                            style="width: 100%"
+                            size="small"
+                    >
+                        <el-option
+                                v-for="dict in expireFlagOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
               <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -113,6 +145,23 @@
                     type="text"
                     @click="handleDownload(scope.row)"
                   >下载</el-button>
+                </template>
+              </el-table-column>
+              <!-- <el-table-column label="编码" align="center" prop="deviceNumber"></el-table-column>-->
+              <el-table-column label="设备编码" align="center" prop="factory_only_code" />
+              <el-table-column label="状态" align="center" prop="status" width="100px">
+                <template slot-scope="scope">
+                  <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="激活状态" align="center" prop="activation_flag">
+                <template slot-scope="scope">
+                  <span>{{ selectDictLabel(activationFlagOptions, scope.row.activation_flag) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="过期状态" align="center" prop="expire_flag">
+                <template slot-scope="scope">
+                  <span>{{ selectDictLabel(expireFlagOptions, scope.row.expire_flag) }}</span>
                 </template>
               </el-table-column>
               <el-table-column v-for="item in devicefield" :key="item.code" :label="item.fieldCnname" :prop="item.fieldMappingName" align="center" />
@@ -168,8 +217,24 @@
 
         <!-- 动态字段 -->
         <el-form-item v-for="(item, index) in addDeviceField" :key="item.code + index" :label="item.fieldCnname" :prop="item.fieldMappingName" :rules="[{ required: item.isRequire === 0, message: `${item.fieldCnname}不能为空`, trigger: 'blur' }]">
-          <!-- 1/2.input -->
-          <el-input v-if="item.fieldFormType === 1 || item.fieldFormType === 2" v-model="form[item.fieldMappingName]" :disabled="item.fieldFormType === 2 || item.isRead === 0" :placeholder="`请输入${item.fieldCnname}`" clearable />
+          <!-- 1.input -->
+          <el-input
+            v-if="item.fieldFormType === 1"
+            v-model="form[item.fieldMappingName]"
+            :disabled="item.isRead === 0"
+            :placeholder="`请输入${item.fieldCnname}`"
+            clearable
+          />
+          <!-- 2.number -->
+          <el-input-number
+            v-else-if="item.fieldFormType === 2"
+            v-model="form[item.fieldMappingName]"
+            controls-position="right"
+            :precision="item.fieldDit ? item.fieldDit : 0"
+            :step="1"
+            :min="0"
+            style="width: 100%"
+          />
           <!-- 3.date -->
           <el-date-picker
             v-else-if="item.fieldFormType === 3"
@@ -181,7 +246,7 @@
             :disabled="item.isRead === 0"
           />
           <!-- 4.select -->
-          <!-- <el-select
+          <el-select
             v-else-if="item.fieldFormType === 4"
             v-model="form[item.fieldMappingName]"
             clearable
@@ -190,23 +255,33 @@
             :disabled="item.isRead === 0"
           >
             <el-option
-              v-for="dict in Options"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+              v-for="dict in item.optionList"
+              :key="dict.optionValue"
+              :label="dict.optionName"
+              :value="dict.optionValue"
             />
-          </el-select> -->
+          </el-select>
           <!-- 5.radio -->
-          <!-- <el-radio-group v-else-if="item.fieldFormType === 5" v-model="form[item.fieldMappingName]">
+          <el-radio-group
+            v-else-if="item.fieldFormType === 5"
+            v-model="form[item.fieldMappingName]"
+          >
             <el-radio
-              v-for="dict in Options"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
+              v-for="dict in item.optionList"
+              :key="dict.optionValue"
+              :label="dict.optionValue"
               :disabled="item.isRead === 0"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group> -->
+            >{{ dict.optionName }}</el-radio>
+          </el-radio-group>
           <!-- 6.checkbox -->
-          <!-- <el-checkbox v-else-if="item.fieldFormType === 6" v-model="form[item.fieldMappingName]" :disabled="item.isRead === 0">备选项</el-checkbox> -->
+          <el-checkbox
+            v-else-if="item.fieldFormType === 6"
+            v-model="form[item.fieldMappingName]"
+            :disabled="item.isRead === 0"
+          >{{ item.fieldCnname }}</el-checkbox>
+          <!-- 7.img -->
+          <upload-image v-else-if="item.fieldFormType === 7" v-model="form[item.fieldMappingName]" :disabled="item.isRead === 0" />
+          <!-- else -->
           <el-input v-else v-model="form[item.fieldMappingName]" :placeholder="`请输入${item.fieldCnname}`" clearable :disabled="item.isRead === 0" />
         </el-form-item>
 
@@ -261,11 +336,13 @@ import { getDeviceTypeTreeAll, getDeviceInfoList, getDeviceForm, addDeviceInfo, 
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { downImgApi } from '@/api/system/image';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'DeviceInfo',
   components: {
-    Treeselect
+    Treeselect,
+    UploadImage
   },
   data() {
     return {
@@ -304,17 +381,24 @@ export default {
         pageNum: 1,
         pageSize: 10,
         typeCode: undefined,
-        name: undefined,
+        factoryOnlyCode: undefined,
+        activationFlag: undefined,
+        expireFlag: undefined,
         status: undefined
       },
       exportLoading: false,
       // 设备状态字典
       statusOptions: [
+        { dictLabel: '离线', dictValue: 0 },
+        { dictLabel: '在线', dictValue: 1 }
+      ],
+      activationFlagOptions: [
         { dictLabel: '未激活', dictValue: 0 },
-        { dictLabel: '正常', dictValue: 1 },
-        { dictLabel: '异常', dictValue: 2 },
-        { dictLabel: '维修', dictValue: 3 },
-        { dictLabel: '下架', dictValue: 4 }
+        { dictLabel: '激活', dictValue: 1 }
+      ],
+      expireFlagOptions: [
+        { dictLabel: '过期', dictValue: 0 },
+        { dictLabel: '未过期', dictValue: 1 }
       ],
       // 厂家字典
       vendorOptions: [],
@@ -422,7 +506,12 @@ export default {
         // 动态表单
         this.addDeviceField = response.data.deviceFieldInfoVoList;
         this.addDeviceField.forEach(el => {
-          this.$set(this.form, el.fieldMappingName, el.defaultValue);
+          // 复选框回显特殊处理
+          if (el.fieldFormType === 6) {
+            this.$set(this.form, el.fieldMappingName, !!(el.defaultValue === 'true'));
+          } else {
+            this.$set(this.form, el.fieldMappingName, el.defaultValue);
+          }
         });
       });
     },
@@ -437,7 +526,12 @@ export default {
         // 动态表单
         this.addDeviceField = response.data.deviceFieldInfoVoList;
         this.addDeviceField.forEach(el => {
-          this.$set(this.form, el.fieldMappingName, el.value);
+          // 复选框回显特殊处理
+          if (el.fieldFormType === 6) {
+            this.$set(this.form, el.fieldMappingName, !!(el.value === 'true'));
+          } else {
+            this.$set(this.form, el.fieldMappingName, el.value);
+          }
         });
       });
     },
@@ -547,7 +641,13 @@ export default {
   }
 }
 
+/* 二维码样式 */
 .device-qr-Code{
   width: 180px;
+}
+
+/* 计数器样式 */
+.el-input-number ::v-deep.el-input__inner{
+  text-align: left;
 }
 </style>
