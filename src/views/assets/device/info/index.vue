@@ -115,23 +115,23 @@
                   >下载</el-button>
                 </template>
               </el-table-column>
-             <!-- <el-table-column label="编码" align="center" prop="deviceNumber"></el-table-column>-->
-              <el-table-column label="设备编码" align="center" prop="factory_only_code"></el-table-column>
+              <!-- <el-table-column label="编码" align="center" prop="deviceNumber"></el-table-column>-->
+              <el-table-column label="设备编码" align="center" prop="factory_only_code" />
               <el-table-column label="状态" align="center" prop="status" width="100px">
-                  <template slot-scope="scope">
-                      <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
-                  </template>
+                <template slot-scope="scope">
+                  <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
+                </template>
               </el-table-column>
-               <el-table-column label="激活状态" align="center" prop="activation_flag">
-                    <template slot-scope="scope">
-                        <span>{{ selectDictLabel(activationFlagOptions, scope.row.activation_flag) }}</span>
-                    </template>
-                </el-table-column>
-                <el-table-column label="过期状态" align="center" prop="expire_flag">
-                    <template slot-scope="scope">
-                        <span>{{ selectDictLabel(expireFlagOptions, scope.row.expire_flag) }}</span>
-                    </template>
-                </el-table-column>
+              <el-table-column label="激活状态" align="center" prop="activation_flag">
+                <template slot-scope="scope">
+                  <span>{{ selectDictLabel(activationFlagOptions, scope.row.activation_flag) }}</span>
+                </template>
+              </el-table-column>
+              <el-table-column label="过期状态" align="center" prop="expire_flag">
+                <template slot-scope="scope">
+                  <span>{{ selectDictLabel(expireFlagOptions, scope.row.expire_flag) }}</span>
+                </template>
+              </el-table-column>
               <el-table-column v-for="item in devicefield" :key="item.code" :label="item.fieldCnname" :prop="item.fieldMappingName" align="center" />
               <el-table-column label="创建时间" align="center" prop="create_time" width="160">
                 <template slot-scope="scope">
@@ -185,8 +185,24 @@
 
         <!-- 动态字段 -->
         <el-form-item v-for="(item, index) in addDeviceField" :key="item.code + index" :label="item.fieldCnname" :prop="item.fieldMappingName" :rules="[{ required: item.isRequire === 0, message: `${item.fieldCnname}不能为空`, trigger: 'blur' }]">
-          <!-- 1/2.input -->
-          <el-input v-if="item.fieldFormType === 1 || item.fieldFormType === 2" v-model="form[item.fieldMappingName]" :disabled="item.fieldFormType === 2 || item.isRead === 0" :placeholder="`请输入${item.fieldCnname}`" clearable />
+          <!-- 1.input -->
+          <el-input
+            v-if="item.fieldFormType === 1"
+            v-model="form[item.fieldMappingName]"
+            :disabled="item.isRead === 0"
+            :placeholder="`请输入${item.fieldCnname}`"
+            clearable
+          />
+          <!-- 2.number -->
+          <el-input-number
+            v-else-if="item.fieldFormType === 2"
+            v-model="form[item.fieldMappingName]"
+            controls-position="right"
+            :precision="item.fieldDit"
+            :step="1"
+            :min="0"
+            style="width: 100%"
+          />
           <!-- 3.date -->
           <el-date-picker
             v-else-if="item.fieldFormType === 3"
@@ -198,7 +214,7 @@
             :disabled="item.isRead === 0"
           />
           <!-- 4.select -->
-          <!-- <el-select
+          <el-select
             v-else-if="item.fieldFormType === 4"
             v-model="form[item.fieldMappingName]"
             clearable
@@ -207,23 +223,33 @@
             :disabled="item.isRead === 0"
           >
             <el-option
-              v-for="dict in Options"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+              v-for="dict in item.optionList"
+              :key="dict.code"
+              :label="dict.optionName"
+              :value="dict.optionValue"
             />
-          </el-select> -->
+          </el-select>
           <!-- 5.radio -->
-          <!-- <el-radio-group v-else-if="item.fieldFormType === 5" v-model="form[item.fieldMappingName]">
+          <el-radio-group
+            v-else-if="item.fieldFormType === 5"
+            v-model="form[item.fieldMappingName]"
+          >
             <el-radio
-              v-for="dict in Options"
-              :key="dict.dictValue"
-              :label="dict.dictValue"
+              v-for="dict in item.optionList"
+              :key="dict.code"
+              :label="dict.optionValue"
               :disabled="item.isRead === 0"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group> -->
+            >{{ dict.optionName }}</el-radio>
+          </el-radio-group>
           <!-- 6.checkbox -->
-          <!-- <el-checkbox v-else-if="item.fieldFormType === 6" v-model="form[item.fieldMappingName]" :disabled="item.isRead === 0">备选项</el-checkbox> -->
+          <el-checkbox
+            v-else-if="item.fieldFormType === 6"
+            v-model="form[item.fieldMappingName]"
+            :disabled="item.isRead === 0"
+          >{{ item.fieldCnname }}</el-checkbox>
+          <!-- 7.img -->
+          <upload-image v-else-if="item.fieldFormType === 7" v-model="form[item.fieldMappingName]" :disabled="item.isRead === 0" />
+          <!-- else -->
           <el-input v-else v-model="form[item.fieldMappingName]" :placeholder="`请输入${item.fieldCnname}`" clearable :disabled="item.isRead === 0" />
         </el-form-item>
 
@@ -278,11 +304,13 @@ import { getDeviceTypeTreeAll, getDeviceInfoList, getDeviceForm, addDeviceInfo, 
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 import { downImgApi } from '@/api/system/image';
+import UploadImage from '@/components/UploadImage/index';
 
 export default {
   name: 'DeviceInfo',
   components: {
-    Treeselect
+    Treeselect,
+    UploadImage
   },
   data() {
     return {

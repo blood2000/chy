@@ -181,10 +181,10 @@
         <el-table-column label="中文名称" align="center" prop="fieldCnname" width="120" />
         <el-table-column label="英文名称" align="center" prop="fieldEnname" />
         <el-table-column label="映射字段" align="center" prop="fieldMappingName" />
-<!--        <el-table-column label="字段类型" align="center" prop="fieldType" :formatter="fieldTypeFormat" />-->
+        <!-- <el-table-column label="字段类型" align="center" prop="fieldType" :formatter="fieldTypeFormat" /> -->
         <el-table-column label="表单类型" align="center" prop="fieldFormType" :formatter="fieldFormTypeFormat" />
         <el-table-column label="字段排序" align="center" prop="fieldSort" />
-        <el-table-column label="数据类型" align="center" prop="fieldAttribute" :formatter="fieldAttributeFormat" />
+        <!-- <el-table-column label="数据类型" align="center" prop="fieldAttribute" :formatter="fieldAttributeFormat" /> -->
         <el-table-column label="小数点位数" align="center" prop="fieldDit" />
         <el-table-column label="数据长度" align="center" prop="fieldLength" />
         <el-table-column label="默认值" align="center" prop="defaultValue" />
@@ -274,7 +274,7 @@
               <el-input v-model="form.fieldMappingName" placeholder="请输入映射字段" clearable />
             </el-form-item>
           </el-col>
-         <!-- <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="字段类型" prop="fieldType">
               <el-select
                 v-model="form.fieldType"
@@ -291,11 +291,11 @@
               </el-select>
             </el-form-item>
           </el-col>-->
-            <el-col :span="12">
-                <el-form-item label="字段排序" prop="fieldSort">
-                    <el-input-number v-model="form.fieldSort" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
-                </el-form-item>
-            </el-col>
+          <el-col :span="12">
+            <el-form-item label="字段排序" prop="fieldSort">
+              <el-input-number v-model="form.fieldSort" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
+            </el-form-item>
+          </el-col>
           <el-col :span="12">
             <el-form-item label="表单类型" prop="fieldFormType">
               <el-select
@@ -313,7 +313,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <!-- <el-col :span="12">
             <el-form-item label="数据类型" prop="fieldAttribute">
               <el-select
                 v-model="form.fieldAttribute"
@@ -330,8 +330,8 @@
                 />
               </el-select>
             </el-form-item>
-          </el-col>
-          <el-col v-if="form.fieldAttribute === 3" :span="12">
+          </el-col> -->
+          <el-col v-if="form.fieldFormType === 2" :span="12">
             <el-form-item label="小数点位数" prop="fieldDit">
               <el-input-number v-model="form.fieldDit" controls-position="right" :precision="0" :step="1" :min="0" style="width: 100%" />
             </el-form-item>
@@ -344,16 +344,16 @@
           <el-col :span="12">
             <el-form-item label="默认值" prop="defaultValue">
               <el-input-number
-                v-if="form.fieldAttribute === 2 || form.fieldAttribute === 3"
+                v-if="form.fieldFormType === 2"
                 v-model="form.defaultValue"
                 controls-position="right"
-                :precision="form.fieldAttribute === 2 ? 0 : form.fieldDit"
+                :precision="form.fieldDit ? form.fieldDit : 0"
                 :step="1"
                 :min="0"
                 style="width: 100%"
               />
               <el-date-picker
-                v-else-if="form.fieldAttribute === 4"
+                v-else-if="form.fieldFormType === 3"
                 v-model="form.defaultValue"
                 clearable
                 type="datetime"
@@ -441,7 +441,7 @@ export default {
         fieldCnname: undefined,
         fieldEnname: undefined,
         fieldMappingName: undefined,
-        fieldAttribute: undefined,
+        // fieldAttribute: undefined,
         fieldType: undefined,
         fieldFormType: undefined
       },
@@ -453,11 +453,12 @@ export default {
       // 表单类型字典
       fieldFormTypeOptions: [
         { dictLabel: '文本型', dictValue: 1 },
-        /* { dictLabel: '只读型', dictValue: 2 },*/
+        { dictLabel: '数字型', dictValue: 2 },
         { dictLabel: '日期型', dictValue: 3 },
         { dictLabel: '下拉框型', dictValue: 4 },
         { dictLabel: '单选框型', dictValue: 5 },
-        { dictLabel: '复选框型', dictValue: 6 }
+        { dictLabel: '复选框型', dictValue: 6 },
+        { dictLabel: '图片', dictValue: 7 }
       ],
       // 字段类型
       fieldTypeOptions: [
@@ -510,15 +511,15 @@ export default {
             }
           }, trigger: ['change', 'blur'] }
         ],
-        /*  fieldType: [
+        /* fieldType: [
           { required: true, message: '字段类型不能为空', trigger: ['blur', 'change'] }
-        ],*/
+        ], */
         fieldFormType: [
           { required: true, message: '表单类型不能为空', trigger: ['blur', 'change'] }
-        ],
-        fieldAttribute: [
-          { required: true, message: '数据类型不能为空', trigger: ['blur', 'change'] }
         ]
+        /* fieldAttribute: [
+          { required: true, message: '数据类型不能为空', trigger: ['blur', 'change'] }
+        ] */
       },
       // 字典管理
       setOptionOpen: false,
@@ -649,7 +650,7 @@ export default {
           params.isRequire = this.praseBooleanToNum(params.isRequire);
           params.isShow = this.praseBooleanToNum(params.isShow);
           params.typeCode = this.typeCode;
-          if (params.fieldAttribute === 4 && params.defaultValue && params.defaultValue !== '') {
+          if (params.fieldFormType === 3 && params.defaultValue && params.defaultValue !== '') {
             params.defaultValue = this.parseTime(params.defaultValue);
           }
           this.buttonLoading = true;
@@ -683,7 +684,7 @@ export default {
       this.form = {
         code: undefined,
         defaultValue: undefined,
-        fieldAttribute: undefined,
+        // fieldAttribute: undefined,
         fieldCnname: undefined,
         fieldDit: undefined,
         fieldEnname: undefined,
