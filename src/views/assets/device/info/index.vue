@@ -41,16 +41,16 @@
         <div class="device-info-right">
           <div v-show="showSearch" class="device-info-right-top">
             <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
-              <!-- <el-form-item label="设备名称" prop="name">
+              <el-form-item label="设备标识" prop="factoryOnlyCode">
                 <el-input
-                  v-model="queryParams.name"
-                  placeholder="请输入设备名称"
+                  v-model="queryParams.factoryOnlyCode"
+                  placeholder="请输入设备标识"
                   clearable
                   size="small"
                   style="width: 200px"
                   @keyup.enter.native="handleQuery"
                 />
-              </el-form-item> -->
+              </el-form-item>
               <el-form-item label="设备状态" prop="status">
                 <el-select
                   v-model="queryParams.status"
@@ -67,6 +67,38 @@
                   />
                 </el-select>
               </el-form-item>
+                <el-form-item label="激活状态" prop="activationFlag">
+                    <el-select
+                            v-model="queryParams.activationFlag"
+                            clearable
+                            filterable
+                            style="width: 100%"
+                            size="small"
+                    >
+                        <el-option
+                                v-for="dict in activationFlagOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="过期状态" prop="expireFlag">
+                    <el-select
+                            v-model="queryParams.expireFlag"
+                            clearable
+                            filterable
+                            style="width: 100%"
+                            size="small"
+                    >
+                        <el-option
+                                v-for="dict in expireFlagOptions"
+                                :key="dict.dictValue"
+                                :label="dict.dictLabel"
+                                :value="dict.dictValue"
+                        />
+                    </el-select>
+                </el-form-item>
               <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -321,7 +353,9 @@ export default {
         pageNum: 1,
         pageSize: 10,
         typeCode: undefined,
-        name: undefined,
+        factoryOnlyCode: undefined,
+        activationFlag: undefined,
+        expireFlag: undefined,
         status: undefined
       },
       exportLoading: false,
