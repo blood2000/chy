@@ -379,7 +379,7 @@ export default {
         waybillClassesName: this.waybillClassesName,
         projectName: this.projectName
       };
-      await this.download('/transportation/statistics/getInOutDetailsExport', params, `明细统计`);
+      await this.download('/kydsz/statistics/getInOutDetailsExport', params, `明细统计`);
       this.exportLoadingDetail = false;
     },
     async handleExportMudtail() {
@@ -391,7 +391,7 @@ export default {
         waybillClassesName: this.waybillClassesName,
         projectName: this.projectName
       };
-      await this.download('/transportation/statistics/getStatisticsMudtailExport', params, `泥尾统计`);
+      await this.download('kydsz/statistics/getStatisticsMudtailExport', params, `泥尾统计`);
       this.exportLoadingMudtail = false;
     }
   }
