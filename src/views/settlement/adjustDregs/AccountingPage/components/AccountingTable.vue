@@ -108,6 +108,13 @@ const com = [
     'tooltip': true
   },
   {
+    'label': '班次',
+    'prop': 'waybillClasses',
+    'isShow': true,
+    'sortNum': 3,
+    'tooltip': true
+  },
+  {
     'label': '项目',
     'prop': 'projectName',
     'isShow': true,
@@ -260,6 +267,7 @@ export default {
         });
 
 
+        obj['waybillClasses'] = [...new Set(object[item].map(e => (e.waybillClasses || '-')))].join(','); // object[item].map(e=> e.teamName)
         obj['teamName'] = [...new Set(object[item].map(e => (e.teamName || '-')))].join(','); // object[item].map(e=> e.teamName)
         obj['ztcName'] = [...new Set(object[item].map(e => (e.ztcName || '-')))].join(','); // ite['ztcName']; // 渣土场（卸货地）
         obj['projectName'] = [...new Set(object[item].map(e => (e.projectName || '-')))].join(','); // ite['projectName']; // 	项目（装货地）

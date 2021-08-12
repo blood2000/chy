@@ -38,7 +38,69 @@
         </span>
       </div>
       <div v-show="showSearch" class="app-container app-container--search">
-
+        <el-form-item
+          label="渣土场"
+          prop="ztcCode"
+        >
+          <FilterableSelect
+            v-model="queryParams.ztcCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入渣土场"
+            :requer-msg="isShipment?null:'请先选择发货企业！'"
+            :is-sure-key="'orgCode'"
+            :axios="{
+              queryFn:listForWeb,
+              queryData:{
+                orgCode: orgCode
+              },
+              key: 'data'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'name',
+            }"
+            :keywords="'name'"
+            @selected="(data)=>{ handleQuery() }"
+          >
+            <template #default="{row}">
+              <span>{{ row.name + ' - ' + row.goodsName }}</span>
+            </template>
+          </FilterableSelect>
+        </el-form-item>
+        <el-form-item
+          label="项目"
+          prop="projectCode"
+        >
+          <FilterableSelect
+            v-model="queryParams.projectCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入项目名称"
+            :requer-msg="isShipment?null:'请先选择发货企业！'"
+            :is-sure-key="'companyCode'"
+            :axios="{
+              queryFn:listInfo,
+              queryData:{
+                isAsc:'desc',
+                orderByColumn:'t0.id',
+                companyCode:companyCode,
+                shipmentCode: !isShipment? shipmentCode: undefined
+              }
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'projectName',
+              telphone: ''
+            }"
+            :keywords="'projectName'"
+            @selected="(data)=>{ handleQuery() }"
+          >
+            <template #default="{row}">
+              <span>{{ row.projectName }}</span>
+            </template>
+          </FilterableSelect>
+        </el-form-item>
         <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
             v-model.trim="queryParams.orderClient"
@@ -221,69 +283,6 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
-          label="渣土场"
-          prop="ztcCode"
-        >
-          <FilterableSelect
-            v-model="queryParams.ztcCode"
-            clearable
-            style="width:228px"
-            placeholder="请输入渣土场"
-            :requer-msg="isShipment?null:'请先选择发货企业！'"
-            :is-sure-key="'orgCode'"
-            :axios="{
-              queryFn:listForWeb,
-              queryData:{
-                orgCode: orgCode
-              },
-              key: 'data'
-            }"
-            :show-key="{
-              value: 'code',
-              label: 'name',
-            }"
-            :keywords="'name'"
-            @selected="(data)=>{ handleQuery() }"
-          >
-            <template #default="{row}">
-              <span>{{ row.name + ' - ' + row.goodsName }}</span>
-            </template>
-          </FilterableSelect>
-        </el-form-item>
-        <el-form-item
-          label="项目"
-          prop="projectCode"
-        >
-          <FilterableSelect
-            v-model="queryParams.projectCode"
-            clearable
-            style="width:228px"
-            placeholder="请输入项目名称"
-            :requer-msg="isShipment?null:'请先选择发货企业！'"
-            :is-sure-key="'companyCode'"
-            :axios="{
-              queryFn:listInfo,
-              queryData:{
-                isAsc:'desc',
-                orderByColumn:'t0.id',
-                companyCode:companyCode,
-                shipmentCode: !isShipment? shipmentCode: undefined
-              }
-            }"
-            :show-key="{
-              value: 'code',
-              label: 'projectName',
-              telphone: ''
-            }"
-            :keywords="'projectName'"
-            @selected="(data)=>{ handleQuery() }"
-          >
-            <template #default="{row}">
-              <span>{{ row.projectName }}</span>
-            </template>
-          </FilterableSelect>
-        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
@@ -322,6 +321,9 @@
 
       <!-- table -->
       <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig">  <!-- @selection-change="handleSelectionChange" -->
+        <!-- <template #waybillClasses="{row}">
+          <span>{{ selectDictLabel(waybillClassesOptions, row.waybillClasses) }}</span>
+        </template> -->
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
@@ -613,6 +615,12 @@ export default {
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
+      ],
+      // 班次字典
+      waybillClassesOptions: [
+        { 'dictLabel': '白班', 'dictValue': '0' },
+        { 'dictLabel': '晚班', 'dictValue': '1' },
+        { 'dictLabel': '连班', 'dictValue': '2' }
       ],
       // 配载方式字典
       sourceTypeOptions: [

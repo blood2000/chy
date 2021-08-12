@@ -44,63 +44,40 @@
       </span>
     </div>
 
-    <!-- <el-form-item
-      v-show="!isShipment"
-      label="发货企业"
-      prop="companyCode"
-    >
-      <FilterableSelect
-        v-model="queryParams.companyCode"
-        clearable
-        style="width:228px"
-        placeholder="请输入发货企业"
-        :axios="{
-          queryFn:shipmentList,
-          queryData:{
-            authStatus: undefined
-          },
-          key: 'rows'
-        }"
-        :show-key="{
-          value: 'orgCode',
-          label: 'companyName',
-        }"
-        :keywords="'searchValue'"
-        @selected="(data)=>{ shipmentCode= data.code; orgCode=data.orgCode; companyCode = data.companyCode; $emit('handleQuery')}"
-      >
-        <template #default="{row}">
-          <span>{{ row.companyName }}</span>
-        </template>
-      </FilterableSelect>
-    </el-form-item> -->
 
     <div class="app-container app-container--search">
-      <el-form-item
-        label="运输单号"
-        prop="waybillNo"
-      >
-        <el-input
-          v-model="queryParams.waybillNo"
-          placeholder="请输入运输单号"
-          clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="$emit('handleQuery')"
-        />
-      </el-form-item>
 
       <el-form-item
-        label="卡批次"
-        prop="cardBatchNo"
+        label="项目"
+        prop="projectCode"
       >
-        <el-input
-          v-model="queryParams.cardBatchNo"
-          placeholder="请输入卡批次"
+        <FilterableSelect
+          v-model="queryParams.projectCode"
           clearable
-          size="small"
-          style="width: 228px"
-          @keyup.enter.native="$emit('handleQuery')"
-        />
+          style="width:228px"
+          placeholder="请输入项目名称"
+          :requer-msg="isShipment? null:'请先选择发货企业！'"
+          :is-sure-key="'companyCode'"
+          :axios="{
+            queryFn:listInfo,
+            queryData:{
+              isAsc:'desc',
+              orderByColumn:'t0.id',
+              companyCode:companyCode
+            }
+          }"
+          :show-key="{
+            value: 'code',
+            label: 'projectName',
+            telphone: ''
+          }"
+          :keywords="'projectName'"
+          @selected="(data)=>{ $emit('handleQuery') }"
+        >
+          <template #default="{row}">
+            <span>{{ row.projectName }}</span>
+          </template>
+        </FilterableSelect>
       </el-form-item>
 
       <el-form-item
@@ -134,6 +111,38 @@
         </FilterableSelect>
       </el-form-item>
 
+
+
+      <el-form-item
+        label="运输单号"
+        prop="waybillNo"
+      >
+        <el-input
+          v-model="queryParams.waybillNo"
+          placeholder="请输入运输单号"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="$emit('handleQuery')"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="卡批次"
+        prop="cardBatchNo"
+      >
+        <el-input
+          v-model="queryParams.cardBatchNo"
+          placeholder="请输入卡批次"
+          clearable
+          size="small"
+          style="width: 228px"
+          @keyup.enter.native="$emit('handleQuery')"
+        />
+      </el-form-item>
+
+
+
       <el-form-item
         label="调度组名称"
         prop="teamCode"
@@ -164,37 +173,27 @@
         </FilterableSelect>
       </el-form-item>
 
+
+
       <el-form-item
-        label="项目"
-        prop="projectCode"
+        label="班次"
+        prop="waybillClasses"
       >
-        <FilterableSelect
-          v-model="queryParams.projectCode"
+        <el-select
+          v-model="queryParams.waybillClasses"
           clearable
+          filterable
           style="width:228px"
-          placeholder="请输入项目名称"
-          :requer-msg="isShipment? null:'请先选择发货企业！'"
-          :is-sure-key="'companyCode'"
-          :axios="{
-            queryFn:listInfo,
-            queryData:{
-              isAsc:'desc',
-              orderByColumn:'t0.id',
-              companyCode:companyCode
-            }
-          }"
-          :show-key="{
-            value: 'code',
-            label: 'projectName',
-            telphone: ''
-          }"
-          :keywords="'projectName'"
-          @selected="(data)=>{ $emit('handleQuery') }"
+          placeholder="请选择班次"
+          @change="$emit('handleQuery')"
         >
-          <template #default="{row}">
-            <span>{{ row.projectName }}</span>
-          </template>
-        </FilterableSelect>
+          <el-option
+            v-for="(item, index) in shift_op"
+            :key="index"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
       </el-form-item>
 
       <el-form-item
@@ -262,6 +261,8 @@ import { listInfo } from '@/api/enterprise/project'; // 获取渣土项目(搜�
 import { listInfo as teamListInfo } from '@/api/assets/team'; // 获取调度者(搜索用)
 import { pickerOptions } from '@/utils/dateRange';
 
+
+
 import FilterableSelect from '@/components/FilterableSelect'; // 远程组件
 export default {
   components: { FilterableSelect },
@@ -286,7 +287,9 @@ export default {
       shipmentList,
       listForWeb,
       listInfo,
-      teamListInfo
+      teamListInfo,
+
+      shift_op: []
 
     };
   },
@@ -300,6 +303,12 @@ export default {
         this.$emit('input', value);
       }
     }
+  },
+
+  created() {
+    this.getDicts('work-shift').then((response) => {
+      this.shift_op = response.data.filter(e => e.dictValue !== '2');
+    });
   }
 
 };
