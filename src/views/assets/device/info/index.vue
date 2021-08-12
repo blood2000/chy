@@ -512,9 +512,9 @@ export default {
     handleDownload(row) {
       const params = {
         url: row.device_qr_code,
-        fileName: `${row.device_number}_二维码`
+        fileName: `${row.factory_only_code}_二维码`
       };
-      this.download(downImgApi, params, `${row.device_number}_二维码`, null, '.jpg');
+      this.download(downImgApi, params, `${row.factory_only_code}_二维码`, null, '.jpg');
     }
   }
 };
