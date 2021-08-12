@@ -137,7 +137,8 @@
             queryData:{
               isAsc:'desc',
               orderByColumn:'t0.id',
-              companyCode:companyCode
+              companyCode:companyCode,
+              shipmentCode
             }
           }"
           :show-key="{
