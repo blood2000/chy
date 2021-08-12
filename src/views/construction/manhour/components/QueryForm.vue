@@ -59,6 +59,27 @@
         />
       </el-form-item>
 
+      <el-form-item
+        label="班次"
+        prop="schedule"
+      >
+        <el-select
+          v-model="queryParams.schedule"
+          clearable
+          filterable
+          style="width: 185px"
+          placeholder="请选择班次"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="(item, index) in shiftOp"
+            :key="index"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item>
         <el-button
           type="primary"
@@ -91,6 +112,10 @@ export default {
       default: () => { return {}; }
     },
     projectListOP: {
+      type: Array,
+      default: () => []
+    },
+    shiftOp: {
       type: Array,
       default: () => []
     }
