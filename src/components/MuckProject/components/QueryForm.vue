@@ -3,6 +3,7 @@
     ref="queryForm"
     :model="queryParams"
     :inline="true"
+    size="small"
     label-width="98px"
   >
 
@@ -53,7 +54,6 @@
           v-model="queryParams.batchNo"
           placeholder="请输入对账批次号"
           clearable
-          size="small"
           style="width: 228px"
           @keyup.enter.native="$emit('handleQuery')"
         />
@@ -86,7 +86,7 @@
         >
           <!--   -->
           <template #default="{row}">
-            <span>{{ row.name }}</span>
+            <span>{{ row.name +' - '+ row.goodsName }}</span>
           </template>
         </FilterableSelect>
       </el-form-item>
@@ -181,7 +181,6 @@
           v-model="queryParams.operator"
           placeholder="请输入操作人"
           clearable
-          size="small"
           style="width: 228px"
           @keyup.enter.native="$emit('handleQuery')"
         />
@@ -213,7 +212,6 @@
         <el-button
           type="primary"
           icon="el-icon-search"
-          size="mini"
           @click="$emit('handleQuery')"
         >
           搜索
@@ -222,7 +220,6 @@
           type="primary"
           plain
           icon="el-icon-refresh"
-          size="mini"
           @click="queryParams.pageNum = 1; resetForm('queryForm');$emit('handleQuery');"
         >
           重置

@@ -3,6 +3,7 @@
     ref="queryForm"
     :model="queryParams"
     :inline="true"
+    size="small"
     label-width="98px"
   >
     <div class="app-container app-container--search">
@@ -13,7 +14,6 @@
       >
         <el-select
           v-model="queryParams.projectCode"
-          size="small"
           filterable
           style="width: 185px"
           placeholder="请选择选择项目"
@@ -36,7 +36,6 @@
           v-model="queryParams.phone"
           placeholder="请输入外部人员手机"
           clearable
-          size="small"
           style="width: 185px"
           @keyup.enter.native="$emit('handleQuery')"
         />
@@ -60,11 +59,31 @@
         />
       </el-form-item>
 
+      <el-form-item
+        label="班次"
+        prop="schedule"
+      >
+        <el-select
+          v-model="queryParams.schedule"
+          clearable
+          filterable
+          style="width: 185px"
+          placeholder="请选择班次"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="(item, index) in shiftOp"
+            :key="index"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item>
         <el-button
           type="primary"
           icon="el-icon-search"
-          size="mini"
           @click="$emit('handleQuery')"
         >
           搜索
@@ -73,7 +92,6 @@
           type="primary"
           plain
           icon="el-icon-refresh"
-          size="mini"
           @click="queryParams.pageNum = 1; resetForm('queryForm');$emit('handleQuery');"
         >
           重置
@@ -94,6 +112,10 @@ export default {
       default: () => { return {}; }
     },
     projectListOP: {
+      type: Array,
+      default: () => []
+    },
+    shiftOp: {
       type: Array,
       default: () => []
     }

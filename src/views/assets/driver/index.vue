@@ -415,6 +415,13 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
+                  size="mini"
+                  type="text"
+                  @click="handleActive(row)"
+                >重新激活</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
                   v-hasPermi="['assets:driver:remove']"
                   size="mini"
                   type="text"
@@ -451,7 +458,7 @@
 </template>
 
 <script>
-import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord } from '@/api/assets/driver';
+import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
 import { waybillReportDriverByCode } from '@/api/data/report';
 import { updateUserStatusByUserCode } from '@/api/system/user';
@@ -896,6 +903,16 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess(status === '0' ? '启用成功' : '冻结');
+      });
+    },
+    // 重新激活
+    handleActive(row) {
+      reRegistered({ phoneNumber: row.telphone }).then(response => {
+        if (response.code === 200) {
+          this.msgSuccess('操作成功');
+        } else {
+          this.msgError(response.msg);
+        }
       });
     }
   }

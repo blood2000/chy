@@ -8,6 +8,8 @@
         vid="amapDemo"
         :center="lnglat"
         :zoom="zoom"
+        :resize-enable="true"
+        :expand-zoom-range="true"
         :plugin="plugin"
         :events="events"
         class="amap-demo"
@@ -89,8 +91,10 @@ export default {
       events: {
         init: (o) => {
           // console.log(o.getCenter());
-          // console.log(this.$refs.map.$$getInstance());
+          // this.$refs.map.$$getInstance();
+          // console.log(this.$refs.map);
           o.getCity(result => {});
+          // console.log(this.$refs.map.$amap.setFitView(markers));
         },
         'moveend': () => {
         },
@@ -170,7 +174,6 @@ export default {
     },
     // 关闭弹窗
     close() {
-      console.log('关闭..');
       this.$emit('update:open', false);
     }
   }
