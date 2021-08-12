@@ -192,8 +192,10 @@ export default {
       ],
       queryDate: '',
       projectCode: null,
+      projectName: '',
       groudActive: '所有',
       waybillClasses: '',
+      waybillClassesName: '',
       groudList: [
         { label: '所有', code: '' },
         { label: '白班', code: '0' },
@@ -240,6 +242,7 @@ export default {
         // 根据code获取详情，默认展示第一条的
         if (this.projectList.length > 0) {
           this.projectCode = this.projectList[0].projectCode;
+          this.projectName = this.projectList[0].projectName;
           this.changeDetail();
         }
         this.loading = false;
@@ -252,6 +255,7 @@ export default {
       if (index === this.projectActive) return;
       this.projectActive = index;
       this.projectCode = row.projectCode;
+      this.projectName = row.projectName;
       this.projectLoading = true;
       this.changeDetail();
     },
@@ -267,6 +271,7 @@ export default {
         return response.label === this.groudActive;
       });
       this.waybillClasses = groud.code;
+      this.waybillClassesName = groud.label;
       this.changeDetail();
     },
     /* 根据项目code/tab/时间切换详情*/
@@ -370,7 +375,9 @@ export default {
       const params = {
         projectCode: this.projectCode,
         queryDate: this.queryDate,
-        waybillClasses: this.waybillClasses
+        waybillClasses: this.waybillClasses,
+        waybillClassesName: this.waybillClassesName,
+        projectName: this.projectName
       };
       await this.download('/transportation/statistics/getInOutDetailsExport', params, `明细统计`);
       this.exportLoadingDetail = false;
@@ -380,7 +387,9 @@ export default {
       const params = {
         projectCode: this.projectCode,
         queryDate: this.queryDate,
-        waybillClasses: this.waybillClasses
+        waybillClasses: this.waybillClasses,
+        waybillClassesName: this.waybillClassesName,
+        projectName: this.projectName
       };
       await this.download('/transportation/statistics/getStatisticsMudtailExport', params, `泥尾统计`);
       this.exportLoadingMudtail = false;
