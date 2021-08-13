@@ -2,7 +2,7 @@
   <div class="g-statistic">
     <!-- title -->
     <div class="header-box">
-      <img src="@/assets/images/statistic/title.png">
+      <img src="@/assets/images/statistic/title.png" @click="changeVersion">
       <span class="line left" />
       <span class="line right" />
     </div>
@@ -392,6 +392,16 @@ export default {
       this.$refs.FreightTypeRankingRef.getData(); // 货运类型排行
       this.$refs.DriverTop5ListRef.getData(); // 承运排名
       this.$refs.BusinessDistributionRef.getData(); // 地域业务分布情况
+    },
+    // 切换到第1版本
+    changeVersion() {
+      const routeData = this.$router.resolve({
+        path: '/statistic',
+        query: {
+          isScale: true
+        }
+      });
+      window.open(routeData.href, '_blank');
     }
   }
 };
@@ -519,6 +529,7 @@ export default {
     font-weight: bold;
     color: #FFFFFF;
     text-align: center;
+    z-index: 9;
     >img{
       width: 22.45rem;
       height: 2.35rem;

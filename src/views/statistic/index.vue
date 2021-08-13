@@ -2,7 +2,7 @@
   <div class="g-statistic">
     <!-- title -->
     <div class="header-box">
-      <img src="@/assets/images/statistic/title.png">
+      <img src="@/assets/images/statistic/title.png" @click="changeVersion">
       <span class="line left" />
       <span class="line right" />
     </div>
@@ -372,6 +372,16 @@ export default {
       this.$refs.TargetChartRef.getData(); // 目标
       this.$refs.TotalDataRef.getCount(); // 地图运单
       this.$refs.DriverTop5ListRef.getData(); // 承运排名
+    },
+    // 切换到第2版本
+    changeVersion() {
+      const routeData = this.$router.resolve({
+        path: '/statisticSecond',
+        query: {
+          isScale: true
+        }
+      });
+      window.open(routeData.href, '_blank');
     }
   }
 };
@@ -495,6 +505,7 @@ export default {
     font-weight: bold;
     color: #FFFFFF;
     text-align: center;
+    z-index: 9;
     >img{
       width: 22.45rem;
       height: 2.35rem;
