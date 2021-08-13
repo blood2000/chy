@@ -97,12 +97,12 @@ export default {
       isPlan: false,
       images: [],
       waybillIndex: 0,
-      // jimi查询参数 map_type:GOOGOLE或BAIDU
+      // jimi查询参数 mapType:GOOGOLE或BAIDU
       jimiQueryParams: {
-        begin_time: '2021-03-22 08:00:00',
-        end_time: '2021-03-22 09:00:00',
+        beginTime: '2021-03-22 08:00:00',
+        endTime: '2021-03-22 09:00:00',
         imeis: '867567047562525',
-        map_type: 'GOOGLE'
+        mapType: 'GOOGLE'
       },
       // 猎鹰查询参数
       lieyingQueryParams: {
@@ -176,9 +176,9 @@ export default {
     getjimi() {
       // 获取硬件轨迹
       jimiTrackLocation(this.jimiQueryParams).then(response => {
-        // console.log(response.data.result);
-        if (response.data.result) {
-          this.tracklist = response.data.result.map(response => {
+        // console.log(response.data);
+        if (response.data) {
+          this.tracklist = response.data.map(response => {
             return [response.lng, response.lat];
           });
           if (this.tracklist.length !== 0) {
@@ -304,9 +304,9 @@ export default {
           // console.log(this.lieyingQueryParams);
         }
         // 获取查询轨迹时间
-        this.jimiQueryParams.begin_time = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.jimiQueryParams.beginTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
-        this.jimiQueryParams.end_time = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.jimiQueryParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
         // 获取装卸货地址经纬度
         if (this.wayBillInfo.waybillAddress.loadLocation) {

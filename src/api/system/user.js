@@ -156,3 +156,12 @@ export function getUserByPhoneNum(phoneNum) {
   });
 }
 
+
+// 根据手机号搜索用户名
+export function getTeamInfoByPhone(phoneNum) {
+  return request({
+    url: '/assets/team/getTeamInfoByPhone/' + phoneNum,
+    method: 'get'
+  });
+}
+
