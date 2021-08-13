@@ -375,11 +375,11 @@ export default {
     },
     // 切换到第2版本
     changeVersion() {
+      const { isScale } = this.$route.query;
+      const query = !isScale ? {} : { isScale: true };
       const routeData = this.$router.resolve({
         path: '/statisticSecond',
-        query: {
-          isScale: true
-        }
+        query: query
       });
       window.open(routeData.href, '_blank');
     }
@@ -509,6 +509,7 @@ export default {
     >img{
       width: 22.45rem;
       height: 2.35rem;
+      cursor: pointer;
     }
     >.line {
       width: 6rem;
