@@ -415,6 +415,7 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
+                  v-hasPermi="['assets:driver:activation']"
                   size="mini"
                   type="text"
                   @click="handleActive(row)"
