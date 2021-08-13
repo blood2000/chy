@@ -377,7 +377,17 @@ export default {
             }
 
             if (res.success && res.code === '9000') {
-              await this.handlerCheck();
+              const res = await this.handlerCheck();
+
+              console.log(res);
+              // 数据发送给父组件
+              this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
+                e.batchWayBillBalanceInfoVo.icStatus = '1';
+                e.batchWayBillBalanceInfoVo.teamName = res.data;
+                e.icStatus = '1';
+                e.$_userInfo = this.userInfo;
+                return e;
+              }));
               this.msgSuccess('核销成功');
               this.handlerClose();
             } else {
@@ -386,6 +396,20 @@ export default {
           } catch (error) {
             this.loading = false;
           }
+        }).catch(() => {
+          const queArr = (this.list.filter(ee => !ee.$_disable)).map(e => {
+            return {
+              card16no: this.carId,
+              teamTelno: this.userInfo.team_telno,
+              cardBatchNo: this.userInfo.issuing_pc,
+              waybillNo: e.waybillNo,
+              waybillCode: e.batchWayBillBalanceInfoVo.wayBillCode,
+              writeOffStatus: e.writeOffStatus ? 0 : 1,
+              writeOffRemark: e.writeOffStatus ? '' : e.writeOffRemark
+            };
+          });
+
+          console.log(queArr);
         });
       }
     },
@@ -400,6 +424,7 @@ export default {
       const queArr = (this.list.filter(ee => !ee.$_disable)).map(e => {
         return {
           card16no: this.carId,
+          teamTelno: this.userInfo.team_telno,
           cardBatchNo: this.userInfo.issuing_pc,
           waybillNo: e.waybillNo,
           waybillCode: e.batchWayBillBalanceInfoVo.wayBillCode,
@@ -408,14 +433,7 @@ export default {
         };
       });
 
-      // 数据发送给父组件
 
-      this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
-        e.batchWayBillBalanceInfoVo.icStatus = '1';
-        e.icStatus = '1';
-        e.$_userInfo = this.userInfo;
-        return e;
-      }));
 
       return await check(queArr);
     },
@@ -481,9 +499,21 @@ export default {
             }
             if (arr.length === filterArr.length) {
               if (arr.every(e => e)) {
-                this.handlerCheck().then(() => {
+                this.handlerCheck().then((res) => {
+                  console.log(res);
                   this.loading = false;
                   this.msgSuccess('核销成功');
+
+                  // 数据发送给父组件
+                  this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
+                    e.batchWayBillBalanceInfoVo.icStatus = '1';
+                    e.batchWayBillBalanceInfoVo.teamName = res.data;
+                    e.icStatus = '1';
+                    e.$_userInfo = this.userInfo;
+                    return e;
+                  }));
+
+
                   this.handlerClose();
                 }).catch(() => { this.loading = false; });
               } else {
