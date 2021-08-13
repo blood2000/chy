@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import { getUserByPhoneNum } from '@/api/system/user';
+import { getUserByPhoneNum, getTeamInfoByPhone } from '@/api/system/user';
 import CardReader, { versionMark } from '@/libs/ICCard/CardReader';
 import { checkList, check } from '@/api/settlement/adjustDregs';
 const { action, fn } = CardReader;
@@ -176,7 +176,7 @@ export default {
 
         const ret = await action.readUserInfoAndreadData();
 
-        console.log(ret);
+        // console.log(ret);
 
         // 读卡失败
         if (!ret.success) {
@@ -238,9 +238,9 @@ export default {
 
         // 承运者
         try {
-          const team = await getUserByPhoneNum(this.userInfo.team_telno);
+          const team = await getTeamInfoByPhone(this.userInfo.team_telno);
           if (team.data) {
-            this.userInfo.team_name = team.data.nickName || team.data.userName || team.data.phonenumber;
+            this.userInfo.team_name = team.data.name || team.data.telphone;
           } else {
             this.userInfo.team_name = '--';
             this.msgError('承运者用户不存在');
@@ -325,7 +325,7 @@ export default {
           };
         });
 
-        console.log(this.list);
+        // console.log(this.list);
 
         // 排序
         this.list.sort((m, n) => {
@@ -379,7 +379,7 @@ export default {
             if (res.success && res.code === '9000') {
               const res = await this.handlerCheck();
 
-              console.log(res);
+              // console.log(res);
               // 数据发送给父组件
               this.$emit('listData', (this.list.filter(e => e.writeOffStatus)).map(e => {
                 e.batchWayBillBalanceInfoVo.icStatus = '1';
@@ -396,20 +396,6 @@ export default {
           } catch (error) {
             this.loading = false;
           }
-        }).catch(() => {
-          const queArr = (this.list.filter(ee => !ee.$_disable)).map(e => {
-            return {
-              card16no: this.carId,
-              teamTelno: this.userInfo.team_telno,
-              cardBatchNo: this.userInfo.issuing_pc,
-              waybillNo: e.waybillNo,
-              waybillCode: e.batchWayBillBalanceInfoVo.wayBillCode,
-              writeOffStatus: e.writeOffStatus ? 0 : 1,
-              writeOffRemark: e.writeOffStatus ? '' : e.writeOffRemark
-            };
-          });
-
-          console.log(queArr);
         });
       }
     },
@@ -500,7 +486,7 @@ export default {
             if (arr.length === filterArr.length) {
               if (arr.every(e => e)) {
                 this.handlerCheck().then((res) => {
-                  console.log(res);
+                  // console.log(res);
                   this.loading = false;
                   this.msgSuccess('核销成功');
 
