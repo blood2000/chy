@@ -24,7 +24,8 @@ export default {
     },
     // 工作台不显示版本号
     showRecord() {
-      return this.$route.path !== '/index' && this.$route.path !== '/dregs/census';
+      const path = this.$route.path;
+      return path !== '/index' && path !== '/dregs/census' && path !== '/assets/device/enclosure';
     }
   }
 };
