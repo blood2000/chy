@@ -519,7 +519,7 @@ export default {
       getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
         if (response.data.length > 0) {
           this.deviceInfo = response.data[0];
-          this.jimiQueryParams.imeis = response.data[0].factoryOnlyCode;
+          this.jimiQueryParams.imeis = response.data[0].deviceImei;
         }
         // console.log(this.deviceInfo);
       });
