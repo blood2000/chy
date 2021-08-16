@@ -81,7 +81,7 @@ getCounty     区切换的时候获取选中值
 this.onsubmitForm.then(res=>{   console.log(res)   })
 
 */
-import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
+import { getProvinceList, getCityList, geCountyList, addCounty } from '@/api/system/area';
 
 export default {
   name: 'ProvinceCityCounty',
@@ -102,6 +102,10 @@ export default {
       default: false
     },
     cbData: {
+      type: Object,
+      default: null
+    },
+    pcdInfo: {
       type: Object,
       default: null
     }
@@ -227,8 +231,36 @@ export default {
       // 根据市code获取 区/县列表
       const { rows } = await geCountyList({ cityCode: this.form.city });
       // 假数据
+      // console.log(rows);
+      // console.log(this.pcdInfo, '详情');
+      this.countyOption = this._baozhuan(rows, 'countyCode', 'countyName');
+
+      // 有值再处理
+      if (this.pcdInfo) {
+        const county = rows.find(e => {
+          return e.countyCode === this.pcdInfo.d.code;
+        });
+        // console.log(county, '找出来, 说明有, 没有这说明要加新的');
+        // 判断库中是否不存在这个code ture 说明不存在
+        if (!county) {
+          // this.countyOption.push({
+          //   dictLabel: this.pcdInfo.d.name,
+          //   countyCode: this.pcdInfo.d.code,
+          //   countyName: this.pcdInfo.d.name,
+          //   dictValue: this.pcdInfo.d.code
+          // });
+          await addCounty({
+            countyCode: this.pcdInfo.d.code,
+            countyName: this.pcdInfo.d.name,
+            cityCode: this.form.city
+          });
+          const { rows } = await geCountyList({ cityCode: this.form.city });
+
+          this.countyOption = this._baozhuan(rows, 'countyCode', 'countyName');
+        }
+      }
+
       // const { rows } = a2;
-      this.countyOption = this._baozhuan(rows, 'countyCode', 'countyName'); // 这个要改一下
     },
 
     _submitForm() {

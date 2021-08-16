@@ -168,7 +168,7 @@
 </template>
 
 <script>
-import { getProvinceList, getCityList, geCountyList } from '@/api/system/area';
+import { getProvinceList, getCityList, geCountyList, addCounty } from '@/api/system/area';
 import { addAddress, updateAddress } from '@/api/enterprise/company/address';
 import AmapSearch from '@/components/Ddc/Tin/AmapSearch';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
@@ -199,6 +199,7 @@ export default {
   },
   data() {
     return {
+      pcdInfo: null, // 高德组件返回的省市区临时记录一份
       // 状态字典
       statusOptions: [
         { 'dictLabel': '启用', 'dictValue': 1 },
@@ -377,6 +378,7 @@ export default {
     // 表单赋值
     setForm(data) {
       this.form = data;
+      this.pcdInfo = null;
       this.form.defaultPut = praseNumToBoolean(this.form.defaultPut);
       this.form.defaultPush = praseNumToBoolean(this.form.defaultPush);
       if (this.form.longitude && this.form.latitude) {
@@ -415,17 +417,38 @@ export default {
       geocoder.getAddress([lng, lat], function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
           if (result && result.regeocode) {
-            const { adcode } = result.regeocode.addressComponent;
-            _this.getAreaCode(adcode);
+            const { adcode, province, city, district, township, street, streetNumber } = result.regeocode.addressComponent;
+
+            _this.form.detail = province + city + district + township + street + streetNumber;
+
+            _this.getAreaCode(adcode, province, city, district);
           }
         }
       });
     },
     // 截取省市区code
-    getAreaCode(code) {
+    getAreaCode(code, province, city, district) {
       this.form.provinceCode = code.slice(0, 2);
       this.form.cityCode = code.slice(0, 4);
       this.form.districtCode = code.slice(0, 6);
+
+      // 记录高德返回的省市区的code及名称
+      this.pcdInfo = {
+        p: {
+          code: this.form.provinceCode,
+          name: province
+        },
+        c: {
+          code: this.form.cityCode,
+          name: city
+        },
+        d: {
+          code: this.form.districtCode,
+          name: district
+        }
+      };
+
+
       // 市
       if (this.form.provinceCode) {
         this.getCityListFun(this.form.provinceCode);
@@ -496,8 +519,26 @@ export default {
       if (code == null || code === '') {
         return;
       }
-      geCountyList({ cityCode: code }).then((response) => {
+      geCountyList({ cityCode: code }).then(async(response) => {
         this.countyCodeOptions = response.rows;
+
+        // 搜索触发
+        if (this.pcdInfo) {
+          const county = response.rows.find(e => {
+            return e.countyCode === this.pcdInfo.d.code;
+          });
+          // 判断库中是否不存在这个code ture 说明不存在
+          if (!county) {
+            await addCounty({
+              countyCode: this.pcdInfo.d.code,
+              countyName: this.pcdInfo.d.name,
+              cityCode: this.pcdInfo.c.code
+            });
+            const { rows } = await geCountyList({ cityCode: code });
+
+            this.countyCodeOptions = rows;
+          }
+        }
       });
     },
     // 清空地址

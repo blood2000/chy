@@ -31,6 +31,10 @@
         <div class="receipt-res">交易成功</div>
 
         <div class="receipt-list">
+          <div class="receipt_sain">
+            <img class="receipt_img" src="~@/assets/images/tm123.png" alt="深圳市凯意达建设工程有限公司">
+          </div>
+
           <RefactorTable :border="false" :is-show-index="true" :data="list" :table-columns-config="tableColumnsConfig">
 
             <template #amount="{row}">
@@ -221,9 +225,6 @@ export default {
     }
 }
 
-.receipt-list{
-  width: 100%;
-}
 .receipt-box{
     padding: 60px 50px 0;
     height: 100%;
@@ -257,6 +258,19 @@ export default {
     width: 100%;
     margin: 20px 0;
     border: 1px solid #f3f3f3;
+    position: relative;
+    .receipt_sain{
+      position: absolute;
+      right: 102px;
+      top: -80px;
+      width: 120px;
+      height: 120px;
+      z-index: 99;
+      img.receipt_img{
+        width: 100%;
+        height: 100%;
+      }
+    }
 }
 
 .receipt-data{
