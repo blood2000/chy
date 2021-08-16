@@ -228,3 +228,11 @@ export function getConsoleDeviceStatistics() {
     method: 'get'
   });
 }
+
+// 获取设备映射字段
+export function getAllMapping() {
+  return request({
+    url: '/assets/device/field/getAllMapping',
+    method: 'get'
+  });
+}

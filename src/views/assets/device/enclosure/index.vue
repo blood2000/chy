@@ -9,7 +9,7 @@
               <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
                 <p class="label ly-flex ly-flex-align-center">
                   <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.status !== 1" @click.native="handleActive(item.status, item.typeCode+item.factoryOnlyCode)" />
-                  <span class="ml10">{{ item.data.deviceName }}</span>
+                  <span class="ml10">{{ item.factoryOnlyCode }}</span>
                 </p>
                 <p class="status" :class="item.expireFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
                   {{ item.expireFlag === 0 ? '未激活' : item.expireFlag === 0 ? '过期' : item.status === 1 ? '在线' : '离线' }}
@@ -31,7 +31,7 @@
               </div>
               <div class="ly-flex button-groud">
                 <p>关注</p>
-                <p>轨迹回放</p>
+                <p @click="handleTrackPlayback">轨迹回放</p>
                 <p>实时跟踪</p>
                 <p>更多</p>
               </div>
@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import { getConsoleDeviceList, getConsoleDeviceLocation, getConsoleDeviceStatistics } from '@/api/assets/device.js';
+import { getConsoleDeviceList, getConsoleDeviceLocation, getConsoleDeviceStatistics, getAllMapping } from '@/api/assets/device.js';
 import Tabs from './tabs.vue';
 import MapBox from './map.vue';
 
@@ -114,7 +114,9 @@ export default {
       // 选中的卡片
       activeCard: '',
       // 统计
-      statisticsData: {}
+      statisticsData: {},
+      // 全部映射字段
+      allMapping: {}
       // 地图
 
     };
@@ -122,6 +124,7 @@ export default {
   mounted() {
     this.getList();
     this.getStatistics();
+    this.getMapping();
     this.getLocationByTime(15);
   },
   beforeDestroy() {
@@ -181,6 +184,12 @@ export default {
         this.tablist[2].num = this.statisticsData.offlineNum;
       });
     },
+    /** 获取设备全部映射字段 */
+    getMapping() {
+      getAllMapping().then(response => {
+        this.allMapping = response.data;
+      });
+    },
     /** 获取设备位置信息-构造参数 */
     getLocationParams() {
       const _this = this;
@@ -227,18 +236,38 @@ export default {
     },
     /** 获取勾选的设备 */
     changeChecked(dataList) {
+      if (dataList.length < this.checkedDeviceList.length) {
+        // 判断当前是移除
+        const obj = this.checkedDeviceList[this.checkedDeviceList.length - 1];
+        if (this.activeCard === obj.typeCode + obj.factoryOnlyCode) {
+          this.activeCard = '';
+        }
+      } else {
+        // 判断当前是新增
+        const arr = dataList[dataList.length - 1].split(',');
+        this.activeCard = arr[0] + arr[1];
+      }
       const list = dataList.map(el => {
         return el.split(',');
       });
       this.checkedDeviceList = [];
       list.forEach(el => {
-        this.deviceLocation[el[0]][el[1]].typeCode = el[0];
-        this.deviceLocation[el[0]][el[1]].factoryOnlyCode = el[1];
-        this.checkedDeviceList.push(this.deviceLocation[el[0]][el[1]]);
+        const deviceLocationObj = { ...this.deviceLocation[el[0]][el[1]] };
+        deviceLocationObj.typeCode = el[0];
+        deviceLocationObj.factoryOnlyCode = el[1];
+        // 获取映射数据
+        const labelArr = [];
+        this.allMapping[el[0]].forEach(val => {
+          labelArr.push({
+            field_cnname: val.field_cnname,
+            context: deviceLocationObj[val.field_enname]
+          });
+        });
+        deviceLocationObj.labelArr = labelArr;
+        this.checkedDeviceList.push(deviceLocationObj);
       });
       // 回显地图定位
-      console.log(this.checkedDeviceList);
-      this.$refs.mapRef.removeAllMarker();
+      this.$refs.mapRef.clearMap();
       this.checkedDeviceList.forEach(el => {
         if (el.lng && el.lng !== 0 && el.lat && el.lat !== 0) {
           this.$refs.mapRef.drawMarker(el.factoryOnlyCode, [el.lng, el.lat], el);
@@ -251,7 +280,11 @@ export default {
         this.msgInfo('没有找到该设备的位置信息');
         return;
       }
-      this.activeCard = index;
+      // this.activeCard = index;
+    },
+    /** 轨迹回放 */
+    handleTrackPlayback() {
+      this.$refs.mapRef.onTrackPlayback();
     }
   }
 };
@@ -423,6 +456,7 @@ export default {
       line-height: 22px;
       color: #262626;
       margin-bottom: 4px;
+      text-align: left;
     }
     .status-groud{
       p{
