@@ -45,7 +45,7 @@
         <div>
           <h5 class="title">地图模式</h5>
           <div class="status-groud ly-flex">
-            <p><span>15</span>秒后刷新</p>
+            <p><span>{{ currentTime }}</span>秒后刷新</p>
             <p><span class="g-pot g-color-success" />在线 ({{ statisticsData.onlineNum }})</p>
             <p><span class="g-pot g-color-error" />过期 ({{ statisticsData.expireNum }})</p>
             <p><span class="g-pot g-color-gray" />离线 ({{ statisticsData.offlineNum }})</p>
@@ -107,6 +107,8 @@ export default {
       deviceLocation: {},
       // 定时器
       timer: null,
+      readTimer: null,
+      currentTime: 20,
       // 勾选的设备-code
       checkList: [],
       // 勾选的设备-带信息
@@ -123,12 +125,13 @@ export default {
   },
   mounted() {
     this.getList();
-    this.getStatistics();
     this.getMapping();
-    this.getLocationByTime(15);
+    this.getStatistics();
+    this.getLocationByTime(20);
   },
   beforeDestroy() {
     this.clearTimer();
+    this.clearReadTime();
   },
   methods: {
     // 切换tab
@@ -214,6 +217,9 @@ export default {
     getLocation() {
       getConsoleDeviceLocation(this.factoryList).then(response => {
         this.deviceLocation = response.data;
+        // 重新渲染地图
+        this.changeChecked(this.checkList);
+        this.setReadTime();
       });
     },
     /**
@@ -226,12 +232,28 @@ export default {
       this.timer = setInterval(() => {
         _this.getLocation();
       }, time * 1000);
+      this.setReadTime();
     },
     /** 清除定时器 */
     clearTimer() {
       if (this.timer) {
         clearInterval(this.timer);
         this.timer = null;
+      }
+    },
+    /** 定时器读秒 */
+    setReadTime() {
+      const _this = this;
+      this.clearReadTime();
+      this.readTimer = setInterval(() => {
+        _this.currentTime = _this.currentTime - 1;
+      }, 1000);
+    },
+    clearReadTime() {
+      if (this.readTimer) {
+        clearInterval(this.readTimer);
+        this.readTimer = null;
+        this.currentTime = 20;
       }
     },
     /** 获取勾选的设备 */
