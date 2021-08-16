@@ -1,7 +1,10 @@
 <template>
   <div class="device-info ly-flex">
     <div class="device-info-left">
-      <Tabs :tablist="tablist" @getActiveName="getActiveTab" />
+      <Tabs :tablist="bigTablist" @getActiveName="getBigActiveTab" />
+      <ul class="btn-list-box">
+        <li v-for="item in tablist" :key="item.code" :class="{active: item.code === activeTab}" @click="getActiveTab(item.code)">{{ `${item.tabName}` }}</li>
+      </ul>
       <div class="device-info-list-box">
         <el-checkbox-group v-model="checkList" @change="changeChecked">
           <ul v-infinite-scroll="loadMore" class="device-info-list infinite-list own-device-scroll-box">
@@ -73,20 +76,26 @@ export default {
   },
   data() {
     return {
-      // tab
-      activeTab: '0',
-      tablist: [{
+      bigTablist: [{
         code: '0',
         tabName: '全部',
         num: 0
       }, {
         code: '1',
-        tabName: '在线',
+        tabName: '关注',
         num: 0
+      }],
+      // tab
+      activeTab: '0',
+      tablist: [{
+        code: '0',
+        tabName: '全部'
+      }, {
+        code: '1',
+        tabName: '在线'
       }, {
         code: '2',
-        tabName: '离线',
-        num: 0
+        tabName: '离线'
       }],
       // 设备列表
       loading: true,
@@ -134,6 +143,9 @@ export default {
     this.clearReadTime();
   },
   methods: {
+    getBigActiveTab(val) {
+
+    },
     // 切换tab
     getActiveTab(val) {
       if (this.activeTab === val) return;
@@ -159,12 +171,8 @@ export default {
           this.deviceList = [...this.deviceList, ...response.data.list];
           this.total = response.data.total;
           // 更新tab数
-          if (this.queryParams.status === 1) {
-            this.tablist[1].num = this.total;
-          } else if (this.queryParams.status === 0) {
-            this.tablist[2].num = this.total;
-          } else {
-            this.tablist[0].num = this.total;
+          if (this.queryParams.status !== 1 && this.queryParams.status !== 0) {
+            this.bigTablist[0].num = this.total;
           }
           // 获取当前全部设备定位数据
           this.getLocationParams();
@@ -183,8 +191,6 @@ export default {
     getStatistics() {
       getConsoleDeviceStatistics().then(response => {
         this.statisticsData = response.data;
-        this.tablist[1].num = this.statisticsData.onlineNum;
-        this.tablist[2].num = this.statisticsData.offlineNum;
       });
     },
     /** 获取设备全部映射字段 */
@@ -336,13 +342,42 @@ export default {
     border-radius: 3px;
   }
 
+  // 小tab样式
+  .btn-list-box{
+    font-size: 0;
+    background: #E9E9E9;
+    opacity: 1;
+    border-radius: 5px;
+    overflow: hidden;
+    margin: 20px 12px 8px;
+    width: 168px;
+    >li{
+      display: inline-block;
+      width: 56px;
+      height: 28px;
+      opacity: 1;
+      border-radius: 5px;
+      font-size: 12px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 28px;
+      color: rgba(38, 38, 38, 0.37);
+      text-align: center;
+      cursor: pointer;
+      &.active{
+        background: #FFFFFF;
+        color: #262626;
+      }
+    }
+  }
+
   // 设备列表
   .device-info-list-box{
     height: 100%;
     padding: 0 4px;
     overflow: hidden;
     .device-info-list{
-      height: calc(100vh - 188px);
+      height: calc(100vh - 242px);
       overflow-y: auto;
       font-size: 14px;
       >li{

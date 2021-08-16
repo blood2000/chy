@@ -1,5 +1,5 @@
 <template>
-  <div class="tabs g-aligncenter" :style="{width: tabwidth + 'px'}">
+  <div class="tabs g-aligncenter" style="width: 364px">
     <div v-for="(item, index) in tablist" :key="index" :class="activeName === item.code ? 'tabs-onbotton': 'tabs-botton'" @click="handleClick(item.code)">
       <div v-if="activeName === item.code && index === 0" class="tabs-imgleft">
         <img src="~@/assets/images/tabs/tabbg_left_g.png" alt="">
@@ -27,16 +27,15 @@ export default {
   },
   data() {
     return {
-      activeName: this.tablist[0].code,
-      tabwidth: this.tablist.length * 135
+      activeName: '0'
     };
   },
   computed: {
   },
   methods: {
     handleClick(e) {
-      this.activeName = e;
-      this.$emit('getActiveName', e);
+      // this.activeName = e;
+      // this.$emit('getActiveName', e);
     }
   }
 };
@@ -53,7 +52,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 121px;
+  width: 182px;
   height: 34px;
 	font-weight: bold;
 	color: #262626;
@@ -64,7 +63,7 @@ export default {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 121px;
+  width: 182px;
   height: 34px;
 	font-weight: bold;
 	color: #BABDCA;
@@ -73,7 +72,7 @@ export default {
 }
 .tabs-imgleft{
 	position: relative;
-	left: -74px;
+	left: -48px;
   top: -8px;
 	height: 0;
 	width: 0;
@@ -81,15 +80,11 @@ export default {
 }
 .tabs-imgright{
   position: relative;
-	left: -84px;
+	left: -120px;
   top: -9px;
 	height: 0;
 	width: 0;
   z-index: 0;
-  >img{
-    width: 168px;
-    height: 36px;
-  }
 }
 .tabs-title{
   position: relative;
