@@ -26,3 +26,13 @@ export function geCountyList(query) {
     params: query
   });
 }
+
+// 添加区/县 code
+
+export function addCounty(data) {
+  return request({
+    url: '/system/county',
+    method: 'post',
+    data: data
+  });
+}

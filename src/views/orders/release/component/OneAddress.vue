@@ -21,6 +21,7 @@
               inputwidth:'200px'
             }"
             :cb-data="pccCode"
+            :pcd-info="pcdInfo"
             :isrules="isrules"
             :disabled="myisdisabled"
             @getCity="getCity"
@@ -107,6 +108,8 @@
         </el-col>
       </el-row>
     </el-form>
+
+    <el-button v-if="false" @click="_submitForm">按钮</el-button>
   </div>
 </template>
 
@@ -141,7 +144,8 @@ export default {
   data() {
     return {
       midAddressName: '',
-      pccCode: null, // 主要搜集金纬度
+      pccCode: null, // 主要搜集城市code
+      pcdInfo: null, // 做一个兼容(8/16)
       isrules: true,
       loading: false,
       searchOption: {
@@ -177,6 +181,7 @@ export default {
       handler(value) {
         if (!value) return;
 
+        this.pcdInfo = null;
         const {
           detail,
           addressName,
@@ -209,7 +214,7 @@ export default {
       this.rules = {
         addressName: [{ required: !value, message: '请输入详细地址', trigger: 'change' }],
         detail: [{ required: !value, message: '选择所属项目', trigger: 'change' }],
-        addressAlias: [{ required: !value, message: '选择所属项目', trigger: 'blur' }],
+        addressAlias: [{ required: !value, message: '请输入地址别名', trigger: 'blur' }],
         contact: [{ required: !value, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
           { required: !value, message: '请输入联系电话', trigger: 'blue' }
@@ -272,17 +277,34 @@ export default {
 
       geocoder.getAddress(lnglat, function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
-          const { adcode } = result.regeocode.addressComponent;
-          self.getAreaCode(adcode);
+          // 通过经纬度找出详细的地址
+
+          const { adcode, province, city, district, township, street, streetNumber } = result.regeocode.addressComponent;
+          self.formData.detail = province + city + district + township + street + streetNumber;
+          self.getAreaCode(adcode, province, city, district);
         }
       });
     },
 
-    getAreaCode(code) {
+    getAreaCode(code, province, city, district) {
       const provinceCode = code.slice(0, 2);
       const cityCode = code.slice(0, 4);
       const districtCode = code.slice(0, 6);
       this.pccCode = { provinceCode, cityCode, districtCode };
+      this.pcdInfo = {
+        p: {
+          code: provinceCode,
+          name: province
+        },
+        c: {
+          code: cityCode,
+          name: city
+        },
+        d: {
+          code: districtCode,
+          name: district
+        }
+      };
     },
 
 
@@ -295,6 +317,7 @@ export default {
     },
     getProvince(province) {
       if (!province) {
+        this.searchOption.city = '全国';
         this.formData.addressName = '';
         this.detailOptin = [];
       }
