@@ -236,17 +236,14 @@ export default {
     },
     /** 获取勾选的设备 */
     changeChecked(dataList) {
-      if (dataList.length < this.checkedDeviceList.length) {
-        // 判断当前是移除
-        const obj = this.checkedDeviceList[this.checkedDeviceList.length - 1];
-        if (this.activeCard === obj.typeCode + obj.factoryOnlyCode) {
-          this.activeCard = '';
-        }
+      // 设置卡片选中
+      if (dataList.length === 0) {
+        this.activeCard = '';
       } else {
-        // 判断当前是新增
         const arr = dataList[dataList.length - 1].split(',');
         this.activeCard = arr[0] + arr[1];
       }
+      // 构造回显数据list
       const list = dataList.map(el => {
         return el.split(',');
       });
@@ -320,7 +317,7 @@ export default {
   // 设备列表
   .device-info-list-box{
     height: 100%;
-    padding: 4px 0 0 24px;
+    padding: 0 4px;
     overflow: hidden;
     .device-info-list{
       height: calc(100vh - 188px);
@@ -328,7 +325,7 @@ export default {
       font-size: 14px;
       >li{
         height: 120px;
-        margin: 12px 20px 16px 0;
+        margin: 12px 20px 16px 20px;
         background: #fff;
         border-radius: 6px;
         overflow: hidden;
