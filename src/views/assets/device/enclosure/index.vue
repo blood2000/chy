@@ -34,7 +34,7 @@
               </div>
               <div class="ly-flex button-groud">
                 <p>关注</p>
-                <p @click="handleTrackPlayback">轨迹回放</p>
+                <p @click="handleTrackPlayback(item)">轨迹回放</p>
                 <p>实时跟踪</p>
                 <p>更多</p>
               </div>
@@ -58,7 +58,7 @@
         </div>
         <div />
       </div>
-      <MapBox ref="mapRef" class="device-info-map-box" />
+      <MapBox ref="mapRef" :current-map="currentMap" class="device-info-map-box" @onCloseTrack="onCloseTrack" />
     </div>
   </div>
 </template>
@@ -127,9 +127,9 @@ export default {
       // 统计
       statisticsData: {},
       // 全部映射字段
-      allMapping: {}
-      // 地图
-
+      allMapping: {},
+      // 判断当前显示的是轨迹track还是定位point
+      currentMap: ''
     };
   },
   mounted() {
@@ -224,7 +224,11 @@ export default {
       getConsoleDeviceLocation(this.factoryList).then(response => {
         this.deviceLocation = response.data;
         // 重新渲染地图
-        this.changeChecked(this.checkList);
+        if (this.currentMap === 'point') {
+          this.changeChecked(this.checkList);
+        } else if (this.currentMap === 'track') {
+          //
+        }
         this.setReadTime();
       });
     },
@@ -264,6 +268,7 @@ export default {
     },
     /** 获取勾选的设备 */
     changeChecked(dataList) {
+      this.currentMap = 'point';
       // 设置卡片选中
       if (dataList.length === 0) {
         this.activeCard = '';
@@ -308,8 +313,22 @@ export default {
       // this.activeCard = index;
     },
     /** 轨迹回放 */
-    handleTrackPlayback() {
-      this.$refs.mapRef.onTrackPlayback();
+    handleTrackPlayback(row) {
+      this.currentMap = 'track';
+      const labelArr = [];
+      this.allMapping[row.typeCode].forEach(val => {
+        labelArr.push({
+          field_cnname: val.field_cnname,
+          context: row.data[val.field_enname]
+        });
+      });
+      row.labelArr = labelArr;
+      this.$refs.mapRef.onTrackPlayback(row);
+    },
+    /** 退出轨迹回放 */
+    onCloseTrack() {
+      this.currentMap = 'point';
+      this.changeChecked(this.checkList);
     }
   }
 };

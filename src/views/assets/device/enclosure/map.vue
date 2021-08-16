@@ -6,7 +6,7 @@
     <el-button size="mini" class="mb10" @click="drawMarker(new Date().getTime(), [116.480935, 39.997761], '我是marker的title3')">绘制点标记3</el-button>
     <el-button size="mini" @click="removeMarker">清除指定点标记</el-button>
     <el-button size="mini" @click="removeAllMarker">移除所有点标记</el-button> ////
-    <el-button size="mini" @click="drawLine(lineArr)">绘制普通轨迹</el-button>
+    <el-button size="mini" @click="drawLine(jmTracklist)">绘制普通轨迹</el-button>
     <el-button size="mini" @click="removeLine()">移除普通轨迹</el-button> ////
     <el-button size="mini" @click="drawReplayLine()">绘制回放轨迹</el-button>
     <el-button size="mini" @click="startAnimation()">轨迹回放-开始</el-button>
@@ -15,15 +15,71 @@
     <el-button size="mini" @click="stopAnimation()">轨迹回放-停止</el-button>
     <el-button size="mini" @click="removeReplayLine()">清除回放轨迹</el-button> ////
     <el-button size="mini" @click="clearMap()">清除所有覆盖物</el-button> -->
-    <div v-if="addressMsg && addressMsg!==''" class="address ly-flex ly-flex-pack-center ly-flex-align-center">
+    <!-- 定位 -->
+    <div v-if="currentMap === 'point' && addressMsg && addressMsg!==''" class="address ly-flex ly-flex-pack-center ly-flex-align-center">
       <img class="mr5" src="@/assets/images/device/position.png">
       {{ addressMsg }}
     </div>
+    <!-- 轨迹 -->
+    <template v-if="currentMap === 'track'">
+      <div class="track-card-info">
+        <h5>
+          轨迹播放
+          <span @click="closeTrackPlayback">
+            <img src="@/assets/images/device/close.png">
+            退出播放
+          </span>
+        </h5>
+        <div class="content">
+          <div class="info">
+            <h5 class="title">{{ trackInfo.factoryOnlyCode }}</h5>
+            <p v-for="item in trackInfo.labelArr" :key="item.factoryOnlyCode" class="label">
+              <span>{{ item.field_cnname + ':' }}</span>
+              {{ item.context }}
+            </p>
+          </div>
+          <div class="form">
+            <div class="form-item">
+              开始时间：
+              <el-date-picker
+                v-model="jimiQueryParams.beginTime"
+                clearable
+                size="small"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="请选择开始时间"
+              />
+            </div>
+            <div class="form-item">
+              结束时间：
+              <el-date-picker
+                v-model="jimiQueryParams.endTime"
+                clearable
+                size="small"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="请选择结束时间"
+              />
+            </div>
+            <div class="form-item">
+              <el-button type="primary" size="mini" @click="startAnimation">播 放</el-button>
+              <el-button type="primary" size="mini" @click="submitForm">查 询</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- <ul class="track-legend ly-flex ly-flex-pack-justify ly-flex-align-center">
+        <li>WiFi<span class="color wifi" /></li>
+        <li>卫星<span class="color wx" /></li>
+        <li>基站<span class="color jz" /></li>
+      </ul> -->
+    </template>
     <div id="device-map-container" />
   </div>
 </template>
 
 <script>
+import { jimiTrackLocation } from '@/api/waybill/tracklist';
 const geocoder = new AMap.Geocoder({
   radius: 1000,
   extensions: 'all'
@@ -31,7 +87,10 @@ const geocoder = new AMap.Geocoder({
 
 export default {
   props: {
-
+    currentMap: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
@@ -42,12 +101,20 @@ export default {
       polyline: null,
       // 轨迹回放
       passedPolyline: null,
-      lineArr: [[116.478935, 39.997761], [116.478939, 39.997825], [116.478912, 39.998549], [116.478912, 39.998549], [116.478998, 39.998555], [116.478998, 39.998555], [116.479282, 39.99856], [116.479658, 39.998528], [116.480151, 39.998453], [116.480784, 39.998302], [116.480784, 39.998302], [116.481149, 39.998184], [116.481573, 39.997997], [116.481863, 39.997846], [116.482072, 39.997718], [116.482362, 39.997718], [116.483633, 39.998935], [116.48367, 39.998968], [116.484648, 39.999861]],
       moveMarker: null,
       // 窗体信息
       infoWindow: null,
       // 地址信息
-      addressMsg: null
+      addressMsg: null,
+      // jimi查询参数
+      jimiQueryParams: {
+        beginTime: '', // 2021-07-31 00:00:00
+        endTime: '', // 2021-08-02 17:00:00
+        imeis: '', // 868120274644936
+        mapType: 'GOOGLE' // GOOGOLE或BAIDU
+      },
+      jmTracklist: [],
+      trackInfo: {}
     };
   },
   mounted() {
@@ -102,11 +169,11 @@ export default {
         info.push("<p class='input-item'><span>" + el.field_cnname + ':</span>' + el.context + '</p>');
       });
       // 动态内容end
-      info.push("</div><div class='bottom-content'>");
+      // info.push("</div><div class='bottom-content'>");
       // 动态按钮start
-      info.push('<a onclick="onTrackPlayback()">轨迹回放</a>');
-      info.push('<a>实时跟踪</a>');
-      info.push('<a>设备围栏</a>');
+      // info.push('<a onclick="onTrackPlayback()">轨迹回放</a>');
+      // info.push('<a>实时跟踪</a>');
+      // info.push('<a>设备围栏</a>');
       // 动态按钮end
       info.push('</div></div>');
       this.infoWindow = new AMap.InfoWindow({
@@ -154,17 +221,24 @@ export default {
       this.map.setFitView(this.polyline);
     },
     /** 轨迹回放 */
-    onTrackPlayback() {
+    onTrackPlayback(row) {
       this.clearMap();
-      this.drawReplayLine();
+      this.trackInfo = row;
+      this.jimiQueryParams.beginTime = this.parseTime(new Date(), '{y}-{m}-{d}') + ' 00:00:00';
+      this.jimiQueryParams.endTime = this.parseTime(new Date());
+      this.getJimi();
+    },
+    /** 退出轨迹回放按钮 */
+    closeTrackPlayback() {
+      this.clearMap();
+      this.$emit('onCloseTrack');
     },
     /** 绘制回放轨迹 */
     drawReplayLine() {
-      this.removeReplayLine(); // 绘制前先清除
       const _this = this;
       this.moveMarker = new AMap.Marker({
         map: this.map,
-        position: [116.478935, 39.997761],
+        position: this.jmTracklist[0],
         icon: 'https://webapi.amap.com/images/car.png',
         offset: new AMap.Pixel(-26, -13),
         autoRotation: true,
@@ -173,7 +247,7 @@ export default {
       // 绘制轨迹
       this.polyline = new AMap.Polyline({
         map: this.map,
-        path: this.lineArr,
+        path: this.jmTracklist,
         showDir: true,
         strokeColor: '#28F',
         strokeWeight: 6
@@ -190,7 +264,9 @@ export default {
     },
     /** 轨迹回放 */
     startAnimation() {
-      this.moveMarker.moveAlong(this.lineArr, 400); // speed 千米/小时
+      this.map.setCenter(this.jmTracklist[0]);
+      this.map.setZoom(14);
+      this.moveMarker.moveAlong(this.jmTracklist, 2000); // speed 千米/小时
     },
     pauseAnimation() {
       this.moveMarker.pauseMove();
@@ -243,8 +319,36 @@ export default {
       this.passedPolyline = null;
       this.moveMarker = null;
       this.infoWindow = null;
+      this.jmTracklist = [];
+      this.trackInfo = {};
+    },
+    /** 获取硬件轨迹 */
+    getJimi() {
+      const _this = this;
+      this.jimiQueryParams.imeis = this.trackInfo.factoryOnlyCode;
+      jimiTrackLocation(this.jimiQueryParams).then(response => {
+        if (response.data) {
+          _this.jmTracklist = [];
+          for (var i = 0; i < response.data.length; i++) {
+            var dataItem = response.data[i];
+            var item = [];
+            item.push(dataItem.lng);
+            item.push(dataItem.lat);
+            _this.jmTracklist[i] = item;
+          }
+          this.removeReplayLine(); // 绘制前先清除
+          if (this.jmTracklist.length > 0) {
+            this.drawReplayLine();
+          } else {
+            this.msgInfo('暂无轨迹信息');
+          }
+        }
+      });
+    },
+    /** 查询轨迹按钮 */
+    submitForm() {
+      this.getJimi();
     }
-
 
 
   }
@@ -254,6 +358,7 @@ export default {
 <style lang="scss" scoped>
 .c-map-box{
   position: relative;
+  // 定位地址展示样式
   >.address{
     position: absolute;
     top: 20px;
@@ -275,6 +380,7 @@ export default {
     color: #262626;
     z-index: 999;
   }
+
   >#device-map-container{
     height: 100%;
     // 地图信息窗体样式-覆盖
@@ -330,6 +436,122 @@ export default {
           color: #409EFF;
           margin-bottom: 4px;
           margin-right: 20px;
+        }
+      }
+    }
+  }
+
+  // 轨迹回放卡片样式
+  .track-card-info{
+    position: absolute;
+    top: 24px;
+    left: 16px;
+    z-index: 999;
+    width: 334px;
+    height: 436px;
+    border-radius: 6px 6px 4px 4px;
+    overflow: hidden;
+    background: linear-gradient(90deg, #0078F5 0%, #409EFF 100%);
+    >h5{
+      height: 52px;
+      font-size: 18px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 52px;
+      color: #FFFFFF;
+      padding: 0 10px 0 20px;
+      >span{
+        float: right;
+        width: 88px;
+        height: 28px;
+        line-height: 26px;
+        border: 1px solid #FFFFFF;
+        border-radius: 14px;
+        text-align: center;
+        font-size: 14px;
+        font-weight: 400;
+        vertical-align: middle;
+        margin-top: 12px;
+        cursor: pointer;
+      }
+    }
+    >.content{
+      height: calc(100% - 52px);
+      background: #fff;
+      border-radius: 4px;
+      border-radius: 4px;
+      overflow: hidden;
+      >.info{
+        padding: 16px 0 8px;
+        border-bottom: 1px solid rgba(159, 162, 181, 0.2);
+        >.title{
+          font-size: 18px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          line-height: 22px;
+          color: #262626;
+          padding: 0 15px 12px;
+        }
+        >.label{
+          padding: 0 15px;
+          font-size: 14px;
+          font-family: PingFang SC;
+          font-weight: bold;
+          line-height: 20px;
+          color: #20273A;
+          margin-bottom: 6px;
+          >span{
+            font-size: 14px;
+            font-family: PingFang SC;
+            font-weight: 400;
+            line-height: 20px;
+            color: #909398;
+            margin-right: 12px;
+          }
+        }
+      }
+      >.form{
+        padding: 16px;
+        .form-item{
+          margin-bottom: 15px;
+        }
+      }
+    }
+  }
+
+  // 轨迹图例样式
+  .track-legend{
+    position: absolute;
+    left: 16px;
+    bottom: 10px;
+    width: 312px;
+    height: 54px;
+    background: #FFFFFF;
+    border: 1px solid #ECECF0;
+    z-index: 999;
+    padding: 10px 25px 10px 15px;
+    >li{
+      font-size: 14px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 22px;
+      color: #20273A;
+      >span{
+        display: inline-block;
+        width: 28px;
+        height: 6px;
+        border-radius: 4px;
+        vertical-align: middle;
+        margin-left: 10px;
+        margin-top: -2px;
+        &.wifi{
+          background: #1990FF;
+        }
+        &.wx{
+          background: #67C23A;
+        }
+        &.jz{
+          background: #FB8720;
         }
       }
     }
