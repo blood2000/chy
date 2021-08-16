@@ -95,7 +95,7 @@
               <td><b>货物装车时间</b></td>
               <td id="last_loading_time">{{ obj.loadTime }}</td>
               <td><b>是否开票</b></td>
-              <td>{{ '是' }}</td>
+              <td>{{ obj.isInvoice === 1? '否':'是' }}</td>
             </tr>
             <tr>
               <td><b>备注</b></td>
