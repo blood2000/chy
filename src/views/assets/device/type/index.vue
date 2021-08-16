@@ -125,7 +125,7 @@
               <el-table-column label="类型名称" align="center" prop="typeName" />
               <el-table-column label="类型标识" align="center" prop="typeKeys" />
               <!-- <el-table-column label="对象类型" align="center" prop="objectType" :formatter="objectTypeFormat" /> -->
-              <el-table-column label="类型种类" align="center" prop="typeKind" :formatter="typeKindFormat" />
+             <!-- <el-table-column label="类型种类" align="center" prop="typeKind" :formatter="typeKindFormat" />-->
               <el-table-column label="备注" align="center" prop="typeRemark" />
               <el-table-column label="创建时间" align="center" prop="createTime">
                 <template slot-scope="scope">
@@ -178,11 +178,11 @@
             :disabled="!!form.code"
           />
         </el-form-item>
+        <el-form-item label="类型标识" prop="typeKeys">
+          <el-input v-model="form.typeKeys" placeholder="请输入类型标识"  :disabled="!!form.code" clearable />
+        </el-form-item>
         <el-form-item label="类型名称" prop="typeName">
           <el-input v-model="form.typeName" placeholder="请输入类型名称" clearable />
-        </el-form-item>
-        <el-form-item label="类型标识" prop="typeKeys">
-          <el-input v-model="form.typeKeys" placeholder="请输入类型标识" clearable />
         </el-form-item>
         <!-- <el-form-item label="对象类型" prop="objectType">
           <el-select
@@ -200,7 +200,7 @@
             />
           </el-select>
         </el-form-item> -->
-        <el-form-item label="类型种类" prop="typeKind">
+        <!--<el-form-item label="类型种类" prop="typeKind">
           <el-select
             v-model="form.typeKind"
             clearable
@@ -214,7 +214,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item>-->
         <el-form-item label="备注" prop="typeRemark">
           <el-input v-model="form.typeRemark" type="textarea" placeholder="请输入备注" />
         </el-form-item>
@@ -231,8 +231,8 @@
     <!-- 添加或修改（树）设备类型对话框 -->
     <el-dialog :title="title" :visible.sync="treeOpen" width="600px" append-to-body :close-on-click-modal="false">
       <el-form ref="treeForm" :model="treeForm" :rules="treeRules" label-width="86px">
-        <el-form-item label="类型名称" prop="typeName">
-          <el-input v-model="treeForm.typeName" placeholder="请输入类型名称" />
+        <el-form-item label="类型分类名称" prop="typeName">
+          <el-input v-model="treeForm.typeName" placeholder="请输入类型目录（大类）" />
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -314,6 +314,9 @@ export default {
         ],
         typeName: [
           { required: true, message: '设备类型名称不能为空', trigger: ['blur', 'change'] }
+        ],
+        typeKeys: [
+          { required: true, message: '类型标识不能为空', trigger: ['blur', 'change'] }
         ]
       },
       // 新增/编辑（树）

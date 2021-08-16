@@ -418,7 +418,7 @@ export default {
               this.buttonLoading = false;
             });
           } else {
-            addInfo(Object.assign({}, this.form, { fromSource: 1 })).then(response => {
+            addInfo(Object.assign({}, this.form, { fromSource: 2 })).then(response => {
               this.buttonLoading = false;
               this.msgSuccess('新增成功');
               this.close();

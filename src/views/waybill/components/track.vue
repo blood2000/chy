@@ -19,7 +19,7 @@
               </el-checkbox>
             </div>
           </div>
-          <el-amap ref="map" vid="DDCmap" :zoom="zoom" :center="center" />
+          <el-amap ref="map" v-loading="loading" vid="DDCmap" :zoom="zoom" :center="center" />
           <div :class="isPlan? 'noliston-frame':'nolist-frame'">
             <div :class="isPlan? 'noliston':'nolist'" />
           </div>
@@ -66,6 +66,7 @@ export default {
     return {
       zoom: 16,
       center: [119.358267, 26.04577],
+      loading: false,
       graspRoad: '',
       // 运单信息
       wayBillInfo: {},
@@ -182,9 +183,11 @@ export default {
     // 获取猎鹰轨迹
     lyChecked(val) {
       if (val) {
+        this.loading = true;
         if (this.wayBillInfo.trackNumber) {
           this.getLieyingTime();
         } else {
+          this.loading = false;
           this.msgInfo('暂无APP轨迹！');
         }
       } else {
@@ -198,9 +201,11 @@ export default {
     // 获取几米轨迹
     jmChecked(val) {
       if (val) {
+        this.loading = true;
         if (this.jimiQueryParams.imeis) {
           this.getJimiTime();
         } else {
+          this.loading = false;
           this.msgInfo('暂无硬件轨迹！');
         }
       } else {
@@ -214,6 +219,7 @@ export default {
     // 获取中交兴路轨迹
     zjChecked(val) {
       if (val) {
+        this.loading = true;
         this.zjxlList();
       } else {
         const that = this;
@@ -282,7 +288,9 @@ export default {
             });
             that.lyMark.setMap(that.$refs.map.$$getInstance()); // 点标记
           }
+          this.loading = false;
         } else {
+          this.loading = false;
           this.msgInfo('暂无APP轨迹！');
         }
       } else if (this.lyTimePoor !== 0 && this.lyTimePoor < 24 * 60 * 60 * 1000) {
@@ -309,15 +317,16 @@ export default {
             this.lyLoadmore();
           } else {
             this.lieyingQueryParams.starttime = this.lieyingQueryParams.endtime;
-            this.lieyingQueryParams.endtime = this.queryEndtime.getTime();
+            this.lieyingQueryParams.endtime = new Date(this.queryEndtime).getTime();
             this.lieyingQueryParams.page = 1;
             // console.log(this.lieyingQueryParams);
             this.getLieyingTime();
           }
         } else {
+          this.loading = false;
           this.msgInfo('暂无APP轨迹！');
         }
-      });
+      }).catch(() => { this.loading = false; });
     },
     // 几米循环判断开始时间与结束时间
     getJimiTime() {
@@ -348,7 +357,9 @@ export default {
             });
             that.jmMark.setMap(that.$refs.map.$$getInstance()); // 点标记
           }
+          this.loading = false;
         } else {
+          this.loading = false;
           this.msgInfo('暂无硬件轨迹！');
         }
       } else if (this.jmTimePoor !== 0 && this.jmTimePoor < 24 * 60 * 60 * 1000 * 2) {
@@ -370,7 +381,7 @@ export default {
         this.jimiQueryParams.beginTime = this.jimiQueryParams.endTime;
         this.jimiQueryParams.endTime = this.parseTime(this.queryEndtime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.getJimiTime();
-      });
+      }).catch(() => { this.loading = false; });
     },
     // 中交兴路轨迹
     zjxlList() {
@@ -378,7 +389,7 @@ export default {
         // console.log(res);
         if (res.data) {
           this.zjTracklist = res.data.trackDataList;
-          if (!this.wayBillInfo.signTime || (this.wayBillInfo.signTime.getTime() > res.data.endTime.getTime())) {
+          if (!this.wayBillInfo.signTime || (new Date(this.wayBillInfo.signTime).getTime() > new Date(res.data.endTime).getTime())) {
             this.zjxlQueryParams.qryBtm = this.parseTime(res.data.endTime, '{y}-{m}-{d} {h}:{i}:{s}');
             // 获取中交兴路轨迹
             this.getZjxlTime();
@@ -403,6 +414,7 @@ export default {
           // 绘制轨迹
           this.drawZj();
         } else {
+          this.loading = false;
           this.msgInfo('暂无北斗轨迹！');
         }
       } else if (this.zjTimePoor !== 0 && this.zjTimePoor < 24 * 60 * 60 * 1000) {
@@ -431,7 +443,7 @@ export default {
         this.zjxlQueryParams.qryEtm = this.parseTime(this.queryEndtime, '{y}-{m}-{d} {h}:{i}:{s}');
         // console.log(this.zjxlQueryParams);
         this.getZjxlTime();
-      });
+      }).catch(() => { this.loading = false; });
     },
     // 绘制中交兴路轨迹
     drawZj() {
@@ -453,6 +465,7 @@ export default {
         });
         that.zjMark.setMap(that.$refs.map.$$getInstance()); // 点标记
       }
+      this.loading = false;
     },
     // 获取高德地图路线规划
     getRoutePlan() {

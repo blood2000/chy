@@ -12,6 +12,7 @@
     </el-row>
     <el-table v-loading="loading" highlight-current-row border :data="dataList">
       <el-table-column label="厂商" align="center" prop="vendorName" />
+      <el-table-column label="设备类型" align="center" prop="deviceTypeName" />
       <el-table-column label="设备标识" align="center" prop="factoryOnlyCode" />
       <el-table-column label="状态" align="center" prop="status" width="100px">
         <template slot-scope="scope">

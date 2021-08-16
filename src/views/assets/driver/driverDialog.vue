@@ -794,7 +794,7 @@ export default {
                 } else {
                   driver.vehicleInfo = null;
                 }
-                addDriver(Object.assign({}, driver, { fromSource: 1 })).then(response => {
+                addDriver(Object.assign({}, driver, { fromSource: 2 })).then(response => {
                   this.buttonLoading = false;
                   this.msgSuccess('新增成功');
                   this.close();
