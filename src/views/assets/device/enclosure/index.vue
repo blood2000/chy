@@ -19,10 +19,16 @@
       <div class="device-info-list-box">
         <el-checkbox-group v-if="deviceList.length > 0" v-model="checkList" @change="changeChecked">
           <ul v-infinite-scroll="loadMore" class="device-info-list infinite-list own-device-scroll-box">
-            <li v-for="item in deviceList" :key="item.code" class="ly-flex-v ly-flex-pack-justify" :class="{active: activeCard === item.typeCode+item.factoryOnlyCode}">
+            <li
+              v-for="item in deviceList"
+              :key="item.code"
+              class="ly-flex-v ly-flex-pack-justify"
+              :class="{active: activeCard === item.typeCode+item.factoryOnlyCode}"
+              @click="handleCardClick(item)"
+            >
               <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
                 <p class="label ly-flex ly-flex-align-center">
-                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.status !== 1" @click.native="handleActive(item.status, item.typeCode+item.factoryOnlyCode)" />
+                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.status !== 1" @click.native.stop="handleActive(item.status, item.typeCode+item.factoryOnlyCode)" />
                   <span class="ml10">{{ item.factoryOnlyCode }}</span>
                 </p>
                 <p class="status" :class="item.expireFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
@@ -30,10 +36,6 @@
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
-                <div v-if="item.licenseNumber" class="info-groud-item">
-                  <p class="label">绑定车辆</p>
-                  {{ item.licenseNumber }}
-                </div>
                 <div v-if="item.data.electQuantity" class="info-groud-item">
                   <p class="label">设备电量</p>
                   <div class="ly-flex ly-flex-align-center">
@@ -44,12 +46,16 @@
                     电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
                   </div>
                 </div>
+                <div v-if="item.licenseNumber" class="info-groud-item">
+                  <p class="label">绑定车辆</p>
+                  {{ item.licenseNumber }}
+                </div>
               </div>
               <div class="ly-flex button-groud">
-                <p>关注</p>
-                <p @click="handleTrackPlayback(item)">轨迹回放</p>
-                <p>实时跟踪</p>
-                <p>更多</p>
+                <p @click.stop="handleInfo()">关注</p>
+                <p @click.stop="handleTrackPlayback(item)">轨迹回放</p>
+                <p @click.stop="handleInfo()">实时跟踪</p>
+                <p @click.stop="handleInfo()">更多</p>
               </div>
             </li>
           </ul>
@@ -371,13 +377,27 @@ export default {
         this.msgInfo('没有找到该设备的位置信息');
         return;
       }
-      // this.activeCard = index;
     },
-    handleCardActive(index) {
-      this.activeCard = index;
+    async handleCardClick(row) {
+      if (this.activeCard === (row.typeCode + row.factoryOnlyCode)) return;
+      if (row.status !== 1) {
+        this.msgInfo('没有找到该设备的位置信息');
+        return;
+      }
+      await this.handleCardActive(row.status, row.typeCode, row.factoryOnlyCode);
+      this.changeChecked(this.checkList);
+    },
+    handleCardActive(status, typeCode, factoryOnlyCode) {
+      this.activeCard = typeCode + factoryOnlyCode;
+      if (status !== 1) return;
+      this.checkList = this.checkList.filter(el => {
+        return el !== (typeCode + ',' + factoryOnlyCode);
+      });
+      this.checkList.push(typeCode + ',' + factoryOnlyCode);
     },
     /** 轨迹回放 */
     handleTrackPlayback(row) {
+      this.handleCardActive(row.status, row.typeCode, row.factoryOnlyCode);
       this.currentMap = 'track';
       const labelArr = [];
       this.allMapping[row.typeCode].forEach(val => {
@@ -410,6 +430,9 @@ export default {
     changeRefreshTime(val) {
       this.currentTime = val;
       this.getLocationByTime();
+    },
+    handleInfo() {
+      this.msgInfo('功能未开发');
     }
   }
 };
@@ -420,7 +443,7 @@ export default {
   margin: 0 15px 0;
   box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
   height: calc(100vh - 146px);
-  min-width: 1280px;
+  min-width: 1320px;
   overflow-x: auto;
 
   // 左
@@ -605,6 +628,9 @@ export default {
             color: #262626;
             &:not(:last-child){
               border-right: 1px solid rgba(159, 162, 181, 0.2);
+            }
+            &:hover{
+              opacity: 0.9;
             }
           }
         }
