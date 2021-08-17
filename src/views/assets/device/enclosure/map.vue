@@ -39,30 +39,32 @@
             </p>
           </div>
           <div class="form">
-            <div class="form-item">
+            <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
               开始时间：
               <el-date-picker
                 v-model="jimiQueryParams.beginTime"
                 clearable
                 size="small"
                 type="datetime"
+                style="width: 228px"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="请选择开始时间"
               />
             </div>
-            <div class="form-item">
+            <div class="form-item ly-flex ly-flex-pack-justify ly-flex-align-center">
               结束时间：
               <el-date-picker
                 v-model="jimiQueryParams.endTime"
                 clearable
                 size="small"
                 type="datetime"
+                style="width: 228px"
                 value-format="yyyy-MM-dd HH:mm:ss"
                 placeholder="请选择结束时间"
               />
             </div>
-            <div class="form-item">
-              <el-button v-if="jmTracklist.length > 0" type="primary" size="mini" @click="startAnimation">播 放</el-button>
+            <div class="form-item" style="text-align: right;">
+              <el-button v-if="jmTracklist.length > 0" type="primary" size="mini" @click="startAnimation">{{ trackStart === 0 ? '播 放' : '重新播放' }}</el-button>
               <el-button v-if="jmTracklist.length > 0 && trackStatus === 1 && trackStart === 1" type="primary" size="mini" @click="resumeAnimation">继 续</el-button>
               <el-button v-if="jmTracklist.length > 0 && trackStatus === 0 && trackStart === 1" type="primary" size="mini" @click="pauseAnimation">暂 停</el-button>
               <el-button type="primary" size="mini" :loading="buttonLoading" @click="getJimi">查 询</el-button>
