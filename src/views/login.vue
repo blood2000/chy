@@ -172,7 +172,7 @@
     </div>
 
     <el-form v-if="false" ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">综合服务管理平台</h3>
+      <h3 class="login-title">综合服务管理平台</h3>
       <el-form-item prop="username">
         <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号">
           <svg-icon slot="prefix" icon-class="user" class="el-input__icon input-icon" />
@@ -591,7 +591,7 @@ export default {
     height: 100%;
   }
 }
-.title {
+.login-title {
   margin: 0px auto 30px auto;
   text-align: center;
   color: #707070;

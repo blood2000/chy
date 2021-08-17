@@ -2,11 +2,22 @@
   <div class="device-info ly-flex">
     <div class="device-info-left">
       <Tabs :tablist="bigTablist" @getActiveName="getBigActiveTab" />
+      <div class="device-search-box">
+        <el-input
+          v-model="queryParams.imei"
+          class="device-search-input"
+          placeholder="请输入IMEI/设备号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+        <i class="device-search-button el-icon-search" @click="handleQuery" />
+      </div>
       <ul class="btn-list-box">
         <li v-for="item in tablist" :key="item.code" :class="{active: item.code === activeTab}" @click="getActiveTab(item.code)">{{ `${item.tabName}` }}</li>
       </ul>
       <div class="device-info-list-box">
-        <el-checkbox-group v-model="checkList" @change="changeChecked">
+        <el-checkbox-group v-if="deviceList.length > 0" v-model="checkList" @change="changeChecked">
           <ul v-infinite-scroll="loadMore" class="device-info-list infinite-list own-device-scroll-box">
             <li v-for="item in deviceList" :key="item.code" class="ly-flex-v ly-flex-pack-justify" :class="{active: activeCard === item.typeCode+item.factoryOnlyCode}">
               <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
@@ -19,28 +30,31 @@
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
-                <!-- <p class="ly-flex ly-flex-align-center">
-                  <img class="mr5" src="@/assets/images/device/xh3.png">
-                  信号
-                </p> -->
-                <!-- <p>安全围栏</p> -->
-                <p v-if="item.data.electQuantity" class="ly-flex ly-flex-align-center">
-                  <img v-if="item.data.electQuantity > 90" class="mr5" :src="require('@/assets/images/device/dl3'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                  <img v-else-if="item.data.electQuantity > 60" class="mr5" :src="require('@/assets/images/device/dl2'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                  <img v-else-if="item.data.electQuantity > 10" class="mr5" :src="require('@/assets/images/device/dl1'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                  <img v-else class="mr5" src="@/assets/images/device/dl1.png">
-                  电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
-                </p>
+                <div v-if="item.licenseNumber" class="info-groud-item">
+                  <p class="label">绑定车辆</p>
+                  {{ item.licenseNumber }}
+                </div>
+                <div v-if="item.data.electQuantity" class="info-groud-item">
+                  <p class="label">设备电量</p>
+                  <div class="ly-flex ly-flex-align-center">
+                    <img v-if="item.data.electQuantity > 90" class="mr5" :src="require('@/assets/images/device/dl3'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                    <img v-else-if="item.data.electQuantity > 60" class="mr5" :src="require('@/assets/images/device/dl2'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                    <img v-else-if="item.data.electQuantity > 10" class="mr5" :src="require('@/assets/images/device/dl1'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                    <img v-else class="mr5" src="@/assets/images/device/dl1.png">
+                    电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
+                  </div>
+                </div>
               </div>
               <div class="ly-flex button-groud">
                 <p>关注</p>
-                <p @click="handleTrackPlayback">轨迹回放</p>
+                <p @click="handleTrackPlayback(item)">轨迹回放</p>
                 <p>实时跟踪</p>
                 <p>更多</p>
               </div>
             </li>
           </ul>
         </el-checkbox-group>
+        <div v-if="!loading && deviceList.length === 0" class="device-info-list-none">暂无数据</div>
       </div>
     </div>
     <div class="device-info-right">
@@ -54,11 +68,29 @@
             <p><span class="g-pot g-color-gray" />离线 ({{ statisticsData.offlineNum }})</p>
             <!-- <p><span class="g-pot g-color-success" />激活 ({{ statisticsData.activeNum }})</p> -->
             <p><span class="g-pot g-color-light-gray" />未激活 ({{ statisticsData.noActiveNum }})</p>
+            <p><span class="g-pot g-color-blue" />已绑定 ({{ statisticsData.bindNum }})</p>
+            <p><span class="g-pot g-color-blue-light" />未绑定 ({{ statisticsData.noBindNum }})</p>
           </div>
         </div>
-        <div />
+        <div class="device-config-box ly-flex">
+          <el-select
+            v-model="refreshTime"
+            style="width: 74px"
+            size="small"
+            @change="changeRefreshTime"
+          >
+            <el-option
+              v-for="dict in refreshTimeOptions"
+              :key="dict"
+              :label="dict + 's'"
+              :value="dict"
+            />
+          </el-select>
+          <p style="line-height: 32px; margin-left: 6px;color: #606266;">刷新</p>
+          <div class="show-button" :class="{active: isShowDeviceName}" @click="showDeviceName">显示设备名称</div>
+        </div>
       </div>
-      <MapBox ref="mapRef" class="device-info-map-box" />
+      <MapBox ref="mapRef" :current-map="currentMap" class="device-info-map-box" @onCloseTrack="onCloseTrack" />
     </div>
   </div>
 </template>
@@ -96,9 +128,15 @@ export default {
       }, {
         code: '2',
         tabName: '离线'
+      }, {
+        code: '3',
+        tabName: '已绑定'
+      }, {
+        code: '4',
+        tabName: '未绑定'
       }],
       // 设备列表
-      loading: true,
+      loading: false,
       deviceList: [],
       total: 0,
       isMore: true,
@@ -107,8 +145,9 @@ export default {
         pageSize: 10,
         typeCode: undefined,
         status: undefined,
+        bind: undefined,
         deviceNumber: undefined,
-        name: undefined
+        imei: undefined
       },
       // 设备位置参数
       factoryList: [],
@@ -127,16 +166,21 @@ export default {
       // 统计
       statisticsData: {},
       // 全部映射字段
-      allMapping: {}
-      // 地图
-
+      allMapping: {},
+      // 判断当前显示的是轨迹track还是定位point
+      currentMap: '',
+      // 是否显示设备名称
+      isShowDeviceName: false,
+      // 配置n秒刷新
+      refreshTime: 20,
+      refreshTimeOptions: [10, 20, 30]
     };
   },
   mounted() {
     this.getList();
     this.getMapping();
     this.getStatistics();
-    this.getLocationByTime(20);
+    this.getLocationByTime();
   },
   beforeDestroy() {
     this.clearTimer();
@@ -150,12 +194,16 @@ export default {
     getActiveTab(val) {
       if (this.activeTab === val) return;
       this.activeTab = val;
-      if (val === '0') {
-        this.queryParams.status = undefined;
-      } else if (val === '1') {
-        this.queryParams.status = 1;
+      this.queryParams.status = undefined;
+      this.queryParams.bind = undefined;
+      if (val === '1') {
+        this.queryParams.status = 1; // 在线
       } else if (val === '2') {
-        this.queryParams.status = 0;
+        this.queryParams.status = 0; // 离线
+      } else if (val === '3') {
+        this.queryParams.bind = 1; // 已绑定
+      } else if (val === '4') {
+        this.queryParams.bind = 0; // 未绑定
       }
       this.isMore = true;
       this.queryParams.pageNum = 1;
@@ -165,6 +213,7 @@ export default {
     /** 获取列表数据 */
     getList() {
       if (!this.isMore) return;
+      if (this.loading) return;
       this.loading = true;
       getConsoleDeviceList(this.queryParams).then(response => {
         if (response.data.list && response.data.list.length > 0) {
@@ -181,10 +230,19 @@ export default {
           this.isMore = false;
         }
         this.loading = false;
+      }).catch(() => {
+        this.loading = false;
       });
     },
     loadMore() {
       this.queryParams.pageNum++;
+      this.getList();
+    },
+    /** 设备搜索 */
+    handleQuery() {
+      this.isMore = true;
+      this.queryParams.pageNum = 1;
+      this.deviceList = [];
       this.getList();
     },
     /** 获取统计数据 */
@@ -224,20 +282,23 @@ export default {
       getConsoleDeviceLocation(this.factoryList).then(response => {
         this.deviceLocation = response.data;
         // 重新渲染地图
-        this.changeChecked(this.checkList);
+        if (this.currentMap === 'point') {
+          this.changeChecked(this.checkList);
+        } else if (this.currentMap === 'track') {
+          //
+        }
         this.setReadTime();
       });
     },
     /**
      * 定时获取设备位置信息
-     * @param {number} time 单位:秒
      */
-    getLocationByTime(time) {
+    getLocationByTime() {
       const _this = this;
       this.clearTimer();
       this.timer = setInterval(() => {
         _this.getLocation();
-      }, time * 1000);
+      }, this.currentTime * 1000);
       this.setReadTime();
     },
     /** 清除定时器 */
@@ -252,6 +313,10 @@ export default {
       const _this = this;
       this.clearReadTime();
       this.readTimer = setInterval(() => {
+        if (_this.currentTime < 0) {
+          _this.clearReadTime();
+          return;
+        }
         _this.currentTime = _this.currentTime - 1;
       }, 1000);
     },
@@ -259,11 +324,12 @@ export default {
       if (this.readTimer) {
         clearInterval(this.readTimer);
         this.readTimer = null;
-        this.currentTime = 20;
+        this.currentTime = this.refreshTime;
       }
     },
     /** 获取勾选的设备 */
     changeChecked(dataList) {
+      this.currentMap = 'point';
       // 设置卡片选中
       if (dataList.length === 0) {
         this.activeCard = '';
@@ -285,7 +351,7 @@ export default {
         this.allMapping[el[0]].forEach(val => {
           labelArr.push({
             field_cnname: val.field_cnname,
-            context: deviceLocationObj[val.field_enname]
+            context: val.field_form_type === 2 ? (Number(deviceLocationObj[val.field_enname])).toFixed(val.field_dit) : deviceLocationObj[val.field_enname]
           });
         });
         deviceLocationObj.labelArr = labelArr;
@@ -307,9 +373,43 @@ export default {
       }
       // this.activeCard = index;
     },
+    handleCardActive(index) {
+      this.activeCard = index;
+    },
     /** 轨迹回放 */
-    handleTrackPlayback() {
-      this.$refs.mapRef.onTrackPlayback();
+    handleTrackPlayback(row) {
+      this.currentMap = 'track';
+      const labelArr = [];
+      this.allMapping[row.typeCode].forEach(val => {
+        labelArr.push({
+          field_cnname: val.field_cnname,
+          context: val.field_form_type === 2 ? (Number(row.data[val.field_enname])).toFixed(val.field_dit) : row.data[val.field_enname]
+        });
+      });
+      row.labelArr = labelArr;
+      this.$refs.mapRef.onTrackPlayback(row);
+    },
+    /** 退出轨迹回放 */
+    onCloseTrack() {
+      this.currentMap = 'point';
+      this.changeChecked(this.checkList);
+    },
+    /** 显示设备名称 */
+    showDeviceName() {
+      this.isShowDeviceName = !this.isShowDeviceName;
+      this.drawDeviceName;
+    },
+    drawDeviceName() {
+      if (this.isShowDeviceName) {
+        //
+      } else {
+        //
+      }
+    },
+    /** 配置刷新时间 */
+    changeRefreshTime(val) {
+      this.currentTime = val;
+      this.getLocationByTime();
     }
   }
 };
@@ -320,7 +420,7 @@ export default {
   margin: 0 15px 0;
   box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
   height: calc(100vh - 146px);
-  min-width: 1200px;
+  min-width: 1280px;
   overflow-x: auto;
 
   // 左
@@ -349,8 +449,8 @@ export default {
     opacity: 1;
     border-radius: 5px;
     overflow: hidden;
-    margin: 20px 12px 8px;
-    width: 168px;
+    margin: 0 12px 8px;
+    width: 280px;
     >li{
       display: inline-block;
       width: 56px;
@@ -371,13 +471,44 @@ export default {
     }
   }
 
+  // 设备搜索
+  .device-search-box{
+    position: relative;
+    .device-search-input{
+      width: calc(100% - 24px);
+      margin: 16px 12px;
+      ::v-deep.el-input__inner{
+        padding-right: 60px;
+      }
+      ::v-deep.el-input__suffix{
+        right: 36px;
+      }
+    }
+    .device-search-button{
+      position: absolute;
+      right: 12px;
+      top: 16px;
+      color: rgba(0, 0, 0, 0.25);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 8px 12px;
+      font-weight: bold;
+      transition: color 0.3s;
+      &:hover{
+        transition: color 0.3s;
+        color: rgba(0, 0, 0, 0.35);
+      }
+    }
+  }
+
   // 设备列表
   .device-info-list-box{
-    height: 100%;
+    height: calc(100vh - 286px);
     padding: 0 4px;
     overflow: hidden;
+    position: relative;
     .device-info-list{
-      height: calc(100vh - 242px);
+      height: calc(100vh - 286px);
       overflow-y: auto;
       font-size: 14px;
       >li{
@@ -406,7 +537,7 @@ export default {
         .title{
           position: relative;
           z-index: 1;
-          padding: 12px 16px 4px;
+          padding: 12px 16px 0;
           .label{
             font-size: 18px;
             font-family: PingFang SC;
@@ -439,14 +570,21 @@ export default {
           position: relative;
           z-index: 1;
           padding: 0 16px;
-          >p{
+          >.info-groud-item{
             width: 50%;
             font-size: 12px;
             font-family: PingFang SC;
-            font-weight: 400;
-            line-height: 22px;
-            color: #9FA2B5;
-            >img{
+            font-weight: bold;
+            line-height: 20px;
+            color: #262626;
+            margin-bottom: 4px;
+            padding-left: 24px;
+            >.label{
+              font-weight: 400;
+              color: rgba(38, 38, 38, 0.4);
+              line-height: 18px;
+            }
+            img{
               padding-top: 2px;
             }
           }
@@ -456,8 +594,8 @@ export default {
           z-index: 1;
           >p{
             width: 25%;
-            height: 36px;
-            line-height: 35px;
+            height: 30px;
+            line-height: 29px;
             border-top: 1px solid rgba(159, 162, 181, 0.2);
             text-align: center;
             cursor: pointer;
@@ -479,11 +617,16 @@ export default {
             .label{
               color: #fff;
             }
+            .status{
+              color: #fff;
+            }
           }
           .info-groud{
-            padding: 0 16px;
-            >p{
+            >.info-groud-item{
               color: #fff;
+              >.label{
+                color: rgba(255, 255, 255, 0.5);
+              }
             }
           }
           .button-groud{
@@ -497,6 +640,15 @@ export default {
           }
         }
       }
+    }
+    .device-info-list-none{
+      font-size: 13px;
+      color: #9FA2B5;
+      text-align: center;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 40%;
     }
   }
 
@@ -520,7 +672,7 @@ export default {
         line-height: 22px;
         color: #262626;
         >span{
-          margin-right: 8px;
+          margin-right: 6px;
         }
         &:first-child{
           width: 78px;
@@ -530,7 +682,46 @@ export default {
           }
         }
         &:not(:last-child){
-          margin-right: 30px;
+          margin-right: 28px;
+        }
+      }
+    }
+    .device-config-box{
+      .show-button{
+        width: 136px;
+        height: 32px;
+        background: #e9ebee;
+        opacity: 1;
+        border-radius: 18px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: bold;
+        line-height: 32px;
+        color: rgba(159, 162, 181, 0.65);
+        padding-left: 12px;
+        text-align: center;
+        margin-left: 22px;
+        position: relative;
+        cursor: pointer;
+        &::before{
+          content: '';
+          position: absolute;
+          left: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 10px;
+          height: 10px;
+          background: #FFFFFF;
+          border: 3px solid rgba(159, 162, 181, 0.65);
+          border-radius: 50%;
+        }
+        &.active{
+          background: #409EFF;
+          color: #FFFFFF;
+          &::before{
+            background: #FFFFFF;
+            border: 3px solid rgba(21, 112, 206, 0.9);
+          }
         }
       }
     }
