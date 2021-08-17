@@ -67,7 +67,33 @@
                   />
                 </el-select>
               </el-form-item>
-              <el-form-item label="激活状态" prop="activationFlag">
+              <el-form-item label="绑定车牌" prop="isBindingCar">
+                <el-select
+                  v-model="queryParams.isBindingCar"
+                  clearable
+                  filterable
+                  style="width: 100%"
+                  size="small"
+                >
+                  <el-option
+                    v-for="dict in isBindingCarOptions"
+                    :key="dict.dictValue"
+                    :label="dict.dictLabel"
+                    :value="dict.dictValue"
+                  />
+                </el-select>
+              </el-form-item>
+              <el-form-item label="车牌号" prop="licenseNumber">
+                <el-input
+                  v-model="queryParams.licenseNumber"
+                  placeholder="请输入车牌号"
+                  clearable
+                  size="small"
+                  style="width: 200px"
+                  @keyup.enter.native="handleQuery"
+                />
+              </el-form-item>
+              <!-- <el-form-item label="激活状态" prop="activationFlag">
                 <el-select
                   v-model="queryParams.activationFlag"
                   clearable
@@ -98,7 +124,7 @@
                     :value="dict.dictValue"
                   />
                 </el-select>
-              </el-form-item>
+              </el-form-item>-->
               <el-form-item>
                 <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
                 <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -164,7 +190,8 @@
                   <span>{{ selectDictLabel(statusOptions, scope.row.status) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column label="激活状态" align="center" prop="activation_flag">
+              <el-table-column label="绑定车牌" align="center" prop="license_number" />
+              <!-- <el-table-column label="激活状态" align="center" prop="activation_flag">
                 <template slot-scope="scope">
                   <span>{{ selectDictLabel(activationFlagOptions, scope.row.activation_flag) }}</span>
                 </template>
@@ -173,7 +200,7 @@
                 <template slot-scope="scope">
                   <span>{{ selectDictLabel(expireFlagOptions, scope.row.expire_flag) }}</span>
                 </template>
-              </el-table-column>
+              </el-table-column>-->
               <el-table-column v-for="item in devicefield" :key="item.code" :label="item.fieldCnname" :prop="item.fieldMappingName" align="center" />
               <el-table-column label="创建时间" align="center" prop="create_time" width="160">
                 <template slot-scope="scope">
@@ -224,7 +251,37 @@
         <el-form-item v-if="!!form.code" label="设备编码" prop="deviceNumber">
           <el-input v-model="form.deviceNumber" disabled />
         </el-form-item>
-
+        <!-- 固定字段 -->
+        <el-form-item label="厂家" prop="vendorCode">
+          <el-select
+            v-model="form.vendorCode"
+            clearable
+            filterable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="dict in deviceVendorOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="设备状态" prop="status">
+          <el-select
+            v-model="form.status"
+            clearable
+            filterable
+            style="width: 100%"
+          >
+            <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <!-- 动态字段 -->
         <el-form-item v-for="(item, index) in addDeviceField" :key="item.code + index" :label="item.fieldCnname" :prop="item.fieldMappingName" :rules="[{ required: item.isRequire === 0, message: `${item.fieldCnname}不能为空`, trigger: 'blur' }]">
           <!-- 1.input -->
@@ -295,37 +352,6 @@
           <el-input v-else v-model="form[item.fieldMappingName]" :placeholder="`请输入${item.fieldCnname}`" clearable :disabled="item.isRead === 0" />
         </el-form-item>
 
-        <!-- 固定字段 -->
-        <el-form-item label="厂家" prop="vendorCode">
-          <el-select
-            v-model="form.vendorCode"
-            clearable
-            filterable
-            style="width: 100%"
-          >
-            <el-option
-              v-for="dict in deviceVendorOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="设备状态" prop="status">
-          <el-select
-            v-model="form.status"
-            clearable
-            filterable
-            style="width: 100%"
-          >
-            <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="备注" prop="remark">
           <el-input v-model="form.remark" type="textarea" placeholder="请输入备注" />
         </el-form-item>
@@ -397,6 +423,8 @@ export default {
         factoryOnlyCode: undefined,
         activationFlag: undefined,
         expireFlag: undefined,
+        licenseNumber: undefined,
+        isBindingCar: undefined,
         status: undefined
       },
       exportLoading: false,
@@ -412,6 +440,10 @@ export default {
       expireFlagOptions: [
         { dictLabel: '过期', dictValue: 0 },
         { dictLabel: '未过期', dictValue: 1 }
+      ],
+      isBindingCarOptions: [
+        { dictLabel: '是', dictValue: 0 },
+        { dictLabel: '否', dictValue: 1 }
       ],
       // 厂家字典
       deviceVendorOptions: [],

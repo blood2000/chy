@@ -484,6 +484,14 @@ export default {
         {
           value: '6',
           label: '本部门网点及以下数据权限'
+        },
+        {
+          value: '7',
+          label: '仅本人业务数据权限'
+        },
+        {
+          value: '8',
+          label: '本部门业务数据权限'
         }
       ],
       // 菜单列表
@@ -592,6 +600,14 @@ export default {
         {
           value: '6',
           label: '本部门网点及以下数据权限'
+        },
+        {
+          value: '7',
+          label: '仅本人业务数据权限'
+        },
+        {
+          value: '8',
+          label: '本部门业务数据权限'
         }];
     }
     this.form.dataScope = '4';

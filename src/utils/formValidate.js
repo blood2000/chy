@@ -4,7 +4,9 @@ const numberReg = /^\d+$|^\d+[.]?\d+$/;
 // 中文
 const cnReg = /^[\u4e00-\u9fa5]+$/;
 // 检测姓名,必须要有两个汉字
-const nameReg = /^[\u4e00-\u9fa5]{2,}$/;
+// const nameReg = /^[\u4e00-\u9fa5]{2,}$/;
+// 检测姓名,可以是中文/字母/数字
+const nameReg = /^[\da-zA-Z\u4E00-\u9FA5]{1,10}$/;
 // 邮箱
 const emailReg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
 // 手机号

@@ -201,3 +201,38 @@ export function delDriverFieldOption(codes) {
     method: 'delete'
   });
 }
+
+/** ============================设备控制台============================ */
+// 设备列表
+export function getConsoleDeviceList(query) {
+  return request({
+    url: '/assets/device/console/list',
+    method: 'get',
+    params: query
+  });
+}
+
+// 获取设备位置信息
+export function getConsoleDeviceLocation(data) {
+  return request({
+    url: '/assets/device/console/getDeviceLocationList',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取设备统计信息
+export function getConsoleDeviceStatistics() {
+  return request({
+    url: '/assets/device/console/getStatistics',
+    method: 'get'
+  });
+}
+
+// 获取设备映射字段
+export function getAllMapping() {
+  return request({
+    url: '/assets/device/field/getAllMapping',
+    method: 'get'
+  });
+}
