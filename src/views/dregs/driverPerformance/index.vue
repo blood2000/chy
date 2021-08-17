@@ -239,8 +239,8 @@ export default {
         loadTimeBegin: this.queryParams.loadTime ? this.queryParams.loadTime[0] : undefined, //	装货日期begin	query	false
         loadTimeEnd: this.queryParams.loadTime ? this.queryParams.loadTime[1] : undefined, //	装货日期end
 
-        receiveDateEnd: this.queryParams.unloadTime ? this.queryParams.unloadTime[0] : undefined,	 // 卸货日期end
-        receiveDateBegin: this.queryParams.unloadTime ? this.queryParams.unloadTime[1] : undefined,	 // 卸货日期begin	query	false
+        receiveDateBegin: this.queryParams.unloadTime ? this.queryParams.unloadTime[0] : undefined,	 // 卸货日期begin	query	false
+        receiveDateEnd: this.queryParams.unloadTime ? this.queryParams.unloadTime[1] : undefined,	 // 卸货日期end
 
         projectCode: this.queryParams.projectCode || undefined,
 

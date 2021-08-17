@@ -316,6 +316,6 @@ export default {
 
 <style>
 .el-table .tupiao-warning-row {
-  background: #fab6b6;
+  background: #F56C6C;
 }
 </style>
