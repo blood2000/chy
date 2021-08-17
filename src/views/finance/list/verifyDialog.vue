@@ -1,35 +1,38 @@
 <template>
   <!-- 审核对话框 -->
   <el-dialog class="i-check" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-      <el-form-item v-if="form.num" label="审核数量" prop="num">
-        <span>{{ form.num }}</span>
-      </el-form-item>
-      <el-form-item label="审核结果" prop="invoiceStatus">
-        <el-select
-          v-model="form.invoiceStatus"
-          placeholder="请选择审核结果"
-          filterable
-          clearable
-          style="width:90%;"
-          size="small"
-        >
-          <el-option
-            v-for="dict in invoiceStatusOptions"
-            :key="dict.dictValue"
-            :label="dict.dictLabel"
-            :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="审核备注" prop="remake">
-        <el-input v-model="form.remake" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入审核备注" style="width:90%;" clearable />
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即提交</el-button>
-      <el-button @click="cancel">取消</el-button>
+    <div v-loading="loading">
+      <el-form ref="form" :model="form" :rules="rules" label-width="130px">
+        <el-form-item v-if="form.num" label="审核数量" prop="num">
+          <span>{{ form.num }}</span>
+        </el-form-item>
+        <el-form-item label="审核结果" prop="invoiceStatus">
+          <el-select
+            v-model="form.invoiceStatus"
+            placeholder="请选择审核结果"
+            filterable
+            clearable
+            style="width:90%;"
+            size="small"
+          >
+            <el-option
+              v-for="dict in invoiceStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="审核备注" prop="remake">
+          <el-input v-model="form.remake" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入审核备注" style="width:90%;" clearable />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer" style="text-align: end;">
+        <el-button type="primary" @click="submitForm">立即提交</el-button>
+        <el-button @click="cancel">取消</el-button>
+      </div>
     </div>
+
   </el-dialog>
 </template>
 
@@ -48,6 +51,7 @@ export default {
   },
   data() {
     return {
+      loading: false,
       // 审核结果字典
       invoiceStatusOptions: [
         { 'dictLabel': '审核通过', 'dictValue': '4' },
@@ -89,8 +93,10 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.loading = true;
           passCheck(this.form).then(response => {
             this.msgSuccess('审核成功');
+            this.loading = false;
             this.close();
             this.$emit('refresh');
           });
