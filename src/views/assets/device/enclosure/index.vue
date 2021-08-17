@@ -2,11 +2,22 @@
   <div class="device-info ly-flex">
     <div class="device-info-left">
       <Tabs :tablist="bigTablist" @getActiveName="getBigActiveTab" />
+      <div class="device-search-box">
+        <el-input
+          v-model="queryParams.imei"
+          class="device-search-input"
+          placeholder="请输入IMEI/设备号"
+          clearable
+          size="small"
+          @keyup.enter.native="handleQuery"
+        />
+        <i class="device-search-button el-icon-search" @click="handleQuery" />
+      </div>
       <ul class="btn-list-box">
         <li v-for="item in tablist" :key="item.code" :class="{active: item.code === activeTab}" @click="getActiveTab(item.code)">{{ `${item.tabName}` }}</li>
       </ul>
       <div class="device-info-list-box">
-        <el-checkbox-group v-model="checkList" @change="changeChecked">
+        <el-checkbox-group v-if="deviceList.length > 0" v-model="checkList" @change="changeChecked">
           <ul v-infinite-scroll="loadMore" class="device-info-list infinite-list own-device-scroll-box">
             <li v-for="item in deviceList" :key="item.code" class="ly-flex-v ly-flex-pack-justify" :class="{active: activeCard === item.typeCode+item.factoryOnlyCode}">
               <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
@@ -43,6 +54,7 @@
             </li>
           </ul>
         </el-checkbox-group>
+        <div v-if="!loading && deviceList.length === 0" class="device-info-list-none">暂无数据</div>
       </div>
     </div>
     <div class="device-info-right">
@@ -108,7 +120,7 @@ export default {
         tabName: '未绑定'
       }],
       // 设备列表
-      loading: true,
+      loading: false,
       deviceList: [],
       total: 0,
       isMore: true,
@@ -119,7 +131,7 @@ export default {
         status: undefined,
         bind: undefined,
         deviceNumber: undefined,
-        name: undefined
+        imei: undefined
       },
       // 设备位置参数
       factoryList: [],
@@ -180,6 +192,7 @@ export default {
     /** 获取列表数据 */
     getList() {
       if (!this.isMore) return;
+      if (this.loading) return;
       this.loading = true;
       getConsoleDeviceList(this.queryParams).then(response => {
         if (response.data.list && response.data.list.length > 0) {
@@ -196,10 +209,19 @@ export default {
           this.isMore = false;
         }
         this.loading = false;
+      }).catch(() => {
+        this.loading = false;
       });
     },
     loadMore() {
       this.queryParams.pageNum++;
+      this.getList();
+    },
+    /** 设备搜索 */
+    handleQuery() {
+      this.isMore = true;
+      this.queryParams.pageNum = 1;
+      this.deviceList = [];
       this.getList();
     },
     /** 获取统计数据 */
@@ -390,7 +412,7 @@ export default {
     opacity: 1;
     border-radius: 5px;
     overflow: hidden;
-    margin: 20px 12px 8px;
+    margin: 0 12px 8px;
     width: 280px;
     >li{
       display: inline-block;
@@ -412,13 +434,44 @@ export default {
     }
   }
 
+  // 设备搜索
+  .device-search-box{
+    position: relative;
+    .device-search-input{
+      width: calc(100% - 24px);
+      margin: 16px 12px;
+      ::v-deep.el-input__inner{
+        padding-right: 60px;
+      }
+      ::v-deep.el-input__suffix{
+        right: 36px;
+      }
+    }
+    .device-search-button{
+      position: absolute;
+      right: 12px;
+      top: 16px;
+      color: rgba(0, 0, 0, 0.25);
+      font-size: 16px;
+      cursor: pointer;
+      padding: 8px 12px;
+      font-weight: bold;
+      transition: color 0.3s;
+      &:hover{
+        transition: color 0.3s;
+        color: rgba(0, 0, 0, 0.35);
+      }
+    }
+  }
+
   // 设备列表
   .device-info-list-box{
-    height: 100%;
+    height: calc(100vh - 286px);
     padding: 0 4px;
     overflow: hidden;
+    position: relative;
     .device-info-list{
-      height: calc(100vh - 242px);
+      height: calc(100vh - 286px);
       overflow-y: auto;
       font-size: 14px;
       >li{
@@ -491,7 +544,7 @@ export default {
             padding-left: 24px;
             >.label{
               font-weight: 400;
-              color: rgba(38, 38, 38, 0.5);
+              color: rgba(38, 38, 38, 0.4);
               line-height: 18px;
             }
             img{
@@ -547,6 +600,15 @@ export default {
           }
         }
       }
+    }
+    .device-info-list-none{
+      font-size: 13px;
+      color: #9FA2B5;
+      text-align: center;
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 40%;
     }
   }
 

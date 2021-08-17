@@ -294,7 +294,7 @@ export default {
       this.trackStart = 1;
       this.trackStatus = 0;
       this.map.setCenter(this.jmTracklist[0]);
-      this.map.setZoom(13);
+      this.map.setZoom(12);
       this.moveMarker.moveAlong(this.jmTracklist, 4000); // speed 千米/小时
     },
     pauseAnimation() {
@@ -460,7 +460,7 @@ export default {
             font-family: PingFang SC;
             font-weight: 400;
             line-height: 20px;
-            color: #909398;
+            color: rgba(144, 147, 152, 0.9);
             margin-right: 12px;
           }
         }
@@ -573,7 +573,7 @@ export default {
             font-family: PingFang SC;
             font-weight: 400;
             line-height: 20px;
-            color: #909398;
+            color: rgba(144, 147, 152, 0.9);
             margin-right: 12px;
           }
         }
