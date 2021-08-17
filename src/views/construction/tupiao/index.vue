@@ -29,7 +29,7 @@
         />
       </el-row>
       <!-- @selection-change="(selection)=> selections = selection" -->
-      <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig">
+      <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName">
         <template #price="{row}">
           <span>{{ floor(row.price - 0) }}</span>
         </template>
@@ -301,11 +301,21 @@ export default {
       return (arr.filter(e => {
         return e[key] === value;
       }))[0];
+    },
+
+    // 列表颜色 compliance 0 正常颜色，1红色
+    tableRowClassName({ row, rowIndex }) {
+      if (row.compliance === 1) {
+        return 'tupiao-warning-row';
+      }
+      return '';
     }
   }
 };
 </script>
 
 <style>
-
+.el-table .tupiao-warning-row {
+  background: #fab6b6;
+}
 </style>

@@ -136,6 +136,14 @@ export default {
         },
         {
           'label': '机主姓名',
+          'prop': 'shipmentName',
+          'isShow': true,
+          'sortNum': 20,
+          'width': '120',
+          'tooltip': true
+        },
+        {
+          'label': '司机姓名',
           'prop': 'nickName',
           'isShow': true,
           'sortNum': 20,
@@ -155,7 +163,7 @@ export default {
           'prop': 'machineModel',
           'isShow': true,
           'sortNum': 40,
-          'width': '60',
+          'width': '90',
           'tooltip': true
         },
         {
@@ -177,6 +185,14 @@ export default {
         {
           'label': '总价',
           'prop': 'total',
+          'isShow': true,
+          'sortNum': 52,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '工作内容',
+          'prop': 'jobContent',
           'isShow': true,
           'sortNum': 52,
           'width': '90',

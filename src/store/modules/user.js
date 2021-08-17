@@ -187,6 +187,7 @@ const user = {
           }
           // 保存一下用户信息
           setUserInfo({
+            ...res,
             isAdmin: res.isAdmin,
             isShipment: res.isShipment,
             isZtShipment: res.isZtShipment,
