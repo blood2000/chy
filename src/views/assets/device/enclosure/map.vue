@@ -104,6 +104,8 @@ export default {
       // 轨迹回放
       passedPolyline: null,
       moveMarker: null,
+      startMarker: null,
+      endMarker: null,
       // 窗体信息
       infoWindow: null,
       // 地址信息
@@ -242,27 +244,46 @@ export default {
     /** 绘制回放轨迹 */
     drawReplayLine() {
       const _this = this;
-      this.moveMarker = new AMap.Marker({
-        map: this.map,
-        position: this.jmTracklist[0],
-        icon: 'https://webapi.amap.com/images/car.png',
-        offset: new AMap.Pixel(-26, -13),
-        autoRotation: true,
-        angle: -90
-      });
       // 绘制轨迹
       this.polyline = new AMap.Polyline({
         map: this.map,
         path: this.jmTracklist,
         showDir: true,
         strokeColor: '#28F',
-        strokeWeight: 6
+        strokeWeight: 8
       });
       this.passedPolyline = new AMap.Polyline({
         map: this.map,
         strokeColor: '#AF5',
-        strokeWeight: 6
+        showDir: true,
+        strokeWeight: 8
       });
+      // 绘制起点终点
+      this.startMarker = new AMap.Marker({
+        map: this.map,
+        position: this.jmTracklist[0],
+        content: '<div class="own-device-line-icon start">起</div>',
+        offset: new AMap.Pixel(-20, -20),
+        autoRotation: true
+      });
+      this.endMarker = new AMap.Marker({
+        map: this.map,
+        position: this.jmTracklist[this.jmTracklist.length - 1],
+        content: '<div class="own-device-line-icon end">终</div>',
+        offset: new AMap.Pixel(-20, -20),
+        autoRotation: true
+      });
+      // 绘制车
+      this.moveMarker = new AMap.Marker({
+        map: this.map,
+        position: this.jmTracklist[0],
+        // icon: 'https://webapi.amap.com/images/car.png',
+        content: '<div class="own-device-line-car"></div>',
+        offset: new AMap.Pixel(-29, -10),
+        autoRotation: true,
+        angle: -90
+      });
+      // 绑定车辆移动事件
       this.moveMarker.on('moving', function(e) {
         _this.passedPolyline.setPath(e.passedPath);
       });
@@ -316,9 +337,15 @@ export default {
       this.polyline && this.map.remove(this.polyline);
       this.passedPolyline && this.map.remove(this.passedPolyline);
       this.moveMarker && this.moveMarker.setMap(null);
+      this.startMarker && this.startMarker.setMap(null);
+      this.endMarker && this.endMarker.setMap(null);
+      this.polyline = null;
+      this.polyline = null;
       this.polyline = null;
       this.passedPolyline = null;
       this.moveMarker = null;
+      this.startMarker = null;
+      this.endMarker = null;
     },
     /** 清除所有覆盖物 */
     clearMap() {
@@ -328,6 +355,8 @@ export default {
       this.polyline = null;
       this.passedPolyline = null;
       this.moveMarker = null;
+      this.startMarker = null;
+      this.endMarker = null;
       this.infoWindow = null;
       this.jmTracklist = [];
       this.trackInfo = {};
@@ -450,6 +479,33 @@ export default {
           margin-right: 20px;
         }
       }
+    }
+    // 轨迹起点终点样式
+    ::v-deep.own-device-line-icon{
+      width: 40px;
+      height: 40px;
+      border: 4px solid #FFFFFF;
+      box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+      border-radius: 50%;
+      font-size: 18px;
+      font-family: PingFang SC;
+      font-weight: bold;
+      line-height: 32px;
+      text-align: center;
+      color: #FFFFFF;
+      &.start{
+        background: #FB8720;
+      }
+      &.end{
+        background: #1990FF;
+      }
+    }
+    // 轨迹车样式
+    ::v-deep.own-device-line-car{
+      width: 58px;
+      height: 20px;
+      background: url('~@/assets/images/device/track_car.png') no-repeat;
+      background-size: 100% 100%;
     }
   }
 
