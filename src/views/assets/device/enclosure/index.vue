@@ -28,7 +28,7 @@
             >
               <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
                 <p class="label ly-flex ly-flex-align-center">
-                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.status !== 1" @click.native.stop="handleActive(item.status, item.typeCode+item.factoryOnlyCode)" />
+                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.status !== 1" @click.native.stop="handleCheckActive(item.status, item.typeCode+item.factoryOnlyCode)" />
                   <span class="ml10">{{ item.factoryOnlyCode }}</span>
                 </p>
                 <p class="status" :class="item.expireFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
@@ -372,7 +372,7 @@ export default {
       });
     },
     /** 选中设备卡片 */
-    handleActive(status, index) {
+    handleCheckActive(status, index) {
       if (status !== 1) {
         this.msgInfo('没有找到该设备的位置信息');
         return;
@@ -396,8 +396,8 @@ export default {
       this.checkList.push(typeCode + ',' + factoryOnlyCode);
     },
     /** 轨迹回放 */
-    handleTrackPlayback(row) {
-      this.handleCardActive(row.status, row.typeCode, row.factoryOnlyCode);
+    async handleTrackPlayback(row) {
+      await this.handleCardActive(row.status, row.typeCode, row.factoryOnlyCode);
       this.currentMap = 'track';
       const labelArr = [];
       this.allMapping[row.typeCode].forEach(val => {
@@ -628,9 +628,6 @@ export default {
             color: #262626;
             &:not(:last-child){
               border-right: 1px solid rgba(159, 162, 181, 0.2);
-            }
-            &:hover{
-              opacity: 0.9;
             }
           }
         }
