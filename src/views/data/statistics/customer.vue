@@ -227,6 +227,9 @@ export default {
           case 'driverCount':
             sums[index] = this.customerCount.driverCountCount;
             break;
+          case 'crediBalance':
+            sums[index] = this.customerCount.crediBalanceCount;
+            break;
           default:
             break;
         }
