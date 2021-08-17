@@ -10,7 +10,7 @@
       <div v-if="activeName === item.code && index === tablist.length-1" class="tabs-imgright">
         <img src="~@/assets/images/tabs/tabbg_right_g.png" alt="">
       </div>
-      <span class="tabs-title">{{ `${item.tabName} (${item.num})` }}</span>
+      <span class="tabs-title">{{ `${item.tabName} (${item.num ? item.num : 0})` }}</span>
     </div>
   </div>
 </template>

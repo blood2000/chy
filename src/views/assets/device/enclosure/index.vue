@@ -117,11 +117,11 @@ export default {
       bigTablist: [{
         code: '0',
         tabName: '全部',
-        num: 0
+        num: null
       }, {
         code: '1',
         tabName: '关注',
-        num: 0
+        num: null
       }],
       // tab
       activeTab: '0',
@@ -226,7 +226,7 @@ export default {
           this.deviceList = [...this.deviceList, ...response.data.list];
           this.total = response.data.total;
           // 更新tab数
-          if (this.queryParams.status !== 1 && this.queryParams.status !== 0) {
+          if (this.bigTablist[0].num == null || this.bigTablist[0].num === 0) {
             this.bigTablist[0].num = this.total;
           }
           // 获取当前全部设备定位数据
