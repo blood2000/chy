@@ -72,7 +72,23 @@
             <p><span class="g-pot g-color-blue-light" />未绑定 ({{ statisticsData.noBindNum }})</p>
           </div>
         </div>
-        <div />
+        <div class="device-config-box ly-flex">
+          <el-select
+            v-model="refreshTime"
+            style="width: 74px"
+            size="small"
+            @change="changeRefreshTime"
+          >
+            <el-option
+              v-for="dict in refreshTimeOptions"
+              :key="dict"
+              :label="dict + 's'"
+              :value="dict"
+            />
+          </el-select>
+          <p style="line-height: 32px; margin-left: 6px;color: #606266;">刷新</p>
+          <div class="show-button" :class="{active: isShowDeviceName}" @click="showDeviceName">显示设备名称</div>
+        </div>
       </div>
       <MapBox ref="mapRef" :current-map="currentMap" class="device-info-map-box" @onCloseTrack="onCloseTrack" />
     </div>
@@ -152,14 +168,19 @@ export default {
       // 全部映射字段
       allMapping: {},
       // 判断当前显示的是轨迹track还是定位point
-      currentMap: ''
+      currentMap: '',
+      // 是否显示设备名称
+      isShowDeviceName: false,
+      // 配置n秒刷新
+      refreshTime: 20,
+      refreshTimeOptions: [10, 20, 30]
     };
   },
   mounted() {
     this.getList();
     this.getMapping();
     this.getStatistics();
-    this.getLocationByTime(20);
+    this.getLocationByTime();
   },
   beforeDestroy() {
     this.clearTimer();
@@ -271,14 +292,13 @@ export default {
     },
     /**
      * 定时获取设备位置信息
-     * @param {number} time 单位:秒
      */
-    getLocationByTime(time) {
+    getLocationByTime() {
       const _this = this;
       this.clearTimer();
       this.timer = setInterval(() => {
         _this.getLocation();
-      }, time * 1000);
+      }, this.currentTime * 1000);
       this.setReadTime();
     },
     /** 清除定时器 */
@@ -304,7 +324,7 @@ export default {
       if (this.readTimer) {
         clearInterval(this.readTimer);
         this.readTimer = null;
-        this.currentTime = 20;
+        this.currentTime = this.refreshTime;
       }
     },
     /** 获取勾选的设备 */
@@ -373,6 +393,23 @@ export default {
     onCloseTrack() {
       this.currentMap = 'point';
       this.changeChecked(this.checkList);
+    },
+    /** 显示设备名称 */
+    showDeviceName() {
+      this.isShowDeviceName = !this.isShowDeviceName;
+      this.drawDeviceName;
+    },
+    drawDeviceName() {
+      if (this.isShowDeviceName) {
+        //
+      } else {
+        //
+      }
+    },
+    /** 配置刷新时间 */
+    changeRefreshTime(val) {
+      this.currentTime = val;
+      this.getLocationByTime();
     }
   }
 };
@@ -383,7 +420,7 @@ export default {
   margin: 0 15px 0;
   box-shadow: 0px 2px 3px 0px rgba(51, 153, 255, 0.1);
   height: calc(100vh - 146px);
-  min-width: 1200px;
+  min-width: 1280px;
   overflow-x: auto;
 
   // 左
@@ -580,6 +617,9 @@ export default {
             .label{
               color: #fff;
             }
+            .status{
+              color: #fff;
+            }
           }
           .info-groud{
             >.info-groud-item{
@@ -632,7 +672,7 @@ export default {
         line-height: 22px;
         color: #262626;
         >span{
-          margin-right: 8px;
+          margin-right: 6px;
         }
         &:first-child{
           width: 78px;
@@ -642,7 +682,46 @@ export default {
           }
         }
         &:not(:last-child){
-          margin-right: 30px;
+          margin-right: 28px;
+        }
+      }
+    }
+    .device-config-box{
+      .show-button{
+        width: 136px;
+        height: 32px;
+        background: #e9ebee;
+        opacity: 1;
+        border-radius: 18px;
+        font-size: 14px;
+        font-family: PingFang SC;
+        font-weight: bold;
+        line-height: 32px;
+        color: rgba(159, 162, 181, 0.65);
+        padding-left: 12px;
+        text-align: center;
+        margin-left: 22px;
+        position: relative;
+        cursor: pointer;
+        &::before{
+          content: '';
+          position: absolute;
+          left: 12px;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 10px;
+          height: 10px;
+          background: #FFFFFF;
+          border: 3px solid rgba(159, 162, 181, 0.65);
+          border-radius: 50%;
+        }
+        &.active{
+          background: #409EFF;
+          color: #FFFFFF;
+          &::before{
+            background: #FFFFFF;
+            border: 3px solid rgba(21, 112, 206, 0.9);
+          }
         }
       }
     }

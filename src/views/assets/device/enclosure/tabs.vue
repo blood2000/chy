@@ -66,7 +66,7 @@ export default {
   width: 182px;
   height: 34px;
 	font-weight: bold;
-	color: #9FA2B5;
+	color: rgba(159, 162, 181, 0.65);
   background: #E9EBEE;
   cursor: pointer;
 }

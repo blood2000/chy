@@ -541,6 +541,10 @@ export default {
         vertical-align: middle;
         margin-top: 12px;
         cursor: pointer;
+        >img{
+          vertical-align: middle;
+          margin-top: -2px;
+        }
       }
     }
     >.content{
