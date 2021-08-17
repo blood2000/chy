@@ -19,18 +19,20 @@
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
-                <!-- <p class="ly-flex ly-flex-align-center">
-                  <img class="mr5" src="@/assets/images/device/xh3.png">
-                  信号
-                </p> -->
-                <!-- <p>安全围栏</p> -->
-                <p v-if="item.data.electQuantity" class="ly-flex ly-flex-align-center">
-                  <img v-if="item.data.electQuantity > 90" class="mr5" :src="require('@/assets/images/device/dl3'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                  <img v-else-if="item.data.electQuantity > 60" class="mr5" :src="require('@/assets/images/device/dl2'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                  <img v-else-if="item.data.electQuantity > 10" class="mr5" :src="require('@/assets/images/device/dl1'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                  <img v-else class="mr5" src="@/assets/images/device/dl1.png">
-                  电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
-                </p>
+                <div v-if="item.licenseNumber" class="info-groud-item">
+                  <p class="label">绑定车辆</p>
+                  {{ item.licenseNumber }}
+                </div>
+                <div v-if="item.data.electQuantity" class="info-groud-item">
+                  <p class="label">设备电量</p>
+                  <div class="ly-flex ly-flex-align-center">
+                    <img v-if="item.data.electQuantity > 90" class="mr5" :src="require('@/assets/images/device/dl3'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                    <img v-else-if="item.data.electQuantity > 60" class="mr5" :src="require('@/assets/images/device/dl2'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                    <img v-else-if="item.data.electQuantity > 10" class="mr5" :src="require('@/assets/images/device/dl1'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                    <img v-else class="mr5" src="@/assets/images/device/dl1.png">
+                    电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
+                  </div>
+                </div>
               </div>
               <div class="ly-flex button-groud">
                 <p>关注</p>
@@ -54,6 +56,8 @@
             <p><span class="g-pot g-color-gray" />离线 ({{ statisticsData.offlineNum }})</p>
             <!-- <p><span class="g-pot g-color-success" />激活 ({{ statisticsData.activeNum }})</p> -->
             <p><span class="g-pot g-color-light-gray" />未激活 ({{ statisticsData.noActiveNum }})</p>
+            <p><span class="g-pot g-color-blue" />已绑定 ({{ statisticsData.bindNum }})</p>
+            <p><span class="g-pot g-color-blue-light" />未绑定 ({{ statisticsData.noBindNum }})</p>
           </div>
         </div>
         <div />
@@ -96,6 +100,12 @@ export default {
       }, {
         code: '2',
         tabName: '离线'
+      }, {
+        code: '3',
+        tabName: '已绑定'
+      }, {
+        code: '4',
+        tabName: '未绑定'
       }],
       // 设备列表
       loading: true,
@@ -107,6 +117,7 @@ export default {
         pageSize: 10,
         typeCode: undefined,
         status: undefined,
+        bind: undefined,
         deviceNumber: undefined,
         name: undefined
       },
@@ -150,12 +161,16 @@ export default {
     getActiveTab(val) {
       if (this.activeTab === val) return;
       this.activeTab = val;
-      if (val === '0') {
-        this.queryParams.status = undefined;
-      } else if (val === '1') {
-        this.queryParams.status = 1;
+      this.queryParams.status = undefined;
+      this.queryParams.bind = undefined;
+      if (val === '1') {
+        this.queryParams.status = 1; // 在线
       } else if (val === '2') {
-        this.queryParams.status = 0;
+        this.queryParams.status = 0; // 离线
+      } else if (val === '3') {
+        this.queryParams.bind = 1; // 已绑定
+      } else if (val === '4') {
+        this.queryParams.bind = 0; // 未绑定
       }
       this.isMore = true;
       this.queryParams.pageNum = 1;
@@ -256,6 +271,10 @@ export default {
       const _this = this;
       this.clearReadTime();
       this.readTimer = setInterval(() => {
+        if (_this.currentTime < 0) {
+          _this.clearReadTime();
+          return;
+        }
         _this.currentTime = _this.currentTime - 1;
       }, 1000);
     },
@@ -290,7 +309,7 @@ export default {
         this.allMapping[el[0]].forEach(val => {
           labelArr.push({
             field_cnname: val.field_cnname,
-            context: deviceLocationObj[val.field_enname]
+            context: val.field_form_type === 2 ? (Number(deviceLocationObj[val.field_enname])).toFixed(val.field_dit) : deviceLocationObj[val.field_enname]
           });
         });
         deviceLocationObj.labelArr = labelArr;
@@ -312,6 +331,9 @@ export default {
       }
       // this.activeCard = index;
     },
+    handleCardActive(index) {
+      this.activeCard = index;
+    },
     /** 轨迹回放 */
     handleTrackPlayback(row) {
       this.currentMap = 'track';
@@ -319,7 +341,7 @@ export default {
       this.allMapping[row.typeCode].forEach(val => {
         labelArr.push({
           field_cnname: val.field_cnname,
-          context: row.data[val.field_enname]
+          context: val.field_form_type === 2 ? (Number(row.data[val.field_enname])).toFixed(val.field_dit) : row.data[val.field_enname]
         });
       });
       row.labelArr = labelArr;
@@ -369,7 +391,7 @@ export default {
     border-radius: 5px;
     overflow: hidden;
     margin: 20px 12px 8px;
-    width: 168px;
+    width: 280px;
     >li{
       display: inline-block;
       width: 56px;
@@ -425,7 +447,7 @@ export default {
         .title{
           position: relative;
           z-index: 1;
-          padding: 12px 16px 4px;
+          padding: 12px 16px 0;
           .label{
             font-size: 18px;
             font-family: PingFang SC;
@@ -458,14 +480,21 @@ export default {
           position: relative;
           z-index: 1;
           padding: 0 16px;
-          >p{
+          >.info-groud-item{
             width: 50%;
             font-size: 12px;
             font-family: PingFang SC;
-            font-weight: 400;
-            line-height: 22px;
-            color: #9FA2B5;
-            >img{
+            font-weight: bold;
+            line-height: 20px;
+            color: #262626;
+            margin-bottom: 4px;
+            padding-left: 24px;
+            >.label{
+              font-weight: 400;
+              color: rgba(38, 38, 38, 0.5);
+              line-height: 18px;
+            }
+            img{
               padding-top: 2px;
             }
           }
@@ -475,8 +504,8 @@ export default {
           z-index: 1;
           >p{
             width: 25%;
-            height: 36px;
-            line-height: 35px;
+            height: 30px;
+            line-height: 29px;
             border-top: 1px solid rgba(159, 162, 181, 0.2);
             text-align: center;
             cursor: pointer;
@@ -500,9 +529,11 @@ export default {
             }
           }
           .info-groud{
-            padding: 0 16px;
-            >p{
+            >.info-groud-item{
               color: #fff;
+              >.label{
+                color: rgba(255, 255, 255, 0.5);
+              }
             }
           }
           .button-groud{

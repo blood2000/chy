@@ -62,8 +62,10 @@
               />
             </div>
             <div class="form-item">
-              <el-button type="primary" size="mini" @click="startAnimation">播 放</el-button>
-              <el-button type="primary" size="mini" @click="submitForm">查 询</el-button>
+              <el-button v-if="jmTracklist.length > 0" type="primary" size="mini" @click="startAnimation">播 放</el-button>
+              <el-button v-if="jmTracklist.length > 0 && trackStatus === 1 && trackStart === 1" type="primary" size="mini" @click="resumeAnimation">继 续</el-button>
+              <el-button v-if="jmTracklist.length > 0 && trackStatus === 0 && trackStart === 1" type="primary" size="mini" @click="pauseAnimation">暂 停</el-button>
+              <el-button type="primary" size="mini" :loading="buttonLoading" @click="getJimi">查 询</el-button>
             </div>
           </div>
         </div>
@@ -113,8 +115,12 @@ export default {
         imeis: '', // 868120274644936
         mapType: 'GOOGLE' // GOOGOLE或BAIDU
       },
+      buttonLoading: false,
       jmTracklist: [],
-      trackInfo: {}
+      trackInfo: {},
+      //  轨迹当前状态
+      trackStart: 0, // 0未开始  1已开始
+      trackStatus: 1 // 0播放中  1暂停中
     };
   },
   mounted() {
@@ -264,14 +270,18 @@ export default {
     },
     /** 轨迹回放 */
     startAnimation() {
+      this.trackStart = 1;
+      this.trackStatus = 0;
       this.map.setCenter(this.jmTracklist[0]);
-      this.map.setZoom(14);
-      this.moveMarker.moveAlong(this.jmTracklist, 2000); // speed 千米/小时
+      this.map.setZoom(13);
+      this.moveMarker.moveAlong(this.jmTracklist, 4000); // speed 千米/小时
     },
     pauseAnimation() {
+      this.trackStatus = 1;
       this.moveMarker.pauseMove();
     },
     resumeAnimation() {
+      this.trackStatus = 0;
       this.moveMarker.resumeMove();
     },
     stopAnimation() {
@@ -325,10 +335,14 @@ export default {
     /** 获取硬件轨迹 */
     getJimi() {
       const _this = this;
+      this.buttonLoading = true;
       this.jimiQueryParams.imeis = this.trackInfo.factoryOnlyCode;
       jimiTrackLocation(this.jimiQueryParams).then(response => {
         if (response.data) {
-          _this.jmTracklist = [];
+          this.buttonLoading = false;
+          this.trackStart = 0;
+          this.trackStatus = 1;
+          this.jmTracklist = [];
           for (var i = 0; i < response.data.length; i++) {
             var dataItem = response.data[i];
             var item = [];
@@ -343,11 +357,9 @@ export default {
             this.msgInfo('暂无轨迹信息');
           }
         }
+      }).catch(() => {
+        this.buttonLoading = false;
       });
-    },
-    /** 查询轨迹按钮 */
-    submitForm() {
-      this.getJimi();
     }
 
 
