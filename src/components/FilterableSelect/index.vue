@@ -8,7 +8,6 @@
     :placeholder="placeholder"
     :remote-method="remoteMethod"
     :loading="loading"
-
     v-bind="$attrs"
     @keyup.enter.native="$emit('handleQuery')"
     @change="handlerchange"
@@ -58,7 +57,7 @@
  *
 */
 export default {
-
+  name: 'QueryForm',
   props: {
     value: {
       type: [String, Number],
@@ -164,11 +163,11 @@ export default {
         return;
       }
 
-
       queryFn && queryFn({ ...this.shipmentreq, ...queryData, [this.keywords]: this.shipmentreq[this.keywords] }).then(
         (res) => {
-          this.dataOver = !res[key].length;
-          this.shipmentList = this.shipmentList.concat(res[key]);
+          // console.log(res);
+          this.dataOver = !((res[key] || res.data[key]).length);
+          this.shipmentList = this.shipmentList.concat((res[key] || res.data[key]));
           this.loading = false;
         }
       ).catch(() => {
