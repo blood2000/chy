@@ -125,7 +125,7 @@
               <el-table-column label="类型名称" align="center" prop="typeName" />
               <el-table-column label="类型标识" align="center" prop="typeKeys" />
               <!-- <el-table-column label="对象类型" align="center" prop="objectType" :formatter="objectTypeFormat" /> -->
-             <!-- <el-table-column label="类型种类" align="center" prop="typeKind" :formatter="typeKindFormat" />-->
+              <!-- <el-table-column label="类型种类" align="center" prop="typeKind" :formatter="typeKindFormat" />-->
               <el-table-column label="备注" align="center" prop="typeRemark" />
               <el-table-column label="创建时间" align="center" prop="createTime">
                 <template slot-scope="scope">
@@ -179,7 +179,7 @@
           />
         </el-form-item>
         <el-form-item label="类型标识" prop="typeKeys">
-          <el-input v-model="form.typeKeys" placeholder="请输入类型标识"  :disabled="!!form.code" clearable />
+          <el-input v-model="form.typeKeys" placeholder="请输入类型标识" :disabled="!!form.code" clearable />
         </el-form-item>
         <el-form-item label="类型名称" prop="typeName">
           <el-input v-model="form.typeName" placeholder="请输入类型名称" clearable />
