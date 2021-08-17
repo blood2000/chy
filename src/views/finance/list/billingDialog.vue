@@ -1,27 +1,30 @@
 <template>
   <!-- 开票对话框 -->
   <el-dialog :title="title" :visible="visible" width="800px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="130px">
-      <el-form-item label="发票索取记录号" prop="askForNo">
-        <el-input v-model="form.askForNo" disabled placeholder="请输入发票索取记录号" clearable size="small" style="width:90%;" />
-      </el-form-item>
-      <el-form-item label="发票图片">
-        <uploadImage v-model="form.images" />
-      </el-form-item>
-      <el-form-item label="收票人姓名" prop="receiveName">
-        <el-input v-model="form.receiveName" placeholder="请输入收票人姓名" clearable size="small" style="width:90%;" />
-      </el-form-item>
-      <el-form-item label="收票人电话" prop="receivePhone">
-        <el-input v-model="form.receivePhone" placeholder="请输入收票人电话" maxlength="11" clearable size="small" style="width:90%;" />
-      </el-form-item>
-      <el-form-item label="收票地址" prop="receiveAddress">
-        <el-input v-model="form.receiveAddress" placeholder="请输入收票地址" maxlength="50" clearable size="small" style="width:90%;" />
-      </el-form-item>
-    </el-form>
-    <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即提交</el-button>
-      <el-button @click="cancel">取消</el-button>
+    <div v-loading="loading">
+      <el-form ref="form" :model="form" :rules="rules" label-width="130px">
+        <el-form-item label="发票索取记录号" prop="askForNo">
+          <el-input v-model="form.askForNo" disabled placeholder="请输入发票索取记录号" clearable size="small" style="width:90%;" />
+        </el-form-item>
+        <el-form-item label="发票图片">
+          <uploadImage v-model="form.images" />
+        </el-form-item>
+        <el-form-item label="收票人姓名" prop="receiveName">
+          <el-input v-model="form.receiveName" placeholder="请输入收票人姓名" clearable size="small" style="width:90%;" />
+        </el-form-item>
+        <el-form-item label="收票人电话" prop="receivePhone">
+          <el-input v-model="form.receivePhone" placeholder="请输入收票人电话" maxlength="11" clearable size="small" style="width:90%;" />
+        </el-form-item>
+        <el-form-item label="收票地址" prop="receiveAddress">
+          <el-input v-model="form.receiveAddress" placeholder="请输入收票地址" maxlength="50" clearable size="small" style="width:90%;" />
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer" style="text-align: end;">
+        <el-button type="primary" @click="submitForm">立即提交</el-button>
+        <el-button @click="cancel">取消</el-button>
+      </div>
     </div>
+
   </el-dialog>
 </template>
 
@@ -44,7 +47,7 @@ export default {
   data() {
     return {
       // 遮罩层
-      loading: true,
+      loading: false,
       // 运单列表
       waybilllist: [],
       // 表单参数
@@ -77,7 +80,9 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.loading = true;
           openInvoice(this.form).then(response => {
+            this.loading = false;
             this.msgSuccess('开票成功');
             this.close();
             this.$emit('refresh');

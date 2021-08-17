@@ -179,6 +179,7 @@
             icon="el-icon-document-checked"
             size="mini"
             :disabled="multiple"
+            :loading="loadingAsk"
             @click="handleAskfor"
           >批量索票</el-button>
           <el-button
@@ -398,7 +399,8 @@ export default {
       },
       shipmentloading: false,
       dataOver: false, // 是否请求完了
-      loadingExport: false
+      loadingExport: false,
+      loadingAsk: false
     };
   },
   computed: {
@@ -547,11 +549,13 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.loadingAsk = true;
         askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
           this.msgSuccess('索票申请成功');
+          this.loadingAsk = false;
           this.ids = null;
           this.getList();
-        });
+        }).catch(() => { this.loadingAsk = false; });
       });
     },
     handleTableBtn(row, index) {
