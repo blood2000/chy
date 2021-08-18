@@ -46,11 +46,15 @@
             <el-popover
               v-if="row[item.prop] && (_splitStr(row[item.prop])[1] || _splitStr(row[item.prop])[2])"
               placement="right"
-              title="考勤备注"
+              title="考勤"
               width="300"
-              trigger="click"
+              trigger="hover"
               :content="_handleContent(_splitStr(row[item.prop])[1],_splitStr(row[item.prop])[2] )"
             >
+              <div>
+                <div v-if="_splitStr(row[item.prop])[1]">备注信息：<span class="ml0">{{ _splitStr(row[item.prop])[1] }} </span></div>
+                <div v-if="_splitStr(row[item.prop])[2]">晚班时间：<span class="ml0">{{ _splitStr(row[item.prop])[2] }} </span></div>
+              </div>
               <!-- 有3种情况  晚,  晚;XXX   , 晚;XXX#1212,-->
               <div slot="reference" class="triangleL shou">{{ _splitStr(row[item.prop])[0] }}</div>
             </el-popover>
