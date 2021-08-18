@@ -262,23 +262,37 @@ export default {
         e.ruleValue = this.formData[e.myName];
       });
 
-      return new Promise((resolve, reject) => {
-        this.$refs['formData'].validate((valid) => {
-          if (valid) {
-            const arr = this.resettingData.map(e => {
-              if (e.showType !== '2') {
-                e.ruleValue = this.formData[e.myName];
-              } else {
-                e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'] > 0 ? -this.formData[e.myName + '_0'] : this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
-              }
-              return e;
-            });
+      console.log(this.formData, '触发了没???');
 
-            resolve(arr);
-          } else {
-            return false;
+      for (const key in this.formData) {
+        if (Object.hasOwnProperty.call(this.formData, key)) {
+          const element = this.formData[key];
+
+          // console.log(element);
+          if (!element) {
+            console.log(key);
           }
+        }
+      }
+
+      return new Promise((resolve, reject) => {
+        const arr = this.resettingData.map(e => {
+          if (e.showType !== '2') {
+            e.ruleValue = this.formData[e.myName];
+          } else {
+            e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'] > 0 ? -this.formData[e.myName + '_0'] : this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
+          }
+          return e;
         });
+        resolve(arr);
+        // this.$refs['formData'].validate((valid) => {
+        //   console.log(this.form, '触发了没???');
+        //   if (valid) {
+        //     console.log(valid, '过了');
+        //   } else {
+        //     return false;
+        //   }
+        // });
       });
     },
 

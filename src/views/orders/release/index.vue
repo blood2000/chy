@@ -994,6 +994,9 @@ export default {
     onSubmit(form, active) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
+          // 先判断基本信息
+          await this.handlerPromise('OrderBasic');
+
           // 判断地址必填
           const array = this.address_add.concat(this.address_xie);
           for (let index = 0; index < array.length; index++) {
@@ -1002,8 +1005,10 @@ export default {
           }
 
           // 判断其他
+
           this.lastData = await this.submAllData();
           console.log('到这里说明过了------------------还有几个未判断');
+          return;
           this.onPubilsh();
         } else {
           return false;
