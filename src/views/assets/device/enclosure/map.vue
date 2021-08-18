@@ -142,7 +142,7 @@ export default {
     /** 绘制标记
      * @param {string} id 唯一值必传
      * @param {Array} position 经纬度必传
-     * @param {Object} labelText 气泡提示窗,没有就不传
+     * @param {Object} labelText 信息窗内容,没有就不传
      * @param {string} icon 图标
     */
     drawMarker(id, position, labelObj, icon) {
@@ -154,9 +154,11 @@ export default {
           size: new AMap.Size(26, 34),
           imageSize: new AMap.Size(26, 34)
         }),
+        // content: '<div class="own-device-marker-car"></div>',
         autoFitView: true,
         autoRotation: true,
         offset: new AMap.Pixel(-13, -34),
+        // offset: new AMap.Pixel(-19, -28),
         clickable: !!labelObj
       });
       marker.setMap(this.map);
@@ -190,6 +192,7 @@ export default {
         isCustom: false, // 使用自定义窗体
         content: info.join('<br/>'),
         offset: new AMap.Pixel(18, -22),
+        // offset: new AMap.Pixel(18, -18),
         anchor: 'middle-left'
       });
       this.infoWindow.open(this.map, marker.getPosition());
@@ -507,6 +510,13 @@ export default {
       width: 58px;
       height: 20px;
       background: url('~@/assets/images/device/track_car.png') no-repeat;
+      background-size: 100% 100%;
+    }
+    // 标记物车样式
+    ::v-deep.own-device-marker-car{
+      width: 40px;
+      height: 58px;
+      background: url('~@/assets/images/device/car.png') no-repeat;
       background-size: 100% 100%;
     }
   }
