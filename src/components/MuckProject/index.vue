@@ -1000,8 +1000,10 @@ export default {
     // },
     // 导出批次列表
     async handleExport() {
+      const url = this.status === 2 ? '/transportation/batch/batchInvoiceExport' : '/transportation/batch/export';
+
       this.exportLoading = true;
-      await this.download('/transportation/batch/export', this.queryParams, this.fileName);
+      await this.download(url, this.queryParams, this.fileName);
       this.exportLoading = false;
     }
 
