@@ -563,6 +563,9 @@ export default {
     async handletin2(tin3item) {
       // this.formData.tin3 = '0'; // 项目清0
 
+      // 触发一下看看是都必填的吗
+      this.$refs['elForm'] && this.$refs['elForm'].validate();
+
       this.$emit('input', this.isMultiGoods);
 
       try {

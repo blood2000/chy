@@ -93,7 +93,7 @@
 
           </div>
         </el-col>
-        <el-col v-if="myisdisabled && !showbudget && predictData" :span="10">
+        <el-col v-if="!showbudget && predictData" :span="10">
           <div class="t_box_item">
             <template v-if="predictData.totalEstimateMoney || predictData.totalTransportationCost || predictData.totalServiceFee">
 

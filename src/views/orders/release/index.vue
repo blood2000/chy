@@ -51,20 +51,20 @@
       </div>
 
       <!-- 选择货主 -->
-      <div class="ly-flex-pack-justify pr my_huozhu app-container">
+      <div v-if="!idCode" class="ly-flex-pack-justify pr my_huozhu app-container">
         <div class="ly-flex-1 ly-flex-align-center">
           <i class="el-icon-office-building my-iocn" />
           <div class="left-right-box m20">
             <div class="dai-sytle mb10">代发货主信息:</div>
             <div class="ly-flex-align-center">
-              <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
+              <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '***' }}</span>
               <div class="ly-flex-align-center colorccc">
                 <i class="el-icon-s-custom" />
-                <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
+                <span class="name-style ml0">{{ shipmentInfo? shipmentInfo.adminName : '***' }}</span>
               </div>
               <div class="ly-flex-align-center colorccc">
                 <i class="el-icon-phone" />
-                <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
+                <span class="name-style ml0">{{ shipmentInfo?shipmentInfo.telphone : '***' }}</span>
               </div>
             </div>
           </div>
@@ -317,61 +317,49 @@
           :cb-order-freight="cbOrderFreight"
           :myisdisabled="myisdisabled"
         />
-        <el-divider />
-
-        <div class="ly-t-center">
-          <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
-          <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
-        </div>
-
       </div>
-
-
-      <div v-if="active >= 4 && !isT" class="app-container ">
-
-        <el-row>
-          <el-col :span="10">
-            <div class="release_warning">
-              <el-alert
-                title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免造成司机接单不成功的情况。"
-                type="info"
-                effect="dark"
-                :closable="false"
-                show-icon
-              />
-            </div>
-          </el-col>
-          <el-col :span="4" class="m_btn">
-            <div>
-              <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
-              <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
-            </div>
-          </el-col>
-          <el-col :span="10" />
-        </el-row>
-
-
-
-      </div>
-
-
-
-      <!-- 设置电子围栏弹窗 -->
-      <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :title="title" :lnglat="lnglat" @refresh="changeElect" />
-      <!-- 打开弹框 -->
-      <el-dialog
-        :close-on-click-modal="false"
-        title="常用地址"
-        :visible.sync="openSelectaddress"
-        width="80%"
-      >
-        <div v-if="openSelectaddress">
-          <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
-        </div>
-      </el-dialog>
-
 
     </el-form>
+
+    <div class="ly-t-center app-container">
+      <el-row>
+        <el-col :span="10">
+          <div class="release_warning">
+            <el-alert
+              title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免造成司机接单不成功的情况。"
+              type="info"
+              effect="dark"
+              :closable="false"
+              show-icon
+            />
+          </div>
+        </el-col>
+        <el-col v-if="!myisdisabled" :span="4" class="m_btn">
+          <el-button v-if="!isCreated" @click="$router.back();">返 回</el-button>
+          <el-button v-hasPermi="['transportation:order:pubilsh']" :disabled="false" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
+          <el-button :disabled="false" @click="nextFe(4)">预览(查看预估价格)</el-button>
+        </el-col>
+        <el-col v-else :span="4" class="m_btn">
+          <el-button @click="$router.back();">返 回</el-button>
+        </el-col>
+        <el-col :span="10" />
+      </el-row>
+    </div>
+
+
+    <!-- 设置电子围栏弹窗 -->
+    <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :title="title" :lnglat="lnglat" @refresh="changeElect" />
+    <!-- 打开弹框 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      title="常用地址"
+      :visible.sync="openSelectaddress"
+      width="80%"
+    >
+      <div v-if="openSelectaddress">
+        <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -483,8 +471,18 @@ export default {
 
   computed: {
 
+    /**
+     * @属性说明
+     *
+     * myisdisabled = true 表示当前是详情页面
+     * myisdisabled = false 表示编辑页面/创建/克隆
+     * isCreated - true 表示当前是克隆页面
+     * idCode = true 表示编辑/详情
+     *
+     */
+
     myisdisabled() {
-      return this.active === 4;
+      return this.isT;
     },
 
     isCreated() {
@@ -689,7 +687,8 @@ export default {
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then(res => {
-        this.shipmentInfo = res.data;
+        console.log(res, '通过货主的id获取详情');
+        this.shipmentInfo = { ...this.shipmentInfo, ...res.data };
         // console.log(this.shipmentInfo);
         // this.isZtShipment = res.data.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
         // console.log(this.isZtShipment, '要最后确认111');
@@ -738,6 +737,7 @@ export default {
           this.isZtShipment = e.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
           // 如果是大宗货主这需要请求详情
           if (!this.isZtShipment && !this.shipmentInfo) {
+            this.shipmentInfo = e;
             this.getShipmentInfo(e.code);
           } else {
             // 如果是渣土货主则需要这个
@@ -748,11 +748,13 @@ export default {
     },
 
     async nextTo(active, cb) {
-      console.log('4545454');
+      console.log(active, cb, '4545454');
       if (!cb) {
         this.basicInfor = await this.handlerPromise('OrderBasic', false);
         this.basicInfor.loadType = this.formData.tin7;
         this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+
+        console.log(this.basicInfor);
       }
       this.active = active;
     },
@@ -849,15 +851,13 @@ export default {
       this.active = active; // 3
     },
 
-    // 下一步 active =4
-    nextFe(active) {
-      if (active === 4) {
-        this.onSubmit('elForm');
-      } else if (active === 2) {
-        this.active = 2;
-      } else if (active === 3) {
-        this.active = 3;
-      }
+    // 查看预估值
+    async nextFe(active) {
+      // this.onSubmit('elForm');
+      this.active = 4;
+
+      this.lastData = await this.submAllData();
+      this.handlerEstimateCost(this.lastData);
     },
 
     // 处理预估
@@ -906,6 +906,8 @@ export default {
 
     // 发布按钮触发(1.发布接口2.成功1秒后跳转)
     onPubilsh() {
+      console.log(this.lastData);
+
       if (this.lastData) {
         this.loading = true;
 
@@ -988,16 +990,21 @@ export default {
       }
     },
 
+    // 最后提交
     onSubmit(form, active) {
       this.$refs[form].validate(async(valid) => {
         if (valid) {
-          this.lastData = await this.submAllData();
-
-          if (active && active === 3) {
-            this.onPubilsh();
-          } else {
-            this.handlerEstimateCost(this.lastData);
+          // 判断地址必填
+          const array = this.address_add.concat(this.address_xie);
+          for (let index = 0; index < array.length; index++) {
+            const refName = array[index].refName;
+            await this.$refs[refName][0]._submitForm();
           }
+
+          // 判断其他
+          this.lastData = await this.submAllData();
+          console.log('到这里说明过了------------------还有几个未判断');
+          this.onPubilsh();
         } else {
           return false;
         }
@@ -1006,9 +1013,15 @@ export default {
 
     // 整理出符合发布的数据格式
     async submAllData() {
-      if (!this.basicInfor) {
-        this.basicInfor = await this.handlerPromise('OrderBasic', false);
-      }
+      // 重新获取一遍是最新的
+      this.basicInfor = await this.handlerPromise('OrderBasic', false);
+      this.basicInfor.loadType = this.formData.tin7;
+      this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+
+
+      // if (!this.basicInfor) {
+      //   this.basicInfor = await this.handlerPromise('OrderBasic', false);
+      // }
       this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
 
@@ -1497,10 +1510,6 @@ export default {
       console.log(this.goods, '说明小类已经选了');
     },
 
-    // 返回
-    backPge() {
-      this.$router.back();
-    },
 
     _addAddress(name) {
       if (this.active >= 3) {
@@ -1673,6 +1682,7 @@ export default {
 }
 .m_btn{
   width: 200px;
+  display: flex;
 }
 .triangleR{
     width: 40px;
