@@ -183,7 +183,7 @@ export default {
     };
   },
   mounted() {
-    this.getFirstList();
+    this.getList(true);
     this.getMapping();
     this.getStatistics();
     this.getLocationByTime();
@@ -217,42 +217,23 @@ export default {
       this.getList();
     },
     /** 获取列表数据 */
-    getFirstList() {
+    async getList(isFirst) {
       if (!this.isMore) return;
       if (this.loading) return;
       this.loading = true;
-      getConsoleDeviceList(this.queryParams).then(response => {
-        if (response.data.list && response.data.list.length > 0) {
-          this.deviceList = [...this.deviceList, ...response.data.list];
-          this.total = response.data.total;
+      const { data } = await getConsoleDeviceList(this.queryParams);
+      if (data.list && data.list.length > 0) {
+        this.deviceList = [...this.deviceList, ...data.list];
+        this.total = data.total;
+        if (isFirst) {
           // 更新tab数
           this.bigTablist[0].num = this.total;
           // 获取当前全部设备定位数据
           this.getLocationParams();
           this.getLocation();
-        } else {
-          this.isMore = false;
         }
-        this.loading = false;
-      }).catch(() => {
-        this.loading = false;
-      });
-    },
-    getList() {
-      if (!this.isMore) return;
-      if (this.loading) return;
-      this.loading = true;
-      getConsoleDeviceList(this.queryParams).then(response => {
-        if (response.data.list && response.data.list.length > 0) {
-          this.deviceList = [...this.deviceList, ...response.data.list];
-          this.total = response.data.total;
-        } else {
-          this.isMore = false;
-        }
-        this.loading = false;
-      }).catch(() => {
-        this.loading = false;
-      });
+      }
+      this.loading = false;
     },
     loadMore() {
       this.queryParams.pageNum++;
@@ -266,16 +247,14 @@ export default {
       this.getList();
     },
     /** 获取统计数据 */
-    getStatistics() {
-      getConsoleDeviceStatistics().then(response => {
-        this.statisticsData = response.data;
-      });
+    async getStatistics() {
+      const { data } = await getConsoleDeviceStatistics();
+      this.statisticsData = data;
     },
     /** 获取设备全部映射字段 */
-    getMapping() {
-      getAllMapping().then(response => {
-        this.allMapping = response.data;
-      });
+    async getMapping() {
+      const { data } = await getAllMapping();
+      this.allMapping = data;
     },
     /** 获取设备位置信息-构造参数 */
     getLocationParams() {
@@ -298,17 +277,16 @@ export default {
       }
     },
     /** 获取设备位置信息-接口 */
-    getLocation() {
-      getConsoleDeviceLocation(this.factoryList).then(response => {
-        this.deviceLocation = response.data;
-        // 重新渲染地图
-        if (this.currentMap === 'point') {
-          this.changeChecked(this.checkList);
-        } else if (this.currentMap === 'track') {
-          //
-        }
-        this.setReadTime();
-      });
+    async getLocation() {
+      const { data } = await getConsoleDeviceLocation(this.factoryList);
+      this.deviceLocation = data;
+      // 重新渲染地图
+      if (this.currentMap === 'point') {
+        this.changeChecked(this.checkList);
+      } else if (this.currentMap === 'track') {
+        //
+      }
+      this.setReadTime();
     },
     /**
      * 定时获取设备位置信息
@@ -321,7 +299,6 @@ export default {
       }, this.currentTime * 1000);
       this.setReadTime();
     },
-    /** 清除定时器 */
     clearTimer() {
       if (this.timer) {
         clearInterval(this.timer);
