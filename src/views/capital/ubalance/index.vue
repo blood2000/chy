@@ -86,6 +86,14 @@
         <template #availableBalance="{row}">
           <span>{{ floor(row.availableBalance) }}</span>
         </template>
+        <!-- 本月已申请提现金额 -->
+        <template #monthMoney="{row}">
+          <span>{{ floor(row.monthMoney) }}</span>
+        </template>
+        <!-- 本月剩余可提现金额 -->
+        <template #residueMonthMoney="{row}">
+          <span>{{ floor(row.residueMonthMoney) }}</span>
+        </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime) }}</span>
         </template>

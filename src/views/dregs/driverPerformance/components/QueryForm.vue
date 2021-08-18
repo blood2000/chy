@@ -260,16 +260,13 @@
 </template>
 
 <script>
-// 已打款 - 表格组件
-// import { shipmentList } from '@/api/finance/askfor'; // 获取货主(搜索用)
-import { listForWeb } from '@/api/listForWeb/index'; // 获取渣土(搜索用)
-// import { listInfo } from '@/api/enterprise/project'; // 获取渣土项目(搜索用)
+// import { listForWeb } from '@/api/listForWeb/index'; // 获取渣土(搜索用)
 import { listInfo as teamListInfo } from '@/api/assets/team'; // 获取调度组(搜索用)
 import { disZtcList, disProjectList } from '@/api/dregs/driverPerformance'; // 获取项目
+
 import { pickerOptions } from '@/utils/dateRange';
 
 import { getUserInfo } from '@/utils/auth';
-
 
 import FilterableSelect from '@/components/FilterableSelect'; // 远程组件
 export default {
@@ -299,7 +296,7 @@ export default {
 
       // 请求接口
       // shipmentList,
-      listForWeb,
+      // listForWeb,
       // listInfo,
       teamListInfo,
       disZtcList,

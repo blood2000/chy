@@ -345,12 +345,6 @@
             type="text"
             @click="handleUpdate(row)"
           >修改批次号</el-button>
-          <el-button
-            v-if="row.elecrecepitUrl && row.elecrecepitUrl !== ''"
-            size="mini"
-            type="text"
-            @click="lookOrder(row)"
-          >查看回单</el-button>
         </template>
       </RefactorTable>
 
@@ -370,8 +364,6 @@
 
       <!-- 编辑支付批次号 -->
       <modify-batch-dialog ref="modifyBatchRef" :open.sync="modifyBatchOpen" :title="title" @refresh="getList" />
-      <!-- 查看回单 -->
-      <PdfLook :src="pdfSrc" :open.sync="pdfOpen" title="查看回单" />
     </div>
   </div>
 </template>
@@ -379,14 +371,12 @@
 <script>
 import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
-import PdfLook from '@/views/system/media/pdfLook';
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   name: 'Payrecord',
   components: {
     modifyBatchDialog,
-    PdfLook,
     TotalBar
   },
   data() {
@@ -508,9 +498,7 @@ export default {
         isSplit: undefined,
         abnormal: undefined
       },
-      exportLoading: false,
-      pdfSrc: '',
-      pdfOpen: false
+      exportLoading: false
     };
   },
 
@@ -565,7 +553,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 180,
+      width: 100,
       fixed: 'left'
     });
     this.getList();
@@ -644,11 +632,6 @@ export default {
       this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
-    },
-    /** 查看回单 */
-    lookOrder(row) {
-      this.pdfSrc = row.elecrecepitUrl;
-      this.pdfOpen = true;
     }
   }
 };
