@@ -1,5 +1,5 @@
 <template>
-  <div v-if="pubilshCode">
+  <div>
     <el-form
       ref="elForm"
       :disabled="myisdisabled"
@@ -383,6 +383,17 @@ export default {
       this.handleTin4();
     },
 
+    // 监听formData 一遍继续下一步
+    // formData: {
+    //   handler(val) {
+    //     console.log(val);
+    //     this.$refs['elForm'].validate((valid) => {
+    //       this.$emit('orderSetOK', valid);
+    //     });
+    //   },
+    //   deep: true
+    // },
+
 
     // 回填数据
     cbData: {
@@ -495,6 +506,7 @@ export default {
       },
       immediate: true
     }
+
   },
   created() {
     const { isShipment = false } = getUserInfo() || {};

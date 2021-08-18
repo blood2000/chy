@@ -1,36 +1,11 @@
 <template>
   <!-- 进行改造 -->
   <div v-loading="loading" class="m_app-container">
-
-    <div v-if="isT" class="mb20 app-container">
-      <el-radio-group v-model="orderInfo" size="small">
-        <el-radio-button label="0">货源信息</el-radio-button>
-        <el-radio-button label="1">运单信息</el-radio-button>
-      </el-radio-group>
-    </div>
-
-    <div v-show="orderInfo==='1'">
-      <WaybillInfo v-if="isT && waybillData" :waybill-data="waybillData" />
-    </div>
-
     <div v-if="isZtShipment || isDregs">
       <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" :is-t="isT" />
     </div>
 
-    <!-- 内容 -->
-    <el-form
-      v-show="orderInfo==='0'"
-      v-else
-      ref="elForm"
-      :model="formData"
-      :rules="rules"
-      size="medium"
-      label-width="110px"
-      :label-position="'left'"
-      :disabled="myisdisabled"
-    >
-
-
+    <template v-else>
       <div v-if="!authStatus" class="mb20">
         <el-alert
           title="审核通过才能发布货源, 请联系客服确认当前审核进度~!"
@@ -40,9 +15,8 @@
         />
       </div>
 
-      <!-- 头部进度栏 -->
       <div class="ly-flex-pack-center app-container">
-        <el-steps :active="active" finish-status="success" style="width: 50%">
+        <el-steps v-if="true" :active="active" finish-status="success" style="width: 50%">
           <el-step title="基本信息" />
           <el-step title="装卸货地址" />
           <el-step title="货源信息" />
@@ -50,312 +24,355 @@
         </el-steps>
       </div>
 
-      <!-- 选择货主 -->
-      <div class="ly-flex-pack-justify pr my_huozhu app-container">
-        <div class="ly-flex-1 ly-flex-align-center">
-          <i class="el-icon-office-building my-iocn" />
-          <div class="left-right-box m20">
-            <div class="dai-sytle mb10">代发货主信息:</div>
-            <div class="ly-flex-align-center">
-              <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
-              <div class="ly-flex-align-center colorccc">
-                <i class="el-icon-s-custom" />
-                <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
-              </div>
-              <div class="ly-flex-align-center colorccc">
-                <i class="el-icon-phone" />
-                <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 远程搜索 -->
-        <div class="right-box ly-flex-align-center ">
-          <div class="mr20 btn">
-            <el-form-item label="代发货主" prop="tin1">
-              <el-select
-                v-model="formData.tin1"
-                v-el-select-loadmore="loadmore"
-                filterable
-                clearable
-                remote
-                reserve-keyword
-                placeholder="请输入关键词"
-                :remote-method="remoteMethod"
-                :loading="loading1"
-                @change="handlerchange"
-              >
-                <el-option
-                  v-for="(item, index1) in shipmentList"
-                  :key="index1 + item.code"
-                  :value="item.code"
-                  :label="item.adminName"
-                >
-                  <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </div>
-        </div>
-      </div>
+      <!-- 转货信息 -->
+      <div v-if="authStatus">
 
-      <!-- 货源基本信息 -->
-      <OrderBasic
-        ref="OrderBasic"
-        v-model="isMultiGoods"
-        :pubilsh-code="formData.tin1"
-        :cb-data="cbOrderBasic"
-        :myisdisabled="myisdisabled"
-        :shipment-info="shipmentInfo"
-        :goods-big-types="goodsBigTypes"
-        :is-t="isT"
-        @goods="handlerGoos"
-      >
-        <!-- @orderSetOK="orderSetOK" -->
-
-        <!-- <div class="ly-t-center">
-          <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
-        </div> -->
-      </OrderBasic>
-
-
-      <!-- 第二步 地址的填写 -->
-      <div class="app-container">
-        <div class="header mb8">地址信息</div>
-        <el-form-item label="装卸类型" prop="tin7">
-          <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
-            <el-radio
-              v-for="(dict,index) in loadType_computed"
-              :key="dict.dictValue + '' + index"
-              :label="dict.dictValue"
-              :disabled="dict.disabled"
-            >{{ dict.dictLabel }}</el-radio>
+        <div v-if="isT" class="mb20 app-container">
+          <el-radio-group v-model="orderInfo" size="small">
+            <el-radio-button label="0">货源信息</el-radio-button>
+            <el-radio-button label="1">运单信息</el-radio-button>
           </el-radio-group>
-        </el-form-item>
-
-        <el-divider />
-
-        <div class="mb8 m-flex" style="width:66%;">
-          <div class="m_zhuanghuo">
-            装货信息
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
-          </div>
-
-          <el-button
-            v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
-            type="primary"
-            size="mini"
-            plain
-            @click="_addAddress('address_add')"
-          >添加地址</el-button>
         </div>
 
-        <div
-          v-for="(address,index) in address_add"
-          :key="address.refName + index"
-        >
-          <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
-            <div class="pa triangleR " />
-            <div class="pa m_pa">{{ index + 1 }}</div>
+        <!-- 查看详情-运单信息 -->
+        <div v-show="orderInfo==='1'">
+          <WaybillInfo v-if="isT && waybillData" :waybill-data="waybillData" />
+        </div>
 
-            <OneAddress
-              v-if="isShowAddress"
-              :ref="address.refName"
-              type="1"
-              :cb-data="address.cbData"
-              :myisdisabled="myisdisabled"
-              @getLnglat="(lnglat)=> {
-                if(isOpenTheElectronicFence){
-                  address.centerLocation = lnglat
-                  address.loadLnglat = lnglat
-                };
-              }"
-              @addSetOK="(valid)=>addSetOK(valid, 0)"
-            />
-            <!-- (valid)=>{ addressOK[0] = valid } -->
-            <div class="ly-t-right">
-              <div style="display: inline-block;">
-                <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                  设置电子围栏
-                  <el-switch
-                    v-model="address.switchRadius"
-                    :disabled="!!idCode"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    class="ml10 mr10"
-                  />
-                </label>
-                <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+        <!-- 正常 -->
+        <div v-show="orderInfo==='0'">
+          <el-form
+            ref="elForm"
+            :model="formData"
+            :rules="rules"
+            size="medium"
+            label-width="110px"
+            :label-position="'left'"
+            :disabled="myisdisabled"
+          >
+            <!-- 第一步 基本信息 -->
+            <div v-show="active ==1 || myisdisabled">
+
+              <div v-if="!isClone && (!isShipment && isCreated)" class="ly-flex-pack-justify pr my_huozhu app-container">
+
+                <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
+                  <i class="el-icon-office-building my-iocn" />
+                  <div class="left-right-box m20">
+                    <div class="dai-sytle mb10">代发货主信息:</div>
+                    <div class="ly-flex-align-center">
+                      <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
+                      <div class="ly-flex-align-center colorccc">
+                        <i class="el-icon-s-custom" />
+                        <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
+                      </div>
+                      <div class="ly-flex-align-center colorccc">
+                        <i class="el-icon-phone" />
+                        <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="right-box ly-flex-align-center ">
+                  <div class="mr20 btn">
+                    <el-form-item v-if="!isClone && (!isShipment && isCreated)" label="代发货主" prop="tin1">
+                      <el-select
+                        v-model="formData.tin1"
+                        v-el-select-loadmore="loadmore"
+                        filterable
+                        clearable
+                        remote
+                        reserve-keyword
+                        placeholder="请输入关键词"
+                        :remote-method="remoteMethod"
+                        :loading="loading1"
+                        @change="handlerchange"
+                      >
+                        <el-option
+                          v-for="(item, index1) in shipmentList"
+                          :key="index1 + item.code"
+                          :value="item.code"
+                          :label="item.adminName"
+                        >
+                          <!-- :label="item.adminName" -->
+                          <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </div>
+                </div>
+
               </div>
-              <el-button
-                v-if="address.switchRadius"
-                type="primary"
-                size="mini"
-                class="ml10"
-                plain
-                @click="handleElect(address)"
-              >围栏编辑</el-button>
-              <el-button
-                v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
-                type="danger"
-                size="mini"
-                @click="_delAddress('address_add', address.refName)"
-              >删除地址</el-button>
 
-              <el-button
-                v-if="!myisdisabled"
-                type="primary"
-                size="mini"
-                style="margin-top: -12px"
-                @click="selectAddress('address_add', address.refName)"
-              >常用地址</el-button>
+
+              <OrderBasic
+                v-if="formData.tin1"
+                ref="OrderBasic"
+                v-model="isMultiGoods"
+                :pubilsh-code="formData.tin1"
+                :cb-data="cbOrderBasic"
+                :myisdisabled="myisdisabled"
+                :shipment-info="shipmentInfo"
+                :goods-big-types="goodsBigTypes"
+                :is-t="isT"
+                @goods="handlerGoos"
+              >
+
+                <div class="ly-t-center">
+                  <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
+                </div>
+              </OrderBasic>
+
+
             </div>
-          </div>
-        </div>
 
-        <el-divider />
+            <!-- 第二步 地址的填写 -->
+            <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="app-container">
+              <div class="header mb8">地址信息</div>
+              <el-form-item label="装卸类型" prop="tin7">
+                <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
+                  <el-radio
+                    v-for="(dict,index) in loadType_computed"
+                    :key="dict.dictValue + '' + index"
+                    :label="dict.dictValue"
+                    :disabled="dict.disabled"
+                  >{{ dict.dictLabel }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
 
-        <div class="mb8 m-flex" style="width:66%">
-          <div class="m_xie">
-            卸货信息
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
-          </div>
-          <el-button
-            v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
-            type="primary"
-            size="mini"
-            plain
-            style="margin-top: -12px"
-            @click="_addAddress('address_xie')"
-          >添加地址</el-button>
-        </div>
 
-        <div
-          v-for="(address, index) in address_xie"
-          :key="address.refName + index"
-        >
-          <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
-            <div class="pa triangleR " />
-            <div class="pa m_pa">{{ index + 1 }}</div>
 
-            <OneAddress
-              v-if="isShowAddress"
-              :ref="address.refName"
-              type="2"
-              :cb-data="address.cbData"
-              :myisdisabled="myisdisabled"
-              @getLnglat="(lnglat)=> {
-                if(isOpenTheElectronicFence){
-                  address.loadLnglat = lnglat
-                  address.centerLocation = lnglat
-                }
-              }"
-              @addSetOK="(valid)=>addSetOK(valid, 1)"
-            />
-            <!-- address.centerLocation = lnglat -->
+              <el-divider />
 
-            <div class="ly-t-right">
-              <div style="display: inline-block;">
-                <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                  设置电子围栏
-                  <el-switch
-                    v-model="address.switchRadius"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    :disabled="!!idCode"
-                    class="ml10 mr10"
-                  />
-                </label>
-                <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+
+              <div class="mb8 m-flex" style="width:66%;">
+                <div class="m_zhuanghuo">
+                  装货信息
+                  <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
+                </div>
+
+                <el-button
+                  v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
+                  type="primary"
+                  size="mini"
+                  plain
+                  @click="_addAddress('address_add')"
+                >添加地址</el-button>
+
               </div>
-              <el-button
-                v-if="address.switchRadius"
-                type="primary"
-                size="mini"
-                class="ml10"
-                plain
-                @click="handleElect(address)"
-              >围栏编辑</el-button>
-              <el-button
-                v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
-                type="danger"
-                size="mini"
-                @click="_delAddress('address_xie', address.refName)"
-              >删除地址</el-button>
-              <el-button
-                v-if="!myisdisabled"
-                type="primary"
-                size="mini"
-                style="margin-top: -12px"
-                @click="selectAddress('address_xie', address.refName)"
-              >常用地址</el-button>
+
+
+
+              <div
+                v-for="(address,index) in address_add"
+                :key="address.refName + index"
+              >
+                <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
+                  <div class="pa triangleR " />
+                  <div class="pa m_pa">{{ index + 1 }}</div>
+
+                  <OneAddress
+                    v-if="isShowAddress"
+                    :ref="address.refName"
+                    type="1"
+                    :cb-data="address.cbData"
+                    :myisdisabled="myisdisabled"
+                    @getLnglat="(lnglat)=> {
+                      if(isOpenTheElectronicFence){
+                        address.centerLocation = lnglat
+                        address.loadLnglat = lnglat
+                      }
+                    }"
+                  />
+                  <div class="ly-t-right">
+                    <div style="display: inline-block;">
+                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                        设置电子围栏
+                        <el-switch
+                          v-model="address.switchRadius"
+                          :disabled="!!idCode"
+                          active-color="#13ce66"
+                          inactive-color="#ff4949"
+                          class="ml10 mr10"
+                        />
+                      </label>
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                    </div>
+                    <el-button
+                      v-if="address.switchRadius"
+                      type="primary"
+                      size="mini"
+                      class="ml10"
+                      plain
+                      @click="handleElect(address)"
+                    >围栏编辑</el-button>
+                    <el-button
+                      v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
+                      type="danger"
+                      size="mini"
+                      @click="_delAddress('address_add', address.refName)"
+                    >删除地址</el-button>
+
+                    <el-button
+                      v-if="!myisdisabled"
+                      type="primary"
+                      size="mini"
+                      style="margin-top: -12px"
+                      @click="selectAddress('address_add', address.refName)"
+                    >常用地址</el-button>
+                  </div>
+                </div>
+              </div>
+
+              <el-divider />
+
+              <div class="mb8 m-flex" style="width:66%">
+                <div class="m_xie">
+                  卸货信息
+                  <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
+                </div>
+                <el-button
+                  v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
+                  type="primary"
+                  size="mini"
+                  plain
+                  style="margin-top: -12px"
+                  @click="_addAddress('address_xie')"
+                >添加地址</el-button>
+              </div>
+
+              <div
+                v-for="(address, index) in address_xie"
+                :key="address.refName + index"
+              >
+                <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
+                  <div class="pa triangleR " />
+                  <div class="pa m_pa">{{ index + 1 }}</div>
+
+                  <OneAddress
+                    v-if="isShowAddress"
+                    :ref="address.refName"
+                    type="2"
+                    :cb-data="address.cbData"
+                    :myisdisabled="myisdisabled"
+                    @getLnglat="(lnglat)=> {
+                      if(isOpenTheElectronicFence){
+                        address.loadLnglat = lnglat
+                        address.centerLocation = lnglat
+                      }
+                    }"
+                  />
+                  <!-- address.centerLocation = lnglat -->
+
+                  <div class="ly-t-right">
+                    <div style="display: inline-block;">
+                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                        设置电子围栏
+                        <el-switch
+                          v-model="address.switchRadius"
+                          active-color="#13ce66"
+                          inactive-color="#ff4949"
+                          :disabled="!!idCode"
+                          class="ml10 mr10"
+                        />
+                      </label>
+                      <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                    </div>
+                    <el-button
+                      v-if="address.switchRadius"
+                      type="primary"
+                      size="mini"
+                      class="ml10"
+                      plain
+                      @click="handleElect(address)"
+                    >围栏编辑</el-button>
+                    <el-button
+                      v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
+                      type="danger"
+                      size="mini"
+                      @click="_delAddress('address_xie', address.refName)"
+                    >删除地址</el-button>
+                    <el-button
+                      v-if="!myisdisabled"
+                      type="primary"
+                      size="mini"
+                      style="margin-top: -12px"
+                      @click="selectAddress('address_xie', address.refName)"
+                    >常用地址</el-button>
+                  </div>
+                </div>
+              </div>
+
+              <el-divider />
+              <template v-if="!myisdisabled">
+                <div class="ly-t-center">
+                  <el-button v-if="active < 3" type="primary" plain @click="nextSe(1)">上一步</el-button>
+                  <el-button v-if="active < 3" type="primary" plain @click="nextSe(3)">下一步</el-button>
+                </div>
+              </template>
+
             </div>
-          </div>
-        </div>
 
-        <el-divider />
-        <!-- <template v-if="!myisdisabled">
-          <div class="ly-t-center">
-            <el-button v-if="active < 3" type="primary" plain @click="nextSe(1)">上一步</el-button>
-            <el-button v-if="active < 3" type="primary" plain @click="nextSe(3)">下一步</el-button>
-          </div>
-        </template> -->
-
-      </div>
-
-      <!-- 第三步 货源信息 -->
-      <div class="app-container">
-        <div class="header mb8">货源信息</div>
-        <GoodsInfo
-          ref="goodsInfo"
-          :goods="goods"
-          :goods-big-type="goodsBigType"
-          :addr-add="addr_add"
-          :addr-xie="addr_xie"
-          :pubilsh-code="formData.tin1"
-          :cb-goods-accounting="cbGoodsAccounting"
-          :cb-order-freight="cbOrderFreight"
-          :myisdisabled="myisdisabled"
-        />
-        <el-divider />
-
-        <div class="ly-t-center">
-          <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
-          <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
-        </div>
-
-      </div>
-
-
-      <div v-if="active >= 4 && !isT" class="app-container ">
-
-        <el-row>
-          <el-col :span="10">
-            <div class="release_warning">
-              <el-alert
-                title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免造成司机接单不成功的情况。"
-                type="info"
-                effect="dark"
-                :closable="false"
-                show-icon
+            <!-- 第三步 货源信息 -->
+            <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="app-container">
+              <div class="header mb8">货源信息</div>
+              <goods-info
+                ref="goodsInfo"
+                :goods="goods"
+                :goods-big-type="goodsBigType"
+                :addr-add="addr_add"
+                :addr-xie="addr_xie"
+                :pubilsh-code="formData.tin1"
+                :cb-goods-accounting="cbGoodsAccounting"
+                :cb-order-freight="cbOrderFreight"
+                :myisdisabled="myisdisabled"
               />
+              <el-divider />
+
+              <template v-if="!loading && !myisdisabled">
+                <div v-if="!loading && active === 3" class="ly-t-center">
+                  <el-button type="primary" plain @click="nextFe(2)">上一步</el-button>
+                  <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
+                  <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
+                </div>
+              </template>
+
             </div>
-          </el-col>
-          <el-col :span="4" class="m_btn">
-            <div>
-              <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
-              <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
-            </div>
-          </el-col>
-          <el-col :span="10" />
-        </el-row>
+
+          </el-form>
+
+          <div v-if="active >= 4 && !isT" class="app-container ">
+
+            <el-row>
+              <el-col :span="10">
+                <div class="release_warning">
+                  <el-alert
+                    title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免造成司机接单不成功的情况。"
+                    type="info"
+                    effect="dark"
+                    :closable="false"
+                    show-icon
+                  />
+                </div>
+              </el-col>
+              <el-col :span="4" class="m_btn">
+                <div>
+                  <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
+                  <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
+                </div>
+              </el-col>
+              <el-col :span="10" />
+            </el-row>
 
 
+
+          </div>
+          <div v-if="isT" class="ly-t-center">
+            <el-button @click="backPge">返 回</el-button>
+          </div>
+        </div>
 
       </div>
-
-
-
       <!-- 设置电子围栏弹窗 -->
       <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :title="title" :lnglat="lnglat" @refresh="changeElect" />
       <!-- 打开弹框 -->
@@ -369,9 +386,8 @@
           <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
         </div>
       </el-dialog>
+    </template>
 
-
-    </el-form>
   </div>
 </template>
 
@@ -404,9 +420,6 @@ export default {
   },
   data() {
     return {
-      // 添加2个自动判断地址是否完成
-      addressOK: [false, false],
-      //
       circledialog: false,
       title: '',
       lnglat: [],
@@ -643,24 +656,6 @@ export default {
 
 
   methods: {
-    // 商品信息回调
-    // orderSetOK(valid) {
-    //   console.log(valid);
-    // },
-
-
-    // 监听地址回调
-    addSetOK(valid, index) {
-      this.addressOK[index] = valid;
-
-      if (this.addressOK.every(e => e)) {
-        this.nextSe(3);
-      }
-    },
-
-
-
-
     handleElect(addr) {
       // console.log(addr);
 
@@ -748,7 +743,6 @@ export default {
     },
 
     async nextTo(active, cb) {
-      console.log('4545454');
       if (!cb) {
         this.basicInfor = await this.handlerPromise('OrderBasic', false);
         this.basicInfor.loadType = this.formData.tin7;
@@ -1492,9 +1486,7 @@ export default {
 
     // 处理选中的小类
     handlerGoos(data) {
-      this.goods = data.filter(e => e);
-      this.nextTo(2);
-      console.log(this.goods, '说明小类已经选了');
+      this.goods = data;
     },
 
     // 返回

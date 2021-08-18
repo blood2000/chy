@@ -226,6 +226,15 @@ export default {
       if (oldval !== '全国') {
         this.formData.addressName = '';
       }
+    },
+
+    formData: {
+      handler(val) {
+        this.$refs['elForm'].validate((valid) => {
+          this.$emit('addSetOK', valid);
+        });
+      },
+      deep: true
     }
   },
 
@@ -268,6 +277,7 @@ export default {
       this.getaddress(lnglat);
 
       // 返回选中的地址经纬度
+
       this.$emit('getLnglat', [this.floor(this.selected.lng, 6) + '', this.floor(this.selected.lat, 6) + '']);
     },
 
