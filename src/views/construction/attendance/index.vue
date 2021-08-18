@@ -44,16 +44,17 @@
           <!-- <template v-for="(item, index) in morelist[0].children" :slot="item.prop" slot-scope="{row}"> -->
           <div :key="index">
             <el-popover
-              v-if="row[item.prop] && (row[item.prop].split(';'))[1]"
+              v-if="row[item.prop] && (_splitStr(row[item.prop])[1] || _splitStr(row[item.prop])[2])"
               placement="right"
               title="考勤备注"
               width="300"
               trigger="click"
-              :content="(row[item.prop].split(';'))[1]"
+              :content="_handleContent(_splitStr(row[item.prop])[1],_splitStr(row[item.prop])[2] )"
             >
-              <div slot="reference" class="triangleL shou">{{ (row[item.prop].split(';'))[0] }}</div>
+              <!-- 有3种情况  晚,  晚;XXX   , 晚;XXX#1212,-->
+              <div slot="reference" class="triangleL shou">{{ _splitStr(row[item.prop])[0] }}</div>
             </el-popover>
-            <span v-else>{{ row[item.prop]? row[item.prop] : undefined }}</span>
+            <span v-else>{{ row[item.prop]? _splitStr(row[item.prop])[0] : undefined }}</span>
             <!-- <span v-else>{{ isTedate? (((new Date().getMonth()) >= index || row[item.prop] !== '缺')? row[item.prop]:undefined) : row[item.prop] }}</span> -->
           </div>
         </template>
@@ -657,6 +658,28 @@ export default {
       return (arr.filter(e => {
         return e[key] === value;
       }))[0];
+    },
+
+    // 分割;#字符串
+    _splitStr(str) {
+      const last = str.split('#');
+
+      const m = last[0].split(';');
+
+      return [m[0], m[1], last[1]];
+    },
+
+    // 处理一下字符串
+    _handleContent(str1, str2) {
+      let str = '';
+      if (str1 && str2) {
+        str = str1 + ' : ' + str2;
+      } else if (str1 && !str2) {
+        str = str1;
+      } else {
+        str = str2;
+      }
+      return str;
     }
 
 

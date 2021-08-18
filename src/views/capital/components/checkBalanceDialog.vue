@@ -2,13 +2,10 @@
   <!-- 查询网商余额 -->
   <el-dialog :title="title" class="i-amount" :visible="visible" width="600px" append-to-body :close-on-click-modal="false" @close="cancel">
     <el-form ref="form" :model="form" label-width="100px">
-      <!-- <el-form-item label="可用余额" prop="WSBK">
-        <el-input v-model="form.WSBK" readonly class="width90" clearable />
-      </el-form-item> -->
       <div class="amount-content ly-flex-align-center ly-flex-pack-center">
         <div>
           <p class="label mb10">可用余额：</p>
-          <p class="text">{{ form.WSBK || form.WSBK === 0 ? floor(form.WSBK) : '---' }}</p>
+          <p class="text">{{ form.balanceCount || form.balanceCount === 0 ? floor(form.balanceCount) : '---' }}</p>
         </div>
       </div>
     </el-form>
@@ -59,14 +56,7 @@ export default {
     /** 查询网商余额 */
     getBalance() {
       getBalance(this.userCode).then(response => {
-        const { bklist } = response.data;
-        if (bklist) {
-          bklist.forEach(el => {
-            if (Object.keys(el)[0] === 'WSBK') {
-              this.form.WSBK = el['WSBK'];
-            }
-          });
-        }
+        this.form.balanceCount = response.data.balanceCount;
       });
     },
     /** 取消按钮 */

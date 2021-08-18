@@ -103,10 +103,10 @@ export default {
           { required: true, message: '收票人联系电话不能为空', trigger: 'blur' },
           { validator: this.formValidate.phone, trigger: 'blur' }
         ],
-        payeeEmail: [
-          { required: true, message: '收票人电子邮箱不能为空', trigger: 'blur' },
-          { validator: this.formValidate.email, trigger: 'blur' }
-        ],
+        // payeeEmail: [
+        //   { required: true, message: '收票人电子邮箱不能为空', trigger: 'blur' },
+        //   { validator: this.formValidate.email, trigger: 'blur' }
+        // ],
         payeeAddress: [
           { required: true, message: '收票地址不能为空', trigger: 'blur' }
         ]
