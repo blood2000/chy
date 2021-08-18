@@ -378,6 +378,8 @@ import { getProvinceList } from '@/api/system/area';
 
 import ztRelease from '../components/ztRelease';
 
+import eventBus from '@/layout/components/global';
+
 
 export default {
   // name: 'Release',
@@ -601,6 +603,11 @@ export default {
   },
 
   async created() {
+    eventBus.$on('handlerRuleChang', () => {
+      // 重新获取预估值
+      this.nextFe();
+    });
+
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
     this.isZtShipment = isShipment && isZtShipment;
@@ -1008,7 +1015,6 @@ export default {
 
           this.lastData = await this.submAllData();
           console.log('到这里说明过了------------------还有几个未判断');
-          return;
           this.onPubilsh();
         } else {
           return false;

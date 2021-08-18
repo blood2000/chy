@@ -139,6 +139,9 @@ import { getDriverPrice } from '@/api/order/release.js';
 
 import RulesForm from './RulesForm';
 
+import eventBus from '@/layout/components/global';
+
+
 export default {
   name: 'AccounTing',
   components: { RulesForm },
@@ -501,6 +504,9 @@ export default {
 
 
       this.setData(filterDetailList, lossList);
+
+      // 改变规则, 去重新获取预估值
+      eventBus.$emit('handlerRuleChang');
     },
 
     // 赋值
@@ -644,7 +650,7 @@ export default {
   }
 }
 .t_box_item{
-  min-width: 570px;
+  // min-width: 570px;
   padding: 15px 0 15px 15px;
   background-color: #f2f2f2;
 }
