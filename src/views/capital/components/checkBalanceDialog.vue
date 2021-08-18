@@ -1,14 +1,12 @@
 <template>
   <!-- 查询网商余额 -->
   <el-dialog :title="title" class="i-amount" :visible="visible" width="600px" append-to-body :close-on-click-modal="false" @close="cancel">
-    <el-form ref="form" :model="form" label-width="100px">
-      <div class="amount-content ly-flex-align-center ly-flex-pack-center">
-        <div>
-          <p class="label mb10">可用余额：</p>
-          <p class="text">{{ form.balanceCount || form.balanceCount === 0 ? floor(form.balanceCount) : '---' }}</p>
-        </div>
+    <div class="amount-content ly-flex-align-center ly-flex-pack-center">
+      <div>
+        <p class="label mb10">可用余额：</p>
+        <p class="text">{{ (balanceCount || balanceCount === 0) ? floor(balanceCount) : '---' }}</p>
       </div>
-    </el-form>
+    </div>
   </el-dialog>
 </template>
 
@@ -30,9 +28,7 @@ export default {
   data() {
     return {
       // 表单参数
-      form: {
-        WSBK: null
-      }
+      balanceCount: null
     };
   },
   computed: {
@@ -56,7 +52,7 @@ export default {
     /** 查询网商余额 */
     getBalance() {
       getBalance(this.userCode).then(response => {
-        this.form.balanceCount = response.data.balanceCount;
+        this.balanceCount = response.data.balanceCount;
       });
     },
     /** 取消按钮 */
@@ -70,10 +66,7 @@ export default {
     },
     // 表单重置
     reset() {
-      this.form = {
-        WSBK: null
-      };
-      this.resetForm('form');
+      this.balanceCount = null;
     }
   }
 };
