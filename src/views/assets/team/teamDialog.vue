@@ -346,7 +346,7 @@ export default {
         identificationBeginTime: null,
         identificationEndTime: null,
         identificationEffective: null,
-        isDistribution: 0,
+        isDistribution: 1,
         distributionPercent: 100,
         openProjectDesignView: 1,
         distributionRule: 1,
