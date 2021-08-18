@@ -366,6 +366,7 @@ export default {
 
     // 监听外面 pubilshCode 变化则 全部要跟着初始化
     pubilshCode(value) {
+      if (!value) return;
       this.$refs['elForm'] && this.$refs['elForm'].resetFields();
       this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
       this.tin2_Option = []; // 小类
@@ -379,6 +380,7 @@ export default {
       ];
       this.tin6Option = [];
 
+      console.log(value);
       this.api_tin3Optin();
       this.handleTin4();
     },
@@ -397,16 +399,15 @@ export default {
 
     // 回填数据
     cbData: {
-      async handler() {
-        // 获取字典
+      async handler(val) {
         await this.api_dictInit();
-        // 获取
+
+        if (!this.cbData) return;
+
+        // 获取字典
         await this.api_tin3Optin();
         // 货集码
         await this.handleTin4();
-
-
-        if (!this.cbData) return;
         const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList, publishMode } = this.cbData;
 
 

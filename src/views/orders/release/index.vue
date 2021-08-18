@@ -562,7 +562,8 @@ export default {
     isOpenTheElectronicFence() {
       // 是否开启电子围栏(0开启 1不开启), 默认不开启
       let bool = false;
-
+      console.log(this.shipmentInfo);
+      console.log(this.$store.state.orders.tiemList.length > 0);
       if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && this.$store.state.orders.tiemList.length > 0) {
         bool = true;
       }
