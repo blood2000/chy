@@ -222,8 +222,16 @@
         <template #isPrepaid="{row}">
           <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
         </template>
+        <!-- 授信开始时间 -->
+        <template #creditStartTime="{row}">
+          <span>{{ parseTime(row.creditStartTime) }}</span>
+        </template>
+        <!-- 授信结束时间 -->
+        <template #creditEndTime="{row}">
+          <span>{{ parseTime(row.creditEndTime) }}</span>
+        </template>
         <template #createTime="{row}">
-          <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
+          <span>{{ parseTime(row.createTime) }}</span>
         </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d}') }}</span>
