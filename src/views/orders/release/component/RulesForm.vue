@@ -262,7 +262,7 @@ export default {
         e.ruleValue = this.formData[e.myName];
       });
 
-      console.log(this.formData, '触发了没???');
+      // console.log(this.formData, '触发了没???');
 
       for (const key in this.formData) {
         if (Object.hasOwnProperty.call(this.formData, key)) {
@@ -271,6 +271,7 @@ export default {
           // console.log(element);
           if (!element) {
             console.log(key);
+            this.$refs.formData.validateField(key);
           }
         }
       }
