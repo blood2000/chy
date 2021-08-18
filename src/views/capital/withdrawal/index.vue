@@ -180,6 +180,11 @@
         :selectable="selectableFn"
         @selection-change="handleSelectionChange"
       >
+        <!-- 批次号 -->
+        <!-- <template #bizNo="{row}">
+          <span v-if="(row.status === 1 || row.status === 2) && row.elecrecepitUrl && row.elecrecepitUrl !== ''" class="link-type" title="点击下载电子回单" @click="lookOrder(row)">{{ row.bizNo }}</span>
+          <span v-else>{{ row.bizNo }}</span>
+        </template> -->
         <!-- 金额 -->
         <template #money="{row}">
           <span>{{ floor(row.money) }}</span>
@@ -188,7 +193,7 @@
         <template #payStatus="{row}">
           <span>{{ selectDictLabel(payStatusOption, row.payStatus) }}</span>
         </template>
-        <!-- 申请状态 -->
+        <!-- 转账结果 -->
         <template #status="{row}">
           <i v-if="row.status === 0" class="g-icon-money mr5" />
           <i v-if="row.status === 1" class="g-icon-push mr5" />
@@ -215,14 +220,21 @@
       />
 
     </div>
+
+    <!-- 查看回单 -->
+    <PdfLook :src="pdfSrc" :open.sync="pdfOpen" title="查看回单" />
   </div>
 </template>
 
 <script>
 import { withDrawalListApi, getWithDrawalList, toCard, reject } from '@/api/capital/withdrawal';
+import PdfLook from '@/views/system/media/pdfLook';
 
 export default {
   name: 'Withdrawal',
+  components: {
+    PdfLook
+  },
   data() {
     return {
       tableColumnsConfig: [],
@@ -287,7 +299,10 @@ export default {
       importLoading: false,
       rejectLoading: false,
       errList: [],
-      sucList: []
+      sucList: [],
+      // 查看回单
+      pdfSrc: '',
+      pdfOpen: false
     };
   },
   computed: {
@@ -470,6 +485,12 @@ export default {
       } else {
         return false;
       }
+    },
+    /** 查看回单 */
+    lookOrder(row) {
+      // row.elecrecepitUrl = 'https://elec-receipt.obs.cn-south-1.myhuaweicloud.com/20210729/2021072910130010111013040011450035529955+8c89923840464e5e85e91b99ac6a8dd7.pdf';
+      this.pdfSrc = row.elecrecepitUrl;
+      this.pdfOpen = true;
     }
   }
 };
