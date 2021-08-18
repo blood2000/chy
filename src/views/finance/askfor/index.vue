@@ -200,7 +200,7 @@
         />
       </el-row>
       <!-- :max-height="isAdmin ? '380':'500'" -->
-      <RefactorPlTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="askforlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
@@ -236,7 +236,7 @@
             @click="handleTableBtn(row, 1)"
           >详情</el-button>
         </template>
-      </RefactorPlTable>
+      </RefactorTable>
 
       <pagination
         v-show="total>0"
