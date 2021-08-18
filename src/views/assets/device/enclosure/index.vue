@@ -183,7 +183,7 @@ export default {
     };
   },
   mounted() {
-    this.getList();
+    this.getFirstList();
     this.getMapping();
     this.getStatistics();
     this.getLocationByTime();
@@ -217,7 +217,7 @@ export default {
       this.getList();
     },
     /** 获取列表数据 */
-    getList() {
+    getFirstList() {
       if (!this.isMore) return;
       if (this.loading) return;
       this.loading = true;
@@ -226,12 +226,26 @@ export default {
           this.deviceList = [...this.deviceList, ...response.data.list];
           this.total = response.data.total;
           // 更新tab数
-          if (this.bigTablist[0].num == null || this.bigTablist[0].num === 0) {
-            this.bigTablist[0].num = this.total;
-          }
+          this.bigTablist[0].num = this.total;
           // 获取当前全部设备定位数据
           this.getLocationParams();
           this.getLocation();
+        } else {
+          this.isMore = false;
+        }
+        this.loading = false;
+      }).catch(() => {
+        this.loading = false;
+      });
+    },
+    getList() {
+      if (!this.isMore) return;
+      if (this.loading) return;
+      this.loading = true;
+      getConsoleDeviceList(this.queryParams).then(response => {
+        if (response.data.list && response.data.list.length > 0) {
+          this.deviceList = [...this.deviceList, ...response.data.list];
+          this.total = response.data.total;
         } else {
           this.isMore = false;
         }
