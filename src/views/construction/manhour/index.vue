@@ -136,7 +136,7 @@ export default {
         },
         {
           'label': '机主姓名',
-          'prop': 'shipmentName',
+          'prop': 'ownerName',
           'isShow': true,
           'sortNum': 20,
           'width': '120',
