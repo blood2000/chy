@@ -421,7 +421,7 @@
                   @click="handleActive(row)"
                 >重新激活</el-button>
               </el-dropdown-item>
-                <!-- v-hasPermi="['assets:driver:createWallet']"-->
+              <!-- v-hasPermi="['assets:driver:createWallet']"-->
               <el-dropdown-item>
                 <el-button
                   v-if="(!row.wsAccount || row.wsAccount == '') && row.authStatus === 3"
@@ -939,7 +939,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
-      }).then(function() {
+      }).then(() => {
         createWallet(row.code).then(response => {
           if (response.code === 200) {
             this.msgSuccess('操作成功');
