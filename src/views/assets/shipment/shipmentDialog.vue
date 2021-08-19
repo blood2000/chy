@@ -15,8 +15,9 @@
                 />
               </el-select>
             </el-form-item>-->
+       <!-- :disabled="form.id?true:false" -->
       <el-form-item label="手机号/账号" prop="telphone">
-        <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号/账号" :disabled="form.id?true:false" class="width90" clearable @blur="getUserAlreadyExist" />
+        <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable @blur="getUserAlreadyExist" />
       </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
@@ -1276,7 +1277,7 @@ export default {
     },
     getUserAlreadyExist() {
       if (this.form.telphone) {
-        getUserAlreadyExist({ phoneNum: this.form.telphone }).then(response => {
+        getUserAlreadyExist({ phoneNum: this.form.telphone, noUserCode: this.form.adminCode }).then(response => {
           if (response.code === 500) {
             this.phoneUniq = false;
             this.msgWarning(response.msg);
