@@ -24,12 +24,12 @@ export default {
   data() {
     return {
       itemList: [
-        { label: 'FM审核', icon: 'team', name: 'Team', query: { authStatus: 0 }, count: 0, hasPermi: ['a:b:c'] },
-        { label: '司机审核', icon: 'driver', name: 'Driver', query: { authStatus: 0 }, count: 0, hasPermi: [] },
-        { label: '车辆审核', icon: 'vehicle', name: 'Vehicle', query: { authStatus: 0 }, count: 0, hasPermi: [] },
-        { label: '货主审核', icon: 'shipment', name: 'Shipment', query: { authStatus: 0 }, count: 0, hasPermi: [] },
+        { label: 'FM审核', icon: 'team', name: 'Team', query: { authStatus: 0 }, count: 0, hasPermi: ['assets:team:navbtn'] },
+        { label: '司机审核', icon: 'driver', name: 'Driver', query: { authStatus: 0 }, count: 0, hasPermi: ['assets:driver:navbtn'] },
+        { label: '车辆审核', icon: 'vehicle', name: 'Vehicle', query: { authStatus: 0 }, count: 0, hasPermi: ['assets:vehicle:navbtn'] },
+        { label: '货主审核', icon: 'shipment', name: 'Shipment', query: { authStatus: 0 }, count: 0, hasPermi: ['assets:shipment:navbtn'] },
         // { label: '运输单', icon: 'order', name: 'Manages', query: {}, count: 24 }, // 5/25 产品说去掉
-        { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 0, hasPermi: [] }
+        { label: '提现申请', icon: 'withdrawal', name: 'Withdrawal', query: { status: 0 }, count: 0, hasPermi: ['capital:withdrawal:navbtn'] }
         // { label: '消息', icon: 'msg', name: 'Withdrawal', query: { status: 0 }, count: 20 }
       ],
       itemListShipment: [
