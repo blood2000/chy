@@ -423,7 +423,7 @@
               </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
-                  v-if="!row.wsAccount || row.wsAccount == ''"
+                  v-if="(!row.wsAccount || row.wsAccount == '') && row.authStatus === 3"
                   v-hasPermi="['assets:driver:createWallet']"
                   size="mini"
                   type="text"
@@ -926,22 +926,28 @@ export default {
         }
       });
     },
-    // 未绑定网商账号的行标红
+    // 审核通过，未绑定网商账号的行标红
     tableRowClassName({ row }) {
-      if (!row.wsAccount || row.wsAccount === '') {
+      if ((!row.wsAccount || row.wsAccount === '') && row.authStatus === 3) {
         return 'warning-row';
       }
       return '';
     },
     // 创建网商账号
     handleCreateWallet(row) {
-      createWallet(row.code).then(response => {
-        if (response.code === 200) {
-          this.msgSuccess('操作成功');
-          this.getList();
-        } else {
-          this.msgError(response.msg);
-        }
+      this.$confirm('是否确认创建"' + row.name + '"的网商账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        createWallet(row.code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('操作成功');
+            this.getList();
+          } else {
+            this.msgError(response.msg);
+          }
+        });
       });
     }
   }
