@@ -421,10 +421,10 @@
                   @click="handleActive(row)"
                 >重新激活</el-button>
               </el-dropdown-item>
+                <!-- v-hasPermi="['assets:driver:createWallet']"-->
               <el-dropdown-item>
                 <el-button
                   v-if="(!row.wsAccount || row.wsAccount == '') && row.authStatus === 3"
-                  v-hasPermi="['assets:driver:createWallet']"
                   size="mini"
                   type="text"
                   @click="handleCreateWallet(row)"
