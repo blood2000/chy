@@ -13,14 +13,11 @@
       <WaybillInfo v-if="isT && waybillData" :waybill-data="waybillData" />
     </div>
 
-    <div v-if="isZtShipment || isDregs">
-      <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" :is-t="isT" />
-    </div>
+
 
     <!-- 内容 -->
     <el-form
       v-show="orderInfo==='0'"
-      v-else
       ref="elForm"
       :model="formData"
       :rules="rules"
@@ -41,7 +38,7 @@
       </div>
 
       <!-- 头部进度栏 -->
-      <div class="ly-flex-pack-center app-container">
+      <div v-if="!(isZtShipment || isDregs)" class="ly-flex-pack-center app-container">
         <el-steps :active="active" finish-status="success" style="width: 50%">
           <el-step title="基本信息" />
           <el-step title="装卸货地址" />
@@ -51,7 +48,7 @@
       </div>
 
       <!-- 选择货主 -->
-      <div v-if="!idCode" class="ly-flex-pack-justify pr my_huozhu app-container">
+      <div v-if="!idCode && !isZtShipment && !isShipment" class="ly-flex-pack-justify pr my_huozhu app-container">
         <div class="ly-flex-1 ly-flex-align-center">
           <i class="el-icon-office-building my-iocn" />
           <div class="left-right-box m20">
@@ -99,201 +96,208 @@
         </div>
       </div>
 
-      <!-- 货源基本信息 -->
-      <OrderBasic
-        ref="OrderBasic"
-        v-model="isMultiGoods"
-        :pubilsh-code="formData.tin1"
-        :cb-data="cbOrderBasic"
-        :myisdisabled="myisdisabled"
-        :shipment-info="shipmentInfo"
-        :goods-big-types="goodsBigTypes"
-        :is-t="isT"
-        @goods="handlerGoos"
-      >
+
+      <div v-if="isZtShipment || isDregs">
+        <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" :is-t="isT" />
+      </div>
+
+      <template v-else>
+
+        <!-- 货源基本信息 -->
+        <OrderBasic
+          ref="OrderBasic"
+          v-model="isMultiGoods"
+          :pubilsh-code="formData.tin1"
+          :cb-data="cbOrderBasic"
+          :myisdisabled="myisdisabled"
+          :shipment-info="shipmentInfo"
+          :goods-big-types="goodsBigTypes"
+          :is-t="isT"
+          @goods="handlerGoos"
+        >
         <!-- @orderSetOK="orderSetOK" -->
 
         <!-- <div class="ly-t-center">
           <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
         </div> -->
-      </OrderBasic>
+        </OrderBasic>
 
 
-      <!-- 第二步 地址的填写 -->
-      <div class="app-container">
-        <div class="header mb8">地址信息</div>
-        <el-form-item label="装卸类型" prop="tin7">
-          <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
-            <el-radio
-              v-for="(dict,index) in loadType_computed"
-              :key="dict.dictValue + '' + index"
-              :label="dict.dictValue"
-              :disabled="dict.disabled"
-            >{{ dict.dictLabel }}</el-radio>
-          </el-radio-group>
-        </el-form-item>
+        <!-- 第二步 地址的填写 -->
+        <div class="app-container">
+          <div class="header mb8">地址信息</div>
+          <el-form-item label="装卸类型" prop="tin7">
+            <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
+              <el-radio
+                v-for="(dict,index) in loadType_computed"
+                :key="dict.dictValue + '' + index"
+                :label="dict.dictValue"
+                :disabled="dict.disabled"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
 
-        <el-divider />
+          <el-divider />
 
-        <div class="mb8 m-flex" style="width:66%;">
-          <div class="m_zhuanghuo">
-            装货信息
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
+          <div class="mb8 m-flex" style="width:66%;">
+            <div class="m_zhuanghuo">
+              装货信息
+              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
+            </div>
+
+            <el-button
+              v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
+              type="primary"
+              size="mini"
+              plain
+              @click="_addAddress('address_add')"
+            >添加地址</el-button>
           </div>
 
-          <el-button
-            v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
-            type="primary"
-            size="mini"
-            plain
-            @click="_addAddress('address_add')"
-          >添加地址</el-button>
-        </div>
+          <div
+            v-for="(address,index) in address_add"
+            :key="address.refName + index"
+          >
+            <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
+              <div class="pa triangleR " />
+              <div class="pa m_pa">{{ index + 1 }}</div>
 
-        <div
-          v-for="(address,index) in address_add"
-          :key="address.refName + index"
-        >
-          <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
-            <div class="pa triangleR " />
-            <div class="pa m_pa">{{ index + 1 }}</div>
+              <OneAddress
+                v-if="isShowAddress"
+                :ref="address.refName"
+                type="1"
+                :cb-data="address.cbData"
+                :myisdisabled="myisdisabled"
+                @getLnglat="(lnglat)=> {
+                  if(isOpenTheElectronicFence){
+                    address.centerLocation = lnglat
+                    address.loadLnglat = lnglat
+                  };
+                }"
+                @addSetOK="(valid)=>addSetOK(valid, 0)"
+              />
+              <!-- (valid)=>{ addressOK[0] = valid } -->
+              <div class="ly-t-right">
+                <div style="display: inline-block;">
+                  <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                    设置电子围栏
+                    <el-switch
+                      v-model="address.switchRadius"
+                      :disabled="!!idCode"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                      class="ml10 mr10"
+                    />
+                  </label>
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                </div>
+                <el-button
+                  v-if="address.switchRadius"
+                  type="primary"
+                  size="mini"
+                  class="ml10"
+                  plain
+                  @click="handleElect(address)"
+                >围栏编辑</el-button>
+                <el-button
+                  v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
+                  type="danger"
+                  size="mini"
+                  @click="_delAddress('address_add', address.refName)"
+                >删除地址</el-button>
 
-            <OneAddress
-              v-if="isShowAddress"
-              :ref="address.refName"
-              type="1"
-              :cb-data="address.cbData"
-              :myisdisabled="myisdisabled"
-              @getLnglat="(lnglat)=> {
-                if(isOpenTheElectronicFence){
-                  address.centerLocation = lnglat
-                  address.loadLnglat = lnglat
-                };
-              }"
-              @addSetOK="(valid)=>addSetOK(valid, 0)"
-            />
-            <!-- (valid)=>{ addressOK[0] = valid } -->
-            <div class="ly-t-right">
-              <div style="display: inline-block;">
-                <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                  设置电子围栏
-                  <el-switch
-                    v-model="address.switchRadius"
-                    :disabled="!!idCode"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    class="ml10 mr10"
-                  />
-                </label>
-                <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                <el-button
+                  v-if="!myisdisabled"
+                  type="primary"
+                  size="mini"
+                  style="margin-top: -12px"
+                  @click="selectAddress('address_add', address.refName)"
+                >常用地址</el-button>
               </div>
-              <el-button
-                v-if="address.switchRadius"
-                type="primary"
-                size="mini"
-                class="ml10"
-                plain
-                @click="handleElect(address)"
-              >围栏编辑</el-button>
-              <el-button
-                v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
-                type="danger"
-                size="mini"
-                @click="_delAddress('address_add', address.refName)"
-              >删除地址</el-button>
-
-              <el-button
-                v-if="!myisdisabled"
-                type="primary"
-                size="mini"
-                style="margin-top: -12px"
-                @click="selectAddress('address_add', address.refName)"
-              >常用地址</el-button>
             </div>
           </div>
-        </div>
 
-        <el-divider />
+          <el-divider />
 
-        <div class="mb8 m-flex" style="width:66%">
-          <div class="m_xie">
-            卸货信息
-            <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
+          <div class="mb8 m-flex" style="width:66%">
+            <div class="m_xie">
+              卸货信息
+              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
+            </div>
+            <el-button
+              v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
+              type="primary"
+              size="mini"
+              plain
+              style="margin-top: -12px"
+              @click="_addAddress('address_xie')"
+            >添加地址</el-button>
           </div>
-          <el-button
-            v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
-            type="primary"
-            size="mini"
-            plain
-            style="margin-top: -12px"
-            @click="_addAddress('address_xie')"
-          >添加地址</el-button>
-        </div>
 
-        <div
-          v-for="(address, index) in address_xie"
-          :key="address.refName + index"
-        >
-          <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
-            <div class="pa triangleR " />
-            <div class="pa m_pa">{{ index + 1 }}</div>
+          <div
+            v-for="(address, index) in address_xie"
+            :key="address.refName + index"
+          >
+            <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
+              <div class="pa triangleR " />
+              <div class="pa m_pa">{{ index + 1 }}</div>
 
-            <OneAddress
-              v-if="isShowAddress"
-              :ref="address.refName"
-              type="2"
-              :cb-data="address.cbData"
-              :myisdisabled="myisdisabled"
-              @getLnglat="(lnglat)=> {
-                if(isOpenTheElectronicFence){
-                  address.loadLnglat = lnglat
-                  address.centerLocation = lnglat
-                }
-              }"
-              @addSetOK="(valid)=>addSetOK(valid, 1)"
-            />
-            <!-- address.centerLocation = lnglat -->
+              <OneAddress
+                v-if="isShowAddress"
+                :ref="address.refName"
+                type="2"
+                :cb-data="address.cbData"
+                :myisdisabled="myisdisabled"
+                @getLnglat="(lnglat)=> {
+                  if(isOpenTheElectronicFence){
+                    address.loadLnglat = lnglat
+                    address.centerLocation = lnglat
+                  }
+                }"
+                @addSetOK="(valid)=>addSetOK(valid, 1)"
+              />
+              <!-- address.centerLocation = lnglat -->
 
-            <div class="ly-t-right">
-              <div style="display: inline-block;">
-                <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                  设置电子围栏
-                  <el-switch
-                    v-model="address.switchRadius"
-                    active-color="#13ce66"
-                    inactive-color="#ff4949"
-                    :disabled="!!idCode"
-                    class="ml10 mr10"
-                  />
-                </label>
-                <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+              <div class="ly-t-right">
+                <div style="display: inline-block;">
+                  <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                    设置电子围栏
+                    <el-switch
+                      v-model="address.switchRadius"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                      :disabled="!!idCode"
+                      class="ml10 mr10"
+                    />
+                  </label>
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                </div>
+                <el-button
+                  v-if="address.switchRadius"
+                  type="primary"
+                  size="mini"
+                  class="ml10"
+                  plain
+                  @click="handleElect(address)"
+                >围栏编辑</el-button>
+                <el-button
+                  v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
+                  type="danger"
+                  size="mini"
+                  @click="_delAddress('address_xie', address.refName)"
+                >删除地址</el-button>
+                <el-button
+                  v-if="!myisdisabled"
+                  type="primary"
+                  size="mini"
+                  style="margin-top: -12px"
+                  @click="selectAddress('address_xie', address.refName)"
+                >常用地址</el-button>
               </div>
-              <el-button
-                v-if="address.switchRadius"
-                type="primary"
-                size="mini"
-                class="ml10"
-                plain
-                @click="handleElect(address)"
-              >围栏编辑</el-button>
-              <el-button
-                v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
-                type="danger"
-                size="mini"
-                @click="_delAddress('address_xie', address.refName)"
-              >删除地址</el-button>
-              <el-button
-                v-if="!myisdisabled"
-                type="primary"
-                size="mini"
-                style="margin-top: -12px"
-                @click="selectAddress('address_xie', address.refName)"
-              >常用地址</el-button>
             </div>
           </div>
-        </div>
 
-        <el-divider />
+          <el-divider />
         <!-- <template v-if="!myisdisabled">
           <div class="ly-t-center">
             <el-button v-if="active < 3" type="primary" plain @click="nextSe(1)">上一步</el-button>
@@ -301,27 +305,29 @@
           </div>
         </template> -->
 
-      </div>
+        </div>
 
-      <!-- 第三步 货源信息 -->
-      <div class="app-container">
-        <div class="header mb8">货源信息</div>
-        <GoodsInfo
-          ref="goodsInfo"
-          :goods="goods"
-          :goods-big-type="goodsBigType"
-          :addr-add="addr_add"
-          :addr-xie="addr_xie"
-          :pubilsh-code="formData.tin1"
-          :cb-goods-accounting="cbGoodsAccounting"
-          :cb-order-freight="cbOrderFreight"
-          :myisdisabled="myisdisabled"
-        />
-      </div>
+        <!-- 第三步 货源信息 -->
+        <div class="app-container">
+          <div class="header mb8">货源信息</div>
+          <GoodsInfo
+            ref="goodsInfo"
+            :goods="goods"
+            :goods-big-type="goodsBigType"
+            :addr-add="addr_add"
+            :addr-xie="addr_xie"
+            :pubilsh-code="formData.tin1"
+            :cb-goods-accounting="cbGoodsAccounting"
+            :cb-order-freight="cbOrderFreight"
+            :myisdisabled="myisdisabled"
+          />
+        </div>
+
+      </template>
 
     </el-form>
 
-    <div class="ly-t-center app-container">
+    <div v-if="!(isZtShipment || isDregs)" class="ly-t-center app-container">
       <el-row>
         <el-col :span="10">
           <div class="release_warning">
@@ -606,7 +612,7 @@ export default {
   async created() {
     eventBus.$on('handlerRuleChang', () => {
       // 重新获取预估值
-      this.nextFe();
+      // this.nextFe();
     });
 
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
@@ -862,10 +868,10 @@ export default {
     // 查看预估值
     async nextFe(active) {
       // this.onSubmit('elForm');
-      this.active = 4;
 
       this.lastData = await this.submAllData();
       this.handlerEstimateCost(this.lastData);
+      this.active = active || 4;
     },
 
     // 处理预估
@@ -1227,6 +1233,7 @@ export default {
     async getCbdata(id) {
       this.loading = true;
       try {
+        this.active = 1;
         const { data } = await getOrderByCode(id);
 
         this.ztCbData = data;
@@ -1260,9 +1267,11 @@ export default {
 
         await this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
 
+
         await this.handlercbAddress(redisAddressList);
 
         // console.log(redisAddressList);
+
 
         await this.handerRedisOrder(redisAddressList);
 
@@ -1273,14 +1282,18 @@ export default {
 
         this.cbOrderFreight = redisOrderFreightInfoVoList;
 
+        this.active = 3;
 
-        this.active = this.isT ? 4 : 3; // 自接全展示
+        this.nextFe(4);
+
+        // 自接全展示
 
         this.isT && await this.isTEstimateCost(data);
 
         this.$nextTick(() => {
           let tiem = setTimeout(() => {
             this.loading = false;
+            // this.active = 4;
             clearTimeout(tiem);
             tiem = undefined;
           }, 1000);
@@ -1524,10 +1537,6 @@ export default {
 
 
     _addAddress(name) {
-      if (this.active >= 3) {
-        this.active = 2;
-      }
-
       this[name].push({
         refName: name + Date.now()
       });

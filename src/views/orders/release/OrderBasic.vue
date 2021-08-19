@@ -365,24 +365,28 @@ export default {
     },
 
     // 监听外面 pubilshCode 变化则 全部要跟着初始化
-    pubilshCode(value) {
-      if (!value) return;
-      this.$refs['elForm'] && this.$refs['elForm'].resetFields();
-      this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
-      this.tin2_Option = []; // 小类
-      this.tin4Option = [
-        { dictValue: '1', dictLabel: '货源大厅不可见' },
-        { dictValue: '0', dictLabel: '货源大厅可见' }
-      ];
-      this.tin5Option = [
-        { dictValue: '1', dictLabel: '是' },
-        { dictValue: '0', dictLabel: '否' }
-      ];
-      this.tin6Option = [];
+    pubilshCode: {
+      handler(value) {
+        console.log(value);
+        if (!value) return;
+        this.$refs['elForm'] && this.$refs['elForm'].resetFields();
+        this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
+        this.tin2_Option = []; // 小类
+        this.tin4Option = [
+          { dictValue: '1', dictLabel: '货源大厅不可见' },
+          { dictValue: '0', dictLabel: '货源大厅可见' }
+        ];
+        this.tin5Option = [
+          { dictValue: '1', dictLabel: '是' },
+          { dictValue: '0', dictLabel: '否' }
+        ];
+        this.tin6Option = [];
 
-      console.log(value);
-      this.api_tin3Optin();
-      this.handleTin4();
+        console.log(value);
+        this.api_tin3Optin();
+        this.handleTin4();
+      },
+      immediate: true
     },
 
     // 监听formData 一遍继续下一步
