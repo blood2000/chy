@@ -149,16 +149,16 @@ export default {
       const _this = this;
       const marker = new AMap.Marker({
         position: position,
-        icon: new AMap.Icon({
-          image: icon || '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
-          size: new AMap.Size(26, 34),
-          imageSize: new AMap.Size(26, 34)
-        }),
-        // content: '<div class="own-device-marker-car"></div>',
+        // icon: new AMap.Icon({
+        //   image: icon || '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
+        //   size: new AMap.Size(26, 34),
+        //   imageSize: new AMap.Size(26, 34)
+        // }),
+        content: '<div class="own-device-marker-car"></div>',
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(-13, -34),
-        // offset: new AMap.Pixel(-19, -28),
+        // offset: new AMap.Pixel(-13, -34),
+        offset: new AMap.Pixel(-19, -28),
         clickable: !!labelObj
       });
       marker.setMap(this.map);
@@ -191,8 +191,8 @@ export default {
       this.infoWindow = new AMap.InfoWindow({
         isCustom: false, // 使用自定义窗体
         content: info.join('<br/>'),
-        offset: new AMap.Pixel(18, -22),
-        // offset: new AMap.Pixel(18, -18),
+        // offset: new AMap.Pixel(18, -22),
+        offset: new AMap.Pixel(20, -16),
         anchor: 'middle-left'
       });
       this.infoWindow.open(this.map, marker.getPosition());
@@ -269,14 +269,16 @@ export default {
         position: this.jmTracklist[0],
         content: '<div class="own-device-line-icon start">起</div>',
         offset: new AMap.Pixel(-20, -20),
-        autoRotation: true
+        autoRotation: true,
+        zIndex: 100
       });
       this.endMarker = new AMap.Marker({
         map: this.map,
         position: this.jmTracklist[this.jmTracklist.length - 1],
         content: '<div class="own-device-line-icon end">终</div>',
         offset: new AMap.Pixel(-20, -20),
-        autoRotation: true
+        autoRotation: true,
+        zIndex: 100
       });
       // 绘制车
       this.moveMarker = new AMap.Marker({
@@ -286,7 +288,8 @@ export default {
         content: '<div class="own-device-line-car"></div>',
         offset: new AMap.Pixel(-29, -10),
         autoRotation: true,
-        angle: -90
+        angle: -90,
+        zIndex: 101
       });
       // 绑定车辆移动事件
       this.moveMarker.on('moving', function(e) {
@@ -454,6 +457,13 @@ export default {
         top: 10px;
         right: 10px !important;
       }
+    }
+    ::v-deep.amap-info-outer, ::v-deep.amap-menu-outer{
+      box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+    }
+    ::v-deep.middle-left .amap-info-sharp:after{
+      filter: blur(8px);
     }
     // 地图信息窗体样式
     ::v-deep.own-map-info-content{
