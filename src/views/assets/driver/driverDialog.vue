@@ -523,7 +523,7 @@
       <el-form-item label="审核备注" prop="authRemark">
         <el-input
           v-model="form.authRemark"
-          :disabled="!(title === '审核')"
+          :disabled="!(title === '审核' || title === '新增')"
           class="width90"
           type="textarea"
           :rows="2"
@@ -534,6 +534,7 @@
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
+      <el-button v-if="title === '新增'" v-hasPermi="['assets:driver:addAndExamine']" type="primary" :loading="buttonLoading" @click="submitForm(true)">确定并审核</el-button>
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -757,7 +758,7 @@ export default {
       });
     },
     /** 提交按钮 */
-    submitForm: function() {
+    submitForm: function(isReview) {
       // const flag = this.$refs.ChooseArea.submit();
       // 手机号判断
       if (!this.phoneUniq) {
@@ -794,6 +795,9 @@ export default {
                 } else {
                   driver.vehicleInfo = null;
                 }
+                if (isReview) {
+                  driver.authStatus = 3;
+                }
                 addDriver(Object.assign({}, driver, { fromSource: 2 })).then(response => {
                   this.buttonLoading = false;
                   this.msgSuccess('新增成功');
@@ -814,8 +818,6 @@ export default {
     },
     /** 已读 */
     authRead(data) {
-      data.identificationEffective = praseBooleanToNum(data.identificationEffective);
-      data.validPeriodAlways = praseBooleanToNum(data.validPeriodAlways);
       authRead(data).then(response => {
         this.$emit('refresh');
       });

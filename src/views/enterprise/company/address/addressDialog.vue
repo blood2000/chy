@@ -244,7 +244,7 @@ export default {
       center: [116.478928, 39.997761],
       // 地图坐标点信息
       marker: {
-        icon: 'https://ddcwl.com/static/img/admin/sys/cc.png',
+        icon: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
         position: [116.478928, 39.997761]
       },
       searchOption: {

@@ -283,7 +283,7 @@
         </el-col>
       </el-row>
 
-      <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
         <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template>
@@ -421,6 +421,15 @@
                   @click="handleActive(row)"
                 >重新激活</el-button>
               </el-dropdown-item>
+                <!-- v-hasPermi="['assets:driver:createWallet']"-->
+              <el-dropdown-item>
+                <el-button
+                  v-if="(!row.wsAccount || row.wsAccount == '') && row.authStatus === 3"
+                  size="mini"
+                  type="text"
+                  @click="handleCreateWallet(row)"
+                >创建网商账号</el-button>
+              </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
                   v-hasPermi="['assets:driver:remove']"
@@ -459,7 +468,7 @@
 </template>
 
 <script>
-import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered } from '@/api/assets/driver';
+import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered, createWallet } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
 import { waybillReportDriverByCode } from '@/api/data/report';
 import { updateUserStatusByUserCode } from '@/api/system/user';
@@ -911,9 +920,34 @@ export default {
       reRegistered({ phoneNumber: row.telphone }).then(response => {
         if (response.code === 200) {
           this.msgSuccess('操作成功');
+          this.getList();
         } else {
           this.msgError(response.msg);
         }
+      });
+    },
+    // 审核通过，未绑定网商账号的行标红
+    tableRowClassName({ row }) {
+      if ((!row.wsAccount || row.wsAccount === '') && row.authStatus === 3) {
+        return 'warning-row';
+      }
+      return '';
+    },
+    // 创建网商账号
+    handleCreateWallet(row) {
+      this.$confirm('是否确认创建"' + row.name + '"的网商账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        createWallet(row.code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('操作成功');
+            this.getList();
+          } else {
+            this.msgError(response.msg);
+          }
+        });
       });
     }
   }
@@ -923,5 +957,8 @@ export default {
 <style scoped>
 .input-width{
   width: 272px;
+}
+.el-table ::v-deep.warning-row {
+  background: #fadbd9 !important;
 }
 </style>

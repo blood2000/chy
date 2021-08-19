@@ -337,8 +337,6 @@ export default {
     //   // if(this['t_cbData_' + this.activeName].length){
     //   //   this.selections_listInfo =
     //   // }
-    //   // console.log(this.selections_listInfo, '调度者多选');
-    //   // console.log(this['t_cbData_' + this.activeName], '调度者多选');
     // },
 
     // 单选

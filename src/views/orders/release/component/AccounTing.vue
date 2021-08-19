@@ -93,7 +93,7 @@
 
           </div>
         </el-col>
-        <el-col v-if="myisdisabled && !showbudget && predictData" :span="10">
+        <el-col v-if="!showbudget && predictData" :span="10">
           <div class="t_box_item">
             <template v-if="predictData.totalEstimateMoney || predictData.totalTransportationCost || predictData.totalServiceFee">
 
@@ -138,6 +138,9 @@ import { getListRules, getRuleItem } from '@/api/enterprise/rules';
 import { getDriverPrice } from '@/api/order/release.js';
 
 import RulesForm from './RulesForm';
+
+import eventBus from '@/layout/components/global';
+
 
 export default {
   name: 'AccounTing',
@@ -320,7 +323,6 @@ export default {
     },
     redis: {
       handler(value) {
-        // console.log(value, '有什么有用的东西');
         if (!value || !value.orderFreightVo) return;
 
         if (this.formData.ruleItemId && this.formData.ruleItemId !== value.ruleCode) return;
@@ -332,7 +334,6 @@ export default {
         const { detailList, lossList } = value.orderFreightVo;
 
         // 发布货源的时候给一个默认的
-        // console.log(this.formData.ruleItemId, '谁先');
 
         // 注意 this.initData() 会在这之后再执行的l
         this.formData.ruleItemId = value.ruleCode;
@@ -403,7 +404,6 @@ export default {
     // 获取司机成交单价
     async handlerChange() {
       if (!this.formData.freightPrice || this.formData.freightPrice === 0) return;
-      // console.log(this.formData.freightPrice);
 
       try {
         const data = await getDriverPrice({
@@ -429,7 +429,6 @@ export default {
       try {
         const data = (await getListRules({ shipperCode: this.pubilshCode })).data;
         this.ruleItemIdOption = this._baozhuan(data, 'code', 'name');
-        // console.log(this.ruleItemIdOption);
         // 最早获取到规则表 this.formData.ruleItemId platformType	平台类型 1.DDC平台 2.货主 触发 handleRuleItemId isDefault
 
         const rulesItem = this.ruleItemIdOption.filter(e => {
@@ -437,7 +436,6 @@ export default {
         });
 
         if (rulesItem[0] && !this.formData.ruleItemId) {
-          // console.log(this.formData.ruleItemId, '这里触发一次');
           this.formData.ruleItemId = rulesItem[0].code;
           this.handleRuleItemId();
         }
@@ -501,6 +499,9 @@ export default {
 
 
       this.setData(filterDetailList, lossList);
+
+      // 改变规则, 去重新获取预估值
+      eventBus.$emit('handlerRuleChang');
     },
 
     // 赋值
@@ -555,8 +556,6 @@ export default {
               })).concat(this.$_ruleOhData)
             };
 
-
-            // console.log(obj);
 
             resolve({ ...obj, ruleDictValue: this.formData.ruleDictValue });
           } else {
@@ -644,7 +643,7 @@ export default {
   }
 }
 .t_box_item{
-  min-width: 570px;
+  // min-width: 570px;
   padding: 15px 0 15px 15px;
   background-color: #f2f2f2;
 }

@@ -2,7 +2,7 @@
   <div>
     <el-form
       :ref="`formData`"
-      :inline="true"
+      :inline="false"
       :model="formData"
       :rules="rules"
       :size="formConfig.size"
@@ -12,9 +12,10 @@
     >
 
       <!-- 文本框 -->
-      <div v-for="(item,index) in resettingData" :key="index" class="ly-flex">
+      <template v-for="(item,index) in resettingData">
         <el-form-item
           v-if="item.showType === '1'"
+          :key="index"
           :prop="item.myName"
           :label="item.cnName"
           :rules="[
@@ -31,18 +32,20 @@
             :placeholder="`请输入${item.cnName}`"
             controls-position="right"
             :style="{ width: '200px' }"
+            @change="change"
           />
         </el-form-item>
         <!-- 下拉框 -->
         <el-form-item
           v-if="item.showType === '3'"
+          :key="index"
           :prop="item.myName"
           :label="item.cnName"
           :rules="[
             { required: true, message: `请输入${item.cnName}`, trigger: 'change' },
           ]"
         >
-          <el-select v-model="formData[item.myName]" :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="change()">
+          <el-select v-model="formData[item.myName]" :placeholder="`请输入${item.cnName}`" :style="{ width: '200px' }" @change="$forceUpdate()">
             <el-option
               v-for="(dict,index1) in item.Option"
               :key="dict.dictValue + index1"
@@ -53,14 +56,14 @@
         </el-form-item>
 
         <!-- 单选 -->
-        <el-form-item v-if="item.showType === '4'" :prop="item.myName" :label="item.cnName">
+        <el-form-item v-if="item.showType === '4'" :key="index" :prop="item.myName" :label="item.cnName">
           <el-radio-group
             v-model="formData[item.myName]"
             size="medium"
             :rules="[
               { required: true, message: `请输入${item.cnName}`, trigger: 'change' },
             ]"
-            @change="change()"
+            @change="$forceUpdate()"
           >
             <el-radio
               v-for="(dict, index2) in item.Option"
@@ -71,7 +74,7 @@
         </el-form-item>
 
         <!-- 区间 -->
-        <div v-if="item.showType === '2'" class="ly-flex-align-center">
+        <div v-if="item.showType === '2'" :key="index" class="ly-flex">
 
           <el-form-item
             :prop="item.myName+'_0'"
@@ -92,10 +95,12 @@
               :step="0.001"
               controls-position="right"
               :style="{ width: '150px' }"
+              @change="change"
             />
             <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
-          <el-form-item>至</el-form-item>
+          <!-- <el-form-item label-width="50" label="至" /> -->
+          <div style="line-height: 34px;margin:0 10px">至</div>
           <el-form-item
             :prop="item.myName+'_1'"
             label-width="0"
@@ -114,12 +119,13 @@
               :step="0.001"
               controls-position="right"
               :style="{ width: '150px' }"
+              @change="change"
             />
             <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
         </div>
 
-      </div>
+      </template>
     </el-form>
   </div>
 </template>
@@ -204,8 +210,9 @@ export default {
 
   watch: {
     dataList: {
-      handler() {
+      handler(val) {
         this.resettingData = [];
+        this.formData = {};
         this.initData();
       },
       immediate: true,
@@ -258,22 +265,19 @@ export default {
     // 返回数据
 
     _submitForm() {
-      this.resettingData.filter(e => {
-        e.ruleValue = this.formData[e.myName];
+      const arr = this.resettingData.map(e => {
+        if (e.showType !== '2') {
+          e.ruleValue = this.formData[e.myName];
+        } else {
+          e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'] > 0 ? -this.formData[e.myName + '_0'] : this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
+        }
+        return e;
       });
+
 
       return new Promise((resolve, reject) => {
         this.$refs['formData'].validate((valid) => {
           if (valid) {
-            const arr = this.resettingData.map(e => {
-              if (e.showType !== '2') {
-                e.ruleValue = this.formData[e.myName];
-              } else {
-                e.ruleValue = JSON.stringify([this.formData[e.myName + '_0'] > 0 ? -this.formData[e.myName + '_0'] : this.formData[e.myName + '_0'], this.formData[e.myName + '_1']]);
-              }
-              return e;
-            });
-
             resolve(arr);
           } else {
             return false;
@@ -283,8 +287,9 @@ export default {
     },
 
     //
-    change() {
+    change(value) {
       this.$forceUpdate();
+      this._submitForm();
     },
 
     precisionMethod(unit1, unit) {
