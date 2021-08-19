@@ -136,6 +136,15 @@
             {{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}
           </span>
         </template>
+        <template #totalAmount="{row}">
+          <span>{{ floor(row.totalAmount) }}</span>
+        </template>
+        <template #freightAmount="{row}">
+          <span>{{ floor(row.freightAmount) }}</span>
+        </template>
+        <template #serverTotalAmount="{row}">
+          <span>{{ floor(row.serverTotalAmount) }}</span>
+        </template>
         <template #invoiceFrom="{row}">
           <span>{{ selectDictLabel(invoiceFromOptions, row.invoiceFrom) }}</span>
         </template>

@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import { jimiTrackLocation, getWebDetail } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, getWebDetail, getDevice } from '@/api/waybill/tracklist';
 import axios from 'axios';
 // import UploadImage from '@/components/UploadImage/index';
 import { handleBatchDownload } from '@/libs/trackExport';
@@ -99,9 +99,9 @@ export default {
       waybillIndex: 0,
       // jimi查询参数 mapType:GOOGOLE或BAIDU
       jimiQueryParams: {
-        beginTime: '2021-03-22 08:00:00',
-        endTime: '2021-03-22 09:00:00',
-        imeis: '867567047562525',
+        beginTime: '', // 2021-03-22 08:00:00
+        endTime: '', // 2021-03-22 09:00:00
+        imeis: '', // 867567047562525
         mapType: 'GOOGLE'
       },
       // 猎鹰查询参数
@@ -152,46 +152,96 @@ export default {
         console.error('失败===', error);
       });
     },
-    /** 获取轨迹 */
-    getTrackLocation() {
-      // 获取APP轨迹
-      axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
-        if (response.data.data) {
-          this.tracklist = response.data.data.tracks[0].points.map(response => {
-            return response.location.split(',');
-          });
-          if (this.tracklist.length !== 0) {
-            // 绘制轨迹
-            this.drawPolyline(this.tracklist);
-          } else {
-            // 获取设备轨迹
-            this.getjimi();
-          }
+    // 猎鹰循环判断开始时间与结束时间
+    getLieyingTime() {
+      this.timePoor = this.lieyingQueryParams.endtime - this.lieyingQueryParams.starttime;
+      if (this.timePoor > 24 * 60 * 60 * 1000) {
+        this.lieyingQueryParams.endtime = this.lieyingQueryParams.starttime + 24 * 60 * 60 * 1000;
+        this.getLieying();
+      } else if (this.timePoor === 0) {
+        if (this.tracklist.length !== 0) {
+          // 绘制轨迹
+          this.drawPolyline(this.tracklist);
         } else {
-          // 获取设备轨迹
-          this.getjimi();
-        }
-      });
-    },
-    getjimi() {
-      // 获取硬件轨迹
-      jimiTrackLocation(this.jimiQueryParams).then(response => {
-        // console.log(response.data);
-        if (response.data) {
-          this.tracklist = response.data.map(response => {
-            return [response.lng, response.lat];
-          });
-          if (this.tracklist.length !== 0) {
-            // 绘制轨迹
-            this.drawPolyline(this.tracklist);
+          if (this.jimiQueryParams.imeis) {
+            // 若无APP轨迹则调用设备轨迹
+            this.getJimiTime();
           } else {
             // 获取高德地图路线规划
             this.getRoutePlan();
           }
+        }
+      } else if (this.timePoor !== 0 && this.timePoor < 24 * 60 * 60 * 1000) {
+        this.getLieying();
+      }
+    },
+    // 猎鹰加载更多
+    lyLoadmore() {
+      this.lieyingQueryParams.page++;
+      this.getLieying();
+    },
+    // 调用猎鹰获取轨迹
+    getLieying() {
+      axios.get('https://tsapi.amap.com/v1/track/terminal/trsearch', { params: this.lieyingQueryParams }).then(response => {
+        if (response.data.data) {
+          if (response.data.data.tracks[0].points.length > 0) {
+            this.tracklist = [
+              ...this.tracklist,
+              ...response.data.data.tracks[0].points.map(function(response) {
+                return response.location.split(',');
+              })
+            ];
+            this.lyLoadmore();
+          } else {
+            this.lieyingQueryParams.starttime = this.lieyingQueryParams.endtime;
+            this.lieyingQueryParams.endtime = new Date(this.queryEndtime).getTime();
+            this.lieyingQueryParams.page = 1;
+            this.getLieyingTime();
+          }
+        } else {
+          if (this.jimiQueryParams.imeis) {
+            // 若无APP轨迹则调用设备轨迹
+            this.getJimiTime();
+          } else {
+            // 获取高德地图路线规划
+            this.getRoutePlan();
+          }
+        }
+      });
+    },
+    // 几米循环判断开始时间与结束时间
+    getJimiTime() {
+      this.timePoor = new Date(this.jimiQueryParams.endTime).getTime() - new Date(this.jimiQueryParams.beginTime).getTime();
+      if (this.timePoor > 24 * 60 * 60 * 1000 * 2) {
+        this.jimiQueryParams.endTime = this.parseTime(new Date(this.jimiQueryParams.beginTime).getTime() + 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.getJimi();
+      } else if (this.timePoor === 0) {
+        if (this.tracklist.length !== 0) {
+          // 绘制轨迹
+          this.drawPolyline(this.tracklist);
         } else {
           // 获取高德地图路线规划
           this.getRoutePlan();
         }
+      } else if (this.timePoor !== 0 && this.timePoor < 24 * 60 * 60 * 1000 * 2) {
+        this.getJimi();
+      }
+    },
+    // 获取硬件轨迹
+    getJimi() {
+      jimiTrackLocation(this.jimiQueryParams).then(response => {
+        // console.log(response.data);
+        if (response.data) {
+          this.tracklist = [
+            ...this.tracklist,
+            ...response.data.map(function(response) {
+              return [response.lng, response.lat];
+            })
+          ];
+        }
+        this.jimiQueryParams.beginTime = this.jimiQueryParams.endTime;
+        this.jimiQueryParams.endTime = this.parseTime(this.queryEndtime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.getJimiTime();
       });
     },
     // 获取高德地图路线规划
@@ -273,6 +323,16 @@ export default {
         that.screenshot();
       }, 500);
     },
+    // 获取车辆设备信息
+    getDeviceInfo() {
+      getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
+        if (response.data.length > 0) {
+          this.deviceInfo = response.data[0];
+          this.jimiQueryParams.imeis = response.data[0].factoryOnlyCode;
+        }
+        // console.log(this.deviceInfo);
+      });
+    },
     /** 取消按钮 */
     cancel() {
       this.close();
@@ -290,24 +350,13 @@ export default {
       // 获取运单信息，并标记装卸货地
       getWebDetail(data[this.waybillIndex].code).then(response => {
         this.wayBillInfo = response.data;
-        // 猎鹰参数赋值
-        if (this.wayBillInfo.trackNumber) {
-          const trackNumber = this.wayBillInfo.trackNumber.split('|');
-          // console.log(trackNumber);
-          this.lieyingQueryParams = {
-            ...this.lieyingQueryParams,
-            key: trackNumber[0],
-            sid: trackNumber[1], // sid为终端所属service唯一编号
-            tid: trackNumber[2], // tid为终端唯一编号
-            trid: trackNumber[3] // trid为轨迹唯一编号
-          };
-          // console.log(this.lieyingQueryParams);
-        }
+        this.getDeviceInfo();
         // 获取查询轨迹时间
         this.jimiQueryParams.beginTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
         this.jimiQueryParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
+        this.queryEndtime = new Date(this.wayBillInfo.signTime);
         // 获取装卸货地址经纬度
         if (this.wayBillInfo.waybillAddress.loadLocation) {
           this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
@@ -320,10 +369,28 @@ export default {
           this.unloadAddress = [];
         }
         if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
-          // 标记装卸货地址
-          // this.getMark();
-          // 获取路线
-          this.getTrackLocation();
+          // 猎鹰参数赋值
+          if (this.wayBillInfo.trackNumber) {
+            const trackNumber = this.wayBillInfo.trackNumber.split('|');
+            // console.log(trackNumber);
+            this.lieyingQueryParams = {
+              ...this.lieyingQueryParams,
+              key: trackNumber[0],
+              sid: trackNumber[1], // sid为终端所属service唯一编号
+              tid: trackNumber[2], // tid为终端唯一编号
+              trid: trackNumber[3] // trid为轨迹唯一编号
+            };
+            // 获取猎鹰轨迹
+            this.getLieyingTime();
+          } else {
+            if (this.jimiQueryParams.imeis) {
+              // 获取几米设备轨迹
+              this.getJimiTime();
+            } else {
+              // 获取高德地图路线规划
+              this.getRoutePlan();
+            }
+          }
         }
       });
     },
