@@ -123,7 +123,7 @@ export default {
       jmTracklist: [],
       trackInfo: {},
       //  轨迹当前状态
-      trackStart: 0, // 0未开始  1已开始
+      trackStart: 0, // 0未开始  1已开始 2已结束
       trackStatus: 1 // 0播放中  1暂停中
     };
   },
@@ -291,8 +291,13 @@ export default {
       // 绑定车辆移动事件
       this.moveMarker.on('moving', function(e) {
         _this.passedPolyline.setPath(e.passedPath);
+        // 车超出视野范围后重新定位
         if (!_this.isPointInRing(e.target.getPosition())) {
           _this.map.setCenter(e.target.getPosition());
+        }
+        // 播放结束
+        if (e.target.getPosition() === _this.jmTracklist[_this.jmTracklist.length - 1]) {
+          _this.trackStart = 2;
         }
       });
       this.map.setFitView();
