@@ -550,6 +550,11 @@
             <el-checkbox v-model="form.openTheElectronicFence">是否开启电子围栏</el-checkbox>
           </el-form-item>
         </el-col>
+        <el-col :span="11">
+          <el-form-item prop="openScanQuickLoadOrder">
+            <el-checkbox v-model="form.openScanQuickLoadOrder">是否开启扫码快捷接单装货</el-checkbox>
+          </el-form-item>
+        </el-col>
       </el-row>
       <h5 class="g-card-title g-strong mb20 ml10">
         普通货物配置
@@ -964,13 +969,17 @@ export default {
           if (this.form.openTheElectronicFence === true) {
             openTheElectronicFence = 0;
           }
+          var openScanQuickLoadOrder = 0;
+          if (this.form.openScanQuickLoadOrder === true) {
+            openScanQuickLoadOrder = 1;
+          }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
           var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg,
             reviewNoNeedUnloadImg: reviewNoNeedUnloadImg, reviewIsNeedLoadingCertificate: reviewIsNeedLoadingCertificate, openProjectDesignView: openProjectDesignView,
             isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView,
-            openTheElectronicFence: openTheElectronicFence };
+            openTheElectronicFence: openTheElectronicFence, openScanQuickLoadOrder: openScanQuickLoadOrder };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -1094,6 +1103,7 @@ export default {
         reviewIsNeedLoadingCertificate: 0,
         openAppPermissionControl: 0,
         openProjectMemberView: 0,
+        openScanQuickLoadOrder: 0,
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -1169,6 +1179,11 @@ export default {
         this.form.openProjectMemberView = true;
       } else {
         this.form.openProjectMemberView = false;
+      }
+      if (this.form.openScanQuickLoadOrder === 1) {
+        this.form.openScanQuickLoadOrder = true;
+      } else {
+        this.form.openScanQuickLoadOrder = false;
       }
       if (this.form.openTheElectronicFence === 0) {
         this.form.openTheElectronicFence = true;
