@@ -131,3 +131,12 @@ export function reRegistered(query) {
     params: query
   });
 }
+
+// 创建网商账号
+export function createWallet(data) {
+  return request({
+    url: '/assets/driver/createWallet',
+    method: 'post',
+    data: data
+  });
+}
