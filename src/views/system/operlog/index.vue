@@ -12,6 +12,16 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+          <el-form-item label="请求参数" prop="operParam">
+              <el-input
+                      v-model="queryParams.operParam"
+                      placeholder="请输入请求参数"
+                      clearable
+                      style="width: 240px;"
+                      size="small"
+                      @keyup.enter.native="handleQuery"
+              />
+          </el-form-item>
         <el-form-item label="操作人员" prop="operName">
           <el-input
             v-model="queryParams.operName"
@@ -225,7 +235,8 @@ export default {
         title: undefined,
         operName: undefined,
         businessType: undefined,
-        status: undefined
+        status: undefined,
+        operParam: undefined
       }
     };
   },
