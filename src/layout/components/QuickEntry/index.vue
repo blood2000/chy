@@ -3,7 +3,7 @@
     <div
       v-for="item in lists"
       :key="item.label"
-      v-hasPermi="item.hasPermi"
+      v-hasPermi.p="item.hasPermi"
       class="quick-entry__item ly-flex-v ly-flex-align-center ly-flex-pack-center"
       @click="handleRouter(item.name, item.query)"
     >
