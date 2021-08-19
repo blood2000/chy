@@ -291,6 +291,9 @@ export default {
       // 绑定车辆移动事件
       this.moveMarker.on('moving', function(e) {
         _this.passedPolyline.setPath(e.passedPath);
+        if (!_this.isPointInRing(e.target.getPosition())) {
+          _this.map.setCenter(e.target.getPosition());
+        }
       });
       this.map.setFitView();
     },
@@ -298,8 +301,7 @@ export default {
     startAnimation() {
       this.trackStart = 1;
       this.trackStatus = 0;
-      this.map.setCenter(this.jmTracklist[0]);
-      this.map.setZoom(12);
+      this.map.setZoomAndCenter(13, this.jmTracklist[0]);
       this.moveMarker.moveAlong(this.jmTracklist, 4000); // speed 千米/小时
     },
     pauseAnimation() {
@@ -394,6 +396,17 @@ export default {
       }).catch(() => {
         this.buttonLoading = false;
       });
+    },
+    /** 判断当前位置是否在可视区域 */
+    isPointInRing(position) {
+      const bounds = this.map.getBounds();
+      const NorthEast = bounds.getNorthEast();
+      const SouthWest = bounds.getSouthWest();
+      const SouthEast = [NorthEast.lng, SouthWest.lat];
+      const NorthWest = [SouthWest.lng, NorthEast.lat];
+      const path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]; // 将地图可视区域四个角位置按照顺序放入path，用于判断point是否在可视区域
+      const isPointInRing = AMap.GeometryUtil.isPointInRing(position, path); // 判断point是否在可视区域
+      return isPointInRing;
     }
 
 
