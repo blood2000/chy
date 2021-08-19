@@ -222,8 +222,6 @@ export default {
     cbData: {
       handler(data) {
         if (data) {
-          // console.log(data);
-
           // 调度者
           this.schedSelect = data.redisOrderSpecifiedVoList.map(e => {
             return {
@@ -268,7 +266,6 @@ export default {
 
     // 项目
     handlerProject() {
-      // console.log(this.selectData, '项目'); // 选择好的项目
       this.formData.projectCode = this.selectData.code;
       this.formData.projectName = this.selectData.projectName;
       this.openObj = false;
@@ -276,7 +273,6 @@ export default {
 
     // 调度者
     handlerScheduling() {
-      // console.log(this.schedSelect, '调度者');
       this.formData.dispatcherCodes = this.schedSelect.map(e => e.disUserCode);
       this.scheduling = false;
     },
@@ -288,8 +284,6 @@ export default {
 
     // 预览
     hangdlerYulang() {
-      // console.log(this.selectData);
-
       if (JSON.stringify(this.selectData) === '{}' || !this.selectData.latitude || !this.selectData.longitude) {
         this.$alert('请选择项目工程后才可进行设置围栏半径', '设置提示', {
           confirmButtonText: '确定'
@@ -298,7 +292,6 @@ export default {
         const { latitude, longitude } = this.selectData;
         this.lnglat = [longitude, latitude];
         this.mapDialog = true;
-        // console.log({ latitude, longitude });
       }
     },
 
@@ -306,8 +299,6 @@ export default {
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          // console.log(this.formData);
-
           const qer = {
             ...this.formData,
             'publishCode': this.shipmentInfo ? this.shipmentInfo.code : undefined,
@@ -316,8 +307,6 @@ export default {
             projectName: undefined // 不需要传这个
           };
 
-
-          // console.log(qer, 11121);
 
           const fn = this.isCbdata ? ztUpdateOrder : ztPublishOrder;
 
@@ -335,7 +324,6 @@ export default {
             this.loading = false;
           });
         } else {
-          // console.log('error submit!!');
           return false;
         }
       });

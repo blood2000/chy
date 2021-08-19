@@ -769,7 +769,7 @@ export default {
 
 
   created() {
-    console.log('页面初始化');
+    // console.log('页面初始化');
 
     const { isShipment = false, shipment = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
@@ -981,7 +981,6 @@ export default {
         };
       });
 
-      console.log(this.list, '当前列表的数据');
       this.loading = false;
     },
 
@@ -1002,12 +1001,10 @@ export default {
     },
     /** 修改按钮操作 */
     handleUpdate(row) {
-      console.log(row);
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '1' }});
     },
     /** 查看详情操作 */
     handleInfo(row) {
-      console.log(row);
       this.$router.push({ name: 'Release', query: { id: row.orderCode, t: '0' }});
     },
     /** 上下架货源 */
@@ -1159,7 +1156,6 @@ export default {
     },
     // 是否开启上传凭证
     handleIsImport(row) {
-      console.log(row);
       var scanCodeVoucher = 0;
       if (row.uploadLoadVoucher !== 1) {
         scanCodeVoucher = 1;

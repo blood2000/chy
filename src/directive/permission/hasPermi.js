@@ -7,7 +7,7 @@ import store from '@/store';
 
 export default {
   inserted(el, binding, vnode) {
-    const { value } = binding;
+    const { value, modifiers } = binding;
     const all_permission = '*:*:*';
     const permissions = store.getters && store.getters.permissions;
 
@@ -22,7 +22,9 @@ export default {
         el.parentNode && el.parentNode.removeChild(el);
       }
     } else {
-      throw new Error(`请设置操作权限标签值`);
+      if (!modifiers.p) {
+        throw new Error(`请设置操作权限标签值`);
+      }
     }
   }
 };

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="pubilshCode">
+  <div>
     <el-form
       ref="elForm"
       :disabled="myisdisabled"
@@ -337,7 +337,6 @@ export default {
     // 获取当前用户的信息
     shipmentInfo: {
       handler(info) {
-        // console.log(info);
         if (info) {
           // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
           // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
@@ -353,49 +352,49 @@ export default {
           } = info;
 
 
-          // console.log(isNeedLoadingCertificate, noNeedUnloadImg);
           this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
           this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
           this.singleSourceMultiCommodity = singleSourceMultiCommodity === 0;
-
-          // console.log(this.singleSourceMultiCommodity, '3333');
         }
       },
       immediate: true
     },
 
     // 监听外面 pubilshCode 变化则 全部要跟着初始化
-    pubilshCode(value) {
-      this.$refs['elForm'] && this.$refs['elForm'].resetFields();
-      this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
-      this.tin2_Option = []; // 小类
-      this.tin4Option = [
-        { dictValue: '1', dictLabel: '货源大厅不可见' },
-        { dictValue: '0', dictLabel: '货源大厅可见' }
-      ];
-      this.tin5Option = [
-        { dictValue: '1', dictLabel: '是' },
-        { dictValue: '0', dictLabel: '否' }
-      ];
-      this.tin6Option = [];
+    pubilshCode: {
+      handler(value) {
+        if (!value) return;
+        this.$refs['elForm'] && this.$refs['elForm'].resetFields();
+        this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
+        this.tin2_Option = []; // 小类
+        this.tin4Option = [
+          { dictValue: '1', dictLabel: '货源大厅不可见' },
+          { dictValue: '0', dictLabel: '货源大厅可见' }
+        ];
+        this.tin5Option = [
+          { dictValue: '1', dictLabel: '是' },
+          { dictValue: '0', dictLabel: '否' }
+        ];
+        this.tin6Option = [];
 
-      this.api_tin3Optin();
-      this.handleTin4();
+        this.api_tin3Optin();
+        this.handleTin4();
+      },
+      immediate: true
     },
 
 
     // 回填数据
     cbData: {
-      async handler() {
-        // 获取字典
+      async handler(val) {
         await this.api_dictInit();
-        // 获取
+
+        if (!this.cbData) return;
+
+        // 获取字典
         await this.api_tin3Optin();
         // 货集码
         await this.handleTin4();
-
-
-        if (!this.cbData) return;
         const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList, publishMode } = this.cbData;
 
 
@@ -414,8 +413,6 @@ export default {
             this.formData.tin2 = e.dictValue;
           }
         });
-
-        // console.log(this.formData);
 
         // 2.去根据大类去请求下数据
         await this.handletin2();
@@ -489,12 +486,11 @@ export default {
     'formData.tin6_1': {
       handler(value) {
         if (!value) return;
-        // console.log(value);
         this.$store.commit('orders/SET_TIMELIST', value);
-        // this.$emit('goods', [obj || this._zhaovalue(this.tin2Option, value)]);
       },
       immediate: true
     }
+
   },
   created() {
     const { isShipment = false } = getUserInfo() || {};
@@ -551,6 +547,9 @@ export default {
     async handletin2(tin3item) {
       // this.formData.tin3 = '0'; // 项目清0
 
+      // 触发一下看看是都必填的吗
+      this.$refs['elForm'] && this.$refs['elForm'].validate();
+
       this.$emit('input', this.isMultiGoods);
 
       try {
@@ -574,7 +573,6 @@ export default {
 
       if (!tin3item || !tin3item.dictValue) return;
       // 选择了项目后触发了这个, 改版后可能会没有值存在了
-      // console.log('这里也是赋值');
       this.formData.tin3 = tin3item.dictValue;
 
       if (this.isMultiGoods) {
