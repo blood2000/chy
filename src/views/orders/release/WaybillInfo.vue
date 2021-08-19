@@ -194,7 +194,6 @@ export default {
     // 获取承运码
     async getCymByCode() {
       const res = await getCym(this.orderCode);
-      // console.log(res);
       this.url = res.data;
     },
 

@@ -337,7 +337,6 @@ export default {
     // 获取当前用户的信息
     shipmentInfo: {
       handler(info) {
-        // console.log(info);
         if (info) {
           // isNeedLoadingCertificate 是否需要装货凭证 0：是 1：否
           // noNeedUnloadImg 是否不需要卸货图片  0，需要  1，不需要
@@ -353,12 +352,9 @@ export default {
           } = info;
 
 
-          // console.log(isNeedLoadingCertificate, noNeedUnloadImg);
           this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
           this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
           this.singleSourceMultiCommodity = singleSourceMultiCommodity === 0;
-
-          // console.log(this.singleSourceMultiCommodity, '3333');
         }
       },
       immediate: true
@@ -367,7 +363,6 @@ export default {
     // 监听外面 pubilshCode 变化则 全部要跟着初始化
     pubilshCode: {
       handler(value) {
-        console.log(value);
         if (!value) return;
         this.$refs['elForm'] && this.$refs['elForm'].resetFields();
         this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
@@ -382,23 +377,11 @@ export default {
         ];
         this.tin6Option = [];
 
-        console.log(value);
         this.api_tin3Optin();
         this.handleTin4();
       },
       immediate: true
     },
-
-    // 监听formData 一遍继续下一步
-    // formData: {
-    //   handler(val) {
-    //     console.log(val);
-    //     this.$refs['elForm'].validate((valid) => {
-    //       this.$emit('orderSetOK', valid);
-    //     });
-    //   },
-    //   deep: true
-    // },
 
 
     // 回填数据
@@ -430,8 +413,6 @@ export default {
             this.formData.tin2 = e.dictValue;
           }
         });
-
-        // console.log(this.formData);
 
         // 2.去根据大类去请求下数据
         await this.handletin2();
@@ -505,9 +486,7 @@ export default {
     'formData.tin6_1': {
       handler(value) {
         if (!value) return;
-        // console.log(value);
         this.$store.commit('orders/SET_TIMELIST', value);
-        // this.$emit('goods', [obj || this._zhaovalue(this.tin2Option, value)]);
       },
       immediate: true
     }
@@ -594,7 +573,6 @@ export default {
 
       if (!tin3item || !tin3item.dictValue) return;
       // 选择了项目后触发了这个, 改版后可能会没有值存在了
-      // console.log('这里也是赋值');
       this.formData.tin3 = tin3item.dictValue;
 
       if (this.isMultiGoods) {

@@ -265,27 +265,6 @@ export default {
     // 返回数据
 
     _submitForm() {
-      // 取
-      // this.resettingData.filter(e => {
-      //   e.ruleValue = this.formData[e.myName];
-      // });
-
-      // 判断如果有未填的值
-      // for (const key in this.formData) {
-      //   if (Object.hasOwnProperty.call(this.formData, key)) {
-      //     const element = this.formData[key];
-
-      //     // console.log(element);
-      //     if (!element) {
-      //       console.log(this.$refs.formData);
-      //       console.log(key);
-      //       // this.$refs.formData.validateField([key]);
-      //       // this.$refs['formData'].validate();
-      //       // this.msgError('规则值必填');
-      //     }
-      //   }
-      // }
-
       const arr = this.resettingData.map(e => {
         if (e.showType !== '2') {
           e.ruleValue = this.formData[e.myName];
@@ -294,8 +273,6 @@ export default {
         }
         return e;
       });
-
-      console.log(this.resettingData);
 
 
       return new Promise((resolve, reject) => {

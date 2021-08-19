@@ -708,7 +708,6 @@ export default {
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then(res => {
-        // console.log(res, '通过货主的id获取详情');
         this.shipmentInfo = { ...this.shipmentInfo, ...res.data }; // 详情中没有货主电话
       });
     },
@@ -913,7 +912,6 @@ export default {
 
     // 步骤6提交发(1.发布接口2.成功1秒后跳转)
     onPubilsh() {
-      // console.log(this.lastData);
       if (this.lastData) {
         this.loading = true;
         if (!this.isCreated) {
@@ -958,10 +956,8 @@ export default {
                 return obj;
               }).filter(e => e);
 
-              // console.log(addressInfo);
               const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
 
-              // console.log(dispatcherCodeList);
               const que = {
                 addressInfo,
                 dispatcherCodeList,

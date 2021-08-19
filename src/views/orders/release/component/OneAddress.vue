@@ -349,7 +349,6 @@ export default {
         this.$refs['elForm'].validate((valid) => {
           if (valid) {
             const { name = '', lat = '', lng = '' } = this.selected;
-            console.log(this.selected);
             resolve({
               districtCode: county.countyCode, // (区的code) 必填的
               district: county.countyName, // (区)
