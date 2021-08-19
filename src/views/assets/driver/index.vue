@@ -935,7 +935,7 @@ export default {
     },
     // 创建网商账号
     handleCreateWallet(row) {
-      createWallet({ driverCode: row.code }).then(response => {
+      createWallet(row.code).then(response => {
         if (response.code === 200) {
           this.msgSuccess('操作成功');
           this.getList();

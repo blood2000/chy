@@ -133,10 +133,9 @@ export function reRegistered(query) {
 }
 
 // 创建网商账号
-export function createWallet(data) {
+export function createWallet(driverCode) {
   return request({
-    url: '/assets/driver/createWallet',
-    method: 'post',
-    data: data
+    url: `/assets/driver/createWallet/${driverCode}`,
+    method: 'post'
   });
 }
