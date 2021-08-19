@@ -886,9 +886,9 @@ export default {
 </script>
 
 <style lang="scss">
-  // .el-table--scrollable-x .el-table__body-wrapper {
-  //     z-index: 1;
-  // }
+  .el-table--scrollable-x .el-table__body-wrapper {
+      z-index: 1;
+  }
 </style>
 
 <style scoped>
