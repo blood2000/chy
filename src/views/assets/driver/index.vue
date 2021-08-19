@@ -917,13 +917,19 @@ export default {
     },
     // 重新激活
     handleActive(row) {
-      reRegistered({ phoneNumber: row.telphone }).then(response => {
-        if (response.code === 200) {
-          this.msgSuccess('操作成功');
-          this.getList();
-        } else {
-          this.msgError(response.msg);
-        }
+      this.$confirm('是否确认重新激活司机"' + row.name + '"的账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        reRegistered({ phoneNumber: row.telphone }).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('操作成功');
+            this.getList();
+          } else {
+            this.msgError(response.msg);
+          }
+        });
       });
     },
     // 审核通过，未绑定网商账号的行标红
