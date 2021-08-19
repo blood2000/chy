@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
         <el-form-item label="货主" prop="searchValue">
           <el-input
             v-model.trim="queryParams.searchValue"
@@ -159,6 +159,42 @@
               :value="dict.dictValue"
             />
           </el-select>
+        </el-form-item>
+        <!-- <el-form-item label="授信情况" prop="credit">
+          <el-select
+            v-model="queryParams.credit"
+            filterable
+            clearable
+            size="small"
+            style="width: 272px"
+          >
+            <el-option
+              v-for="dict in creditOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item> -->
+        <el-form-item label="授信保护期">
+          <el-date-picker
+            v-model="queryParams.creditTimeBegin"
+            clearable
+            size="small"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            style="width: 184px"
+            placeholder="请选择"
+          /> -
+          <el-date-picker
+            v-model="queryParams.creditTimeEnd"
+            clearable
+            size="small"
+            type="datetime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            style="width: 184px"
+            placeholder="请选择"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -399,6 +435,10 @@ export default {
         { dictLabel: '启用', dictValue: '0' },
         { dictLabel: '冻结', dictValue: '1' }
       ],
+      creditOptions: [
+        { dictLabel: '已授信', dictValue: '0' },
+        { dictLabel: '未授信', dictValue: '1' }
+      ],
       // 网点字典
       branchOptions: [],
       // 票制类别字典
@@ -434,7 +474,10 @@ export default {
         createTimeBegin: undefined,
         createTimeEnd: undefined,
         branchCode: undefined,
-        status: undefined
+        status: undefined,
+        // credit: undefined,
+        creditTimeBegin: undefined,
+        creditTimeEnd: undefined
       },
       // 表单详情
       form: {},
@@ -530,6 +573,8 @@ export default {
       this.queryParams.authTimeEnd = undefined;
       this.queryParams.createTimeBegin = undefined;
       this.queryParams.createTimeEnd = undefined;
+      this.queryParams.creditTimeBegin = undefined;
+      this.queryParams.creditTimeEnd = undefined;
       this.resetForm('queryForm');
       this.queryParams.authStatus = undefined;
     },

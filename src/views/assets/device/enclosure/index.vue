@@ -36,7 +36,7 @@
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
-                <div v-if="item.data.electQuantity" class="info-groud-item">
+                <div v-if="item.data && item.data.electQuantity" class="info-groud-item">
                   <p class="label">设备电量</p>
                   <div class="ly-flex ly-flex-align-center">
                     <img v-if="item.data.electQuantity > 90" class="mr5" :src="require('@/assets/images/device/dl3'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
@@ -69,13 +69,13 @@
           <h5 class="title">地图模式</h5>
           <div class="status-groud ly-flex">
             <p><span>{{ currentTime }}</span>秒后刷新</p>
-            <p><span class="g-pot g-color-success" />在线 ({{ statisticsData.onlineNum }})</p>
-            <p><span class="g-pot g-color-error" />过期 ({{ statisticsData.expireNum }})</p>
-            <p><span class="g-pot g-color-gray" />离线 ({{ statisticsData.offlineNum }})</p>
-            <!-- <p><span class="g-pot g-color-success" />激活 ({{ statisticsData.activeNum }})</p> -->
-            <p><span class="g-pot g-color-light-gray" />未激活 ({{ statisticsData.noActiveNum }})</p>
-            <p><span class="g-pot g-color-blue" />已绑定 ({{ statisticsData.bindNum }})</p>
-            <p><span class="g-pot g-color-blue-light" />未绑定 ({{ statisticsData.noBindNum }})</p>
+            <p><span class="g-pot g-color-success" />在线 ({{ statisticsData.onlineNum ? statisticsData.onlineNum : 0 }})</p>
+            <p><span class="g-pot g-color-error" />过期 ({{ statisticsData.expireNum ? statisticsData.expireNum : 0 }})</p>
+            <p><span class="g-pot g-color-gray" />离线 ({{ statisticsData.offlineNum ? statisticsData.offlineNum : 0 }})</p>
+            <!-- <p><span class="g-pot g-color-success" />激活 ({{ statisticsData.activeNum ? statisticsData.activeNum : 0 }})</p> -->
+            <p><span class="g-pot g-color-light-gray" />未激活 ({{ statisticsData.noActiveNum ? statisticsData.noActiveNum : 0 }})</p>
+            <p><span class="g-pot g-color-blue" />已绑定 ({{ statisticsData.bindNum ? statisticsData.bindNum : 0 }})</p>
+            <p><span class="g-pot g-color-blue-light" />未绑定 ({{ statisticsData.noBindNum ? statisticsData.noBindNum : 0 }})</p>
           </div>
         </div>
         <div class="device-config-box ly-flex">
