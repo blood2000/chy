@@ -160,9 +160,9 @@
             />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="授信情况" prop="credit">
+        <el-form-item label="授信情况" prop="creditStatus">
           <el-select
-            v-model="queryParams.credit"
+            v-model="queryParams.creditStatus"
             filterable
             clearable
             size="small"
@@ -175,7 +175,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item> -->
+        </el-form-item>
         <el-form-item label="授信保护期">
           <el-date-picker
             v-model="queryParams.creditTimeBegin"
@@ -257,6 +257,10 @@
         </template>
         <template #isPrepaid="{row}">
           <span>{{ selectDictLabel(isOptions, row.isPrepaid) }}</span>
+        </template>
+        <!-- 授信金额 -->
+        <template #creditAmount="{row}">
+          <span>{{ floor(row.creditAmount) }}</span>
         </template>
         <!-- 授信开始时间 -->
         <template #creditStartTime="{row}">
@@ -436,8 +440,8 @@ export default {
         { dictLabel: '冻结', dictValue: '1' }
       ],
       creditOptions: [
-        { dictLabel: '已授信', dictValue: '0' },
-        { dictLabel: '未授信', dictValue: '1' }
+        { dictLabel: '已授信', dictValue: 1 },
+        { dictLabel: '未授信', dictValue: 2 }
       ],
       // 网点字典
       branchOptions: [],
@@ -475,7 +479,7 @@ export default {
         createTimeEnd: undefined,
         branchCode: undefined,
         status: undefined,
-        // credit: undefined,
+        creditStatus: undefined,
         creditTimeBegin: undefined,
         creditTimeEnd: undefined
       },
