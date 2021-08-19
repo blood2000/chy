@@ -160,7 +160,7 @@ aside {
   }
   &.app-container--tree{
     overflow-y: auto;
-    height: calc(100vh - 115px);
+    min-height: calc(100vh - 145px);
     margin: 0 0 15px 15px;
   }
 }
