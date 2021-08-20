@@ -56,14 +56,70 @@
             @click="handleDelete"
           >删除</el-button>
         </el-col>
-        <el-col :span="1.5" style="float: right;">
+        <el-col v-if="!iscomponent" :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
       <!-- cbDataByKeyword = {id:[112121,4545]} 7/9 chj 添加 -->
-      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" :cb-data-by-keyword="iscomponent? mycbDataByKeyword: null" @selection-change="handleSelectionChange">
+      <RefactorTable
+        v-if="iscomponent"
+        :loading="loading"
+        :data="infoList"
+        :table-columns-config="[
+          {
+            'label': '调度组名称',
+            'prop': 'disName',
+            'isShow': true,
+            'sortNum': 2,
+            'width': '120',
+            'tooltip': true
+          },
+          {
+            'label': '调度者姓名',
+            'prop': 'disUserName',
+            'isShow': true,
+            'sortNum': 2,
+            'width': '120',
+            'tooltip': true
+          },
+          {
+            'label': '调度者手机',
+            'prop': 'tel',
+            'isShow': true,
+            'sortNum': 2,
+            'width': '120',
+            'tooltip': true
+          },
+          {
+            'label': '公司名称',
+            'prop': 'companyName',
+            'isShow': true,
+            'sortNum': 2,
+            'width': '120',
+            'tooltip': true
+          },
+        ]"
+        :cb-data-by-keyword="mycbDataByKeyword"
+        @selection-change="handleSelectionChange"
+      >
+        <template #isOften="{row}">
+          <span>{{ selectDictLabel(isOftenOptions, row.isOften) }}</span>
+        </template>
+        <template #isNotInvoice="{row}">
+          <span>{{ selectDictLabel(isNotInvoiceOptions, row.isNotInvoice) }}</span>
+        </template>
+        <template #edit="{row}">
+          <el-button
+            v-hasPermi="['transportation:dispatch:del']"
+            size="mini"
+            type="text"
+            @click="handleDelete(row)"
+          >删除</el-button>
+        </template>
+      </RefactorTable>
+      <RefactorTable v-else :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #isOften="{row}">
           <span>{{ selectDictLabel(isOftenOptions, row.isOften) }}</span>
         </template>
@@ -122,7 +178,7 @@ export default {
       type: Object,
       default: null
     },
-    iscomponent: [Boolean]
+    iscomponent: [Boolean] // 其他地方引用这个组件了
   },
 
   data() {
@@ -207,8 +263,16 @@ export default {
         this.queryParams.createCode = this.shipmentCode;
       }
       listInfo(this.queryParams).then(response => {
-        this.infoList = response.data.list;
-        this.mycbDataByKeyword = this.cbDataByKeyword; // 这里触发一下赋值, 不然回填不了
+        // 其他组件调用
+        if (this.iscomponent) {
+          this.infoList = response.data.list.map(e => {
+            e.tel = e.disUserPhone.substr(0, 3) + '****' + e.disUserPhone.substr(7, 11);
+            return e;
+          });
+          this.mycbDataByKeyword = this.cbDataByKeyword; // 这里触发一下赋值, 不然回填不了
+        } else {
+          this.infoList = response.data.list;
+        }
         this.total = response.data.total;
         this.loading = false;
       });

@@ -288,7 +288,7 @@ export default {
 
     //
     change(value) {
-      this.$forceUpdate();
+      // this.$forceUpdate();
       this._submitForm();
     },
 

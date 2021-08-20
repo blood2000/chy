@@ -209,7 +209,16 @@
       class="m_elDialog"
       :close-on-click-modal="false"
     >
-      <open-dialog v-if="open" :cb-data="[...formData['tin6_' + actionIndex]]" :action-index="actionIndex" @handleSelectionChange="handleSelectionChange" />
+      <!-- <open-dialog v-if="false && open" :cb-data="[...formData['tin6_' + actionIndex]]" :action-index="actionIndex" :pubilsh-code="pubilshCode" @handleSelectionChange="handleSelectionChange" /> -->
+
+      <GroupIndex v-if="open" ref="GroupIndex" :shipment-code="pubilshCode" :iscomponent="true" :cb-data-by-keyword="cbDataByKeyword" @groupSelected="(data)=> orderSpecifiedList = data" />
+
+      <el-form-item>
+        <div class="ly-t-right">
+          <el-button type="primary" plain @click="open = false">取 消</el-button>
+          <el-button type="primary" @click="handleTin6_1">确 定</el-button>
+        </div>
+      </el-form-item>
     </el-dialog>
   </div>
 </template>
@@ -217,11 +226,14 @@
 <script>
 import { listInfo } from '@/api/enterprise/project';
 import { listStockcode } from '@/api/enterprise/stockcode';
-import OpenDialog from '../manage/component/OpenDialog';
+// import OpenDialog from '../manage/component/OpenDialog';
+
+import GroupIndex from '@/views/enterprise/group';
+
 import { getUserInfo } from '@/utils/auth';
 
 export default {
-  components: { OpenDialog },
+  components: { GroupIndex },
   props: {
     // 货主的code, 必传
     pubilshCode: {
@@ -252,7 +264,9 @@ export default {
   },
   data() {
     return {
-      orderSpecifiedList: [],
+      'orderSpecifiedList': [], // 选中的调度
+
+      // orderSpecifiedList: [],
       actionIndex: '1', // 控制弹框显示谁
       open: false,
       classList: null, // 修改的时候
@@ -331,6 +345,14 @@ export default {
 
       // 7/22 修改 -chj
       return this.singleSourceMultiCommodity;
+    },
+
+    cbDataByKeyword() {
+      let obj = {};
+      if (this.orderSpecifiedList.length) {
+        obj = { disUserCode: this.orderSpecifiedList.map(e => e.disUserCode || e.code) };
+      }
+      return obj;
     }
   },
   watch: {
@@ -430,15 +452,35 @@ export default {
         }
 
         // 4.处理调度者
-        this.orderSpecifiedList = orderSpecifiedList;
-        this.orderSpecifiedList.forEach(e => {
+        this.orderSpecifiedList = orderSpecifiedList.map(e => {
           if (e.userType + '' === '1') {
             e.code = e.teamInfoCode;
           } else {
             e.code = e.driverInfoCode;
           }
           this.actionIndex = e.userType + '';
+
+          return {
+            ...e, // 需要其他再加
+            teamName: e.teamName,
+            type: 'info',
+            userType: 1
+          };
         });
+
+
+
+        // this.orderSpecifiedList.forEach(e => {
+        //   if (e.userType + '' === '1') {
+        //     e.code = e.teamInfoCode;
+        //   } else {
+        //     e.code = e.driverInfoCode;
+        //   }
+        //   this.actionIndex = e.userType + '';
+        // });
+
+
+        console.log(this.orderSpecifiedList, '返回的数据');
         this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
         // 5.货集码只做单选处理
         // this.handleTin4();
@@ -590,49 +632,85 @@ export default {
       this.open = true;
     },
 
-    // 6. 选取后回调
-    handleSelectionChange(obj, bool) {
-      if (bool) {
-        this.formData.tin6_1 = obj['listInfo'] || [];
-        this.formData.tin6_2 = obj['listDriver'] || [];
+    // 关闭调度组弹框
+    handleTin6_1() {
+      /*
+          code: "af555489e55d4167b625af1721123389"
+          companyName: "测试支付宝运输有限公司"
+          createCode: "afd5c0dcdaab45bb9c2160eb91a443db"
+          createTime: "2021-08-16 16:00:00"
+          disName: "钓鱼台"
+          disUserCode: "48afcf3384984445a10dd631094139ef"
+          disUserName: "钓鱼台"
+          disUserPhone: "18912345678"
+          id: 292
+          isDel: 0
+          isNotInvoice: 0
+          isOften: 0
+          tel: null
+          wayCount: 437
+      */
 
-        if (this.formData.tin6_2.length > 0) {
-          this.actionIndex = '2';
-        } else {
-          this.actionIndex = '1';
-        }
+      this.formData.tin6_1 = this.orderSpecifiedList.map(e => {
+        return {
+          ...e, // 需要其他再加
+          _tinCode: e.code,
+          code: e.disUserCode,
+          teamName: e.disName,
+          type: 'info',
+          userType: 1
+        };
+      });
 
-        const listDriver = (obj['listDriver'] || []).map(e => {
-          return {
-            ...e, // 需要其他再加
-            code: e.code,
-            driverName: e.name,
-            type: 'info',
-            userType: 2
-          };
-        });
-        const listInfo = (obj['listInfo'] || []).map(e => {
-          return {
-            ...e, // 需要其他再加
-            code: e.code,
-            teamName: e.name,
-            type: 'info',
-            userType: 1
-          };
-        });
-
-
-        this.orderSpecifiedList = [...listDriver, ...listInfo];
-        this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
-
-        // if (this.formData.tin6_1.length > 1) {
-        //   this.msgInfo('调度者只能选择一个');
-        //   return;
-        // }
-      }
       this.open = false;
       this.title = '';
     },
+
+    // 6. 选取后回调
+    // handleSelectionChange(obj, bool) {
+    //   // 就处理调度组的
+    //   if (bool) {
+    //     this.formData.tin6_1 = obj['listInfo'] || [];
+
+    //     this.formData.tin6_2 = obj['listDriver'] || [];
+
+    //     if (this.formData.tin6_2.length > 0) {
+    //       this.actionIndex = '2';
+    //     } else {
+    //       this.actionIndex = '1';
+    //     }
+
+    //     const listDriver = (obj['listDriver'] || []).map(e => {
+    //       return {
+    //         ...e, // 需要其他再加
+    //         code: e.code,
+    //         driverName: e.name,
+    //         type: 'info',
+    //         userType: 2
+    //       };
+    //     });
+    //     const listInfo = (obj['listInfo'] || []).map(e => {
+    //       return {
+    //         ...e, // 需要其他再加
+    //         code: e.code,
+    //         teamName: e.name,
+    //         type: 'info',
+    //         userType: 1
+    //       };
+    //     });
+
+
+    //     this.orderSpecifiedList = [...listDriver, ...listInfo];
+    //     this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
+
+    //     // if (this.formData.tin6_1.length > 1) {
+    //     //   this.msgInfo('调度者只能选择一个');
+    //     //   return;
+    //     // }
+    //   }
+    //   this.open = false;
+    //   this.title = '';
+    // },
 
     // 7. 发布位置切换
     async handleTin4() {
@@ -730,7 +808,18 @@ export default {
     closable(index) {
       this.orderSpecifiedList.splice(index, 1);
 
-      this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
+
+
+      this.formData['tin6_1'] = this.orderSpecifiedList.map(e => {
+        return {
+          ...e, // 需要其他再加
+          teamName: e.disName || e.teamName
+        };
+      });
+
+      console.log(this.formData['tin6_1']);
+
+      console.log(this.actionIndex);
     },
 
     // 处理小类传入[1,2] =>
