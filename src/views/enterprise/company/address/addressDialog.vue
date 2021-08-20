@@ -17,6 +17,18 @@
             <el-input v-model="form.contactPhone" placeholder="请输入手机号码" class="width100" clearable />
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="地址类型" prop="addressType">
+            <el-select v-model="form.addressType" placeholder="请选择地址类型" style="width: 100%">
+              <el-option
+                v-for="item in addressTypeOptions"
+                :key="item.dictValue"
+                :label="item.dictLabel"
+                :value="item.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
         <el-col v-if="form.code" :span="12">
           <el-form-item label="地址状态" prop="status">
             <el-radio-group v-model="form.status">
@@ -268,7 +280,12 @@ export default {
         'status': '0',
         'dictPid': '',
         'dictType': 'goodsType'
-      }
+      },
+      // 地址类型字典
+      addressTypeOptions: [
+        { dictLabel: '装货地址', dictValue: '1' },
+        { dictLabel: '卸货地址', dictValue: '2' }
+      ]
     };
   },
   computed: {
@@ -361,7 +378,8 @@ export default {
         districtCode: null,
         collisionRadius: 1000,
         commodityCategoryCode: null,
-        commoditySubclassCodes: null
+        commoditySubclassCodes: null,
+        addressType: null
       };
       this.resetForm('form');
       this.cityCodeOptions = [];
