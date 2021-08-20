@@ -209,16 +209,19 @@
       class="m_elDialog"
       :close-on-click-modal="false"
     >
+      <!-- 掉用原来的 -->
       <!-- <open-dialog v-if="false && open" :cb-data="[...formData['tin6_' + actionIndex]]" :action-index="actionIndex" :pubilsh-code="pubilshCode" @handleSelectionChange="handleSelectionChange" /> -->
 
-      <GroupIndex v-if="open" ref="GroupIndex" :shipment-code="pubilshCode" :iscomponent="true" :cb-data-by-keyword="cbDataByKeyword" @groupSelected="(data)=> orderSpecifiedList = data" />
+      <div v-if="open">
+        <GroupIndex ref="GroupIndex" :shipment-code="pubilshCode" :iscomponent="true" :cb-data-by-keyword="cbDataByKeyword" @groupSelected="(data)=> orderSpecifiedList = data" />
 
-      <el-form-item>
-        <div class="ly-t-right">
-          <el-button type="primary" plain @click="open = false">取 消</el-button>
-          <el-button type="primary" @click="handleTin6_1">确 定</el-button>
-        </div>
-      </el-form-item>
+        <el-form-item>
+          <div class="ly-t-right">
+            <el-button type="primary" plain @click="open = false">取 消</el-button>
+            <el-button type="primary" @click="handleTin6_1">确 定</el-button>
+          </div>
+        </el-form-item>
+      </div>
     </el-dialog>
   </div>
 </template>
@@ -233,7 +236,9 @@ import GroupIndex from '@/views/enterprise/group';
 import { getUserInfo } from '@/utils/auth';
 
 export default {
-  components: { GroupIndex },
+  components: {
+    // OpenDialog,
+    GroupIndex },
   props: {
     // 货主的code, 必传
     pubilshCode: {
@@ -667,50 +672,50 @@ export default {
     },
 
     // 6. 选取后回调
-    // handleSelectionChange(obj, bool) {
-    //   // 就处理调度组的
-    //   if (bool) {
-    //     this.formData.tin6_1 = obj['listInfo'] || [];
+    handleSelectionChange(obj, bool) {
+      // 就处理调度组的
+      if (bool) {
+        this.formData.tin6_1 = obj['listInfo'] || [];
 
-    //     this.formData.tin6_2 = obj['listDriver'] || [];
+        this.formData.tin6_2 = obj['listDriver'] || [];
 
-    //     if (this.formData.tin6_2.length > 0) {
-    //       this.actionIndex = '2';
-    //     } else {
-    //       this.actionIndex = '1';
-    //     }
+        if (this.formData.tin6_2.length > 0) {
+          this.actionIndex = '2';
+        } else {
+          this.actionIndex = '1';
+        }
 
-    //     const listDriver = (obj['listDriver'] || []).map(e => {
-    //       return {
-    //         ...e, // 需要其他再加
-    //         code: e.code,
-    //         driverName: e.name,
-    //         type: 'info',
-    //         userType: 2
-    //       };
-    //     });
-    //     const listInfo = (obj['listInfo'] || []).map(e => {
-    //       return {
-    //         ...e, // 需要其他再加
-    //         code: e.code,
-    //         teamName: e.name,
-    //         type: 'info',
-    //         userType: 1
-    //       };
-    //     });
+        const listDriver = (obj['listDriver'] || []).map(e => {
+          return {
+            ...e, // 需要其他再加
+            code: e.code,
+            driverName: e.name,
+            type: 'info',
+            userType: 2
+          };
+        });
+        const listInfo = (obj['listInfo'] || []).map(e => {
+          return {
+            ...e, // 需要其他再加
+            code: e.code,
+            teamName: e.name,
+            type: 'info',
+            userType: 1
+          };
+        });
 
 
-    //     this.orderSpecifiedList = [...listDriver, ...listInfo];
-    //     this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
+        this.orderSpecifiedList = [...listDriver, ...listInfo];
+        this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
 
-    //     // if (this.formData.tin6_1.length > 1) {
-    //     //   this.msgInfo('调度者只能选择一个');
-    //     //   return;
-    //     // }
-    //   }
-    //   this.open = false;
-    //   this.title = '';
-    // },
+        // if (this.formData.tin6_1.length > 1) {
+        //   this.msgInfo('调度者只能选择一个');
+        //   return;
+        // }
+      }
+      this.open = false;
+      this.title = '';
+    },
 
     // 7. 发布位置切换
     async handleTin4() {
