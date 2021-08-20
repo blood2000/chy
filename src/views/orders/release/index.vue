@@ -43,7 +43,7 @@
       </div>
 
       <!-- 选择货主(货主身份不显示 idCode=true (编辑或者详情不显示) isZtShipment=false isShipment=false) -->
-      <div v-if="!idCode && !isZtShipment && !isShipment" class="ly-flex-pack-justify pr my_huozhu app-container">
+      <div v-if="!idCode && !isShipment" class="ly-flex-pack-justify pr my_huozhu app-container">
         <div class="ly-flex-1 ly-flex-align-center">
           <i class="el-icon-office-building my-iocn" />
           <div class="left-right-box m20">
