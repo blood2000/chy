@@ -12,8 +12,8 @@ export function listNotice(query) {
 export function listNoticeAll(query) {
   return request({
     url: '/system/notice/listAll',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   });
 }
 

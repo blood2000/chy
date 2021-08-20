@@ -38,6 +38,8 @@ import RefactorPlTable from '@/components/Ddc/Tin/RefactorPlTable.vue';
 import TableDropdown from '@/components/Dropdown';
 // 自定义表格工具扩展
 import RightToolbar from '@/components/RightToolbar';
+
+import { formatDate } from '@/utils/date.js';
 // 代码高亮插件
 import hljs from 'highlight.js';
 import 'highlight.js/styles/github-gist.css';
@@ -109,6 +111,7 @@ Vue.prototype.floor = floor;
 Vue.prototype.fixed = fixed;
 Vue.prototype.wgs84_to_gcj02 = wgs84_to_gcj02;
 Vue.prototype.domtoimage = domtoimage;
+Vue.prototype.formatDate = formatDate;
 
 import VideoPlayer from 'vue-video-player';
 require('video.js/dist/video-js.css');

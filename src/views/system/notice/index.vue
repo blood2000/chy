@@ -91,6 +91,11 @@
           prop="status"
           :formatter="statusFormat"
         />
+          <el-table-column label="过期时间" align="center" prop="expirationTime">
+              <template slot-scope="scope">
+                  <span>{{ parseTime(scope.row.expirationTime, '{y}-{m}-{d}') }}</span>
+              </template>
+          </el-table-column>
         <el-table-column label="创建者" align="center" prop="createBy" />
         <el-table-column label="创建时间" align="center" prop="createTime">
           <template slot-scope="scope">
@@ -144,7 +149,7 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="24">
+            <el-col :span="12">
               <el-form-item label="状态">
                 <el-radio-group v-model="form.status">
                   <el-radio
@@ -155,6 +160,15 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
+              <el-col :span="12">
+                  <el-form-item label="过期日期" prop="expirationTime">
+                      <el-date-picker
+                              v-model="form.expirationTime"
+                              type="date"
+                              placeholder="选择日期">
+                      </el-date-picker>
+                  </el-form-item>
+              </el-col>
             <el-col :span="24">
               <el-form-item label="内容">
                 <editor v-model="form.noticeContent" :min-height="192" />
@@ -265,7 +279,8 @@ export default {
         noticeTitle: undefined,
         noticeType: undefined,
         noticeContent: undefined,
-        status: '0'
+        status: '0',
+        expirationTime: undefined
       };
       this.resetForm('form');
     },
@@ -306,6 +321,9 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.buttonLoading = true;
+          if (this.form.expirationTime) {
+            this.form.expirationTime = this.formatDate(new Date(this.form.expirationTime), 'yyyy-MM-dd');
+          }
           if (this.form.noticeId !== undefined) {
             updateNotice(this.form).then(response => {
               this.msgSuccess('修改成功');
