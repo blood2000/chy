@@ -30,6 +30,16 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="地址类型" prop="addressType">
+          <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small">
+            <el-option
+              v-for="dict in addressTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <!-- <el-form-item label="联系人" prop="contact">
         <el-input
           v-model="queryParams.contact"
@@ -100,6 +110,12 @@
           </template>
         </el-table-column> -->
         <el-table-column label="地址别名" align="center" prop="addressAlias" />
+        <el-table-column label="地址类型" align="center" prop="addressType">
+          <template slot-scope="scope">
+            <template v-if="scope.row.addressType == '1'"><el-tag style="margin-right:10px; padding: 0 8px;">装</el-tag>装货地址</template>
+            <template v-if="scope.row.addressType == '2'"><el-tag style="margin-right:10px; padding: 0 8px;" type="success">卸</el-tag>卸货地址</template>
+          </template>
+        </el-table-column>
         <el-table-column label="手机号码" align="center" prop="contactPhone" />
         <el-table-column label="联系人" align="center" prop="contact" />
         <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
@@ -185,8 +201,14 @@ export default {
         pageSize: 10,
         addressAlias: undefined,
         addressName: undefined,
-        status: undefined
-      }
+        status: undefined,
+        addressType: undefined
+      },
+      // 地址类型字典
+      addressTypeOptions: [
+        { dictLabel: '装货地址', dictValue: '1' },
+        { dictLabel: '卸货地址', dictValue: '2' }
+      ]
     };
   },
   watch: {
