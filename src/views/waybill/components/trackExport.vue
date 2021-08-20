@@ -329,46 +329,12 @@ export default {
         if (response.data.length > 0) {
           this.deviceInfo = response.data[0];
           this.jimiQueryParams.imeis = response.data[0].factoryOnlyCode;
-        }
-        // console.log(this.deviceInfo);
-      });
-    },
-    /** 取消按钮 */
-    cancel() {
-      this.close();
-    },
-    // 关闭弹窗
-    close() {
-      this.$emit('update:open', false);
-      this.loadAddress = [];
-      this.unloadAddress = [];
-      this.tracklist = [];
-    },
-    // 表单赋值
-    setForm(data) {
-      // this.images = [];
-      // 获取运单信息，并标记装卸货地
-      getWebDetail(data[this.waybillIndex].code).then(response => {
-        this.wayBillInfo = response.data;
-        this.getDeviceInfo();
-        // 获取查询轨迹时间
-        this.jimiQueryParams.beginTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
-        this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
-        this.jimiQueryParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
-        this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
-        this.queryEndtime = new Date(this.wayBillInfo.signTime);
-        // 获取装卸货地址经纬度
-        if (this.wayBillInfo.waybillAddress.loadLocation) {
-          this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
         } else {
-          this.loadAddress = [];
+          this.jimiQueryParams.imeis = null;
         }
-        if (this.wayBillInfo.waybillAddress.unloadLocation) {
-          this.unloadAddress = this.wayBillInfo.waybillAddress.unloadLocation.replace('(', '').replace(')', '').split(',');
-        } else {
-          this.unloadAddress = [];
-        }
+        console.log(this.loadAddress, this.unloadAddress);
         if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
+          console.log(this.loadAddress, this.unloadAddress);
           // 猎鹰参数赋值
           if (this.wayBillInfo.trackNumber) {
             const trackNumber = this.wayBillInfo.trackNumber.split('|');
@@ -391,6 +357,54 @@ export default {
               this.getRoutePlan();
             }
           }
+        } else {
+          setTimeout(() => {
+            this.screenshot();
+          }, 500);
+        }
+        // console.log(this.deviceInfo);
+      });
+    },
+    /** 取消按钮 */
+    cancel() {
+      this.close();
+    },
+    // 关闭弹窗
+    close() {
+      this.$emit('update:open', false);
+      this.loadAddress = [];
+      this.unloadAddress = [];
+      this.tracklist = [];
+    },
+    // 表单赋值
+    setForm(data) {
+      // this.images = [];
+      // 获取运单信息，并标记装卸货地
+      getWebDetail(data[this.waybillIndex].code).then(response => {
+        this.wayBillInfo = response.data;
+        // 获取查询轨迹时间
+        this.jimiQueryParams.beginTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
+        this.jimiQueryParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
+        this.queryEndtime = new Date(this.wayBillInfo.signTime);
+        // 获取装卸货地址经纬度
+        if (this.wayBillInfo.waybillAddress.loadLocation) {
+          this.loadAddress = this.wayBillInfo.waybillAddress.loadLocation.replace('(', '').replace(')', '').split(',');
+        } else {
+          this.loadAddress = [];
+        }
+        if (this.wayBillInfo.waybillAddress.unloadLocation) {
+          this.unloadAddress = this.wayBillInfo.waybillAddress.unloadLocation.replace('(', '').replace(')', '').split(',');
+        } else {
+          this.unloadAddress = [];
+        }
+        if (this.wayBillInfo.waybillAddress.loadLocation !== this.wayBillInfo.waybillAddress.unloadLocation) {
+          this.getDeviceInfo();
+        } else {
+          setTimeout(() => {
+            this.screenshot();
+          }, 500);
         }
       });
     },
