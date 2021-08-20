@@ -747,7 +747,7 @@ export default {
     /** 查询通知列表 */
     getNoticeList1() {
       // 通知
-      listNoticeAll({ ...this.queryParams, noticeType: '1' }).then(response => {
+      listNoticeAll({ ...this.queryParams, noticeType: '1', status: '0', expirationTime: new Date() }).then(response => {
         this.dataOver = !response.data.length;
         const notice = response.data.filter(response => {
           return response.status === '0';
@@ -762,12 +762,15 @@ export default {
     },
     /** 查询公告列表 */
     getNoticeList2() {
-      listNoticeAll({ noticeType: '2' }).then(response => {
+      listNoticeAll({ noticeType: '2', status: '0', expirationTime: new Date() }).then(response => {
         this.noticeList2 = response.data.filter(response => {
           return response.status === '0';
         });
         this.noticeSys = this.noticeList2[0].noticeContent;
       });
+    },
+    getToday() {
+      return this.parseTime(new Date().getTime(), '{y}-{m}-{d}');
     },
     loadmore() {
       if (this.dataOver) return;
