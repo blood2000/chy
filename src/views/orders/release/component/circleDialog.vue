@@ -90,10 +90,8 @@ export default {
       plugin: [],
       events: {
         init: (o) => {
-          // console.log(o.getCenter());
           // this.$refs.map.$$getInstance();
-          // console.log(this.$refs.map);
-          o.getCity(result => { console.log(result); });
+          o.getCity(result => { });
         },
         'moveend': () => {
         },
@@ -118,15 +116,7 @@ export default {
         this.$emit('update:open', v);
       }
     }
-    // radius: {
-    //   get() {
-    //     return this.value;
-    //   },
-    //   set(data) {
-    //     console.log('半径' + data);
-    //     this.$emit('input', data);
-    //   }
-    // }
+
   },
 
   watch: {
@@ -155,8 +145,6 @@ export default {
     },
     // 修改半径
     handlerAdjust({ type, target, radius }) {
-      // console.log('修改半径' + radius);
-
       this.radius = radius < 200 ? 200 : radius;
       this.$emit('input', this.radius);
     },
@@ -167,10 +155,7 @@ export default {
     },
 
 
-    mcircleClick() {
-      // console.log('点击圆形了');
-      // this.visible = !this.visible;
-    },
+    mcircleClick() {},
     submit() {
       this.$emit('refresh', { radius: this.radius, lnglat: this.center });
       this.cancel();

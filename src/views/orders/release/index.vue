@@ -1,28 +1,67 @@
 <template>
-  <!-- 进行改造 -->
   <div v-loading="loading" class="m_app-container">
+    <!-- isT==true 是货源详情 才展示的 -->
+    <div v-if="isT" class="mb20 app-container">
+      <el-radio-group v-model="orderInfo" size="small">
+        <el-radio-button label="0">货源信息</el-radio-button>
+        <el-radio-button label="1">运单信息</el-radio-button>
+      </el-radio-group>
+    </div>
 
-    <div v-if="isZtShipment || isDregs">
+    <div v-show="orderInfo==='1'">
+      <WaybillInfo v-if="isT && waybillData" :waybill-data="waybillData" />
+    </div>
 
-      <!-- <div class="ly-flex-pack-justify pr my_huozhu app-container" style="width: 80px;">
-        <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
+    <el-form
+      v-show="orderInfo==='0'"
+      ref="elForm"
+      :model="formData"
+      :rules="rules"
+      size="medium"
+      label-width="110px"
+      :label-position="'left'"
+      :disabled="myisdisabled"
+    >
+
+      <div v-if="!authStatus" class="mb20">
+        <el-alert
+          title="审核通过才能发布货源, 请联系客服确认当前审核进度~!"
+          type="info"
+          effect="dark"
+          show-icon
+        />
+      </div>
+
+      <!-- 头部进度栏(渣土不显示) -->
+      <div v-if="!(isZtShipment || isDregs)" class="ly-flex-pack-center app-container">
+        <el-steps :active="active" finish-status="success" style="width: 50%">
+          <el-step title="基本信息" />
+          <el-step title="装卸货地址" />
+          <el-step title="货源信息" />
+          <el-step title="预览" />
+        </el-steps>
+      </div>
+
+      <!-- 选择货主(货主身份不显示 idCode=true (编辑或者详情不显示) isZtShipment=false isShipment=false) -->
+      <div v-if="!idCode && !isZtShipment && !isShipment" class="ly-flex-pack-justify pr my_huozhu app-container">
+        <div class="ly-flex-1 ly-flex-align-center">
           <i class="el-icon-office-building my-iocn" />
           <div class="left-right-box m20">
             <div class="dai-sytle mb10">代发货主信息:</div>
             <div class="ly-flex-align-center">
-              <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
+              <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '***' }}</span>
               <div class="ly-flex-align-center colorccc">
                 <i class="el-icon-s-custom" />
-                <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
+                <span class="name-style ml0">{{ shipmentInfo? shipmentInfo.adminName : '***' }}</span>
               </div>
               <div class="ly-flex-align-center colorccc">
                 <i class="el-icon-phone" />
-                <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
+                <span class="name-style ml0">{{ shipmentInfo?shipmentInfo.telphone : '***' }}</span>
               </div>
             </div>
           </div>
         </div>
-
+        <!-- 远程搜索 -->
         <div class="right-box ly-flex-align-center ">
           <div class="mr20 btn">
             <el-form-item label="代发货主" prop="tin1">
@@ -50,395 +89,312 @@
             </el-form-item>
           </div>
         </div>
+      </div>
 
-      </div> -->
+      <!-- 渣土货源界面 -->
+      <div v-if="isZtShipment || isDregs">
+        <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" :is-t="isT" />
+      </div>
 
-      <ztRelease :cb-data="ztCbData" :ztshipmentinfo="shipmentInfo" :is-t="isT" />
+      <!-- 普货货源界面 -->
+      <template v-else>
+
+        <!-- 货源基本信息 -->
+        <!--
+            v-model="isMultiGoods" : 是否多商品 默认 false
+            :pubilsh-code="formData.tin1" :货主的code
+            :cb-data="cbOrderBasic" :回填数据
+            :myisdisabled="myisdisabled" :当前是否是详情页面 true是false否
+            :shipment-info="shipmentInfo" :货主的详细信息
+            :goods-big-types="goodsBigTypes" :大类的值
+            :is-t="isT" :是否是详情页面 true是false否(跟上面重复了--不想去改了)
+            @goods="nextTo" :选好小类后的回调(告诉我已经选好了, 可以下一步了)
+
+         -->
+        <OrderBasic
+          ref="OrderBasic"
+          v-model="isMultiGoods"
+          :pubilsh-code="formData.tin1"
+          :cb-data="cbOrderBasic"
+          :myisdisabled="myisdisabled"
+          :shipment-info="shipmentInfo"
+          :goods-big-types="goodsBigTypes"
+          :is-t="isT"
+          @goods="nextTo"
+        />
+
+
+        <!-- 第二步 地址的填写 -->
+        <!--
+          多装货地址(自装)
+          多卸货地址(自卸)
+          判断货主有没有开启电子围栏(调度者必选)
+         -->
+        <div class="app-container">
+          <div class="header mb8">地址信息</div>
+          <el-form-item label="装卸类型" prop="tin7">
+            <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
+              <el-radio
+                v-for="(dict,index) in loadType_computed"
+                :key="dict.dictValue + '' + index"
+                :label="dict.dictValue"
+                :disabled="dict.disabled"
+              >{{ dict.dictLabel }}</el-radio>
+            </el-radio-group>
+          </el-form-item>
+
+          <el-divider />
+
+          <div class="mb8 m-flex" style="width:66%;">
+            <div class="m_zhuanghuo">
+              装货信息
+              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
+            </div>
+
+            <el-button
+              v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
+              type="primary"
+              size="mini"
+              plain
+              @click="_addAddress('address_add')"
+            >添加地址</el-button>
+          </div>
+
+          <div
+            v-for="(address,index) in address_add"
+            :key="address.refName + index"
+          >
+            <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
+              <div class="pa triangleR " />
+              <div class="pa m_pa">{{ index + 1 }}</div>
+
+              <!--
+                一个地址的组件
+                v-if="isShowAddress" : 控制显示
+                :ref="address.refName" : 通过ref获取组件内填写的信息
+                type="1" : 1表示装货地  2表示卸货地 3表示自装 4表示自卸
+                :cb-data="address.cbData" : 地址信息回填(编辑和详情)
+                :myisdisabled="myisdisabled" : 是否详情页(主要是控制详情禁止编辑)
+                @getLnglat="(lnglat)=> {  : 选中地址后返回的金纬度(设置电子围栏时候用到)
+                  if(isOpenTheElectronicFence){
+                    address.centerLocation = lnglat
+                    address.loadLnglat = lnglat
+                  };
+                }"
+                @addSetOK="(valid)=>nextSe(valid, 0)" : 监听地址填完的回调(触发下一步数据的创建)
+               -->
+              <OneAddress
+                v-if="isShowAddress"
+                :ref="address.refName"
+                type="1"
+                :cb-data="address.cbData"
+                :myisdisabled="myisdisabled"
+                @getLnglat="(lnglat)=> {
+                  if(isOpenTheElectronicFence){
+                    address.centerLocation = lnglat
+                    address.loadLnglat = lnglat
+                  };
+                }"
+                @addSetOK="(valid)=>nextSe(valid, 0)"
+              />
+              <div class="ly-t-right">
+                <div style="display: inline-block;">
+                  <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                    设置电子围栏
+                    <el-switch
+                      v-model="address.switchRadius"
+                      :disabled="!!idCode"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                      class="ml10 mr10"
+                    />
+                  </label>
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                </div>
+                <el-button
+                  v-if="address.switchRadius"
+                  type="primary"
+                  size="mini"
+                  class="ml10"
+                  plain
+                  @click="handleElect(address)"
+                >围栏编辑</el-button>
+                <el-button
+                  v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
+                  type="danger"
+                  size="mini"
+                  @click="_delAddress('address_add', address.refName)"
+                >删除地址</el-button>
+
+                <el-button
+                  v-if="!myisdisabled"
+                  type="primary"
+                  size="mini"
+                  style="margin-top: -12px"
+                  @click="selectAddress('address_add', address.refName)"
+                >常用地址</el-button>
+              </div>
+            </div>
+          </div>
+
+          <el-divider />
+
+          <div class="mb8 m-flex" style="width:66%">
+            <div class="m_xie">
+              卸货信息
+              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
+            </div>
+            <el-button
+              v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
+              type="primary"
+              size="mini"
+              plain
+              style="margin-top: -12px"
+              @click="_addAddress('address_xie')"
+            >添加地址</el-button>
+          </div>
+
+          <div
+            v-for="(address, index) in address_xie"
+            :key="address.refName + index"
+          >
+            <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
+              <div class="pa triangleR " />
+              <div class="pa m_pa">{{ index + 1 }}</div>
+
+              <OneAddress
+                v-if="isShowAddress"
+                :ref="address.refName"
+                type="2"
+                :cb-data="address.cbData"
+                :myisdisabled="myisdisabled"
+                @getLnglat="(lnglat)=> {
+                  if(isOpenTheElectronicFence){
+                    address.loadLnglat = lnglat
+                    address.centerLocation = lnglat
+                  }
+                }"
+                @addSetOK="(valid)=>nextSe(valid, 1)"
+              />
+              <!-- address.centerLocation = lnglat -->
+
+              <div class="ly-t-right">
+                <div style="display: inline-block;">
+                  <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
+                    设置电子围栏
+                    <el-switch
+                      v-model="address.switchRadius"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                      :disabled="!!idCode"
+                      class="ml10 mr10"
+                    />
+                  </label>
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                </div>
+                <el-button
+                  v-if="address.switchRadius"
+                  type="primary"
+                  size="mini"
+                  class="ml10"
+                  plain
+                  @click="handleElect(address)"
+                >围栏编辑</el-button>
+                <el-button
+                  v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
+                  type="danger"
+                  size="mini"
+                  @click="_delAddress('address_xie', address.refName)"
+                >删除地址</el-button>
+                <el-button
+                  v-if="!myisdisabled"
+                  type="primary"
+                  size="mini"
+                  style="margin-top: -12px"
+                  @click="selectAddress('address_xie', address.refName)"
+                >常用地址</el-button>
+              </div>
+            </div>
+          </div>
+
+          <el-divider />
+
+
+        </div>
+
+        <!-- 第三步 货源信息 -->
+        <div class="app-container">
+          <div class="header mb8">货源信息</div>
+
+          <!--
+
+            ref="goodsInfo" : 获取数据
+            :goods="goods" : 商品数据
+            :goods-big-type="goodsBigType" : 商品大类类型
+            :addr-add="addr_add" : 装货地的信息
+            :addr-xie="addr_xie" : 卸货地的信息
+            :pubilsh-code="formData.tin1" : 货主的code
+            :cb-goods-accounting="cbGoodsAccounting" : 编辑/详情回填商品信息
+            :cb-order-freight="cbOrderFreight" : 编辑/详情回填的规则细项
+            :myisdisabled="myisdisabled" :详情页面(禁用)
+           -->
+
+          <GoodsInfo
+            ref="goodsInfo"
+            :goods="goods"
+            :goods-big-type="goodsBigType"
+            :addr-add="addr_add"
+            :addr-xie="addr_xie"
+            :pubilsh-code="formData.tin1"
+            :cb-goods-accounting="cbGoodsAccounting"
+            :cb-order-freight="cbOrderFreight"
+            :myisdisabled="myisdisabled"
+          />
+        </div>
+
+      </template>
+
+    </el-form>
+
+    <div v-if="!(isZtShipment || isDregs)" class="ly-t-center app-container">
+      <el-row>
+        <el-col :span="10">
+          <div class="release_warning">
+            <el-alert
+              title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免造成司机接单不成功的情况。"
+              type="info"
+              effect="dark"
+              :closable="false"
+              show-icon
+            />
+          </div>
+        </el-col>
+        <el-col v-if="!myisdisabled" :span="4" class="m_btn">
+          <el-button v-if="!isCreated" @click="$router.back();">返 回</el-button>
+          <el-button v-hasPermi="['transportation:order:pubilsh']" :disabled="false" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
+          <el-button :disabled="false" @click="nextFe(4)">预览(查看预估价格)</el-button>
+        </el-col>
+        <el-col v-else :span="4" class="m_btn">
+          <el-button @click="$router.back();">返 回</el-button>
+        </el-col>
+        <el-col :span="10" />
+      </el-row>
     </div>
 
-    <template v-else>
-      <div v-if="!authStatus" class="mb20">
-        <el-alert
-          title="审核通过才能发布货源, 请联系客服确认当前审核进度~!"
-          type="info"
-          effect="dark"
-          show-icon
-        />
+
+    <!-- 设置电子围栏弹窗 -->
+    <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :title="title" :lnglat="lnglat" @refresh="changeElect" />
+    <!-- 打开弹框 -->
+    <el-dialog
+      :close-on-click-modal="false"
+      title="常用地址"
+      :visible.sync="openSelectaddress"
+      width="80%"
+    >
+      <div v-if="openSelectaddress">
+        <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
       </div>
-
-      <div class="ly-flex-pack-center app-container">
-        <el-steps v-if="true" :active="active" finish-status="success" style="width: 50%">
-          <el-step title="基本信息" />
-          <el-step title="装卸货地址" />
-          <el-step title="货源信息" />
-          <el-step title="预览" />
-        </el-steps>
-      </div>
-
-      <!-- 转货信息 -->
-      <div v-if="authStatus">
-
-        <div v-if="isT" class="mb20 app-container">
-          <el-radio-group v-model="orderInfo" size="small">
-            <el-radio-button label="0">货源信息</el-radio-button>
-            <el-radio-button label="1">运单信息</el-radio-button>
-          </el-radio-group>
-        </div>
-
-        <!-- 查看详情-运单信息 -->
-        <div v-show="orderInfo==='1'">
-          <WaybillInfo v-if="isT && waybillData" :waybill-data="waybillData" />
-        </div>
-
-        <!-- 正常 -->
-        <div v-show="orderInfo==='0'">
-          <el-form
-            ref="elForm"
-            :model="formData"
-            :rules="rules"
-            size="medium"
-            label-width="110px"
-            :label-position="'left'"
-            :disabled="myisdisabled"
-          >
-            <!-- 第一步 基本信息 -->
-            <div v-show="active ==1 || myisdisabled">
-
-              <div v-if="!isClone && (!isShipment && isCreated)" class="ly-flex-pack-justify pr my_huozhu app-container">
-
-                <div v-if="shipmentInfo" class="ly-flex-1 ly-flex-align-center">
-                  <i class="el-icon-office-building my-iocn" />
-                  <div class="left-right-box m20">
-                    <div class="dai-sytle mb10">代发货主信息:</div>
-                    <div class="ly-flex-align-center">
-                      <span class="huoz-style mr20">{{ shipmentInfo? shipmentInfo.companyName : '' }}</span>
-                      <div class="ly-flex-align-center colorccc">
-                        <i class="el-icon-s-custom" />
-                        <span class="name-style">{{ shipmentInfo? shipmentInfo.adminName : '' }}</span>
-                      </div>
-                      <div class="ly-flex-align-center colorccc">
-                        <i class="el-icon-phone" />
-                        <span class="name-style">{{ shipmentInfo?shipmentInfo.telphone : '' }}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="right-box ly-flex-align-center ">
-                  <div class="mr20 btn">
-                    <el-form-item v-if="!isClone && (!isShipment && isCreated)" label="代发货主" prop="tin1">
-                      <el-select
-                        v-model="formData.tin1"
-                        v-el-select-loadmore="loadmore"
-                        filterable
-                        clearable
-                        remote
-                        reserve-keyword
-                        placeholder="请输入关键词"
-                        :remote-method="remoteMethod"
-                        :loading="loading1"
-                        @change="handlerchange"
-                      >
-                        <el-option
-                          v-for="(item, index1) in shipmentList"
-                          :key="index1 + item.code"
-                          :value="item.code"
-                          :label="item.adminName"
-                        >
-                          <!-- :label="item.adminName" -->
-                          <div class="ly-flex-pack-justify"><span>{{ item.adminName }}</span><span>{{ item.telphone }}</span></div>
-                        </el-option>
-                      </el-select>
-                    </el-form-item>
-                  </div>
-                </div>
-
-              </div>
-
-
-              <OrderBasic
-                v-if="formData.tin1"
-                ref="OrderBasic"
-                v-model="isMultiGoods"
-                :pubilsh-code="formData.tin1"
-                :cb-data="cbOrderBasic"
-                :myisdisabled="myisdisabled"
-                :shipment-info="shipmentInfo"
-                :goods-big-types="goodsBigTypes"
-                :is-t="isT"
-                @goods="handlerGoos"
-              >
-
-                <div class="ly-t-center">
-                  <el-button v-if="!myisdisabled && (formData.tin1 && active < 2)" type="primary" plain @click="nextTo(2)">下一步</el-button>
-                </div>
-              </OrderBasic>
-
-
-            </div>
-
-            <!-- 第二步 地址的填写 -->
-            <div v-show="(formData.tin1 && active === 2) || myisdisabled" class="app-container">
-              <div class="header mb8">地址信息</div>
-              <el-form-item label="装卸类型" prop="tin7">
-                <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
-                  <el-radio
-                    v-for="(dict,index) in loadType_computed"
-                    :key="dict.dictValue + '' + index"
-                    :label="dict.dictValue"
-                    :disabled="dict.disabled"
-                  >{{ dict.dictLabel }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-
-
-
-              <el-divider />
-
-
-              <div class="mb8 m-flex" style="width:66%;">
-                <div class="m_zhuanghuo">
-                  装货信息
-                  <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
-                </div>
-
-                <el-button
-                  v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
-                  type="primary"
-                  size="mini"
-                  plain
-                  @click="_addAddress('address_add')"
-                >添加地址</el-button>
-
-              </div>
-
-
-
-              <div
-                v-for="(address,index) in address_add"
-                :key="address.refName + index"
-              >
-                <div v-if="address.addressType !=='3'" class="oneAddress_item pr">
-                  <div class="pa triangleR " />
-                  <div class="pa m_pa">{{ index + 1 }}</div>
-
-                  <OneAddress
-                    v-if="isShowAddress"
-                    :ref="address.refName"
-                    type="1"
-                    :cb-data="address.cbData"
-                    :myisdisabled="myisdisabled"
-                    @getLnglat="(lnglat)=> {
-                      if(isOpenTheElectronicFence){
-                        address.centerLocation = lnglat
-                        address.loadLnglat = lnglat
-                      }
-                    }"
-                  />
-                  <div class="ly-t-right">
-                    <div style="display: inline-block;">
-                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                        设置电子围栏
-                        <el-switch
-                          v-model="address.switchRadius"
-                          :disabled="!!idCode"
-                          active-color="#13ce66"
-                          inactive-color="#ff4949"
-                          class="ml10 mr10"
-                        />
-                      </label>
-                      <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
-                    </div>
-                    <el-button
-                      v-if="address.switchRadius"
-                      type="primary"
-                      size="mini"
-                      class="ml10"
-                      plain
-                      @click="handleElect(address)"
-                    >围栏编辑</el-button>
-                    <el-button
-                      v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
-                      type="danger"
-                      size="mini"
-                      @click="_delAddress('address_add', address.refName)"
-                    >删除地址</el-button>
-
-                    <el-button
-                      v-if="!myisdisabled"
-                      type="primary"
-                      size="mini"
-                      style="margin-top: -12px"
-                      @click="selectAddress('address_add', address.refName)"
-                    >常用地址</el-button>
-                  </div>
-                </div>
-              </div>
-
-              <el-divider />
-
-              <div class="mb8 m-flex" style="width:66%">
-                <div class="m_xie">
-                  卸货信息
-                  <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
-                </div>
-                <el-button
-                  v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
-                  type="primary"
-                  size="mini"
-                  plain
-                  style="margin-top: -12px"
-                  @click="_addAddress('address_xie')"
-                >添加地址</el-button>
-              </div>
-
-              <div
-                v-for="(address, index) in address_xie"
-                :key="address.refName + index"
-              >
-                <div v-if="address.addressType !=='4'" class="oneAddress_item pr">
-                  <div class="pa triangleR " />
-                  <div class="pa m_pa">{{ index + 1 }}</div>
-
-                  <OneAddress
-                    v-if="isShowAddress"
-                    :ref="address.refName"
-                    type="2"
-                    :cb-data="address.cbData"
-                    :myisdisabled="myisdisabled"
-                    @getLnglat="(lnglat)=> {
-                      if(isOpenTheElectronicFence){
-                        address.loadLnglat = lnglat
-                        address.centerLocation = lnglat
-                      }
-                    }"
-                  />
-                  <!-- address.centerLocation = lnglat -->
-
-                  <div class="ly-t-right">
-                    <div style="display: inline-block;">
-                      <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
-                        设置电子围栏
-                        <el-switch
-                          v-model="address.switchRadius"
-                          active-color="#13ce66"
-                          inactive-color="#ff4949"
-                          :disabled="!!idCode"
-                          class="ml10 mr10"
-                        />
-                      </label>
-                      <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
-                    </div>
-                    <el-button
-                      v-if="address.switchRadius"
-                      type="primary"
-                      size="mini"
-                      class="ml10"
-                      plain
-                      @click="handleElect(address)"
-                    >围栏编辑</el-button>
-                    <el-button
-                      v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
-                      type="danger"
-                      size="mini"
-                      @click="_delAddress('address_xie', address.refName)"
-                    >删除地址</el-button>
-                    <el-button
-                      v-if="!myisdisabled"
-                      type="primary"
-                      size="mini"
-                      style="margin-top: -12px"
-                      @click="selectAddress('address_xie', address.refName)"
-                    >常用地址</el-button>
-                  </div>
-                </div>
-              </div>
-
-              <el-divider />
-              <template v-if="!myisdisabled">
-                <div class="ly-t-center">
-                  <el-button v-if="active < 3" type="primary" plain @click="nextSe(1)">上一步</el-button>
-                  <el-button v-if="active < 3" type="primary" plain @click="nextSe(3)">下一步</el-button>
-                </div>
-              </template>
-
-            </div>
-
-            <!-- 第三步 货源信息 -->
-            <div v-show="(formData.tin1 && active === 3) || myisdisabled" class="app-container">
-              <div class="header mb8">货源信息</div>
-              <goods-info
-                ref="goodsInfo"
-                :goods="goods"
-                :goods-big-type="goodsBigType"
-                :addr-add="addr_add"
-                :addr-xie="addr_xie"
-                :pubilsh-code="formData.tin1"
-                :cb-goods-accounting="cbGoodsAccounting"
-                :cb-order-freight="cbOrderFreight"
-                :myisdisabled="myisdisabled"
-              />
-              <el-divider />
-
-              <template v-if="!loading && !myisdisabled">
-                <div v-if="!loading && active === 3" class="ly-t-center">
-                  <el-button type="primary" plain @click="nextFe(2)">上一步</el-button>
-                  <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onSubmit('elForm',3)">{{ isCreated?'立即发布':'保存' }}</el-button>
-                  <el-button @click="nextFe(4)">预览(查看预估价格)</el-button>
-                </div>
-              </template>
-
-            </div>
-
-          </el-form>
-
-          <div v-if="active >= 4 && !isT" class="app-container ">
-
-            <el-row>
-              <el-col :span="10">
-                <div class="release_warning">
-                  <el-alert
-                    title="司机在接单的时候会相应的扣除余额中的运输费用，请及时充值，以免造成司机接单不成功的情况。"
-                    type="info"
-                    effect="dark"
-                    :closable="false"
-                    show-icon
-                  />
-                </div>
-              </el-col>
-              <el-col :span="4" class="m_btn">
-                <div>
-                  <el-button type="primary" plain @click="nextFe(3)">上一步</el-button>
-                  <el-button v-hasPermi="['transportation:order:pubilsh']" type="primary" @click="onPubilsh">{{ isCreated?'立即发布':'保存' }}</el-button>
-                </div>
-              </el-col>
-              <el-col :span="10" />
-            </el-row>
-
-
-
-          </div>
-          <div v-if="isT" class="ly-t-center">
-            <el-button @click="backPge">返 回</el-button>
-          </div>
-        </div>
-
-      </div>
-      <!-- 设置电子围栏弹窗 -->
-      <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :title="title" :lnglat="lnglat" @refresh="changeElect" />
-      <!-- 打开弹框 -->
-      <el-dialog
-        :close-on-click-modal="false"
-        title="常用地址"
-        :visible.sync="openSelectaddress"
-        width="80%"
-      >
-        <div v-if="openSelectaddress">
-          <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
-        </div>
-      </el-dialog>
-    </template>
-
+    </el-dialog>
   </div>
 </template>
 
@@ -457,6 +413,8 @@ import { getProvinceList } from '@/api/system/area';
 
 import ztRelease from '../components/ztRelease';
 
+import eventBus from '@/layout/components/global';
+
 
 export default {
   // name: 'Release',
@@ -471,6 +429,9 @@ export default {
   },
   data() {
     return {
+      // 添加2个自动判断地址是否完成
+      addressOK: [false, false],
+      // s=电子围栏相关
       circledialog: false,
       title: '',
       lnglat: [],
@@ -480,9 +441,12 @@ export default {
       switchRadius2: false,
       radius1: 200, // 电子围栏 8/3 新加的
       radius2: 200, // 电子围栏 8/3 新加的
+      // e=
 
+      // s=渣土
       isZtShipment: false, // 渣土货主
       ztCbData: null, // 渣土详情
+      // e=
 
       goodsBigTypes: undefined,
       shipmentInfo: null, // 选中的货主信息
@@ -547,8 +511,21 @@ export default {
 
   computed: {
 
+    /**
+     * @属性说明
+     *
+     * myisdisabled = true 表示当前是详情页面 false 表示编辑页面/创建/克隆
+     * isCreated - true 表示当前是克隆页面
+     * idCode = true 表示编辑/详情
+     * isShowAddress = 显示地址
+     * isDregs = 判断是否渣土货源
+     * loadType_computed = 装卸类型的展示(根据货主的配置展示一装一卸等)
+     * isOpenTheElectronicFence = 是否可以设置电子围栏(根据货主的配置+调度者必选)
+     *
+     */
+
     myisdisabled() {
-      return this.active === 4;
+      return this.isT;
     },
 
     isCreated() {
@@ -566,7 +543,6 @@ export default {
     isDregs() {
       let bool = false;
       if (this.ztCbData) {
-        // 判断是否渣土货源
         bool = this.ztCbData.redisOrderInfoVo.isDregs === 1;
       }
       return bool;
@@ -586,14 +562,9 @@ export default {
         { dictValue: '3', dictLabel: '一装多卸', disabled: false }
       ];
 
-      // console.log(this.shipmentInfo);
       if (this.shipmentInfo) {
         const singleSourceMultiLoadingLocations = this.shipmentInfo.singleSourceMultiLoadingLocations === 0;
         const singleSourceMultiUnloadingLocations = this.shipmentInfo.singleSourceMultiUnloadingLocations === 0;
-
-        // console.log(this.shipmentInfo);
-
-
 
         // 允许
         if (!singleSourceMultiLoadingLocations && !singleSourceMultiUnloadingLocations) {
@@ -626,7 +597,6 @@ export default {
     isOpenTheElectronicFence() {
       // 是否开启电子围栏(0开启 1不开启), 默认不开启
       let bool = false;
-
       if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && this.$store.state.orders.tiemList.length > 0) {
         bool = true;
       }
@@ -634,6 +604,17 @@ export default {
     }
   },
   watch: {
+
+    /**
+     * @属性说明
+     *
+     * isMultiGoods = 监听是否切换 多/单 商品 (重置)
+     *
+     * $route.query.t = 监听url带t (0: 详情页 1: 编辑 3: 克隆页) t变化刷新页面(无法处理,再回到发布页面)
+     *
+     *
+     */
+
     isMultiGoods() {
       if (this.isMultiGoods) return;
       this.formData.tin7 = '1';
@@ -642,7 +623,6 @@ export default {
     },
     '$route.query.t': {
       handler(value, odvalue) {
-        // console.log('返原初始');
         this.$store.commit('orders/SET_ORDERSTOWAGESTATUS', '0');
 
         if ((odvalue === '0' || odvalue === '1' || odvalue === '3') && !value) {
@@ -657,20 +637,30 @@ export default {
         } else if (value === '3') {
           this.isClone = true;
         }
-
-
-        // console.log(this.$refs.WL);
       },
       immediate: true
     }
 
   },
 
+  /**
+     * @属性说明
+     *
+     *1. idCode 不是编辑/详情页面
+     *
+     */
+
   async created() {
+    // eventBus的使用
+    eventBus.$on('handlerRuleChang', () => {
+      // !this.idCode && (this.active = 3);
+    });
+    // 获取用户信息
     const { isShipment = false, isZtShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
-    this.isShipment = isShipment;
-    this.isZtShipment = isShipment && isZtShipment;
-    // console.log(shipment, '第一传要最后确认');
+    this.isShipment = isShipment; // 普通货主
+    this.isZtShipment = isShipment && isZtShipment; // 渣土货主
+
+    // 做一次容错
     if (isShipment) {
       if (isShipment && shipment.info && shipment.info.authStatus !== 3) {
         this.authStatus = false;
@@ -679,69 +669,66 @@ export default {
         return;
       }
 
-      // 只有普通货主才走这里去请求
+      // 普通货主才走这里去请求
       if (!isZtShipment && isShipment && shipment.info) {
-        // console.log(shipment.info, '货主身份---');
         // 通过id 获取 7/23 --chj
-        this.getShipmentInfo(shipment.info.code);
+        this.getShipmentInfo(shipment.info.code); // 获取详细信息
         this.formData.tin1 = shipment.info.code;
       }
+
+      // 有就传,没有就不传
       if (user.orgCode) {
         this.orgCode = user.orgCode;
       }
     }
 
+    // 编辑/详细页 获取数据---------------------------------------------------------------
     if (this.idCode) {
       this.getCbdata(this.idCode);
     }
 
-    this.getDicts('M0').then(res => {
-      this.$store.dispatch('orders/store_getM0_option', res.data);
-    });
+    // 预先获取mo字典值(后面规则中使用)
+    if (!this.$store.state.orders.M0_option) {
+      this.getDicts('M0').then(res => {
+        this.$store.dispatch('orders/store_getM0_option', res.data);
+      });
+    }
 
-    const provinceOption = this.$store.getters.provinceList;
-    if (provinceOption) return;
-    const { rows } = await getProvinceList();
-    this.$store.dispatch('orders/store_getProvinceList', rows);
+    // 获取省份的数据
+    if (!this.$store.getters.provinceList) {
+      const { rows } = await getProvinceList();
+      this.$store.dispatch('orders/store_getProvinceList', rows);
+    }
   },
 
 
   methods: {
-    handleElect(addr) {
-      // console.log(addr);
+    /** ================ s=基本获取数据 ================ */
 
-
-      if (addr.cbData) {
-        this.addressChange = addr;
-        this.title = '设置电子围栏';
-        this.circledialog = true;
-        this.radius = addr.radius;
-        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.cbData.location, addr.cbData.location);
-      } else if (addr.loadLnglat && addr.loadLnglat.length) {
-        this.addressChange = addr;
-        this.title = '设置电子围栏';
-        this.circledialog = true;
-        this.radius = addr.radius;
-        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.loadLnglat, addr.loadLnglat);
-      } else {
-        this.msgInfo('请先完善地址信息！');
-      }
-    },
-    changeElect(val) {
-      this.addressChange.radius = val.radius;
-      this.addressChange.enclosureRadius = val.radius;
-      this.addressChange.centerLocation = val.lnglat;
-    },
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then(res => {
-        this.shipmentInfo = res.data;
-        // console.log(this.shipmentInfo);
-        // this.isZtShipment = res.data.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
-        // console.log(this.isZtShipment, '要最后确认111');
+        this.shipmentInfo = { ...this.shipmentInfo, ...res.data }; // 详情中没有货主电话
       });
     },
 
+    // 获取orgCode
+    handlerchange(value) {
+      this.shipmentList.forEach(e => {
+        if (e.code === value) {
+          this.orgCode = e.orgCode || '';
+          this.isZtShipment = e.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
+          // 如果是大宗货主这需要请求详情
+          if (!this.isZtShipment && !this.shipmentInfo) {
+            this.shipmentInfo = e;
+            this.getShipmentInfo(e.code);
+          } else {
+            // 如果是渣土货主则需要这个
+            this.shipmentInfo = e;
+          }
+        }
+      });
+    },
 
     // 触发远程搜索
     remoteMethod(query) {
@@ -762,8 +749,9 @@ export default {
       this.queryParams.pageNum++;
       this.getTeamList();
     },
+
+    // 获取货主列表
     getTeamList() {
-      // 获取代理用户表
       listShipment(this.queryParams).then(
         (res) => {
           this.dataOver = !res.rows.length;
@@ -775,38 +763,31 @@ export default {
       });
     },
 
+    /** e=基本获取数据 */
 
-    // 获取orgCode
-    handlerchange(value) {
-      this.shipmentList.forEach(e => {
-        if (e.code === value) {
-          this.orgCode = e.orgCode || '';
-          this.isZtShipment = e.shipmentRoleCodes.indexOf('6809f8526e764abea23e6f302b9cf44d') !== -1;
-          // 如果是大宗货主这需要请求详情
-          if (!this.isZtShipment && !this.shipmentInfo) {
-            this.getShipmentInfo(e.code);
-          } else {
-            // 如果是渣土货主则需要这个
-            this.shipmentInfo = e;
-          }
-        }
-      });
+
+
+
+
+    /** ================ s=步骤 ================*/
+
+
+    // 2获取填好的商品信息 (触发验证)
+    async nextTo(data) {
+      this.goods = data.filter(e => e);
+
+      this.basicInfor = await this.handlerPromise('OrderBasic', false);
+      this.basicInfor.loadType = this.formData.tin7;
+      this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+
+      !this.idCode && (this.active = 2);
     },
 
-    async nextTo(active, cb) {
-      if (!cb) {
-        this.basicInfor = await this.handlerPromise('OrderBasic', false);
-        this.basicInfor.loadType = this.formData.tin7;
-        this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
-      }
-      this.active = active;
-    },
+    // 3获取填好的地址信息 (触发验证)
+    async nextSe(valid, index) {
+      this.addressOK[index] = valid;
+      if (!this.addressOK.every(e => e)) return;
 
-    async nextSe(active, cb) {
-      if (active === 1) {
-        this.active = 1;
-        return;
-      }
       if (!this.formData.tin7) {
         this.msgError('请选择类型');
         return;
@@ -828,10 +809,7 @@ export default {
         return e.addressType === '4';
       });
 
-      if (newAddress_add.length || newAddress_xie.length) {
-        this.active = active;
-        return;
-      }
+      if (newAddress_add.length || newAddress_xie.length) return;
       // e
 
       const address_add = this.address_add.map(async(e) => {
@@ -891,21 +869,124 @@ export default {
         });
       }
 
-      this.active = active; // 3
+      // 地址处理结束
+      !this.idCode && (this.active = 3);
     },
 
-    // 下一步 active =4
-    nextFe(active) {
-      if (active === 4) {
-        this.onSubmit('elForm');
-      } else if (active === 2) {
-        this.active = 2;
-      } else if (active === 3) {
-        this.active = 3;
+    // 4查看预估值 (触发验证)
+    async nextFe(active) {
+      this.lastData = await this.submAllData();
+      this.handlerEstimateCost(this.lastData);
+      !this.idCode && (this.active = 4);
+    },
+
+    // 5最后提交 (触发验证)
+    onSubmit(form, active) {
+      this.$refs[form].validate(async(valid) => {
+        if (valid) {
+          // 先判断基本信息
+          await this.handlerPromise('OrderBasic');
+
+          // 判断地址必填
+          const array = this.address_add.concat(this.address_xie);
+          for (let index = 0; index < array.length; index++) {
+            const refName = array[index].refName;
+            await this.$refs[refName][0]._submitForm();
+          }
+          // 判断其他
+          this.lastData = await this.submAllData();
+          // console.log('到这里说明过了------------------还有几个未判断');
+          this.onPubilsh();
+        } else {
+          return false;
+        }
+      });
+    },
+
+    /** e=步骤 */
+
+
+
+
+    /** ================ s=数据处理  ================*/
+
+    // 步骤6提交发(1.发布接口2.成功1秒后跳转)
+    onPubilsh() {
+      if (this.lastData) {
+        this.loading = true;
+        if (!this.isCreated) {
+          update(this.lastData).then(res => {
+            this.msgSuccess('修改成功');
+            var time1 = setTimeout(() => {
+              clearTimeout(time1);
+              time1 = null;
+              this.loading = false;
+              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
+            }, 700);
+          }).catch(() => {
+            this.loading = false;
+          });
+        } else {
+          orderPubilsh(this.lastData).then(async(response) => {
+            // 处理电子围栏数据
+            if (this.isOpenTheElectronicFence) {
+              let isPost = false;
+              const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
+              const addressInfo = orderAddressPublishBoList.map(e => {
+                let obj = null;
+                if (e.addressType === '1' && e.switchRadius) {
+                  obj = {
+                    addressType: e.addressType,
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+                  };
+                  isPost = true;
+                } else if (e.addressType === '2' && e.switchRadius) {
+                  obj = {
+                    addressType: e.addressType,
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+                  };
+                  isPost = true;
+                }
+
+
+                return obj;
+              }).filter(e => e);
+
+              const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
+
+              const que = {
+                addressInfo,
+                dispatcherCodeList,
+                orderCode: response.data
+              };
+
+              // 有可能不设置围栏了
+              if (isPost) {
+                try {
+                  await fencePlatCreate(que);
+                } catch (error) {
+                  console.log(error);
+                }
+              }
+            }
+            this.msgSuccess('新增成功');
+            setTimeout(() => {
+              this.loading = false;
+              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
+            }, 700);
+          }).catch((error) => {
+            console.log(error);
+            this.loading = false;
+          });
+        }
       }
     },
 
-    // 处理预估
+    // 步骤5处理预估
     async handlerEstimateCost(lastData) {
       const { orderFreightInfoBoList, orderGoodsList, orderFreightInfoUpdateBoList, orderGoodsUpdateBoList } = JSON.parse(JSON.stringify(lastData));
 
@@ -944,122 +1025,18 @@ export default {
         return;
       }
 
-
       this.$store.dispatch('orders/store_getEst', res.data);
-      this.active = 4;
     },
 
-    // 发布按钮触发(1.发布接口2.成功1秒后跳转)
-    onPubilsh() {
-      if (this.lastData) {
-        this.loading = true;
-
-        if (!this.isCreated) {
-          update(this.lastData).then(res => {
-            this.msgSuccess('修改成功');
-            var time1 = setTimeout(() => {
-              clearTimeout(time1);
-              time1 = null;
-              this.loading = false;
-              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
-            }, 700);
-          }).catch(() => {
-            this.loading = false;
-          });
-        } else {
-          orderPubilsh(this.lastData).then(async(response) => {
-            // 处理电子围栏数据
-            // console.log(this.isOpenTheElectronicFence);
-            if (this.isOpenTheElectronicFence) {
-              // let isSwitchRadius
-              // console.log(this.lastData);
-              let isPost = false;
-              const { orderAddressPublishBoList, orderSpecifiedList } = this.lastData;
-              const addressInfo = orderAddressPublishBoList.map(e => {
-                let obj = null;
-                if (e.addressType === '1' && e.switchRadius) {
-                  obj = {
-                    addressType: e.addressType,
-                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
-                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
-                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
-                  };
-                  isPost = true;
-                } else if (e.addressType === '2' && e.switchRadius) {
-                  obj = {
-                    addressType: e.addressType,
-                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
-                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
-                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
-                  };
-                  isPost = true;
-                }
-
-
-                return obj;
-              }).filter(e => e);
-
-              // console.log(addressInfo);
-              const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
-
-              // console.log(dispatcherCodeList);
-              const que = {
-                addressInfo,
-                dispatcherCodeList,
-                orderCode: response.data
-              };
-
-              // 有可能不设置围栏了
-              if (isPost) {
-                try {
-                  await fencePlatCreate(que);
-                } catch (error) {
-                  console.log(error);
-                }
-              }
-            }
-
-
-            this.msgSuccess('新增成功');
-            setTimeout(() => {
-              this.loading = false;
-              this.$router.push({ name: 'Manage', query: { p: Date.now() }});
-            }, 700);
-          }).catch((error) => {
-            console.log(error);
-            this.loading = false;
-          });
-        }
-      }
-    },
-
-    onSubmit(form, active) {
-      this.$refs[form].validate(async(valid) => {
-        if (valid) {
-          this.lastData = await this.submAllData();
-
-          if (active && active === 3) {
-            this.onPubilsh();
-          } else {
-            this.handlerEstimateCost(this.lastData);
-          }
-        } else {
-          return false;
-        }
-      });
-    },
-
-    // 整理出符合发布的数据格式
+    // 步骤4整理出符合发布的数据格式 (包括验证)
     async submAllData() {
-      if (!this.basicInfor) {
-        this.basicInfor = await this.handlerPromise('OrderBasic', false);
-      }
+      // 重新获取一遍是最新的
+      this.basicInfor = await this.handlerPromise('OrderBasic', false);
+      this.basicInfor.loadType = this.formData.tin7;
+      this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
+
       this.goodsBigType = this.basicInfor.orderGoodsList[0].goodsBigType;
       this.goodsBigTypeName = this.basicInfor.orderGoodsList[0].goodsBigTypeName;
-
-
-      // console.log(this.basicInfor, '-----------------------');
-
 
       const {
         classList,
@@ -1090,9 +1067,7 @@ export default {
         remark
       };
 
-
       const orderBasic = {};
-
       // 商品处理对象-按多个商品处理
       const orderGoodsListArr = orderGoodsList.map(e => {
         this.basicInfor.orderGoodsList.forEach(itemGoods => {
@@ -1140,7 +1115,7 @@ export default {
       return orderBasic;
     },
 
-    // 处理地址 和 商品
+    // 步骤1~3 处理地址 和 商品
     async handlerAddress() {
       const goodsInfo = await this.$refs.goodsInfo._submitForm();
 
@@ -1214,52 +1189,29 @@ export default {
       return { orderGoodsList, orderFreightInfoBoList, orderAddressPublishBoList: [...addr_add, ...addr_xie] };
     },
 
-    addressItem(e, type) {
-      return {
-        districtCode: '', // (区的code) 必填的
-        district: '', // (区)
-        addressAlias: '',
-        addressType: type,
-        city: '',
-        cityCode: '',
-        contact: '',
-        contactPhone: '',
-        detail: '', // 手填的
-        addressName: '', // 地址名称(高德手选)
-        location: [],
-        province: '',
-        provinceCode: '',
-        goodsBigType: e.goodsBigType || '',
-        goodsType: e.goodsType || '',
-        identification: e.identification || '',
-        level: e.level || null,
-        orderFreightBoList: e.orderFreightBoList || '',
-        ruleDictValue: e.ruleDictValue || '',
-        ruleInfoShipmentCode: e.ruleInfoShipmentCode || ''
-      };
-    },
+    /** e=数据处理 */
 
 
 
-    /* 回填------------------------------------------------------------------------------------------------------------------------ */
+    /* 编辑/详情 数据回填------------------------------------------------------------------------------------------------------------------------ */
 
+    /** ================ s= 获取数据 ================*/
     // 编辑和详情-回填获取数据
     async getCbdata(id) {
       this.loading = true;
       try {
+        this.active = 1;
         const { data } = await getOrderByCode(id);
 
         this.ztCbData = data;
 
-        // console.log(data, '99999');
-
         const { redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderFreightInfoVoList, redisOrderGoodsVoList, redisAddressList } = data;
 
         try {
-          !this.shipmentInfo && (await this.getShipmentInfo(redisOrderInfoVo.pubilshCode));
+          !this.shipmentInfo && (await this.getShipmentInfo(redisOrderInfoVo.pubilshCode)); // 获取货主详细信息
         } catch (error) { console.log(error); }
 
-        // 5/18s=特殊处理
+        // 5/18s=特殊商品数据处理
         const redisOrderGoodsVoListRest = redisOrderGoodsVoList.map(e => {
           const goodsBigTypes = e.goodsBigType.split(',');
 
@@ -1275,29 +1227,21 @@ export default {
 
           return e;
         });
-
         // 5/18e=特殊处理
 
+        // 1.处理 商品数据
         await this.handlerOrderBasic({ ...redisOrderInfoVo, redisOrderClassGoodsVoList, redisOrderSpecifiedVoList, redisOrderGoodsVoListRest });
 
+        // 2.处理 地址数据
         await this.handlercbAddress(redisAddressList);
 
-        // console.log(redisAddressList);
+        // 3.处理 规则数据
+        await this.handerRedisOrder(redisAddressList, redisOrderFreightInfoVoList);
 
-        await this.handerRedisOrder(redisAddressList);
+        // 4.处理 预估数据
+        this.idCode && await this.isTEstimateCost(data); // 克隆页面就不处理
 
-        // 4. 处理商品
-        this.cbGoodsAccounting = redisOrderGoodsVoListRest;
-
-        // 5. 处理规则
-
-        this.cbOrderFreight = redisOrderFreightInfoVoList;
-
-
-        this.active = this.isT ? 4 : 3; // 自接全展示
-
-        this.isT && await this.isTEstimateCost(data);
-
+        // 5. 等待所有数据处理完成,并展示完成
         this.$nextTick(() => {
           let tiem = setTimeout(() => {
             this.loading = false;
@@ -1310,7 +1254,119 @@ export default {
       }
     },
 
-    // 查看详情处理预估
+    /** e= 获取数据 */
+
+
+    /** ================ s=处理回填数据 ================*/
+
+    // 1.处理 cbOrderBasic 要的数据
+    async handlerOrderBasic(data) {
+      const { code, isPublic, publishMode, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
+
+      this.formData.tin1 = pubilshCode;
+      this.formData.tin7 = loadType ? loadType + '' : '1';
+
+      this.cbOrderBasic = {
+        code,
+        projectCode,
+        isPublic,
+        publishMode,
+        goodsBigType: redisOrderGoodsVoList[0].goodsBigType,
+        goodsType: redisOrderGoodsVoList.map(e => {
+          return e.goodsType;
+        }),
+        isSpecified,
+        remark,
+
+        uploadLoadVoucher: data.uploadLoadVoucher,
+        uploadUnloadVoucher: data.uploadUnloadVoucher,
+
+        orderSpecifiedList: redisOrderSpecifiedVoList,
+        classList: redisOrderClassGoodsVoList.map(e => {
+          return {
+            classCode: e ? e.classCode : ''
+          };
+        })
+      };
+
+      this.waybillData = {
+        code,
+        classList: redisOrderClassGoodsVoList
+      };
+
+      this.cbGoodsAccounting = redisOrderGoodsVoList;
+    },
+
+    // 2. 处理 OneAddress 地址要的数据
+    async handlercbAddress(addressList) {
+      this.address_add = [];
+      this.address_xie = [];
+
+      addressList.forEach((e, index) => {
+        // 电子围栏回填
+        let dzWLobj = {};
+        if (e.enclosureRadius) {
+          dzWLobj = {
+            centerLocation: e.centerLocation,
+            radius: e.enclosureRadius
+          };
+        }
+        // e电子围栏回填
+
+        if ((e.addressType - 0) === 3) {
+          this.formData.tin8 = true;
+        } else if ((e.addressType - 0) === 4) {
+          this.formData.tin9 = true;
+        }
+
+        if ((e.addressType - 0) === 1) {
+          // 装
+          this.address_add.push({
+            ...dzWLobj,
+            switchRadius: !!e.enclosureRadius,
+            refName: 'address_add' + Date.now() + index,
+            cbData: e // 主要是这个
+          });
+        } else if ((e.addressType - 0) === 2) {
+          // 卸
+          this.address_xie.push({
+            ...dzWLobj,
+            switchRadius: !!e.enclosureRadius,
+            refName: 'address_xie' + Date.now() + index,
+            cbData: e
+          });
+        } else if ((e.addressType - 0) === 3) {
+          e.addressName = '自装';
+          this.address_add.push({
+            refName: 'address_add' + Date.now() + index,
+            addressType: e.addressType,
+            cbData: e // 主要是这个
+          });
+        } else if ((e.addressType - 0) === 4) {
+          e.addressName = '自卸';
+          this.address_xie.push({
+            refName: 'address_xie' + Date.now() + index,
+            addressType: e.addressType,
+            cbData: e
+          });
+        }
+      });
+    },
+
+    // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
+    async handerRedisOrder(addressList, redisOrderFreightInfoVoList) {
+      addressList.forEach(e => {
+        if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
+          this.addr_add.push(e);
+        } else {
+          this.addr_xie.push(e);
+        }
+      });
+
+      this.cbOrderFreight = redisOrderFreightInfoVoList;
+    },
+
+    // 4. 处理预估 数据
     async isTEstimateCost(lastData) {
       const { redisOrderGoodsVoList, redisOrderFreightInfoVoList } = lastData;
 
@@ -1370,115 +1426,81 @@ export default {
       this.$nextTick(() => {
         this.$store.dispatch('orders/store_getEst', res.data);
       });
+      // 预估值结束
+      this.active = 4;
     },
 
-    // 1.处理 cbOrderBasic 要的数据
-    async handlerOrderBasic(data) {
-      const { code, isPublic, publishMode, isSpecified, loadType, projectCode, pubilshCode, remark, redisOrderClassGoodsVoList, redisOrderGoodsVoListRest: redisOrderGoodsVoList, redisOrderSpecifiedVoList } = data;
+    /** e=处理回填数据 */
 
-      this.formData.tin1 = pubilshCode;
-      this.formData.tin7 = loadType ? loadType + '' : '1';
 
-      this.cbOrderBasic = {
-        code,
-        projectCode,
-        isPublic,
-        publishMode,
-        goodsBigType: redisOrderGoodsVoList[0].goodsBigType,
-        goodsType: redisOrderGoodsVoList.map(e => {
-          return e.goodsType;
-        }),
-        isSpecified,
-        remark,
 
-        uploadLoadVoucher: data.uploadLoadVoucher,
-        uploadUnloadVoucher: data.uploadUnloadVoucher,
 
-        orderSpecifiedList: redisOrderSpecifiedVoList,
-        classList: redisOrderClassGoodsVoList.map(e => {
-          return {
-            classCode: e ? e.classCode : ''
-          };
-        })
-      };
+    /** -------其他本页面交互及方法----------- */
 
-      this.waybillData = {
-        code,
-        classList: redisOrderClassGoodsVoList
-      };
+    /** ================ s=电子围栏相关 ================*/
+
+    // 编辑电子围栏
+    handleElect(addr) {
+      if (addr.cbData) {
+        this.addressChange = addr;
+        this.title = '设置电子围栏';
+        this.circledialog = true;
+        this.radius = addr.radius;
+        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.cbData.location, addr.cbData.location);
+      } else if (addr.loadLnglat && addr.loadLnglat.length) {
+        this.addressChange = addr;
+        this.title = '设置电子围栏';
+        this.circledialog = true;
+        this.radius = addr.radius;
+        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.loadLnglat, addr.loadLnglat);
+      } else {
+        this.msgInfo('请先完善地址信息！');
+      }
     },
 
-    // 2. 处理 OneAddress 地址要的数据
-    async handlercbAddress(addressList) {
-      this.address_add = [];
-      this.address_xie = [];
-
-      addressList.forEach((e, index) => {
-        // console.log(e);
-        // e.switchRadius = !!e.enclosureRadius;
-
-        // 电子围栏回填
-        let dzWLobj = {};
-        // console.log(e.enclosureRadius);
-        if (e.enclosureRadius) {
-          dzWLobj = {
-            centerLocation: e.centerLocation,
-            radius: e.enclosureRadius
-          };
-        }
-        // e电子围栏回填
-
-        if ((e.addressType - 0) === 3) {
-          this.formData.tin8 = true;
-        } else if ((e.addressType - 0) === 4) {
-          this.formData.tin9 = true;
-        }
-
-        if ((e.addressType - 0) === 1) {
-          // 装
-          this.address_add.push({
-            ...dzWLobj,
-            switchRadius: !!e.enclosureRadius,
-            refName: 'address_add' + Date.now() + index,
-            cbData: e // 主要是这个
-          });
-        } else if ((e.addressType - 0) === 2) {
-          // 卸
-          this.address_xie.push({
-            ...dzWLobj,
-            switchRadius: !!e.enclosureRadius,
-            refName: 'address_xie' + Date.now() + index,
-            cbData: e
-          });
-        } else if ((e.addressType - 0) === 3) {
-          e.addressName = '自装';
-          this.address_add.push({
-            refName: 'address_add' + Date.now() + index,
-            addressType: e.addressType,
-            cbData: e // 主要是这个
-          });
-        } else if ((e.addressType - 0) === 4) {
-          e.addressName = '自卸';
-          this.address_xie.push({
-            refName: 'address_xie' + Date.now() + index,
-            addressType: e.addressType,
-            cbData: e
-          });
-        }
-      });
+    // 关闭电子围栏
+    changeElect(val) {
+      this.addressChange.radius = val.radius;
+      this.addressChange.enclosureRadius = val.radius;
+      this.addressChange.centerLocation = val.lnglat;
     },
 
-    // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
-    async handerRedisOrder(addressList) {
-      addressList.forEach(e => {
-        if ((e.addressType - 0) === 1 || (e.addressType - 0) === 3) {
-          this.addr_add.push(e);
-        } else {
-          this.addr_xie.push(e);
-        }
-      });
+    /** e=电子围栏相关 */
+
+    /** ================ s=地址相关 ================*/
+
+    // 打开多选地址的弹框
+    selectAddress(name, type) {
+      this.isRadioSelection = { name, type };
+      this.openSelectaddress = true;
     },
 
+    // 关闭地址弹框
+    radioSelection(data) {
+      if (JSON.stringify(data) === '{}') return;
+
+      if (this.isRadioSelection) {
+        const { name, type } = this.isRadioSelection;
+        this[name].forEach(e => {
+          if (e.refName === type) {
+            e.enclosureRadius = e.radius;
+            e.centerLocation = [this.floor(data.longitude, 6), this.floor(data.latitude, 6)];
+            e.cbData = {
+              ...data,
+              location: [this.floor(data.longitude, 6), this.floor(data.latitude, 6)]
+            };
+          }
+        });
+      }
+
+
+      this.isRadioSelection = null;
+      this.openSelectaddress = false;
+    },
+
+    /** e=地址相关 */
+
+    // 装货类型切换
     zhuangOrxiechange(value) {
       if (this.formData.tin7 === '1' && (this.address_add.length >= 2 || this.address_add.length <= 0)) {
         this.msgError('选择一装多卸,装货地址必须为一个, 且不能选择允许自装');
@@ -1515,7 +1537,7 @@ export default {
         return;
       }
     },
-
+    // 自装
     handlerCheck(type) {
       if (!this.formData.tin8) {
         this.address_add = this.address_add.filter(e => e.addressType !== '3');
@@ -1525,6 +1547,7 @@ export default {
         this._addAddress('address_add');
       }
     },
+    // 自卸
     handlerXie() {
       if (!this.formData.tin9) {
         this.address_xie = this.address_xie.filter(e => e.addressType !== '4');
@@ -1535,21 +1558,7 @@ export default {
       }
     },
 
-    // 处理选中的小类
-    handlerGoos(data) {
-      this.goods = data;
-    },
-
-    // 返回
-    backPge() {
-      this.$router.back();
-    },
-
     _addAddress(name) {
-      if (this.active >= 3) {
-        this.active = 2;
-      }
-
       this[name].push({
         refName: name + Date.now()
       });
@@ -1560,38 +1569,7 @@ export default {
       });
     },
 
-    // 打开多选地址的弹框
-    selectAddress(name, type) {
-      this.isRadioSelection = { name, type };
-      this.openSelectaddress = true;
-    },
 
-    async handlerPromise(refname, bool) {
-      return await this.$refs[refname]._submitForm();
-    },
-
-    radioSelection(data) {
-      if (JSON.stringify(data) === '{}') return;
-
-      if (this.isRadioSelection) {
-        const { name, type } = this.isRadioSelection;
-        this[name].forEach(e => {
-          if (e.refName === type) {
-            e.enclosureRadius = e.radius;
-            e.centerLocation = [this.floor(data.longitude, 6), this.floor(data.latitude, 6)];
-            e.cbData = {
-              ...data,
-              location: [this.floor(data.longitude, 6), this.floor(data.latitude, 6)]
-            };
-          }
-        });
-        // console.log(this[name]);
-      }
-
-
-      this.isRadioSelection = null;
-      this.openSelectaddress = false;
-    },
 
     // 去重
     distinct1(arr, key) {
@@ -1603,6 +1581,36 @@ export default {
     	}
       }
       return newArr;
+    },
+
+    // 地址字段
+    addressItem(e, type) {
+      return {
+        districtCode: '', // (区的code) 必填的
+        district: '', // (区)
+        addressAlias: '',
+        addressType: type,
+        city: '',
+        cityCode: '',
+        contact: '',
+        contactPhone: '',
+        detail: '', // 手填的
+        addressName: '', // 地址名称(高德手选)
+        location: [],
+        province: '',
+        provinceCode: '',
+        goodsBigType: e.goodsBigType || '',
+        goodsType: e.goodsType || '',
+        identification: e.identification || '',
+        level: e.level || null,
+        orderFreightBoList: e.orderFreightBoList || '',
+        ruleDictValue: e.ruleDictValue || '',
+        ruleInfoShipmentCode: e.ruleInfoShipmentCode || ''
+      };
+    },
+
+    async handlerPromise(refname, bool) {
+      return await this.$refs[refname]._submitForm();
     }
 
   }
@@ -1716,6 +1724,7 @@ export default {
 }
 .m_btn{
   width: 200px;
+  display: flex;
 }
 .triangleR{
     width: 40px;

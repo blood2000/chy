@@ -235,6 +235,7 @@ export default {
           serviceFee += (e.serviceFee ? e.serviceFee - 0 : 0);
 
           return {
+            deliveryFeeDeserved: e.deliveryFeeDeserved,
             deductionDes: e.deductionDes || '',
             increaseDes: e.increaseDes || '',
             waybillCode: e.waybillCode,

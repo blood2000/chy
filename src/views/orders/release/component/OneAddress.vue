@@ -226,6 +226,15 @@ export default {
       if (oldval !== '全国') {
         this.formData.addressName = '';
       }
+    },
+
+    formData: {
+      handler(val) {
+        this.$refs['elForm'].validate((valid) => {
+          this.$emit('addSetOK', valid);
+        });
+      },
+      deep: true
     }
   },
 
@@ -268,6 +277,7 @@ export default {
       this.getaddress(lnglat);
 
       // 返回选中的地址经纬度
+
       this.$emit('getLnglat', [this.floor(this.selected.lng, 6) + '', this.floor(this.selected.lat, 6) + '']);
     },
 
@@ -333,11 +343,12 @@ export default {
     async _submitForm() {
       const { city = {}, county = {}, province = {}} = await this.$refs.pccFef._submitForm();
       const { detail, addressAlias, contact, contactPhone } = this.formData;
-      const { name = '', lat = '', lng = '' } = this.selected;
+
 
       return new Promise((resolve, reject) => {
         this.$refs['elForm'].validate((valid) => {
           if (valid) {
+            const { name = '', lat = '', lng = '' } = this.selected;
             resolve({
               districtCode: county.countyCode, // (区的code) 必填的
               district: county.countyName, // (区)

@@ -123,7 +123,7 @@ export default {
       jmTracklist: [],
       trackInfo: {},
       //  轨迹当前状态
-      trackStart: 0, // 0未开始  1已开始
+      trackStart: 0, // 0未开始  1已开始 2已结束
       trackStatus: 1 // 0播放中  1暂停中
     };
   },
@@ -149,16 +149,16 @@ export default {
       const _this = this;
       const marker = new AMap.Marker({
         position: position,
-        icon: new AMap.Icon({
-          image: icon || '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
-          size: new AMap.Size(26, 34),
-          imageSize: new AMap.Size(26, 34)
-        }),
-        // content: '<div class="own-device-marker-car"></div>',
+        // icon: new AMap.Icon({
+        //   image: icon || '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
+        //   size: new AMap.Size(26, 34),
+        //   imageSize: new AMap.Size(26, 34)
+        // }),
+        content: '<div class="own-device-marker-car"></div>',
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(-13, -34),
-        // offset: new AMap.Pixel(-19, -28),
+        // offset: new AMap.Pixel(-13, -34),
+        offset: new AMap.Pixel(-19, -28),
         clickable: !!labelObj
       });
       marker.setMap(this.map);
@@ -191,8 +191,8 @@ export default {
       this.infoWindow = new AMap.InfoWindow({
         isCustom: false, // 使用自定义窗体
         content: info.join('<br/>'),
-        offset: new AMap.Pixel(18, -22),
-        // offset: new AMap.Pixel(18, -18),
+        // offset: new AMap.Pixel(18, -22),
+        offset: new AMap.Pixel(20, -16),
         anchor: 'middle-left'
       });
       this.infoWindow.open(this.map, marker.getPosition());
@@ -269,14 +269,16 @@ export default {
         position: this.jmTracklist[0],
         content: '<div class="own-device-line-icon start">起</div>',
         offset: new AMap.Pixel(-20, -20),
-        autoRotation: true
+        autoRotation: true,
+        zIndex: 100
       });
       this.endMarker = new AMap.Marker({
         map: this.map,
         position: this.jmTracklist[this.jmTracklist.length - 1],
         content: '<div class="own-device-line-icon end">终</div>',
         offset: new AMap.Pixel(-20, -20),
-        autoRotation: true
+        autoRotation: true,
+        zIndex: 100
       });
       // 绘制车
       this.moveMarker = new AMap.Marker({
@@ -286,11 +288,20 @@ export default {
         content: '<div class="own-device-line-car"></div>',
         offset: new AMap.Pixel(-29, -10),
         autoRotation: true,
-        angle: -90
+        angle: -90,
+        zIndex: 101
       });
       // 绑定车辆移动事件
       this.moveMarker.on('moving', function(e) {
         _this.passedPolyline.setPath(e.passedPath);
+        // 车超出视野范围后重新定位
+        if (!_this.isPointInRing(e.target.getPosition())) {
+          _this.map.setCenter(e.target.getPosition());
+        }
+        // 播放结束
+        if (e.target.getPosition() === _this.jmTracklist[_this.jmTracklist.length - 1]) {
+          _this.trackStart = 2;
+        }
       });
       this.map.setFitView();
     },
@@ -298,8 +309,7 @@ export default {
     startAnimation() {
       this.trackStart = 1;
       this.trackStatus = 0;
-      this.map.setCenter(this.jmTracklist[0]);
-      this.map.setZoom(12);
+      this.map.setZoomAndCenter(13, this.jmTracklist[0]);
       this.moveMarker.moveAlong(this.jmTracklist, 4000); // speed 千米/小时
     },
     pauseAnimation() {
@@ -394,6 +404,17 @@ export default {
       }).catch(() => {
         this.buttonLoading = false;
       });
+    },
+    /** 判断当前位置是否在可视区域 */
+    isPointInRing(position) {
+      const bounds = this.map.getBounds();
+      const NorthEast = bounds.getNorthEast();
+      const SouthWest = bounds.getSouthWest();
+      const SouthEast = [NorthEast.lng, SouthWest.lat];
+      const NorthWest = [SouthWest.lng, NorthEast.lat];
+      const path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]; // 将地图可视区域四个角位置按照顺序放入path，用于判断point是否在可视区域
+      const isPointInRing = AMap.GeometryUtil.isPointInRing(position, path); // 判断point是否在可视区域
+      return isPointInRing;
     }
 
 
@@ -436,6 +457,13 @@ export default {
         top: 10px;
         right: 10px !important;
       }
+    }
+    ::v-deep.amap-info-outer, ::v-deep.amap-menu-outer{
+      box-shadow: 1px 1px 12px rgba(0, 0, 0, 0.15);
+      border-radius: 6px;
+    }
+    ::v-deep.middle-left .amap-info-sharp:after{
+      filter: blur(8px);
     }
     // 地图信息窗体样式
     ::v-deep.own-map-info-content{

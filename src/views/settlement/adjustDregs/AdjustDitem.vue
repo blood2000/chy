@@ -236,6 +236,7 @@ export default {
           data.forEach(da => {
             if (row.waybillCode === da.waybillCode) {
               const {
+                deliveryFeeDeserved, // 司机应收运费
                 deliveryCashFee, //	司机实收现金	number
                 serviceFee, //	服务费	number
                 serviceTaxFee, //	服务费税费	number
@@ -244,6 +245,7 @@ export default {
                 // waybillCode //	运单CODE
               } = da;
 
+              row.deliveryFeeDeserved = deliveryFeeDeserved;
               row.deliveryCashFee = deliveryCashFee;
               row.serviceFee = serviceFee;
               row.shipperRealPay = shipperRealPay;

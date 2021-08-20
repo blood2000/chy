@@ -63,8 +63,8 @@ export default {
       plugin: [],
       events: {
         init: (o) => {
-          console.log(o.getCenter());
-          console.log(this.$refs.map.$$getInstance());
+          // console.log(o.getCenter());
+          // console.log(this.$refs.map.$$getInstance());
           o.getCity(result => {});
         },
         'moveend': () => {
@@ -96,7 +96,6 @@ export default {
 
   methods: {
     mcircleClick() {
-      console.log('点击圆形了');
       this.visible = !this.visible;
     },
 
@@ -105,7 +104,6 @@ export default {
     },
 
     handlerMove(e) {
-      console.log(e.lnglat, 465);
       this.center = [e.lnglat.lng, e.lnglat.lat];
     }
   }
