@@ -213,7 +213,14 @@
       <!-- <open-dialog v-if="false && open" :cb-data="[...formData['tin6_' + actionIndex]]" :action-index="actionIndex" :pubilsh-code="pubilshCode" @handleSelectionChange="handleSelectionChange" /> -->
 
       <div v-if="open">
-        <GroupIndex ref="GroupIndex" :shipment-code="pubilshCode" :iscomponent="true" :cb-data-by-keyword="cbDataByKeyword" @groupSelected="(data)=> orderSpecifiedList = data" />
+        <GroupIndex
+          ref="GroupIndex"
+          :shipment-code="pubilshCode"
+          :iscomponent="true"
+          :cb-data-by-keyword="cbDataByKeyword"
+          @groupSelected="(data)=> orderSpecifiedList = data"
+          @oneSelected="(data)=> oneTselected = data"
+        />
 
         <el-form-item>
           <div class="ly-t-right">
@@ -270,6 +277,7 @@ export default {
   data() {
     return {
       'orderSpecifiedList': [], // 选中的调度
+      'oneTselected': [], // 选中的调度
 
       // orderSpecifiedList: [],
       actionIndex: '1', // 控制弹框显示谁

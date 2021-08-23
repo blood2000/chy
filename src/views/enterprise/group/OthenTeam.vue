@@ -117,7 +117,7 @@ export default {
     // 列表选中值
     handleSelectionChange(selection) {
     //   console.log(selection);
-      this.$emit('groupSelected', selection);
+      this.$emit('oneSelected', selection);
     }
   }
 

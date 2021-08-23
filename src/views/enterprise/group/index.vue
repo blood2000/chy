@@ -36,7 +36,7 @@
       </el-form>
 
 
-      <OthenTeam v-else @groupSelected="$emit('oneSelected', selection)" />
+      <OthenTeam v-else @oneSelected="(selection)=> $emit('oneSelected', selection)" />
 
 
     </div>
