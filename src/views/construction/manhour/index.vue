@@ -45,6 +45,12 @@
         <template #total="{row}">
           <span>{{ row.total || row.total == 0? floor(row.total - 0): '-' }}</span>
         </template>
+        <template #hoursPrice="{row}">
+          <span>{{ row.hoursPrice || row.hoursPrice == 0? floor(row.hoursPrice - 0): '-' }}</span>
+        </template>
+        <template #hoursTotal="{row}">
+          <span>{{ row.hoursTotal || row.hoursTotal == 0? floor(row.hoursTotal - 0): '-' }}</span>
+        </template>
         <template #actualNumber="{row}">
           <span>{{ row.actualNumber || '-' }}</span>
         </template>
