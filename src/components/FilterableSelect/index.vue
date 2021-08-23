@@ -42,6 +42,7 @@
             queryFn:listInfo, <----- 请求接口的函数
             queryData:{} <----- 请求的额外参数
           }"
+          :keywords="'keywords'"
           :show-key="{
             value: 'code', <----- 默认value 的key是 code
             label: 'name', <----- 默认label 的key是 name

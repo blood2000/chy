@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+      <el-form v-if="!iscomponent" ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
         <el-form-item label="调度组名称" prop="disName">
           <el-input
             v-model.trim="queryParams.disName"
@@ -34,9 +34,58 @@
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
         </el-form-item>
       </el-form>
+
+
+      <el-form v-else ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
+        <!-- <el-form-item label="调度组名称" prop="disName">
+          <el-input
+            v-model.trim="queryParams.disName"
+            placeholder="请输入调度组名称"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item> -->
+        <!-- <el-form-item label="调度者姓名" prop="disUserName">
+          <el-input
+            v-model.trim="queryParams.disUserName"
+            placeholder="请输入调度者姓名"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>-->
+
+        <el-form-item label="调度者手机" prop="disUserPhone">
+          <FilterableSelect
+            v-model="queryParams.disUserPhone"
+            clearable
+            style="width:255px"
+            placeholder="请输入调度者手机号"
+            :axios="{
+              queryFn:listAllData,
+              queryData:{}
+            }"
+            keywords="phoneOrName"
+            :show-key="{
+              value: 'code',
+              label: 'name'
+            }"
+            @selected="(data)=>{form.disUserPhone = data.telphone;form.disUserName = data.teamLeaderName; form.disName = data.name }"
+          >
+            <template #default="{row}">
+              <span>{{ row.name }}</span><span>{{ row.telphone }}</span>
+            </template>
+          </FilterableSelect>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQueryTeam">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
     </div>
     <div class="app-container">
-      <el-row :gutter="10" class="mb8">
+      <el-row v-if="!iscomponent" :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
             v-hasPermi="['transportation:dispatch:add']"
@@ -56,9 +105,13 @@
             @click="handleDelete"
           >删除</el-button>
         </el-col>
-        <el-col v-if="!iscomponent" :span="1.5" style="float: right;">
+        <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
+
+      <el-row v-else :gutter="10" class="mb8">
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
@@ -156,13 +209,17 @@
 </template>
 
 <script>
+import { listAllData } from '@/api/assets/team';
 import { listInfo, delInfo, listInfoApi } from '@/api/enterprise/group';
 import GroupDialog from './groupDialog';
+
+import FilterableSelect from '@/components/FilterableSelect';
 
 export default {
   name: 'Group',
   components: {
-    GroupDialog
+    GroupDialog,
+    FilterableSelect
   },
   props: {
     shipmentCode: {
@@ -183,6 +240,7 @@ export default {
 
   data() {
     return {
+      listAllData, // 调度者的接口
       mycbDataByKeyword: null, // 7/9 chj 添加
       tableColumnsConfig: [],
       api: listInfoApi,
@@ -317,6 +375,11 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+
+    /** 单独全局搜索调度者 */
+    handleQueryTeam() {
+      console.log(this.queryParams);
     }
   }
 };

@@ -10,6 +10,15 @@ export function listInfo(data) {
   });
 }
 
+// app 使用 所有调度者信息
+export function listAllData(data) {
+  return request({
+    url: '/assets/driver-app/listAllData',
+    method: 'post',
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'create_time' }, data)
+  });
+}
+
 // 查询调度者详细
 export function getInfo(id) {
   return request({
