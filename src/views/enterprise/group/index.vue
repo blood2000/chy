@@ -36,7 +36,7 @@
       </el-form>
 
 
-      <OthenTeam v-else @oneSelected="(selection)=> $emit('oneSelected', selection)" />
+      <OthenTeam v-else :cbone-tselected="cboneTselected" @oneSelected="(selection)=> $emit('oneSelected', selection)" />
 
 
     </div>
@@ -193,6 +193,10 @@ export default {
     cbDataByKeyword: {
       type: Object,
       default: null
+    },
+    cboneTselected: {
+      type: Array,
+      default: () => []
     },
     iscomponent: [Boolean] // 其他地方引用这个组件了
   },

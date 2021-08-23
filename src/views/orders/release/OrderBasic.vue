@@ -218,6 +218,7 @@
           :shipment-code="pubilshCode"
           :iscomponent="true"
           :cb-data-by-keyword="cbDataByKeyword"
+          :cbone-tselected="cboneTselected"
           @groupSelected="(data)=> orderSpecifiedList = data"
           @oneSelected="(data)=> oneTselected = data"
         />
@@ -278,6 +279,7 @@ export default {
     return {
       'orderSpecifiedList': [], // 选中的调度
       'oneTselected': [], // 选中的调度
+      'cboneTselected': [], // 回填使用
 
       // orderSpecifiedList: [],
       actionIndex: '1', // 控制弹框显示谁
@@ -631,6 +633,8 @@ export default {
     // 5. 打开弹框选取调度者或司机
     open1() {
       this.open = true;
+      console.log(this.oneTselected, '打开回填的数据');
+      this.cboneTselected = this.oneTselected;
     },
 
     // 关闭调度组弹框
@@ -652,9 +656,13 @@ export default {
           wayCount: 437
       */
 
-      this.formData.tin6_1 = this.orderSpecifiedList.map(e => {
+      console.log('确认关闭弹框~~~', this.oneTselected);
+
+
+
+      const arr = this.orderSpecifiedList.map(e => {
         return {
-          ...e, // 需要其他再加
+          // ...e, // 需要其他再加
           _tinCode: e.code,
           code: e.disUserCode,
           teamName: e.disName,
@@ -662,6 +670,19 @@ export default {
           userType: 1
         };
       });
+
+      const arr2 = this.oneTselected.map(e => {
+        return {
+          // ...e, // 需要其他再加
+          _tinCode: e.code,
+          code: e.disUserCode,
+          teamName: e.disName,
+          type: 'info',
+          userType: 1
+        };
+      });
+
+      this.formData.tin6_1 = arr.concat(arr2);
 
       this.open = false;
       this.title = '';

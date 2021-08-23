@@ -90,6 +90,13 @@ export default {
 
   components: { FilterableSelect },
 
+  props: {
+    cboneTselected: {
+      type: Array,
+      default: () => []
+    }
+  },
+
   data() {
     return {
       listAllData, // 调度者的接口
@@ -103,6 +110,16 @@ export default {
       userList: [],
       mycbDataByKeyword: undefined
     };
+  },
+
+  watch: {
+    cboneTselected: {
+      handler(arr) {
+        console.log(arr, '触发几次??');
+        this.userList = arr;
+      },
+      deep: true
+    }
   },
 
   methods: {
