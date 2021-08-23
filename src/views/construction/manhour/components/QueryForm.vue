@@ -10,8 +10,8 @@
 
       <el-form-item
         label="选择项目"
-        prop="projectCode"
       >
+        <!-- prop="projectCode" -->
         <el-select
           v-model="queryParams.projectCode"
           filterable
@@ -79,6 +79,26 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item
+        label="工作内容"
+        prop="jobContent"
+      >
+        <el-select
+          v-model="queryParams.jobContent"
+          clearable
+          filterable
+          style="width: 185px"
+          placeholder="请选择工作内容"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="(item, index) in ztJxTasksOp"
+            :key="index"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
 
       <el-form-item>
         <el-button
@@ -116,6 +136,10 @@ export default {
       default: () => []
     },
     shiftOp: {
+      type: Array,
+      default: () => []
+    },
+    ztJxTasksOp: {
       type: Array,
       default: () => []
     }

@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm ref="QueryForm" v-model="queryParams" :shift-op="shift_op" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
+      <QueryForm ref="QueryForm" v-model="queryParams" :shift-op="shift_op" :zt-jx-tasks-op="ztJxTasks_op" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
     </div>
 
     <div class="app-container">
@@ -34,9 +34,10 @@
           <span>{{ row.nickName || '--' }} [{{ row.phonenumber }}]</span>
         </template>
         <template #startTimeAndCompleteTime="{row}">
-          <div>
+          <!-- <div>
             <div v-for="(item,index) in (_timeHandler(row.startTimeAndCompleteTime))" :key="index">{{ item }}</div>
-          </div>
+          </div> -->
+          <div>{{ row.actualStartTime }} - {{ row.actualCompleteTime }}</div>
         </template>
         <template #price="{row}">
           <span>{{ floor(row.price - 0) }}</span>
@@ -92,7 +93,8 @@ export default {
         projectCode: undefined,
         phone: undefined,
         receiveTime: [], // 时间
-        schedule: undefined
+        schedule: undefined,
+        jobContent: undefined
 
       },
 
@@ -104,6 +106,7 @@ export default {
       //
       projectList: [],
       shift_op: [],
+      ztJxTasks_op: [],
 
       // 表格字典
       auditStatus_op: [
@@ -126,19 +129,17 @@ export default {
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
       return [
-        {
-          'label': '项目名称',
-          'prop': 'projectName',
-          'isShow': false,
-          'sortNum': 10,
-          //   'width': '60',
-          'tooltip': true
-        },
+        // {
+        //   'label': '项目名称',
+        //   'prop': 'projectName',
+        //   'isShow': false,
+        //   //   'width': '60',
+        //   'tooltip': true
+        // },
         {
           'label': '机主姓名',
           'prop': 'ownerName',
           'isShow': true,
-          'sortNum': 20,
           'width': '120',
           'tooltip': true
         },
@@ -146,7 +147,6 @@ export default {
           'label': '司机姓名',
           'prop': 'nickName',
           'isShow': true,
-          'sortNum': 20,
           'width': '120',
           'tooltip': true
         },
@@ -154,31 +154,51 @@ export default {
           'label': '机械类型',
           'prop': 'machineTypeName',
           'isShow': true,
-          'sortNum': 30,
           //   'width': '60',
           'tooltip': true
         },
         {
-          'label': '机械型号',
+          'label': '型号',
           'prop': 'machineModel',
           'isShow': true,
-          'sortNum': 40,
           'width': '90',
           'tooltip': true
         },
         {
+          'label': '工作内容',
+          'prop': 'jobContentName',
+          'isShow': true,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '班次',
+          'prop': 'scheduleName',
+          'isShow': true,
+          'width': '90',
+          'tooltip': true
+        },
+
+
+        {
           'label': '车数',
           'prop': 'actualNumber',
           'isShow': true,
-          'sortNum': 50,
           'width': '60',
           'tooltip': true
         },
         {
+          'label': '土质',
+          'prop': 'soilQuality',
+          'isShow': true,
+          'width': '60',
+          'tooltip': true
+        },
+
+        {
           'label': '单价',
           'prop': 'price',
           'isShow': true,
-          'sortNum': 51,
           'width': '90',
           'tooltip': true
         },
@@ -186,72 +206,45 @@ export default {
           'label': '总价',
           'prop': 'total',
           'isShow': true,
-          'sortNum': 52,
           'width': '90',
           'tooltip': true
         },
-        {
-          'label': '工作内容',
-          'prop': 'jobContent',
-          'isShow': true,
-          'sortNum': 52,
-          'width': '90',
-          'tooltip': true
-        },
-        {
-          'label': '班次',
-          'prop': 'scheduleName',
-          'isShow': false,
-          'sortNum': 53,
-          'width': '60',
-          'tooltip': true
-        },
+
+
         {
           'label': '作业时段',
           'prop': 'startTimeAndCompleteTime',
           'isShow': true,
-          'sortNum': 60,
-          'width': '90',
+          'width': '135',
           'tooltip': true
         },
-        {
-          'label': '作业开始时间',
-          'prop': 'startTime',
-          'isShow': false,
-          'sortNum': 60,
-          'width': '90',
-          'tooltip': true
-        },
-        {
-          'label': '作业结束时间',
-          'prop': 'completeTime',
-          'isShow': false,
-          'sortNum': 70,
-          'width': '90',
-          'tooltip': true
-        },
+        // {
+        //   'label': '作业开始时间',
+        //   'prop': 'startTime',
+        //   'isShow': false,
+        //   'width': '90',
+        //   'tooltip': true
+        // },
+        // {
+        //   'label': '作业结束时间',
+        //   'prop': 'completeTime',
+        //   'isShow': false,
+        //   'width': '90',
+        //   'tooltip': true
+        // },
         {
           'label': '作业工时',
           'prop': 'totalHours',
           'isShow': true,
-          'sortNum': 80,
           'width': '90',
           'tooltip': true
         },
-        {
-          'label': '班次',
-          'prop': 'scheduleName',
-          'isShow': true,
-          'sortNum': 80,
-          'width': '90',
-          'tooltip': true
-        },
+
 
         {
           'label': '台班单价',
           'prop': 'hoursPrice',
           'isShow': true,
-          'sortNum': 100,
           'width': '90',
           'tooltip': true
         },
@@ -259,15 +252,19 @@ export default {
           'label': '台班总价',
           'prop': 'hoursTotal',
           'isShow': true,
-          'sortNum': 110,
           'width': '90',
           'tooltip': true
         },
         {
-          'label': '备注',
-          'prop': 'remark',
+          'label': '完工备注',
+          'prop': 'completeRemark',
           'isShow': true,
-          'sortNum': 120,
+          'tooltip': true
+        },
+        {
+          'label': '复核备注',
+          'prop': 'checkRemark',
+          'isShow': true,
           'tooltip': true
         }
       ];
@@ -297,6 +294,10 @@ export default {
     async initData() {
       this.getDicts('work-shift').then((response) => {
         this.shift_op = response.data;
+      });
+      this.getDicts('zt-jx-tasks').then((response) => {
+        console.log(response);
+        this.ztJxTasks_op = response.data;
       });
 
       const res = await webGetMachineProjectList();
