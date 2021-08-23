@@ -60,7 +60,7 @@
             'tooltip': true
           },
         ]"
-        :cb-data-by-keyword="mycbDataByKeyword"
+        :cb-data-by-keyword="cbDataByKeyword"
         @selection-change="handleSelectionChange"
       >
         <!-- <template #isOften="{row}">
@@ -107,17 +107,27 @@ export default {
       },
 
       loading: false,
-      userList: [],
-      mycbDataByKeyword: undefined
+      userList: []
+      // mycbDataByKeyword: null // 7/9 chj 添加
     };
+  },
+
+  computed: {
+    cbDataByKeyword() {
+      let obj = {};
+      if (this.userList.length) {
+        obj = { disUserCode: this.userList.map(e => e.disUserCode || e.code) };
+      }
+      return obj;
+    }
   },
 
   watch: {
     cboneTselected: {
       handler(arr) {
-        console.log(arr, '触发几次??');
         this.userList = arr;
       },
+      immediate: true,
       deep: true
     }
   },
@@ -125,10 +135,7 @@ export default {
   methods: {
     // 筛选出来的
     handlerDisSelected(data) {
-      console.log(data);
       this.userList.push(data);
-
-      console.log(this.userList);
     },
 
     // 列表选中值

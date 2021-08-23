@@ -452,7 +452,7 @@ export default {
         });
 
         // 4.处理调度者
-        this.orderSpecifiedList = orderSpecifiedList.map(e => {
+        this.formData['tin6_' + this.actionIndex] = orderSpecifiedList.map(e => {
           if (e.userType + '' === '1') {
             e.code = e.teamInfoCode;
           } else {
@@ -468,7 +468,16 @@ export default {
           };
         });
 
-        this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
+        this.orderSpecifiedList = this.formData['tin6_' + this.actionIndex].filter((e) => { return e.isCommonly; });
+        this.oneTselected = this.formData['tin6_' + this.actionIndex].filter((e, index) => {
+          e.disName = e.teamName;
+          e.disUserName = e.teamName;
+          e.disUserPhone = 151515151515;
+          return index === 2;
+        });
+
+        console.log(this.orderSpecifiedList, '常用调度者');
+        console.log(this.oneTselected, '独立调度者');
 
         // 2.去根据大类去请求下数据
         await this.handletin2();
@@ -633,8 +642,16 @@ export default {
     // 5. 打开弹框选取调度者或司机
     open1() {
       this.open = true;
-      console.log(this.oneTselected, '打开回填的数据');
-      this.cboneTselected = this.oneTselected;
+      this.cboneTselected = this.oneTselected.map(e => {
+        // disName: e.disName
+        // disUserName
+        // disUserPhone
+
+        return {
+          ...e
+        };
+      });
+      console.log(this.cboneTselected, '打开回填的数据');
     },
 
     // 关闭调度组弹框
@@ -644,10 +661,10 @@ export default {
           companyName: "测试支付宝运输有限公司"
           createCode: "afd5c0dcdaab45bb9c2160eb91a443db"
           createTime: "2021-08-16 16:00:00"
-          disName: "钓鱼台"
-          disUserCode: "48afcf3384984445a10dd631094139ef"
-          disUserName: "钓鱼台"
-          disUserPhone: "18912345678"
+          disName: "范测调度组的调度组"
+          disUserCode: "b3f21f119ac643ab987d3535054c427a"
+          disUserName: "范测调度组"
+          disUserPhone: "136****2288"
           id: 292
           isDel: 0
           isNotInvoice: 0
@@ -662,23 +679,25 @@ export default {
 
       const arr = this.orderSpecifiedList.map(e => {
         return {
-          // ...e, // 需要其他再加
+          ...e, // 需要其他再加
           _tinCode: e.code,
           code: e.disUserCode,
           teamName: e.disName,
           type: 'info',
-          userType: 1
+          userType: 1,
+          isOne: false // 添加一个标识区别独立调度者
         };
       });
 
       const arr2 = this.oneTselected.map(e => {
         return {
-          // ...e, // 需要其他再加
+          ...e, // 需要其他再加
           _tinCode: e.code,
           code: e.disUserCode,
           teamName: e.disName,
           type: 'info',
-          userType: 1
+          userType: 1,
+          isOne: true // 添加一个标识区别独立调度者
         };
       });
 
@@ -831,20 +850,39 @@ export default {
 
     /* 关闭 */
     closable(index) {
-      this.orderSpecifiedList.splice(index, 1);
+      this.formData['tin6_1'].splice(index, 1);
 
+      // console.log(this.oneTselected);
 
+      // 过滤掉独立调度者
+      // this.formData['tin6_1'].filter(ee=>{
+      //   let boor = true
 
-      this.formData['tin6_1'] = this.orderSpecifiedList.map(e => {
-        return {
-          ...e, // 需要其他再加
-          teamName: e.disName || e.teamName
-        };
+      //   this.oneTselected.forEach(one=>{
+      //     if(ee.code)
+      //   })
+      // })
+
+      this.orderSpecifiedList = this.formData['tin6_1'].filter(e => {
+        return !e.isOne;
       });
 
-      console.log(this.formData['tin6_1']);
+      this.oneTselected = this.formData['tin6_1'].filter(e => {
+        return e.isOne;
+      });
 
-      console.log(this.actionIndex);
+      // this.formData['tin6_1'] = this.orderSpecifiedList.map(e => {
+      //   return {
+      //     ...e, // 需要其他再加
+      //     teamName: e.disName || e.teamName
+      //   };
+      // })
+
+      // this.formData['tin6_1'].splice(index, 1)
+      console.log(this.orderSpecifiedList);
+      console.log(this.oneTselected);
+
+      console.log(this.formData['tin6_1']);
     },
 
     // 处理小类传入[1,2] =>
