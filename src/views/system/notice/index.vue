@@ -91,11 +91,11 @@
           prop="status"
           :formatter="statusFormat"
         />
-          <el-table-column label="过期时间" align="center" prop="expirationTime">
-              <template slot-scope="scope">
-                  <span>{{ parseTime(scope.row.expirationTime, '{y}-{m}-{d}') }}</span>
-              </template>
-          </el-table-column>
+        <el-table-column label="过期时间" align="center" prop="expirationTime">
+          <template slot-scope="scope">
+            <span>{{ parseTime(scope.row.expirationTime, '{y}-{m}-{d}') }}</span>
+          </template>
+        </el-table-column>
         <el-table-column label="创建者" align="center" prop="createBy" />
         <el-table-column label="创建时间" align="center" prop="createTime">
           <template slot-scope="scope">
@@ -160,15 +160,15 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
-              <el-col :span="12">
-                  <el-form-item label="过期日期" prop="expirationTime">
-                      <el-date-picker
-                              v-model="form.expirationTime"
-                              type="date"
-                              placeholder="选择日期">
-                      </el-date-picker>
-                  </el-form-item>
-              </el-col>
+            <el-col :span="12">
+              <el-form-item label="过期日期" prop="expirationTime">
+                <el-date-picker
+                  v-model="form.expirationTime"
+                  type="date"
+                  placeholder="选择日期"
+                />
+              </el-form-item>
+            </el-col>
             <el-col :span="24">
               <el-form-item label="内容">
                 <editor v-model="form.noticeContent" :min-height="192" />

@@ -438,6 +438,7 @@ export default {
     },
     handleNodeClick(data) {
       this.queryParams.pcode = data.code;
+      this.queryParams.pageNum = 1;
       this.getList();
     },
     // 对象类型字典翻译

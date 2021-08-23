@@ -322,7 +322,7 @@ export default {
     },
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/kydsz/machineWork/web—getMachineWorkingListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_机械工时登记`);
+      await this.download('/kydsz/machineWorkHours/web—getMachineWorkingListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_机械工时登记`);
       this.exportLoading = false;
     },
 
