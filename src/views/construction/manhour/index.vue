@@ -40,10 +40,19 @@
           <div>{{ row.actualStartTime }} - {{ row.actualCompleteTime }}</div>
         </template>
         <template #price="{row}">
-          <span>{{ floor(row.price - 0) }}</span>
+          <span>{{ row.price || row.price == 0? floor(row.price - 0): '-' }}</span>
         </template>
         <template #total="{row}">
-          <span>{{ row.total? floor(row.total - 0): '--' }}</span>
+          <span>{{ row.total || row.total == 0? floor(row.total - 0): '-' }}</span>
+        </template>
+        <template #actualNumber="{row}">
+          <span>{{ row.actualNumber || '-' }}</span>
+        </template>
+        <template #soilQualityName="{row}">
+          <span>{{ row.soilQualityName || '-' }}</span>
+        </template>
+        <template #hours="{row}">
+          <span>{{ row.hours || '-' }}</span>
         </template>
       </RefactorTable>
 
@@ -164,17 +173,18 @@ export default {
           'width': '90',
           'tooltip': true
         },
+
         {
-          'label': '工作内容',
-          'prop': 'jobContent',
-          // 'prop': 'jobContentName',
+          'label': '班次',
+          'prop': 'scheduleName',
           'isShow': true,
           'width': '90',
           'tooltip': true
         },
         {
-          'label': '班次',
-          'prop': 'scheduleName',
+          'label': '工作内容',
+          'prop': 'jobContent',
+          // 'prop': 'jobContentName',
           'isShow': true,
           'width': '90',
           'tooltip': true
