@@ -147,7 +147,7 @@ export default {
           'label': '司机姓名',
           'prop': 'nickName',
           'isShow': true,
-          'width': '120',
+          'width': '205',
           'tooltip': true
         },
         {
@@ -166,7 +166,8 @@ export default {
         },
         {
           'label': '工作内容',
-          'prop': 'jobContentName',
+          'prop': 'jobContent',
+          // 'prop': 'jobContentName',
           'isShow': true,
           'width': '90',
           'tooltip': true
@@ -189,7 +190,7 @@ export default {
         },
         {
           'label': '土质',
-          'prop': 'soilQuality',
+          'prop': 'soilQualityName',
           'isShow': true,
           'width': '60',
           'tooltip': true
@@ -234,7 +235,7 @@ export default {
         // },
         {
           'label': '作业工时',
-          'prop': 'totalHours',
+          'prop': 'hours',
           'isShow': true,
           'width': '90',
           'tooltip': true
