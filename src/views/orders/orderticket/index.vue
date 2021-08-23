@@ -1,10 +1,10 @@
 <template>
   <div class="app-container">
     <el-form v-show="showSearch" ref="queryForm" size="small" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="订单号" prop="orderNo">
+      <el-form-item label="运输单号" prop="orderNo">
         <el-input
           v-model="queryParams.orderNo"
-          placeholder="请输入订单号"
+          placeholder="请输入运输单号"
           clearable
           style="width: 228px"
           @keyup.enter.native="handleQuery"
@@ -145,11 +145,12 @@
         <!-- <el-form-item label="${comment}" prop="testName">
           <el-input v-model="form.testName" placeholder="请输入${comment}" />
         </el-form-item> -->
-        <el-form-item label="订单号" prop="orderNo">
+        <el-form-item label="运输单号" prop="orderNo">
           <el-input
             v-model="form.orderNo"
-            placeholder="请输入订单号"
+            placeholder="请输入运输单号"
             clearable
+            :disabled="form.id"
             style="width: 228px"
           />
         </el-form-item>
@@ -241,7 +242,7 @@ export default {
         },
         {
           isShow: true,
-          label: '订单号',
+          label: '运输单号',
           prop: 'orderNo',
           sortNum: 1,
           tooltip: true
