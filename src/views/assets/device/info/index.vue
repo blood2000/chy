@@ -520,6 +520,7 @@ export default {
         return;
       }
       this.typeCode = data.code;
+      this.queryParams.pageNum = 1;
       this.getList();
     },
     /** 搜索按钮操作 */
