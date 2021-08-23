@@ -48,7 +48,7 @@
           icon="el-icon-edit"
           size="mini"
           :disabled="single"
-          @click="handleUpdate"
+          @click="handleUpdate()"
         >修改</el-button>
       </el-col>
       <el-col :span="1.5">
@@ -58,7 +58,7 @@
           icon="el-icon-delete"
           size="mini"
           :disabled="multiple"
-          @click="handleDelete"
+          @click="handleDelete()"
         >删除</el-button>
       </el-col>
       <!-- <el-col :span="1.5">
@@ -139,7 +139,7 @@
     />
     <!-- :page-sizes="[1,2,3]" -->
 
-    <!-- 添加或修改【请填写功能名称】对话框 -->
+    <!-- 添加或修改货源票制对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px" size="small">
         <!-- <el-form-item label="${comment}" prop="testName">
@@ -198,7 +198,7 @@ export default {
       'showSearch': true,
       // 总条数
       'total': 0,
-      // 【请填写功能名称】表格数据
+      // 货源票制表格数据
       'ticketList': [],
       // 弹出层标题
       'title': '',
@@ -227,13 +227,13 @@ export default {
       tableColumns: [
         {
           isShow: true,
-          label: '编辑',
+          label: '操作',
           prop: 'edit',
           sortNum: 0,
           tooltip: true
         },
         {
-          isShow: true,
+          isShow: false,
           label: 'id',
           prop: 'id',
           sortNum: 0,
@@ -241,7 +241,7 @@ export default {
         },
         {
           isShow: true,
-          label: '货源单号',
+          label: '订单号',
           prop: 'orderNo',
           sortNum: 1,
           tooltip: true
@@ -264,7 +264,7 @@ export default {
 
   computed: {
     api() {
-      return 'orderticket';
+      return '/transportation/orderTicketRel/list';
     }
   },
   created() {
@@ -283,9 +283,8 @@ export default {
       });
     },
 
-    /** 查询【请填写功能名称】列表 */
+    /** 查询货源票制列表 */
     getList() {
-      console.log(this.queryParams);
       this.loading = true;
       listOrderTicketRel(this.queryParams).then(response => {
         this.ticketList = response.data.list;
@@ -319,7 +318,6 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      console.log(selection);
       this.selection = selection;
       this.ids = selection.map(item => item.id);
       this.single = selection.length !== 1;
@@ -341,7 +339,10 @@ export default {
       //     this.title = '修改货源票制';
       //   });
 
-      this.form = row;
+
+      const selection = row || this.selection[0];
+
+      this.form = JSON.parse(JSON.stringify(selection));
       this.open = true;
       this.title = '修改货源票制';
     },
@@ -349,7 +350,6 @@ export default {
     submitForm() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          console.log(this.form);
           if (this.form.id || this.form.id != null) {
             updateOrderTicketRel(this.form).then(response => {
               this.msgSuccess('修改成功');
@@ -368,7 +368,7 @@ export default {
     },
     /** 删除按钮操作 */
     handleDelete(row) {
-      const ids = row.id || this.ids;
+      const ids = (row && row.id) || this.ids;
       this.$confirm('是否确认删除此项数据?', '警告', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -379,13 +379,13 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
-    },
-    /** 导出按钮操作 */
-    handleExport() {
-      this.download('system/test/export', {
-        ...this.queryParams
-      }, `system_test`);
     }
+    /** 导出按钮操作 */
+    // handleExport() {
+    //   this.download('system/test/export', {
+    //     ...this.queryParams
+    //   }, `system_test`);
+    // }
   }
 };
 </script>
