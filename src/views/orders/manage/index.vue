@@ -288,7 +288,6 @@
         </template>
         <template #updateUserName="{row}">
           <span>{{ row.updateNickName || row.updateUserName }}</span>
-          <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
         </template>
         <template #haveWaybill="{row}">
           <span :class="row.haveWaybill!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(haveWaybill_Options, row.haveWaybill) || '-' }}</span>
