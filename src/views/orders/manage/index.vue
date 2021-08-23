@@ -282,8 +282,12 @@
         <template #loadType="{row}">
           <span>{{ selectDictLabel(loadTypeOptions, row.loadType) || '-' }}</span>
         </template>
+        <template #opUserName="{row}">
+          <span>{{ row.opNickName || row.opUserName }}</span>
+          <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
+        </template>
         <template #updateUserName="{row}">
-          <span>{{ row.opNickName || row.updateUserName || row.opUserName }}</span>
+          <span>{{ row.updateNickName || row.updateUserName }}</span>
           <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
         </template>
         <template #haveWaybill="{row}">
