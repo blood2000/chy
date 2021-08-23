@@ -1,154 +1,127 @@
 <template>
-  <div class="app-container">
-    <el-form v-show="showSearch" ref="queryForm" size="small" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="运输单号" prop="orderNo">
-        <el-input
-          v-model="queryParams.orderNo"
-          placeholder="请输入运输单号"
-          clearable
-          style="width: 228px"
-          @keyup.enter.native="handleQuery"
-        />
-      </el-form-item>
-
-      <el-form-item
-        label="票制"
-        prop="ticket"
-      >
-        <el-select v-model="queryParams.ticket" placeholder="请选择票制" style="width: 228px" @change="handleQuery">
-          <el-option
-            v-for="item in assetsTicketType"
-            :key="item.dictValue"
-            :label="item.dictLabel"
-            :value="item.dictValue"
+  <div>
+    <div class="app-container">
+      <el-form v-show="showSearch" ref="queryForm" size="small" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="货源单号" prop="orderNo">
+          <el-input
+            v-model="queryParams.orderNo"
+            placeholder="请输入货源单号"
+            clearable
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
           />
-        </el-select>
-      </el-form-item>
+        </el-form-item>
 
-      <el-form-item>
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-        <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
+        <el-form-item
+          label="票制"
+          prop="ticket"
+        >
+          <el-select v-model="queryParams.ticket" placeholder="请选择票制" style="width: 228px" @change="handleQuery">
+            <el-option
+              v-for="item in assetsTicketType"
+              :key="item.dictValue"
+              :label="item.dictLabel"
+              :value="item.dictValue"
+            />
+          </el-select>
+        </el-form-item>
 
-    <el-row :gutter="10" class="mb8">
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['transportation:orderTicketRel:add']"
-          type="primary"
-          icon="el-icon-plus"
-          size="mini"
-          @click="handleAdd"
-        >新增</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['transportation:orderTicketRel:update']"
-          type="success"
-          icon="el-icon-edit"
-          size="mini"
-          :disabled="single"
-          @click="handleUpdate()"
-        >修改</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['transportation:orderTicketRel:del']"
-          type="danger"
-          icon="el-icon-delete"
-          size="mini"
-          :disabled="multiple"
-          @click="handleDelete()"
-        >删除</el-button>
-      </el-col>
-      <!-- <el-col :span="1.5">
-        <el-button
-          v-hasPermi="['system:test:export']"
-          type="warning"
-          icon="el-icon-download"
-          size="mini"
-          @click="handleExport"
-        >导出</el-button>
-      </el-col> -->
-      <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
-    </el-row>
+        <el-form-item>
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+          <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
 
-    <!-- <el-table v-loading="loading" highlight-current-row border :data="ticketList" @selection-change="handleSelectionChange">
-      <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="${comment}" align="center" prop="id" />
-      <el-table-column label="${comment}" align="center" prop="testName" />
-      <el-table-column label="操作" align="center" fixed="left" class-name="small-padding fixed-width">
-        <template slot-scope="scope">
+    <div class="app-container">
+      <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
           <el-button
-            v-hasPermi="['system:test:edit']"
+            v-hasPermi="['transportation:orderTicketRel:add']"
+            type="primary"
+            icon="el-icon-plus"
+            size="mini"
+            @click="handleAdd"
+          >新增</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:orderTicketRel:update']"
+            type="success"
+            icon="el-icon-edit"
+            size="mini"
+            :disabled="single"
+            @click="handleUpdate()"
+          >修改</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:orderTicketRel:del']"
+            type="danger"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDelete()"
+          >删除</el-button>
+        </el-col>
+        <!-- <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['system:test:export']"
+            type="warning"
+            icon="el-icon-download"
+            size="mini"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col> -->
+        <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
+      </el-row>
+
+      <RefactorTable
+        is-show-index
+        :loading="loading"
+        :data="ticketList"
+        row-key="id"
+        :table-columns-config="tableColumnsConfig"
+        @selection-change="handleSelectionChange"
+      >
+        <template #ticket="{row}">
+          <span>{{ selectDictLabel(assetsTicketType, row.ticket) }}</span>
+        </template>
+
+        <template #edit="{row}">
+          <el-button
+            v-hasPermi="['transportation:orderTicketRel:update']"
             size="mini"
             type="text"
             icon="el-icon-edit"
-            @click="handleUpdate(scope.row)"
+            @click="handleUpdate(row)"
           >修改</el-button>
           <el-button
-            v-hasPermi="['system:test:remove']"
+            v-hasPermi="['transportation:orderTicketRel:del']"
             size="mini"
             type="text"
             icon="el-icon-delete"
-            @click="handleDelete(scope.row)"
+            @click="handleDelete(row)"
           >删除</el-button>
         </template>
-      </el-table-column>
-    </el-table> -->
+      </RefactorTable>
 
-    <!-- :row-class-name="tableRowClassName"
-      :tree-props="{children: 'children', hasChildren: 'hasChildren'}" -->
-    <RefactorTable
-      is-show-index
-      :loading="loading"
-      :data="ticketList"
-      row-key="id"
-      :table-columns-config="tableColumnsConfig"
-      @selection-change="handleSelectionChange"
-    >
-      <template #ticket="{row}">
-        <span>{{ selectDictLabel(assetsTicketType, row.ticket) }}</span>
-      </template>
-
-      <!-- v-hasPermi="['system:test:edit']" -->
-      <template #edit="{row}">
-        <el-button
-          v-hasPermi="['transportation:orderTicketRel:update']"
-          size="mini"
-          type="text"
-          icon="el-icon-edit"
-          @click="handleUpdate(row)"
-        >修改</el-button>
-        <el-button
-          v-hasPermi="['transportation:orderTicketRel:del']"
-          size="mini"
-          type="text"
-          icon="el-icon-delete"
-          @click="handleDelete(row)"
-        >删除</el-button>
-      </template>
-    </RefactorTable>
-
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="queryParams.pageNum"
-      :limit.sync="queryParams.pageSize"
-      @pagination="getList"
-    />
-    <!-- :page-sizes="[1,2,3]" -->
+      <pagination
+        v-show="total>0"
+        :total="total"
+        :page.sync="queryParams.pageNum"
+        :limit.sync="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </div>
 
     <!-- 添加或修改货源票制对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="500px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px" size="small">
-        <!-- <el-form-item label="${comment}" prop="testName">
-          <el-input v-model="form.testName" placeholder="请输入${comment}" />
-        </el-form-item> -->
-        <el-form-item label="运输单号" prop="orderNo">
+        <el-form-item label="货源单号" prop="orderNo">
           <el-input
             v-model="form.orderNo"
-            placeholder="请输入运输单号"
+            placeholder="请输入货源单号"
             clearable
             :disabled="form.id"
             style="width: 228px"
@@ -242,7 +215,7 @@ export default {
         },
         {
           isShow: true,
-          label: '运输单号',
+          label: '货源单号',
           prop: 'orderNo',
           sortNum: 1,
           tooltip: true
