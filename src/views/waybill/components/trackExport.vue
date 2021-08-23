@@ -358,6 +358,10 @@ export default {
             }
           }
         } else {
+          const that = this;
+          if (that.polyline) {
+            that.$refs.map.$$getInstance().remove(that.polyline);
+          }
           setTimeout(() => {
             this.screenshot();
           }, 500);
@@ -402,6 +406,10 @@ export default {
         if (this.wayBillInfo.waybillAddress.loadLocation !== this.wayBillInfo.waybillAddress.unloadLocation) {
           this.getDeviceInfo();
         } else {
+          const that = this;
+          if (that.polyline) {
+            that.$refs.map.$$getInstance().remove(that.polyline);
+          }
           setTimeout(() => {
             this.screenshot();
           }, 500);
