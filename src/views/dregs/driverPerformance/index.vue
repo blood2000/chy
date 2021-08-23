@@ -296,7 +296,7 @@ export default {
     /** 导出操作 */
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/transportation/batch/disExport', this.que, '司机绩效统计表');
+      await this.download('/transportation/batch/disExport', this.que, '车队管理助手');
       this.exportLoading = false;
     }
 
