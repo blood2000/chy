@@ -36,7 +36,7 @@
       </el-form>
 
 
-      <OthenTeam v-else />
+      <OthenTeam v-else @groupSelected="$emit('oneSelected', selection)" />
 
 
     </div>
@@ -128,6 +128,7 @@
           >删除</el-button>
         </template>
       </RefactorTable>
+
       <RefactorTable v-else :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <template #isOften="{row}">
           <span>{{ selectDictLabel(isOftenOptions, row.isOften) }}</span>

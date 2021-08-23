@@ -53,15 +53,7 @@
           },
           {
             'label': '调度者手机',
-            'prop': 'tel',
-            'isShow': true,
-            'sortNum': 2,
-            'width': '120',
-            'tooltip': true
-          },
-          {
-            'label': '公司名称',
-            'prop': 'companyName',
+            'prop': 'disUserPhone',
             'isShow': true,
             'sortNum': 2,
             'width': '120',
@@ -114,13 +106,18 @@ export default {
   },
 
   methods: {
-
+    // 筛选出来的
     handlerDisSelected(data) {
       console.log(data);
+      this.userList.push(data);
+
+      console.log(this.userList);
     },
 
-    handleSelectionChange(data) {
-      console.log(data);
+    // 列表选中值
+    handleSelectionChange(selection) {
+    //   console.log(selection);
+      this.$emit('groupSelected', selection);
     }
   }
 
