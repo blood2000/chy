@@ -731,7 +731,7 @@ export default {
 
     this.isShipment && this.getList();
     this.isShipment && this.paymentWallet();
-    this.isShipment && this.getToday();
+    this.isShipment && this.tingetToday();
     // 页面刚进入时开启长连接
     // this.initWebSocket();
   },
@@ -1048,7 +1048,7 @@ export default {
       this.$forceUpdate();
     },
     // 获取今日
-    async getToday() {
+    async tingetToday() {
       const res = await shipmentWaybillBehavior({
         branchCode: this.shipment.info.branchCode,
         shipmentCode: this.shipment.info.code,
