@@ -27,3 +27,13 @@ export function frreezeAmountLog(query) {
     params: query
   });
 }
+
+// 付款记录
+export const shipperListApi = '/payment/wallet/remit/shipperList';
+export function shipperlist(data) {
+  return request({
+    url: shipperListApi,
+    method: 'post',
+    data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'id' }, data)
+  });
+}
