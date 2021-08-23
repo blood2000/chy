@@ -43,6 +43,15 @@
 
       <div class="table-box">
         <el-row :gutter="10" class="mb8">
+          <el-col v-show="activeTab == '付款记录'" :span="1.5">
+            <el-button
+              type="primary"
+              icon="el-icon-download"
+              size="mini"
+              :loading="exportLoading"
+              @click="handleExport"
+            >导出</el-button>
+          </el-col>
           <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
         </el-row>
 
@@ -232,7 +241,9 @@ export default {
         { dictLabel: '吨', dictValue: '0' },
         { dictLabel: '方', dictValue: '1' },
         { dictLabel: '车', dictValue: '2' }
-      ]
+      ],
+      // 付款记录导出
+      exportLoading: false
     };
   },
   created() {
@@ -338,6 +349,26 @@ export default {
       this.activeName = '';
       this.updateTimeBegin = undefined;
       this.updateTimeEnd = undefined;
+    },
+    /** 付款记录导出按钮操作 */
+    handleExport() {
+      this.exportLoading = true;
+      const { user = {}} = getUserInfo() || {};
+      const { userCode } = user;
+      const params = Object.assign(
+        {},
+        this.queryParams,
+        { userCode: userCode },
+        {
+          updateTimeBegin: this.queryParams.updateTimeBegin ? this.queryParams.updateTimeBegin : this.updateTimeBegin,
+          updateTimeEnd: this.queryParams.updateTimeEnd ? this.queryParams.updateTimeEnd : this.updateTimeEnd
+        }
+      );
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      this.download('/payment/wallet/remit/export', params, `付款记录`).then(() => {
+        this.exportLoading = false;
+      });
     }
   }
 };
