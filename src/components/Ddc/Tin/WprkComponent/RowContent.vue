@@ -20,7 +20,7 @@
         <div v-if="layout.primary1">
           <el-button type="primary" size="mini" @click="$emit('click1')">{{ layout.primary1 }}</el-button>
         </div>
-        <div v-if="layout.primary2">
+        <div v-if="layout.primary2" v-hasPermi.p="layout.hasPermi">
           <el-button type="primary" plain class="bgf" size="mini" @click="$emit('click2')">{{ layout.primary2 }}</el-button>
         </div>
       </div>

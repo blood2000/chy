@@ -711,8 +711,8 @@ export default {
 
     newQueryParams() {
       return {
-        beginTime: this.queryParams.tin10[0], //	开始时间	query	false
-        endTime: this.queryParams.tin10[1], //	结束时间	query	false
+        beginTime: this.queryParams.tin10 ? this.queryParams.tin10[0] : undefined, //	开始时间	query	false
+        endTime: this.queryParams.tin10 ? this.queryParams.tin10[1] : undefined, //	结束时间	query	false
         companyAndCustomerAndPhone: this.queryParams.tin1, //	下单用户	query	false
         goodsName: this.queryParams.tin5, //	货物描述(名称)	query	false
         goodsBigType: this.queryParams.tin4 ? [this.queryParams.tin4] : undefined, //	货物大类大类	query	false

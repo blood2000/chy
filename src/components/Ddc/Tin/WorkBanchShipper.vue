@@ -278,7 +278,8 @@
                     color: 'g-color-success',
                     z30d: false,
                     primary1: '', // 显示正常的值
-                    primary2: '查看'
+                    primary2: '查看',
+                    hasPermi:['waybill:tracklist:received']
                   }"
 
                   :datas="[
@@ -299,7 +300,8 @@
                     color: 'g-color-success',
                     z30d: false,
                     primary1: '', // 显示正常的值
-                    primary2: '查看'
+                    primary2: '查看',
+                    hasPermi:['waybill:tracklist:loaded']
                   }"
 
                   :datas="[
@@ -320,7 +322,8 @@
                     color: 'g-color-success',
                     z30d: false,
                     primary1: '', // 显示正常的值
-                    primary2: '查看'
+                    primary2: '查看',
+                    hasPermi:['waybill:tracklist:unloaded']
                   }"
 
                   :datas="[
@@ -904,7 +907,7 @@ export default {
             });
           }
         });
-      } catch (e) { console.log(e); }
+      } catch (e) { console.log('跳转'); }
 
       if (paramVal) {
         this.$router.push({ name: pathName, query: { [url.toLowerCase()]: paramVal }});
