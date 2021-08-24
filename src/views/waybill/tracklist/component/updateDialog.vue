@@ -163,10 +163,10 @@ export default {
         orderCode: null,
         loadTime: null,
         loadWeight: null,
-        loadAttachmentCodes: [],
+        loadAttachmentCodes: null,
         unloadTime: null,
         unloadWeight: null,
-        unloadAttachmentCodes: []
+        unloadAttachmentCodes: null
       };
       this.resetForm('form');
     },
@@ -174,6 +174,16 @@ export default {
     setForm(data) {
       this.reset();
       this.loading = true;
+      // getLoadInfoDetail(this.waybill.waybillNo, 1).then(response => {
+      //   if (response.data.length) {
+      //     const info = response.data[0];
+      //     this.loadinfo = info;
+      //     this.form.loadWeight = info.loadWeight;
+      //     this.form.loadTime = info.loadTime;
+      //     this.form.loadAttachmentCodes = info.attachmentCode;
+      //     this.fresh = true; // 加载多图
+      //   }
+      // });
       getInfoDetail(data.code).then(res => {
         this.waybill = res.data;
         this.form = {
