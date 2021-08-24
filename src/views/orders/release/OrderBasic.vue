@@ -441,20 +441,6 @@ export default {
           }
         });
 
-        // 2.去根据大类去请求下数据
-        await this.handletin2();
-
-
-        // 3.回填 小类(商品)
-        if (this.isMultiGoods) {
-          this.formData.tin2_1 = goodsType;
-        } else {
-          this.tin2_Option.forEach(e => {
-            if (goodsType[0] === e.dictValue) {
-              this.formData.tin2_2 = e.dictValue;
-            }
-          });
-        }
 
         // 4.处理调度者
         this.orderSpecifiedList = orderSpecifiedList.map(e => {
@@ -473,20 +459,24 @@ export default {
           };
         });
 
-
-
-        // this.orderSpecifiedList.forEach(e => {
-        //   if (e.userType + '' === '1') {
-        //     e.code = e.teamInfoCode;
-        //   } else {
-        //     e.code = e.driverInfoCode;
-        //   }
-        //   this.actionIndex = e.userType + '';
-        // });
-
-
-        console.log(this.orderSpecifiedList, '返回的数据');
         this.formData['tin6_' + this.actionIndex] = this.orderSpecifiedList;
+
+        // 2.去根据大类去请求下数据
+        await this.handletin2();
+
+
+        // 3.回填 小类(商品)
+        if (this.isMultiGoods) {
+          this.formData.tin2_1 = goodsType;
+        } else {
+          this.tin2_Option.forEach(e => {
+            if (goodsType[0] === e.dictValue) {
+              this.formData.tin2_2 = e.dictValue;
+            }
+          });
+        }
+
+
         // 5.货集码只做单选处理
         // this.handleTin4();
         this.formData.tin6 = classList[0] ? classList[0].classCode : '';

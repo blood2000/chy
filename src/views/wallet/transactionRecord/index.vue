@@ -52,6 +52,9 @@
               @click="handleExport"
             >导出</el-button>
           </el-col>
+          <el-col v-if="activeTab == '付款记录'" :span="1.5" class="fr">
+            <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+          </el-col>
           <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
         </el-row>
 
@@ -109,60 +112,44 @@
           </el-table-column>
         </el-table>
 
-        <el-table v-show="activeTab == '付款记录'" v-loading="loading" highlight-current-row border :data="dataList">
-          <el-table-column label="序号" align="center" fixed="left" type="index" min-width="5%" />
-          <el-table-column label="运单号" align="center" prop="waybillNo" width="150" />
-          <el-table-column label="装货地" align="center" prop="loadAddress" width="150" />
-          <el-table-column label="卸货地" align="center" prop="unloadAddress" width="150" />
-          <el-table-column label="货物大类" align="center" prop="goodsBigType">
-            <template slot-scope="scope">
-              <span>{{ selectDictLabel(commodityCategoryCodeOptions, scope.row.goodsBigType) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="货物小类" align="center" prop="goodsType">
-            <template slot-scope="scope">
-              <span>{{ selectDictLabel(commoditySubclassOptions, scope.row.goodsType) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="承运司机" align="center" prop="driverName" />
-          <el-table-column label="承运车辆" align="center" prop="licenseNumber" />
-          <el-table-column label="所属调度" align="center" prop="teamName" width="150" />
-          <!-- 付款方式：0-现金支付， 1-京东支付 2-交通银行， 3-新生支付，4-工商银行,5-传化支付,6-建行支付,7-环迅-->
-          <el-table-column label="交易类型" align="center" prop="payBy">
+        <RefactorTable v-show="activeTab == '付款记录'" :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
+          <!-- 货物大类 -->
+          <template #goodsBigType="{row}">
+            <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
+          </template>
+          <!-- 货物小类 -->
+          <template #goodsType="{row}">
+            <span>{{ selectDictLabel(commoditySubclassOptions, row.goodsType) }}</span>
+          </template>
+          <!-- 装货数量 -->
+          <template #loadWeight="{row}">
+            <span>{{ row.loadWeight + selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+          </template>
+          <!-- 卸货数量 -->
+          <template #unloadWeight="{row}">
+            <span>{{ row.unloadWeight + selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
+          </template>
+          <!-- 交易类型 -->
+          <template #payBy="{}">
             <span>付款</span>
-          </el-table-column>
-          <el-table-column label="装货数量" align="center" prop="loadWeight">
-            <template slot-scope="scope">
-              <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="卸货数量" align="center" prop="unloadWeight">
-            <template slot-scope="scope">
-              <span>{{ scope.row.loadWeight + selectDictLabel(stowageStatusOptions, scope.row.stowageStatus) }}</span>
-            </template>
-          </el-table-column>
-          <!-- <el-table-column label="货物损耗(kg)" align="center" prop="wastage" /> -->
-          <el-table-column label="货物单价（元）" align="center" prop="goodsPrice">
-            <template slot-scope="scope">
-              <span>{{ floor(scope.row.goodsPrice) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="运费单价（元）" align="center" prop="freightPriceDriver">
-            <template slot-scope="scope">
-              <span>{{ floor(scope.row.freightPriceDriver) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="实付金额（元）" align="center" prop="amount">
-            <template slot-scope="scope">
-              <span>{{ floor(scope.row.amount) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作时间" align="center" prop="updateTime" width="180">
-            <template slot-scope="scope">
-              <span>{{ parseTime(scope.row.updateTime) }}</span>
-            </template>
-          </el-table-column>
-        </el-table>
+          </template>
+          <!-- 货物单价（元） -->
+          <template #goodsPrice="{row}">
+            <span>{{ floor(row.goodsPrice) }}</span>
+          </template>
+          <!-- 运费单价（元） -->
+          <template #freightPriceDriver="{row}">
+            <span>{{ floor(row.freightPriceDriver) }}</span>
+          </template>
+          <!-- 实付金额（元） -->
+          <template #amount="{row}">
+            <span>{{ floor(row.amount) }}</span>
+          </template>
+          <!-- 操作时间 -->
+          <template #updateTime="{row}">
+            <span>{{ parseTime(row.updateTime) }}</span>
+          </template>
+        </RefactorTable>
 
         <pagination
           v-show="total>0"
@@ -178,7 +165,7 @@
 
 <script>
 import { getUserInfo } from '@/utils/auth';
-import { frreezeAmountLog, payRecordlist } from '@/api/capital/payrecord';
+import { frreezeAmountLog, shipperlist, shipperListApi } from '@/api/capital/payrecord';
 import { getTimeRange } from '@/utils/timeRange';
 import Tabs from '@/components/Tabs/index';
 
@@ -187,6 +174,8 @@ export default {
   components: { Tabs },
   data() {
     return {
+      tableColumnsConfig: [],
+      api: shipperListApi,
       // 选中tab
       activeTab: '冻结记录',
       tablist: [{ tabName: '冻结记录' }, { tabName: '付款记录' }],
@@ -247,6 +236,7 @@ export default {
     };
   },
   created() {
+    this.tableHeaderConfig(this.tableColumnsConfig, shipperListApi);
     this.changeTimeFormate();
     this.getList();
     this.listByDict(this.commodityCategory).then(response => {
@@ -289,7 +279,7 @@ export default {
       this.loading = true;
       const { user = {}} = getUserInfo() || {};
       const { userCode } = user;
-      payRecordlist(
+      shipperlist(
         Object.assign(
           {},
           this.queryParams,
@@ -366,7 +356,7 @@ export default {
       );
       params.pageSize = undefined;
       params.pageNum = undefined;
-      this.download('/payment/wallet/remit/export', params, `付款记录`).then(() => {
+      this.download('/payment/wallet/remit/shipperExport', params, `付款记录`).then(() => {
         this.exportLoading = false;
       });
     }
