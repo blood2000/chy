@@ -125,7 +125,6 @@ export default {
       if (this.userList.length) {
         obj = { disUserCode: this.userList.map(e => e.disUserCode || e.code) };
       }
-      console.log('我是什么时候触发的??', obj);
       return obj;
     }
   },
@@ -134,7 +133,6 @@ export default {
     cboneTselected: {
       handler(arr) {
         this.userList = objReduce(arr, 'code');
-        console.log('我被赋值了~!!', this.userList);
       },
       immediate: true,
       deep: true
@@ -145,7 +143,6 @@ export default {
     // 筛选出来的
     handlerDisSelected(data) {
       // 处理一下去重
-      console.log(JSON.stringify(data) === '{}');
       if (JSON.stringify(data) === '{}') return;
       const arr = deepClone(this.userList);
       arr.push(data);
@@ -154,7 +151,6 @@ export default {
 
     // 列表选中值
     handleSelectionChange(selection) {
-    //   console.log(selection);
       this.$emit('oneSelected', selection);
     }
   }

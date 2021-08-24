@@ -195,7 +195,6 @@ export default {
   // },
 
   created() {
-    // console.log(this.opaddresstype);
     this.queryParams.shipmentCode = this.shipmentCode;
     this.queryParams.addressType = this.opaddresstype;
     this.getList();

@@ -482,8 +482,6 @@ export default {
           return !e.isCommonly;
         });
 
-        console.log(this.orderSpecifiedList, '常用调度者');
-        console.log(this.oneTselected, '独立调度者');
 
         // 2.去根据大类去请求下数据
         await this.handletin2();
@@ -657,32 +655,10 @@ export default {
           ...e
         };
       });
-      console.log(this.cboneTselected, '打开回填的数据');
     },
 
     // 关闭调度组弹框
     handleTin6_1() {
-      /*
-          code: "af555489e55d4167b625af1721123389"
-          companyName: "测试支付宝运输有限公司"
-          createCode: "afd5c0dcdaab45bb9c2160eb91a443db"
-          createTime: "2021-08-16 16:00:00"
-          disName: "范测调度组的调度组"
-          disUserCode: "b3f21f119ac643ab987d3535054c427a"
-          disUserName: "范测调度组"
-          disUserPhone: "136****2288"
-          id: 292
-          isDel: 0
-          isNotInvoice: 0
-          isOften: 0
-          tel: null
-          wayCount: 437
-      */
-
-      console.log('确认关闭弹框~~~', this.oneTselected);
-
-
-
       const arr = this.orderSpecifiedList.map(e => {
         return {
           // ...e, // 需要其他再加
@@ -720,8 +696,6 @@ export default {
       this.formData.tin6_1 = objReduce(arr.concat(arr2), 'code');
 
       this.oneTselected = this.formData.tin6_1.filter(e => !e.isCommonly);
-
-      console.log(this.formData.tin6_1, '715,最后去重一下');
 
       this.open = false;
       this.title = '';
@@ -796,9 +770,6 @@ export default {
       return new Promise((resolve, reject) => {
         this.$refs['elForm'].validate((valid) => {
           if (valid) {
-            console.log(this.formData.tin5 === '1');
-            console.log(this.formData.tin6_1);
-            console.log(this.formData.tin6_2);
             if (this.formData.tin5 === '1' && !this.formData.tin6_1.length && !this.formData.tin6_2.length) {
               this.msgInfo('请选择指定联系人');
               return;
@@ -872,8 +843,6 @@ export default {
     closable(index) {
       this.formData['tin6_1'].splice(index, 1);
 
-      // console.log(this.oneTselected);
-
       // 过滤掉独立调度者
       // this.formData['tin6_1'].filter(ee=>{
       //   let boor = true
@@ -899,10 +868,6 @@ export default {
       // })
 
       // this.formData['tin6_1'].splice(index, 1)
-      console.log(this.orderSpecifiedList);
-      console.log(this.oneTselected);
-
-      console.log(this.formData['tin6_1']);
     },
 
     // 处理小类传入[1,2] =>
