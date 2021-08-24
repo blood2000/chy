@@ -66,6 +66,13 @@
             </el-radio>
           </template>
         </el-table-column>
+        <el-table-column label="类型" align="center" prop="addressType" width="50">
+          <template slot-scope="scope">
+            <template v-if="scope.row.addressType == '1'"><el-tag style="margin-right:10px; padding: 0 8px;">装</el-tag></template>
+            <template v-else-if="scope.row.addressType == '2'"><el-tag style="margin-right:10px; padding: 0 8px;" type="success">卸</el-tag></template>
+            <template v-else>-</template>
+          </template>
+        </el-table-column>
 
         <el-table-column show-overflow-tooltip label="地址详情" align="center" prop="addressName">
           <template slot-scope="scope">
@@ -73,6 +80,9 @@
             <!-- <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
             <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
             <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag> -->
+            <!-- <template v-if="scope.row.addressType == '1'"><el-tag style="margin-right:10px; padding: 0 8px;">装</el-tag>{{ scope.row.addressName }}</template>
+            <template v-else-if="scope.row.addressType == '2'"><el-tag style="margin-right:10px; padding: 0 8px;" type="success">卸</el-tag>{{ scope.row.addressName }}</template>
+            <template v-else>{{ scope.row.addressName }}</template> -->
           </template>
         </el-table-column>
         <el-table-column show-overflow-tooltip label="地址别名" align="center" prop="addressAlias" />
@@ -93,8 +103,8 @@
       @pagination="getList"
     />
 
-    <div class="ly-t-right">
-      <el-button type="primary" size="mini" @click="handlerClick">确定</el-button>
+    <div class="ly-t-right mt20">
+      <el-button type="primary" @click="handlerClick">确定</el-button>
     </div>
 
 
