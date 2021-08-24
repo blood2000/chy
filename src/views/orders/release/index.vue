@@ -392,7 +392,7 @@
       width="80%"
     >
       <div v-if="openSelectaddress">
-        <OpenDialog :shipment-code="formData.tin1" @radioSelection="radioSelection" />
+        <OpenDialog :shipment-code="formData.tin1" :opaddresstype="opaddresstype" @radioSelection="radioSelection" />
       </div>
     </el-dialog>
   </div>
@@ -601,6 +601,21 @@ export default {
         bool = true;
       }
       return bool;
+    },
+
+    opaddresstype() {
+      let type = 1;
+      const { name } = this.isRadioSelection;
+
+      console.log(name, '打开改变');
+
+      if (name === 'address_add') {
+        type = 1;
+      } else if (name === 'address_xie') {
+        type = 2;
+      }
+
+      return type;
     }
   },
   watch: {
@@ -1472,6 +1487,7 @@ export default {
     // 打开多选地址的弹框
     selectAddress(name, type) {
       this.isRadioSelection = { name, type };
+      console.log(this.isRadioSelection, '打开地址--');
       this.openSelectaddress = true;
     },
 

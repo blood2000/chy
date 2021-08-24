@@ -29,6 +29,18 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
+
+      <el-form-item label="地址类型" prop="addressType">
+        <el-select v-model="queryParams.addressType" placeholder="请选择地址类型" clearable filterable size="small" @change="handleQuery">
+          <el-option
+            v-for="(dict,index) in addressTypeOptions"
+            :key="dict.dictValue + index"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -94,7 +106,8 @@ import { listAddress } from '@/api/enterprise/company/address';
 
 export default {
   props: {
-    shipmentCode: { type: String, default: '' }
+    shipmentCode: { type: String, default: '' },
+    opaddresstype: { type: Number, default: 1 }
   },
   data() {
     return {
@@ -119,6 +132,7 @@ export default {
       open: false,
       // 地址类型字典
       addressTypeOptions: [
+        { 'dictLabel': '全部', 'dictValue': 0 },
         { 'dictLabel': '装货地址', 'dictValue': 1 },
         { 'dictLabel': '卸货地址', 'dictValue': 2 }
       ],
@@ -152,22 +166,35 @@ export default {
     };
   },
 
-  watch: {
-    shipmentCode: {
-      handler(shipmentCode) {
-        this.queryParams.shipmentCode = this.shipmentCode;
-        this.getList();
-      },
-      immediate: true
+  computed: {
+    que() {
+      return {
+        ...this.queryParams,
+        addressType: this.queryParams.addressType !== 0 ? this.queryParams.addressType : undefined
+      };
     }
   },
 
-  created() {},
+  // watch: {
+  //   shipmentCode: {
+  //     handler(shipmentCode) {
+  //       this.queryParams.shipmentCode = this.shipmentCode;
+  //     },
+  //     immediate: true
+  //   }
+  // },
+
+  created() {
+    // console.log(this.opaddresstype);
+    this.queryParams.shipmentCode = this.shipmentCode;
+    this.queryParams.addressType = this.opaddresstype;
+    this.getList();
+  },
   methods: {
     /** 查询常用地址列表 */
     getList() {
       this.loading = true;
-      listAddress(this.queryParams).then(response => {
+      listAddress(this.que).then(response => {
         this.addressList = response.rows;
         this.total = response.total;
         this.loading = false;
