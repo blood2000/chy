@@ -2,15 +2,18 @@
 
   <div>
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="100px">
-      <el-form-item label="调度者手机" prop="disUserPhone">
+      <el-form-item label="调度者" prop="disUserPhone">
         <FilterableSelect
           v-model="queryParams.disUserPhone"
           clearable
           style="width:255px"
-          placeholder="请输入调度者手机号"
+          placeholder="请输入调度者手机号或名字"
           :axios="{
             queryFn:listAllData,
-            queryData:{}
+            queryData:{
+              authStatus: 3,
+              status: 0,
+            }
           }"
           keywords="phoneOrName"
           :show-key="{
@@ -85,6 +88,9 @@
 <script>
 import FilterableSelect from '@/components/FilterableSelect';
 import { listAllData } from '@/api/assets/team';
+import { objReduce } from '@/utils/ddc';
+import { deepClone } from '@/utils';
+
 
 export default {
 
@@ -127,7 +133,7 @@ export default {
   watch: {
     cboneTselected: {
       handler(arr) {
-        this.userList = arr;
+        this.userList = objReduce(arr, 'code');
         console.log('我被赋值了~!!', this.userList);
       },
       immediate: true,
@@ -138,7 +144,12 @@ export default {
   methods: {
     // 筛选出来的
     handlerDisSelected(data) {
-      this.userList.push(data);
+      // 处理一下去重
+      console.log(JSON.stringify(data) === '{}');
+      if (JSON.stringify(data) === '{}') return;
+      const arr = deepClone(this.userList);
+      arr.push(data);
+      this.userList = objReduce(arr, 'code');
     },
 
     // 列表选中值
