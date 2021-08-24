@@ -243,6 +243,8 @@ import GroupIndex from '@/views/enterprise/group';
 
 import { getUserInfo } from '@/utils/auth';
 
+import { objReduce } from '@/utils/ddc';
+
 export default {
   components: {
     // OpenDialog,
@@ -683,29 +685,43 @@ export default {
 
       const arr = this.orderSpecifiedList.map(e => {
         return {
-          ...e, // 需要其他再加
+          // ...e, // 需要其他再加
           _tinCode: e.code,
           code: e.disUserCode,
           teamName: e.disName,
           type: 'info',
           userType: 1,
-          isOne: false // 添加一个标识区别独立调度者
+          isCommonly: true // 添加一个标识区别独立调度者
         };
       });
 
       const arr2 = this.oneTselected.map(e => {
         return {
-          ...e, // 需要其他再加
+          // ...e, // 需要其他再加
+          disUserCode: e.disUserCode,
+          disName: e.disName,
+          disUserName: e.disUserName,
+          disUserPhone: e.disUserPhone,
+
+          // 上面是列表展示字段使用
+
           _tinCode: e.code,
           code: e.disUserCode,
           teamName: e.disName,
           type: 'info',
           userType: 1,
-          isOne: true // 添加一个标识区别独立调度者
+          isCommonly: false // 添加一个标识区别独立调度者
         };
       });
 
-      this.formData.tin6_1 = arr.concat(arr2);
+      // 去重一下
+
+
+      this.formData.tin6_1 = objReduce(arr.concat(arr2), 'code');
+
+      this.oneTselected = this.formData.tin6_1.filter(e => !e.isCommonly);
+
+      console.log(this.formData.tin6_1, '715,最后去重一下');
 
       this.open = false;
       this.title = '';
@@ -868,11 +884,11 @@ export default {
       // })
 
       this.orderSpecifiedList = this.formData['tin6_1'].filter(e => {
-        return !e.isOne;
+        return e.isCommonly;
       });
 
       this.oneTselected = this.formData['tin6_1'].filter(e => {
-        return e.isOne;
+        return !e.isCommonly;
       });
 
       // this.formData['tin6_1'] = this.orderSpecifiedList.map(e => {
