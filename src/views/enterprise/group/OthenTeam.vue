@@ -115,9 +115,11 @@ export default {
   computed: {
     cbDataByKeyword() {
       let obj = {};
+
       if (this.userList.length) {
         obj = { disUserCode: this.userList.map(e => e.disUserCode || e.code) };
       }
+      console.log('我是什么时候触发的??', obj);
       return obj;
     }
   },
@@ -126,6 +128,7 @@ export default {
     cboneTselected: {
       handler(arr) {
         this.userList = arr;
+        console.log('我被赋值了~!!', this.userList);
       },
       immediate: true,
       deep: true

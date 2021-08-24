@@ -468,12 +468,13 @@ export default {
           };
         });
 
-        this.orderSpecifiedList = this.formData['tin6_' + this.actionIndex].filter((e) => { return e.isCommonly; });
-        this.oneTselected = this.formData['tin6_' + this.actionIndex].filter((e, index) => {
+        this.orderSpecifiedList = this.formData['tin6_' + this.actionIndex].filter((e) => e.isCommonly);
+        this.oneTselected = this.formData['tin6_' + this.actionIndex].filter((e) => {
+          e.disUserCode = e.code;
           e.disName = e.teamName;
           e.disUserName = e.teamName;
-          e.disUserPhone = 151515151515;
-          return index === 2;
+          e.disUserPhone = e.phonenumber;
+          return !e.isCommonly;
         });
 
         console.log(this.orderSpecifiedList, '常用调度者');
