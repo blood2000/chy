@@ -607,8 +607,6 @@ export default {
       let type = 1;
       const { name } = this.isRadioSelection;
 
-      console.log(name, '打开改变');
-
       if (name === 'address_add') {
         type = 1;
       } else if (name === 'address_xie') {
@@ -1487,7 +1485,6 @@ export default {
     // 打开多选地址的弹框
     selectAddress(name, type) {
       this.isRadioSelection = { name, type };
-      console.log(this.isRadioSelection, '打开地址--');
       this.openSelectaddress = true;
     },
 

@@ -279,7 +279,7 @@
                     z30d: false,
                     primary1: '', // 显示正常的值
                     primary2: '查看',
-                    hasPermi:['waybill:tracklist:received']
+                    hasPermi2:['waybill:tracklist:received']
                   }"
 
                   :datas="[
@@ -301,7 +301,7 @@
                     z30d: false,
                     primary1: '', // 显示正常的值
                     primary2: '查看',
-                    hasPermi:['waybill:tracklist:loaded']
+                    hasPermi2:['waybill:tracklist:loaded']
                   }"
 
                   :datas="[
@@ -323,7 +323,7 @@
                     z30d: false,
                     primary1: '', // 显示正常的值
                     primary2: '查看',
-                    hasPermi:['waybill:tracklist:unloaded']
+                    hasPermi2:['waybill:tracklist:unloaded']
                   }"
 
                   :datas="[
@@ -356,7 +356,9 @@
                     color: 'g-color-warning',
                     z30d: false,
                     primary1: '去核算', // 显示正常的值
-                    primary2: ''
+                    primary2: '',
+                    hasPermi1:isZtShipment?['transportation:batch:immediateAccounting']:[]
+
                   }"
 
                   :datas="[
@@ -377,8 +379,9 @@
                     title: '已核算运费',
                     color: 'g-color-warning',
                     z30d: false,
-                    primary1: '去打款', // 显示正常的值
-                    primary2: ''
+                    primary1: isZtShipment?'去核验':'去打款', // 显示正常的值
+                    primary2: '',
+                    hasPermi1: isZtShipment?['transportation:batch:confirmVerification']:[]
                   }"
 
                   :datas="[
@@ -404,8 +407,9 @@
                     title: '已打款运费',
                     color: 'g-color-warning',
                     z30d: false,
-                    primary1: '去评价', // 显示正常的值
-                    primary2: ''
+                    primary1: isZtShipment?'查看':'去评价', // 显示正常的值
+                    primary2: '',
+                    hasPermi1: isZtShipment?['transportation:batch:list']:[]
                   }"
 
                   :datas="[
@@ -442,7 +446,8 @@
                     color: 'g-color-purple',
                     z30d: false,
                     primary1: '去索票', // 显示正常的值
-                    primary2: ''
+                    primary2: '',
+                    hasPermi1: isZtShipment?['transportation:batch:passBatchClaim']:[]
                   }"
 
                   :datas="[
@@ -468,7 +473,8 @@
                     color: 'g-color-purple',
                     z30d: false,
                     primary1: '', // 显示正常的值
-                    primary2: '查看'
+                    primary2: '查看',
+                    hasPermi2: isZtShipment?['transportation:batch:passBilling']:[]
                   }"
 
                   :datas="[
@@ -494,7 +500,8 @@
                     color: 'g-color-purple',
                     z30d: true,
                     primary1: '', // 显示正常的值
-                    primary2: '查看'
+                    primary2: '查看',
+                    hasPermi2: isZtShipment?['transportation:batch:passPayment']:[]
                   }"
 
                   :datas="[
@@ -672,6 +679,7 @@ export default {
       // 账号信息
       isAdmin: false,
       isShipment: false,
+      isZtShipment: false,
       user: {},
       shipment: {},
       // 通知列表
@@ -723,11 +731,12 @@ export default {
     }
   },
   created() {
-    const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
+    const { isAdmin = false, isShipment = false, user = {}, shipment = {}, isZtShipment = false } = getUserInfo() || {};
     this.isAdmin = isAdmin;
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
+    this.isZtShipment = isZtShipment;
     // console.log(this.user);
     this.dataTime = this.parseTime(new Date(), '{y}-{m}-{d}');
     this.getInfo();

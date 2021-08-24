@@ -17,10 +17,10 @@
       </div>
 
       <div class="middle-row-btn">
-        <div v-if="layout.primary1">
+        <div v-if="layout.primary1" v-hasPermi.p="layout.hasPermi1">
           <el-button type="primary" size="mini" @click="$emit('click1')">{{ layout.primary1 }}</el-button>
         </div>
-        <div v-if="layout.primary2" v-hasPermi.p="layout.hasPermi">
+        <div v-if="layout.primary2" v-hasPermi.p="layout.hasPermi2">
           <el-button type="primary" plain class="bgf" size="mini" @click="$emit('click2')">{{ layout.primary2 }}</el-button>
         </div>
       </div>

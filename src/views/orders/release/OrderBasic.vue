@@ -457,9 +457,13 @@ export default {
         this.formData['tin6_' + this.actionIndex] = orderSpecifiedList.map(e => {
           if (e.userType + '' === '1') {
             e.code = e.teamInfoCode;
+            if (typeof (e.isCommonly) === 'undefined') {
+              e.isCommonly = true;
+            }
           } else {
             e.code = e.driverInfoCode;
           }
+
           this.actionIndex = e.userType + '';
 
           return {
@@ -470,16 +474,25 @@ export default {
           };
         });
 
+
+
         // 常用调度
         this.orderSpecifiedList = this.formData['tin6_' + this.actionIndex].filter((e) => e.isCommonly);
 
         // 自由车队
         this.oneTselected = this.formData['tin6_' + this.actionIndex].filter((e) => {
-          e.disUserCode = e.code;
-          e.disName = e.teamName + '的调度组';
-          e.disUserName = e.nickName;
-          e.disUserPhone = e.phonenumber.substr(0, 3) + '****' + e.phonenumber.substr(7, 11);
-          return !e.isCommonly;
+          let bool = false;
+          if (e.isCommonly) {
+            bool = false;
+          } else {
+            e.disUserCode = e.code;
+            e.disName = e.teamName + '的调度组';
+            e.disUserName = e.nickName;
+            e.disUserPhone = e.phonenumber.substr(0, 3) + '****' + e.phonenumber.substr(7, 11);
+
+            bool = !e.isCommonly;
+          }
+          return bool;
         });
 
 
