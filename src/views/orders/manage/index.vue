@@ -284,7 +284,7 @@
         </template>
         <template #opUserName="{row}">
           <span>{{ row.opNickName || row.opUserName }}</span>
-          <span v-if="row.opPhonenumber">[{{ row.opPhonenumber }}]</span>
+          <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
         </template>
         <template #updateUserName="{row}">
           <span>{{ row.updateNickName || row.updateUserName }}</span>
