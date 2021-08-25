@@ -87,7 +87,7 @@ export default {
       // 表单校验
       rules: {
         disUserCode: [
-          { required: true, message: '调度者姓名不能为空', trigger: 'blur' }
+          { required: true, message: '调度者姓名不能为空', trigger: ['change', 'blur'] }
         ],
         disUserPhone: [
           { required: true, message: '调度者电话不能为空', trigger: 'blur' }
