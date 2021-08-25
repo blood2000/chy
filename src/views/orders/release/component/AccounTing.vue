@@ -288,7 +288,7 @@ export default {
     }
 
   },
-
+  // console.log(this.$store.state.orders.orderStowageStatus, '当前配置方式');
   watch: {
     goodsUnitName: {
       handler(value) {
@@ -467,7 +467,7 @@ export default {
 
 
 
-
+      // 对规则进行过滤, 展示!!
       const filterDetailList = detailList.filter(e => {
         if (e.enName === 'CALCULATION_FORMULA') {
           this.jisuanRule = e;
@@ -477,7 +477,7 @@ export default {
           // 有可能是多个规则-> 谁下面的规则
           this.$store.commit('orders/SET_LOSS_PLAN', e);
         }
-        const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA');
+        const bool = (e.enName === 'LOSS_PLAN' || e.enName === 'LOSS_RULE' || e.enName === 'CALCULATION_FORMULA'); // || e.enName === 'LOSS_TOLERANCE' 添加这个就不显示路耗了
 
         return !bool;
       });
@@ -539,6 +539,8 @@ export default {
             (this.claculationFormula[0].ruleValue = this.totalTransportationCost);
             (this.claculationFormula[0].ruleCode = this.formData.ruleItemId);
 
+
+
             const shouruList = this.$refs.shouruList ? (await this.$refs.shouruList._submitForm()) : [];
             const zichuList = this.$refs.zichuList ? (await this.$refs.zichuList._submitForm()) : [];
 
@@ -556,6 +558,11 @@ export default {
               })).concat(this.$_ruleOhData)
             };
 
+
+            // 如果配载方式是2车, 则,过滤掉 路耗 容忍值 和 路耗 亏吨方案
+            if (this.$store.state.orders.orderStowageStatus === '2') {
+              obj.orderFreightBoList = obj.orderFreightBoList.filter(e => !(e.ruleItemCode === '1' || e.ruleItemCode === '2'));
+            }
 
             resolve({ ...obj, ruleDictValue: this.formData.ruleDictValue });
           } else {

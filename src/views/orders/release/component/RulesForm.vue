@@ -74,7 +74,7 @@
         </el-form-item>
 
         <!-- 区间 -->
-        <div v-if="item.showType === '2'" :key="index" class="ly-flex">
+        <div v-if="item.showType === '2' && orderStowageStatus !== '2'" :key="index" class="ly-flex">
 
           <el-form-item
             :prop="item.myName+'_0'"
@@ -204,7 +204,13 @@ export default {
       }
 
 
+
+
       return name;
+    },
+    // 判断配置方式是什么
+    orderStowageStatus() {
+      return this.$store.state.orders.orderStowageStatus;
     }
   },
 
@@ -224,7 +230,6 @@ export default {
   methods: {
     async initData() {
       const arr = await Promise.all(this.getOption(this.dataList));
-
       arr.forEach(async e => {
         e.showType = e.showType + '';
         e.myName = 't_' + e.enName;
