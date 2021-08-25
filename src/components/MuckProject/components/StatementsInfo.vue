@@ -21,6 +21,14 @@
       <template #stowageStatus="{row}">
         <span>{{ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
       </template>
+      <!-- 结算吨位 -->
+      <template #settlementTonnage="{row}">
+        <span>{{ floor(row.unloadWeight, row.stowageStatus === '2'? 0: 3) +' '+ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+      </template>
+      <!-- 运费税率 -->
+      <template #freightTax="{row}">
+        <span>{{ floor(row.freightTax || 0.09) }}</span>
+      </template>
 
       <template #isChild="{row}">
         <span>{{ selectDictLabel(isChild_op, row.isChild) }}</span>
@@ -129,6 +137,8 @@ export default {
       let str = BatchInfoListVo + '--' + 'StatementsInfo';
       if (this.status === 4) {
         str = BatchInfoListVo + '--' + 'StatementsInfo4';
+      } else if (this.status === 2) {
+        str = '/transportation/batch/batchInvoiceWaybillVo';
       }
       return str;
     }
@@ -203,6 +213,20 @@ export default {
           'tooltip': true
         });
       }
+
+      // 已打款特殊另加打款状态
+      if (this.status === 2) {
+        com.push({
+          'label': '结算吨位',
+          'prop': 'settlementTonnage',
+          'isShow': true,
+          'sortNum': 11,
+          'width': '120',
+          'tooltip': true
+        });
+      }
+
+
 
       // console.log(com);
 
