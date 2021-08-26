@@ -23,6 +23,7 @@
           ]"
         >
           <el-input-number
+            :key="index + item.myName"
             v-model="formData[item.myName]"
             :controls="false"
             :max="999999"
@@ -32,7 +33,7 @@
             :placeholder="`请输入${item.cnName}`"
             controls-position="right"
             :style="{ width: '200px' }"
-            @change="change"
+            @change="(val)=>change(val, item.cnName + '必填' )"
           />
         </el-form-item>
         <!-- 下拉框 -->
@@ -95,7 +96,7 @@
               :step="0.001"
               controls-position="right"
               :style="{ width: '150px' }"
-              @change="change"
+              @change="(val)=>change(val, '起始值必填')"
             />
             <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
@@ -119,7 +120,7 @@
               :step="0.001"
               controls-position="right"
               :style="{ width: '150px' }"
-              @change="change"
+              @change="(val)=>change(val, '结束值必填')"
             />
             <span class="ml0 mr10">{{ unit }}</span>
           </el-form-item>
@@ -151,6 +152,12 @@ export default {
     dataList: {
       type: Array,
       default: () => []
+    },
+
+    // 判断是调价窗口调用
+    tintype: {
+      type: String,
+      default: ''
     }
   },
   data() {
@@ -242,7 +249,11 @@ export default {
         }
       });
 
-      this.resettingData = arr;
+      // 为了满足测试说的抖动, 添加一个 PAT 判断调价, 拷贝一份,用于断开指向
+      this.resettingData = this.tintype !== 'PAT' ? arr : JSON.parse(JSON.stringify(arr));
+      this.resettingData.sort((a, b) => {
+        return a.ruleItemCode - b.ruleItemCode;
+      });
     },
 
     getOption(arr) {
@@ -261,7 +272,6 @@ export default {
             e.Option = data;
           }
         }
-
 
         return e;
       });
@@ -292,8 +302,11 @@ export default {
     },
 
     //
-    change(value) {
+    change(value, msg) {
       // this.$forceUpdate();
+      if (!value && this.tintype === 'PAT') {
+        this.msgError(msg);
+      }
       this._submitForm();
     },
 

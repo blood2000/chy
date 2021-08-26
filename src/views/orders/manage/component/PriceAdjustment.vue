@@ -47,6 +47,7 @@
         <div v-for="(redi,i) in goods.redis" :key="i" class="mt20">
           <AccounTing
             :ref="'AccounTing'+goods.activeName+i"
+            tintype="PAT"
             :pubilsh-code="pubilshCode"
             :redis="redi"
             :goods-unit-name="goodsUnitName"

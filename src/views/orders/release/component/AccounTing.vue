@@ -85,10 +85,10 @@
           <div v-if="zichuList.length || shouruList.length" class="t_box_item">
 
             <div v-if="zichuList.length" class="header mb8">扣费项目:</div>
-            <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" :myisdisabled="myisdisabled" />
+            <RulesForm v-if="zichuList.length" ref="zichuList" :data-list="zichuList" :myisdisabled="myisdisabled" :tintype="tintype" />
 
             <div v-if="shouruList.length" class="header mb8">补贴项目:</div>
-            <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" :myisdisabled="myisdisabled" />
+            <RulesForm v-if="shouruList.length" ref="shouruList" :data-list="shouruList" :myisdisabled="myisdisabled" :tintype="tintype" />
 
 
           </div>
@@ -165,6 +165,7 @@ export default {
       type: String,
       required: true
     },
+
     goodsUnitName: {
       type: String,
       required: true
@@ -188,6 +189,11 @@ export default {
     showbudget: {
       type: Boolean,
       default: false
+    },
+    // 判断是调价窗口调用
+    tintype: {
+      type: String,
+      default: ''
     }
 
   },
