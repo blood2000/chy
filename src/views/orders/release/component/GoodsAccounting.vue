@@ -322,6 +322,7 @@ export default {
         if (value === '1') {
           this.formData.weight = undefined;
         }
+        this.$forceUpdate();
         this.$emit('totalTypeValue', value);
       },
       immediate: true

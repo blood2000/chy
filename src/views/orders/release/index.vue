@@ -1300,7 +1300,9 @@ export default {
             classCode: e ? e.classCode : ''
           };
         })
+
       };
+
 
       this.waybillData = {
         code,

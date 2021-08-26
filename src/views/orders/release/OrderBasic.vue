@@ -336,12 +336,12 @@ export default {
       tin2Option: [], // 大类
       tin2_Option: [], // 小类
       tin4Option: [
-        { dictValue: '1', dictLabel: '货源大厅可见' },
-        { dictValue: '0', dictLabel: '货源大厅不可见' }
+        { dictValue: '0', dictLabel: '货源大厅不可见' },
+        { dictValue: '1', dictLabel: '货源大厅可见' }
       ],
       tin5Option: [
-        { dictValue: '1', dictLabel: '是' },
-        { dictValue: '0', dictLabel: '否' }
+        { dictValue: '0', dictLabel: '否' },
+        { dictValue: '1', dictLabel: '是' }
       ],
       tin6Option: [],
       isShipment: false
@@ -406,14 +406,14 @@ export default {
         this.$refs['elForm'] && this.$refs['elForm'].resetFields();
         this.tin3Optin = [{ dictValue: '0', dictLabel: '无所属项目' }]; // 货主项目
         this.tin2_Option = []; // 小类
-        this.tin4Option = [
-          { dictValue: '1', dictLabel: '货源大厅不可见' },
-          { dictValue: '0', dictLabel: '货源大厅可见' }
-        ];
-        this.tin5Option = [
-          { dictValue: '1', dictLabel: '是' },
-          { dictValue: '0', dictLabel: '否' }
-        ];
+        // this.tin4Option = [
+        //   { dictValue: '0', dictLabel: '货源大厅不可见' },
+        //   { dictValue: '1', dictLabel: '货源大厅可见' }
+        // ];
+        // this.tin5Option = [
+        //   { dictValue: '1', dictLabel: '是' },
+        //   { dictValue: '0', dictLabel: '否' }
+        // ];
         this.tin6Option = [];
 
         this.api_tin3Optin();
