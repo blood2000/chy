@@ -123,9 +123,13 @@
             v-model="form.orderNo"
             placeholder="请输入货源单号"
             clearable
-            :disabled="form.id"
+            :disabled="!!form.id"
             style="width: 228px"
           />
+        </el-form-item>
+
+        <el-form-item label="税点(%)" prop="tax">
+          <el-input-number v-model="form.tax" controls-position="right" :precision="2" placeholder="请输入税点" :step="0.01" :min="0.00" :max="99.99" clearable style="width: 228px" />
         </el-form-item>
 
         <el-form-item
@@ -188,12 +192,14 @@ export default {
       // 表单参数
       'form': {
         orderNo: undefined,
-        ticket: undefined
+        ticket: undefined,
+        tax: undefined
       },
       // 表单校验
       'rules': {
         orderNo: [{ required: true, message: '请输入货源单号', trigger: 'blur' }],
-        ticket: [{ required: true, message: '请选择票制', trigger: 'change' }]
+        ticket: [{ required: true, message: '请选择票制', trigger: 'change' }],
+        tax: [{ required: true, message: '请输入税点', trigger: 'blur' }]
       },
 
       // 新添加的
@@ -224,6 +230,13 @@ export default {
           isShow: true,
           label: '票制',
           prop: 'ticket',
+          sortNum: 2,
+          tooltip: true
+        },
+        {
+          isShow: true,
+          label: '税点(%)',
+          prop: 'tax',
           sortNum: 2,
           tooltip: true
         }
@@ -276,7 +289,8 @@ export default {
       this.form = {
         id: undefined,
         orderNo: undefined,
-        ticket: undefined
+        ticket: undefined,
+        tax: undefined
       };
       this.resetForm('form');
     },
