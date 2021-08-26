@@ -15,7 +15,7 @@
                 />
               </el-select>
             </el-form-item>-->
-       <!-- :disabled="form.id?true:false" -->
+      <!-- :disabled="form.id?true:false" -->
       <el-form-item label="手机号/账号" prop="telphone">
         <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号/账号" class="width90" clearable @blur="getUserAlreadyExist" />
       </el-form-item>
@@ -1103,7 +1103,7 @@ export default {
         reviewIsNeedLoadingCertificate: 0,
         openAppPermissionControl: 0,
         openProjectMemberView: 0,
-        openScanQuickLoadOrder: 0,
+        openScanQuickLoadOrder: 1,
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -1114,32 +1114,26 @@ export default {
         // branchCode: null
       };
       this.resetForm('form');
-      // 卸货时是否必须上传凭证  0，需要  1，不需要
-      if (this.form.noNeedUnloadImg === 0) {
-        this.form.noNeedUnloadImg = true;
-      } else {
-        this.form.noNeedUnloadImg = false;
-      }
-      if (this.form.isNeedLoadingCertificate === 0) {
-        this.form.isNeedLoadingCertificate = true;
-      } else {
-        this.form.isNeedLoadingCertificate = false;
-      }
-      if (this.form.reviewNoNeedUnloadImg === 0) {
-        this.form.reviewNoNeedUnloadImg = true;
-      } else {
-        this.form.reviewNoNeedUnloadImg = false;
-      }
-      if (this.form.reviewIsNeedLoadingCertificate === 0) {
-        this.form.reviewIsNeedLoadingCertificate = true;
-      } else {
-        this.form.reviewIsNeedLoadingCertificate = false;
-      }
+      this.changeCheckboxValue();
     },
     // 表单赋值
     setForm(data) {
       this.form = data;
       this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      this.changeCheckboxValue();
+      if (this.form.branchCode && this.form.branchName) {
+        this.branchOptions = [{
+          code: this.form.branchCode,
+          name: this.form.branchName
+        }];
+      }
+      if (this.form.operateOrgCode) {
+        this.form.marketId = this.marketList[this.form.operateOrgCode];
+        this.getOperateUserList(this.form.operateOrgCode);
+      }
+    },
+    // 转换
+    changeCheckboxValue() {
       if (this.form.editDriverActualAmount === 0) {
         this.form.editDriverActualAmount = true;
       } else {
@@ -1189,16 +1183,6 @@ export default {
         this.form.openTheElectronicFence = true;
       } else {
         this.form.openTheElectronicFence = false;
-      }
-      if (this.form.branchCode && this.form.branchName) {
-        this.branchOptions = [{
-          code: this.form.branchCode,
-          name: this.form.branchName
-        }];
-      }
-      if (this.form.operateOrgCode) {
-        this.form.marketId = this.marketList[this.form.operateOrgCode];
-        this.getOperateUserList(this.form.operateOrgCode);
       }
     },
     // 已读
