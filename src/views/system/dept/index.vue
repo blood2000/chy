@@ -118,7 +118,7 @@
 </template>
 
 <script>
-import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
+import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild, listDeptExcludeChildPost } from '@/api/system/dept';
 import Treeselect from '@riophae/vue-treeselect';
 import '@riophae/vue-treeselect/dist/vue-treeselect.css';
 
@@ -340,8 +340,23 @@ export default {
         this.open = true;
         this.title = '修改组织';
       });
-      listDeptExcludeChild(row.id).then(response => {
+      /* listDeptExcludeChild(row.id).then(response => {
 	        this.deptOptions = this.handleTree(response.data, 'id');
+      });*/
+      var data = {};
+      if (this.companyCode) {
+        data.orgCode = this.companyCode;
+      }
+      if (this.showShipment) {
+        data.showShipment = this.showShipment;
+      }
+      if (this.orgType) {
+        data.orgType = this.orgType;
+      }
+      data.userCode = this.userCode;
+      data.id = row.id;
+      listDeptExcludeChildPost(data).then(response => {
+        this.deptOptions = this.handleTree(response.data, 'id');
       });
     },
     /** 提交按钮 */

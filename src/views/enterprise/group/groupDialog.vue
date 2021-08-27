@@ -7,7 +7,7 @@
           v-if="open"
           v-model="form.disUserCode"
           clearable
-          style="width:255px"
+          style="width:100%"
           placeholder="请输入调度者姓名/手机号"
           :axios="{
             queryFn:listInfo,
@@ -18,10 +18,10 @@
             label: 'teamLeaderName',
             telphone: 'telphone'
           }"
-          @selected="(data)=>{form.disUserPhone = data.telphone;form.disUserName = data.teamLeaderName; form.disName = data.name }"
+          @selected="(data)=>{form.disUserPhone = data.telphone;form.disUserName = data.teamLeaderName || '未知'; form.disName = data.name }"
         >
           <template #default="{row}">
-            <span>{{ row.teamLeaderName }}</span><span>{{ row.telphone }}</span>
+            <span>{{ row.teamLeaderName || '未知' }}</span><span>{{ row.telphone }}</span>
           </template>
         </FilterableSelect>
 

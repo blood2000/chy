@@ -64,3 +64,31 @@ export function countConsumption(query) {
     params: query
   });
 }
+
+// 查询团队列表
+export function market(data) {
+  return request({
+    url: '/assets/market/list',
+    method: 'post',
+    data: data
+  });
+}
+
+// 查询业务员列表
+export function user(data) {
+  return request({
+    url: '/assets/marketShipmentSalesmanRel/list',
+    method: 'post',
+    data: data
+  });
+}
+
+// 查询客服统计报表列表
+export const teamDetailReportListApi = '/transportation/platformDataSummary/teamDetailReportList';
+export function teamDetailReportList(query) {
+  return request({
+    url: '/transportation/platformDataSummary/teamDetailReportList',
+    method: 'get',
+    params: query
+  });
+}

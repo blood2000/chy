@@ -16,8 +16,8 @@
       <el-form-item :label="'装货数量' + weightLabel" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :precision="3" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <el-form-item label="装货单据" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :limit="9" :fresh="fresh" />
+      <el-form-item label="装货单据" prop="attachmentCodes">
+        <uploadImage v-model="form.attachmentCodes" :limit="9" :fresh="fresh" />
       </el-form-item>
       <el-form-item label="装货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -107,7 +107,7 @@
 
 <script>
 import { load, getAddress, getLoadInfoDetail, loadCredentials, getGoods } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/moreImg';
+import UploadImage from '@/components/UploadImage/moreImgArr';
 
 export default {
   name: 'DialogA',
@@ -150,7 +150,7 @@ export default {
         loadWeight: [
           { required: true, message: '装货数量不能为空', trigger: 'blur' }
         ],
-        attachmentCode: [
+        attachmentCodes: [
           { required: true, message: '装货单据不能为空', trigger: 'blur' }
         ]
         // goodsCode: [
@@ -223,22 +223,16 @@ export default {
       this.reset();
       getLoadInfoDetail(this.waybill.waybillNo, 1).then(response => {
         if (response.data.length) {
-          console.log(response);
           const info = response.data[0];
           this.loadinfo = info;
-          // console.log(this.loadinfo);
           this.form.loadWeight = info.loadWeight;
           this.form.remark = info.remark;
           this.form.loadTime = info.loadTime;
-          // this.form.goodsCode = info.goodsCode;
-          // this.form.loadAddressCode = info.waybillAddres.loadOrderAddressCode;
-          // this.form.unloadAddressCode = info.waybillAddres.unloadOrderAddressCode;
-          this.form.attachmentCode = info.attachmentCode;
+          this.form.attachmentCodes = info.attachUrlList;
           this.fresh = true; // 加载多图
-        // this.form.vehicleCode = info.vehicleCode;
+          this.$forceUpdate(); // 视图强制更新
         } else {
           this.form.loadTime = this.waybill.fillTime;
-          // this.form.loadWeight = this.waybill.loadWeight;
         }
       });
     },
@@ -312,7 +306,7 @@ export default {
               }
             }
           } else {
-            if (!this.form.attachmentCode && this.form.loadWeight > 0) {
+            if (!this.form.attachmentCodes && this.form.loadWeight > 0) {
               this.$confirm('未上传装货凭证，所填装货数量无效，是否确定继续提交？', '提示', {
                 confirmButtonText: '确定',
                 cancerButtonText: '取消',
@@ -361,7 +355,7 @@ export default {
         code: this.waybill.code,
         loadTime: this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         loadWeight: null,
-        attachmentCode: null,
+        attachmentCodes: [],
         // 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
         // oneself: false,
         remark: null

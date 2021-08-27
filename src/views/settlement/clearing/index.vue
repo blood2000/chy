@@ -1,6 +1,6 @@
 
 <template>
-  <div>
+  <div v-loading="payLoading" element-loading-background="rgba(255, 255, 255, 0.3)">
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form
         ref="queryForm"
@@ -262,7 +262,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="clarifylist" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #clarifyStatus="{row}">
           <span>
             <i v-if="row.clarifyStatus === '0'" class="el-icon-info g-color-gray" />
@@ -395,7 +395,11 @@ export default {
         { 'dictLabel': '清分失败', 'dictValue': '3' },
         { 'dictLabel': '无需清分', 'dictValue': '99' }
       ],
-      loadingExport: false
+      loadingExport: false,
+      payLoading: false,
+      batchIndex: 0,
+      errList: [],
+      sucList: []
     };
   },
   computed: {
@@ -544,13 +548,53 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        batch(this.bodyParams).then(response => {
-          this.$message({ type: 'success', message: '批量运单清分成功！' });
-          this.getList();
-        });
+        this.errList = [];
+        this.sucList = [];
+        this.$message({ type: 'warning', message: '发起批量清分成功，请勿关闭或刷新页面！' });
+        this.payLoading = true;
+        this.batchIndex = 0;
+        this.getBatch();
+        // batch(this.bodyParams).then(response => {
+        //   this.$message({ type: 'success', message: '批量运单清分成功！' });
+        //   this.getList();
+        // });
       }).catch(() => {
         this.$message({ type: 'info', message: '已取消' });
       });
+    },
+    // 清分接口
+    async getBatch() {
+      const len = this.ids;
+      // console.log(len);
+      const batchNo = new Date().getTime();
+      for (let index = 0; index < len.length; index++) {
+        const e = len[index];
+        try {
+          await batch({ wayBillSettlementCodeList: [e], batchNo: batchNo });
+          this.sucList.push(e);
+        } catch (error) {
+          this.errList.push(e);
+          continue;
+        }
+        // console.log(index, '----', this.ids.length, len.length);
+      }
+      setTimeout(() => {
+        this.getList();
+      }, 2000);
+      this.payLoading = false;
+      // console.log(this.sucList, this.errList);
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (this.errList.length > 0) {
+        if (this.errList.includes(row.wayBillSettlementCode)) {
+          return 'warning-row';
+        }
+      }
+      if (this.sucList.length > 0) {
+        if (this.sucList.includes(row.wayBillSettlementCode)) {
+          return 'success-row';
+        }
+      }
     },
     // 更新清分状态
     handleUpdate() {
@@ -625,3 +669,18 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .total_bg{
+    background: #F8F9FA;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+  }
+  ::v-deep .warning-row{
+    background: #fadbd9 !important;
+  }
+  ::v-deep .success-row{
+    background: #d7f0dbff !important;
+  }
+</style>

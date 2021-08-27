@@ -22,6 +22,13 @@ export function listDeptExcludeChild(deptId) {
     method: 'get'
   });
 }
+export function listDeptExcludeChildPost(data) {
+  return request({
+    url: '/system/dept/list/exclude',
+    method: 'post',
+    data: data
+  });
+}
 
 // 查询部门详细
 export function getDept(orgId) {

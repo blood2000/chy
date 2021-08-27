@@ -9,6 +9,11 @@
     highlight-current-row
     @selection-change="handleSelectionChange"
   >
+    <el-table-column v-if="isShowExpand" align="center" type="expand">
+      <template slot-scope="props">
+        <slot name="expand" :row="props.row" />
+      </template>
+    </el-table-column>
     <el-table-column v-if="!!_events['selection-change']" type="selection" width="55" align="center" fixed :selectable="selectable" :reserve-selection="reserveSelection" />
     <el-table-column v-if="!isShowIndex" label="序号" align="center" fixed="left" type="index" width="50" />
     <template v-for="(th, key) in tableColumnsConfig">
@@ -59,6 +64,10 @@ export default {
       default: false
     },
     isShowIndex: {
+      type: Boolean,
+      default: false
+    },
+    isShowExpand: {
       type: Boolean,
       default: false
     },

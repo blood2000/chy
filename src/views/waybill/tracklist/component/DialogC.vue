@@ -34,8 +34,8 @@
           />
         </el-select>
       </el-form-item> -->
-      <el-form-item label="卸货凭证" prop="attachmentCode">
-        <uploadImage v-model="form.attachmentCode" :limit="9" :fresh="fresh" />
+      <el-form-item label="卸货凭证" prop="attachmentCodes">
+        <uploadImage v-model="form.attachmentCodes" :limit="9" :fresh="fresh" />
       </el-form-item>
       <el-form-item label="卸货备注" prop="remark">
         <el-input v-model="form.remark" type="textarea" :autosize="{ minRows: 2, maxRows: 4}" placeholder="请输入装货备注信息" style="width:90%;" />
@@ -50,7 +50,7 @@
 
 <script>
 import { unload, getLoadInfoDetail, unloadCredentials } from '@/api/waybill/tracklist';
-import UploadImage from '@/components/UploadImage/moreImg';
+import UploadImage from '@/components/UploadImage/moreImgArr';
 
 export default {
   name: 'DialogC',
@@ -87,7 +87,7 @@ export default {
         unloadWeight: [
           { required: true, message: '卸货数量不能为空', trigger: 'blur' }
         ],
-        attachmentCode: [
+        attachmentCodes: [
           { required: true, message: '卸货单据不能为空', trigger: 'blur' }
         ]
       },
@@ -160,8 +160,9 @@ export default {
           this.form.unloadTime = info.unloadTime;
           this.form.remark = info.remark;
           // this.form.waybillAddress = info.waybillAddressList[0].orderAddressCode;
-          this.form.attachmentCode = info.attachmentCode;
+          this.form.attachmentCodes = info.attachUrlList;
           this.fresh = true; // 加载多图
+          this.$forceUpdate(); // 视图强制更新
         } else {
           this.form.unloadTime = this.waybill.signTime;
           this.form.unloadWeight = this.waybill.loadWeight;
@@ -199,7 +200,7 @@ export default {
               }
             }
           } else {
-            if (!this.form.attachmentCode && this.form.unloadWeight > 0) {
+            if (!this.form.attachmentCodes && this.form.unloadWeight > 0) {
               this.$confirm('未上传卸货凭证，所填卸货数量无效，是否确定继续提交？', '提示', {
                 confirmButtonText: '确定',
                 cancerButtonText: '取消',
@@ -246,7 +247,7 @@ export default {
         code: this.waybill.code,
         unloadTime: this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}'),
         unloadWeight: null,
-        attachmentCode: null,
+        attachmentCodes: null,
         remark: null
         // waybillAddress: null
       };

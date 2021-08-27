@@ -16,7 +16,7 @@
       v-for="(item, index) in shipmentList"
       :key="index"
       :value="item[showKey.value || 'code']"
-      :label="item[showKey.label || 'name']"
+      :label="item[showKey.label || 'name'] || '未知'"
     >
       <div class="ly-flex-pack-justify">
         <slot :row="item">
