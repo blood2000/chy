@@ -108,7 +108,7 @@
                   remote
                   reserve-keyword
                   :placeholder="orderDisable? '请先输入货源单号':'请输入关键字'"
-                  :remote-method="remoteMethod"
+                  :remote-method="resizeFun"
                   :loading="loading"
                   :disabled="orderDisable"
                   size="small"
@@ -116,8 +116,8 @@
                   @change="driverChoose"
                 >
                   <el-option
-                    v-for="dict in driverOptions"
-                    :key="dict.code"
+                    v-for="(dict, index) in driverOptions"
+                    :key="index"
                     :label="dict.name"
                     :value="dict.code"
                   >
@@ -318,6 +318,7 @@ import UploadImage from '@/components/UploadImage/index';
 import WaybillimportDialog from './waybillimportDialog';
 import PictureimportDialog from './pictureimportDialog';
 import Tabs from '@/components/Tabs/index';
+import { ThrottleFun } from '@/utils/index.js';
 
 export default {
   name: 'Supplement',
@@ -406,13 +407,17 @@ export default {
       // 输入货源前前禁用
       orderDisable: true,
       // 输入承运司机前前禁用
-      driverDisable: true
+      driverDisable: true,
+      query: undefined,
+      throttle: undefined
     };
   },
   computed: {
   },
   created() {
     this.reset();
+    this.throttle = ThrottleFun(this.remoteMethod, 1000);
+
     // this.getDriver();
   },
   methods: {
@@ -458,31 +463,37 @@ export default {
         }
       }
     },
+    resizeFun(query) {
+      this.query = query;
+      this.throttle();
+    },
     // 触发司机远程搜索
     remoteMethod(query) {
-      if (query !== '') {
+      if (this.query !== '') {
         this.loading = true;
         this.driverInfoQuery.pageNum = 1;
-        this.dataOver = false;
-        this.driverInfoQuery.phoneOrName = query;
+        // this.dataOver = false;
+        this.driverInfoQuery.phoneOrName = this.query;
         this.driverOptions = [];
-        this.getDriver();
+        this.getDriver(1);
       } else {
         this.driverOptions = [];
       }
     },
     // 司机远程搜索列表触底事件
     loadmore() {
-      if (this.dataOver) return;
+      // if (this.dataOver) return;
       this.driverInfoQuery.pageNum++;
       this.getDriver();
     },
     // 获取司机列表
-    getDriver() {
+    getDriver(e) {
       driver(this.driverInfoQuery).then(response => {
-        this.dataOver = !response.rows.length;
-        this.driverOptions = this.driverOptions.concat(response.rows);
-        console.log(this.driverOptions);
+        // if (e) {
+        //   this.driverOptions = [];
+        // }
+        // this.dataOver = !response.rows.length;
+        this.driverOptions = [...this.driverOptions, ...response.rows];
         this.loading = false;
       }).catch(() => {
         this.loading = false;
@@ -680,7 +691,7 @@ export default {
     },
     // 获取运单总价
     calculate() {
-      console.log(this.form);
+      // console.log(this.form);
       if (this.form.loadWeight && this.form.shipmentPrice) {
         const calculateBo = {
           driverAddFee: this.form.addFee,
@@ -693,9 +704,9 @@ export default {
           stowageStatus: this.form.stowageStatus,
           unloadWeight: this.form.loadWeight
         };
-        console.log(calculateBo);
+        // console.log(calculateBo);
         calculate(calculateBo).then(response => {
-          console.log(response);
+          // console.log(response);
           this.form.shipperRealPay = response.data.shipperRealPay.toFixed(2);
           this.form.driverRealFee = response.data.driverRealFee.toFixed(2);
         });
@@ -731,7 +742,7 @@ export default {
       this.$forceUpdate(); // 视图强制更新
     },
     lendChoose() {
-      console.log(this.form);
+      // console.log(this.form);
       this.getOrderGoodsProce();
       this.$forceUpdate(); // 视图强制更新
     },
@@ -762,7 +773,7 @@ export default {
     vehicleChoose(e) {
       if (e) {
         vehicleInfo(e).then(response => {
-          console.log(response);
+          // console.log(response);
           this.form.roadTransportCertificateNumber = response.data.roadTransportCertificateNumber;
           this.form.vehicleLoadWeight = response.data.vehicleLoadWeight;
           this.form.chassisNumber = response.data.chassisNumber;
@@ -777,7 +788,7 @@ export default {
     // 赋值卸货重量
     inputWeight(e) {
       this.form.unloadWeight = e;
-      console.log(this.form.unloadWeight);
+      // console.log(this.form.unloadWeight);
       this.calculate();
     },
     chooseImg() {

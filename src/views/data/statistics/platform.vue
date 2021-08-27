@@ -179,8 +179,8 @@
 
 <script>
 import {
-  listCustomerApi,
-  listCustomer,
+  teamDetailReportListApi,
+  teamDetailReportList,
   countCustomer,
   market,
   user
@@ -195,7 +195,7 @@ export default {
     return {
       pickerOptions,
       tableColumnsConfig: [],
-      api: listCustomerApi,
+      api: teamDetailReportListApi,
       // 遮罩层
       loading: true,
       // 显示搜索条件
@@ -239,7 +239,7 @@ export default {
     };
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, listCustomerApi, {});
+    this.tableHeaderConfig(this.tableColumnsConfig, teamDetailReportListApi, {});
     this.getList();
     this.getMarket();
     this.getUser();
@@ -373,7 +373,7 @@ export default {
     /** 查询客服统计报表列表 */
     getList(e) {
       this.loading = true;
-      listCustomer(this.queryParams).then((response) => {
+      teamDetailReportList(this.queryParams).then((response) => {
         // console.log(response);
         this.customerList = response.data.list;
         this.total = response.data.total;

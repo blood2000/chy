@@ -86,3 +86,30 @@ export function getWaybillTrace(code) {
     method: 'get'
   });
 }
+
+// 多式联运列表
+export const multiListApi = '/transportation/waybill/multiList';
+export function getMultiList(query) {
+  return request({
+    url: '/transportation/waybill/multiList',
+    method: 'get',
+    params: query
+  });
+}
+
+// 查询多式联运运单详情
+export function getMultiDetail(code) {
+  return request({
+    url: `/transportation/waybill/multiDetail?waybillCode=${code}`,
+    method: 'get'
+  });
+}
+
+// 多式联运子单列表
+export function getMultiSonList(query) {
+  return request({
+    url: '/transportation/waybill/multiSonList',
+    method: 'get',
+    params: query
+  });
+}
