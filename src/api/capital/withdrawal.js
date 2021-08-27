@@ -31,6 +31,7 @@ export function reject(ids) {
 export function reBindCard(id) {
   return request({
     url: `/payment/pay/reBindCard?id=${id}`,
-    method: 'post'
+    method: 'post',
+    timeout: 3 * 60 * 1000
   });
 }

@@ -513,6 +513,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
+        _this.msgInfo('绑定中，请稍后');
         reBindCard(row.id).then(res => {
           if (res.code === 200) {
             _this.msgSuccess('操作成功');
