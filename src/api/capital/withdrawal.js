@@ -26,3 +26,11 @@ export function reject(ids) {
     method: 'post'
   });
 }
+
+// 重新绑卡
+export function reBindCard(id) {
+  return request({
+    url: `/payment/pay/reBindCard?id=${id}`,
+    method: 'post'
+  });
+}
