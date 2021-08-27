@@ -284,11 +284,16 @@
         </template>
         <template #opUserName="{row}">
           <span>{{ row.opNickName || row.opUserName }}</span>
-          <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
+          <span v-if="row.createPhoneNumber">[{{ row.createPhoneNumber }}]</span>
         </template>
         <template #updateUserName="{row}">
           <span>{{ row.updateNickName || row.updateUserName }}</span>
-          <span v-if="row.updatePhonenumber">[{{ row.updatePhonenumber }}]</span>
+          <span v-if="row.updatePhoneNumber">[{{ row.updatePhoneNumber }}]</span>
+        </template>
+        <!-- 货主 -->
+        <template #adminName="{row}">
+          <span>{{ row.adminName || row.phonenumber }}</span>
+          <span v-if="row.phonenumber">[{{ row.phonenumber }}]</span>
         </template>
         <template #haveWaybill="{row}">
           <span :class="row.haveWaybill!==1?'g-color-error':'g-color-success'">{{ selectDictLabel(haveWaybill_Options, row.haveWaybill) || '-' }}</span>
