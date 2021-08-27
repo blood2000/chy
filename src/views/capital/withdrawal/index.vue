@@ -514,8 +514,12 @@ export default {
         type: 'warning'
       }).then(function() {
         reBindCard(row.id).then(res => {
-          _this.msgSuccess('操作成功');
-          _this.getList();
+          if (res.code === 200) {
+            _this.msgSuccess('操作成功');
+            _this.getList();
+          } else {
+            _this.msgError(res.msg || '操作失败');
+          }
         });
       });
     }
