@@ -349,7 +349,7 @@ export default {
         // console.log(response);
         this.formAttachment = response.data ? response.data[0] : null;
         if (this.formAttachment) {
-          this.formAttachmentUrl = this.formAttachment.attachUrls ? this.formAttachment.attachUrls.split(',') : null;
+          this.formAttachmentUrl = this.formAttachment.attachUrlList ? this.formAttachment.attachUrlList : null;
         }
       });
       // 回单-卸货
@@ -357,7 +357,7 @@ export default {
         // console.log(response);
         this.formAttachmentUp = response.data ? response.data[0] : null;
         if (this.formAttachmentUp) {
-          this.formAttachmentUpUrl = this.formAttachmentUp.attachUrls ? this.formAttachmentUp.attachUrls.split(',') : null;
+          this.formAttachmentUpUrl = this.formAttachmentUp.attachUrlList ? this.formAttachmentUp.attachUrlList : null;
         }
       });
       // 评价-司机
