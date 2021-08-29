@@ -124,7 +124,8 @@ export default {
     currentMap: {
       type: String,
       default: null
-    }
+    },
+    isShowDeviceName: Boolean
   },
   data() {
     return {
@@ -190,6 +191,7 @@ export default {
       const _this = this;
       const marker = new AMap.Marker({
         position: position,
+        label: this.setLabelContent(id),
         // icon: new AMap.Icon({
         //   image: icon || '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
         //   size: new AMap.Size(26, 34),
@@ -212,6 +214,18 @@ export default {
       this.markerList[id] = marker;
       this.getAddressBylnglat(position);
       this.map.setFitView();
+    },
+    /** 设置点标记的文本标签 */
+    drawDeviceName(factoryOnlyCode) {
+      this.markerList[factoryOnlyCode].setLabel(this.setLabelContent(factoryOnlyCode));
+    },
+    setLabelContent(text) {
+      const option = this.isShowDeviceName ? {
+        offset: new AMap.Pixel(8, -5),
+        content: '<div>' + text + '</div>',
+        direction: 'top'
+      } : {};
+      return option;
     },
     /** 实例化窗体 */
     markerInfoInit(marker, labelObj) {
@@ -661,6 +675,26 @@ export default {
     }
     ::v-deep.middle-left .amap-info-sharp:after{
       filter: blur(8px);
+    }
+    // 地图标记label样式
+    ::v-deep.amap-marker-label{
+      border: none;
+      border-radius: 4px;
+      font-size: 12px;
+      line-height: 14px;
+      color: #262626;
+      box-shadow: 1px 1px 8px rgba(0, 0, 0, 0.1);
+      padding: 3px 6px;
+      &::after{
+        content: '';
+        position: absolute;
+        bottom: -6px;
+        left: 50%;
+        transform: translateX(-50%);
+        border-left: 6px solid transparent;
+        border-top: 6px solid #fff;
+        border-right: 6px solid transparent;
+      }
     }
     // 地图信息窗体样式
     ::v-deep.own-map-info-content{

@@ -209,6 +209,13 @@
         <template #applyDate="{row}">
           <span>{{ parseTime(row.applyDate) }}</span>
         </template>
+        <template #edit="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleReBindCard(row)"
+          >重新绑卡</el-button>
+        </template>
       </RefactorTable>
 
       <pagination
@@ -227,7 +234,7 @@
 </template>
 
 <script>
-import { withDrawalListApi, getWithDrawalList, toCard, reject } from '@/api/capital/withdrawal';
+import { withDrawalListApi, getWithDrawalList, toCard, reject, reBindCard } from '@/api/capital/withdrawal';
 import PdfLook from '@/views/system/media/pdfLook';
 
 export default {
@@ -323,7 +330,13 @@ export default {
     }
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi);
+    this.tableHeaderConfig(this.tableColumnsConfig, withDrawalListApi, {
+      prop: 'edit',
+      isShow: true,
+      label: '操作',
+      width: 100,
+      fixed: 'left'
+    });
 
     const routeData = this.$route.query.data;
     if (routeData) {
@@ -491,6 +504,25 @@ export default {
       // row.elecrecepitUrl = 'https://elec-receipt.obs.cn-south-1.myhuaweicloud.com/20210729/2021072910130010111013040011450035529955+8c89923840464e5e85e91b99ac6a8dd7.pdf';
       this.pdfSrc = row.elecrecepitUrl;
       this.pdfOpen = true;
+    },
+    /** 重新绑卡 */
+    handleReBindCard(row) {
+      const _this = this;
+      this.$confirm('是否确认重新绑卡?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        _this.msgInfo('绑定中，请稍后');
+        reBindCard(row.id).then(res => {
+          if (res.code === 200) {
+            _this.msgSuccess('操作成功');
+            _this.getList();
+          } else {
+            _this.msgError(res.msg || '操作失败');
+          }
+        });
+      });
     }
   }
 };
