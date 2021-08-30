@@ -516,7 +516,7 @@ export default {
             } else {
               extra(this.form).then(response => {
                 if (response.code === 501) {
-                  this.msgSuccess(response.msg);
+                  this.msgError(response.msg);
                   loading.close();
                 } else {
                   this.msgSuccess('运单补录成功');
