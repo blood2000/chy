@@ -515,11 +515,16 @@ export default {
               loading.close();
             } else {
               extra(this.form).then(response => {
-                this.msgSuccess('运单补录成功');
-                this.reset();
-                this.orderDisable = true;
-                this.driverDisable = true;
-                loading.close();
+                if (response.code === 501) {
+                  this.msgError(response.msg);
+                  loading.close();
+                } else {
+                  this.msgSuccess('运单补录成功');
+                  this.reset();
+                  this.orderDisable = true;
+                  this.driverDisable = true;
+                  loading.close();
+                }
               }).catch(error => {
                 console.log(error);
                 loading.close();
