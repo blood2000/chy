@@ -18,6 +18,7 @@
             v-model="formData.tin3"
             placeholder="请选择项目"
             filterable
+            :disabled="idCode"
             @change="handleTin3"
           >
             <el-option
@@ -38,8 +39,8 @@
                 :value="dict.checkedValue"
                 class="mb10 m_radio"
                 border
-                disabled
                 :label="dict.dictValue"
+                :disabled="idCode"
               >{{ dict.dictLabel }}</el-radio>
             </template>
           </template>
@@ -47,7 +48,7 @@
           <el-radio-group
             v-else
             v-model="formData.tin2"
-            :disabled="false"
+            :disabled="idCode"
             size="medium"
             @change="handletin2(false)"
           >
@@ -66,7 +67,7 @@
 
         <template v-if="formData.tin2">
           <el-form-item v-if="isMultiGoods" label="货物小类" prop="tin2_1">
-            <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="false">
+            <el-checkbox-group v-model="formData.tin2_1" size="medium" :disabled="idCode">
               <template v-for="(dict,index) in tin2_Option">
                 <el-checkbox
                   v-if="dict.status === '0'"
@@ -78,7 +79,7 @@
             </el-checkbox-group>
           </el-form-item>
           <el-form-item v-else label="货物小类" prop="tin2_2">
-            <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="false">
+            <el-radio-group v-model="formData.tin2_2" size="medium" :disabled="idCode">
               <template v-for="(dict,index) in tin2_Option">
                 <el-radio
                   v-if="dict.status === '0'"
@@ -275,7 +276,8 @@ export default {
       type: Array,
       default: null
     },
-    isT: [Boolean]
+    isT: [Boolean],
+    idCode: [Boolean]
   },
   data() {
     return {
@@ -486,8 +488,9 @@ export default {
             bool = false;
           } else {
             e.disUserCode = e.code;
+            e.disName = e.teamName;
             e.disName = e.teamName + '的调度组';
-            e.disUserName = e.nickName;
+            // e.disUserName = e.nickName;
             e.disUserPhone = e.phonenumber.substr(0, 3) + '****' + e.phonenumber.substr(7, 11);
 
             bool = !e.isCommonly;
