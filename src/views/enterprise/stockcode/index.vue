@@ -108,7 +108,7 @@
 
 <script>
 import { listStockcode, getStockCode, delStockcode } from '@/api/enterprise/stockcode';
-import { downImgApi } from '@/api/system/image';
+// import { downImgApi } from '@/api/system/image';
 import StockcodeDialog from './stockcodeDialog.vue';
 import orderListDialog from './orderListDialog.vue';
 
