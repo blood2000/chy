@@ -28,7 +28,7 @@
             @click="handleAdd"
           >新增货集码</el-button>
         </el-col>
-        <el-col :span="1.5">
+        <!-- <el-col :span="1.5">
           <el-button
             v-hasPermi="['assets:shipment:cargocode:edit']"
             type="success"
@@ -37,7 +37,7 @@
             :disabled="single"
             @click="handleUpdate"
           >修改</el-button>
-        </el-col>
+        </el-col> -->
         <el-col :span="1.5">
           <el-button
             v-hasPermi="['assets:shipment:cargocode:remove']"
@@ -276,7 +276,7 @@ export default {
     },
     handleDownloadQrIMg(imgUrl, fileName) {
       // 如果浏览器支持msSaveOrOpenBlob方法（也就是使用IE浏览器的时候），那么调用该方法去下载图片
-      console.log(imgUrl);
+      // console.log(imgUrl);
       if (window.navigator.msSaveOrOpenBlob) {
         const bstr = atob(imgUrl.split(',')[1]);
         let n = bstr.length;

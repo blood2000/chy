@@ -352,6 +352,7 @@
                   v-hasPermi="['transportation:order:adjustPrice']"
                   size="mini"
                   type="text"
+                  class="el-dropdown_btn"
                   @click="handleReadjustPrices(row)"
                 >调价</el-button>
               </el-dropdown-item>
@@ -362,6 +363,7 @@
                   v-hasPermi="['transportation:order:check']"
                   size="mini"
                   type="text"
+                  class="el-dropdown_btn"
                   @click="handleShenhe(row)"
                 >审核</el-button>
               </el-dropdown-item>
@@ -372,6 +374,7 @@
                   v-hasPermi="['transportation:order:copy']"
                   size="mini"
                   type="text"
+                  class="el-dropdown_btn"
                   @click="handleclone(row)"
                 >复制</el-button>
               </el-dropdown-item>
@@ -380,6 +383,7 @@
                   v-hasPermi="['transportation:order:updateScanCodeVoucher']"
                   size="mini"
                   type="text"
+                  class="el-dropdown_btn"
                   @click="handleIsImport(row)"
                 >{{ row.uploadLoadVoucher+''!=='1'?'开启上传凭证':'关闭上传凭证' }}</el-button>
               </el-dropdown-item>
@@ -1204,3 +1208,11 @@ export default {
   }
 };
 </script>
+
+
+<style lang="scss" scoped>
+.el-dropdown_btn{
+  width: 100%;
+  text-align: left;
+}
+</style>
