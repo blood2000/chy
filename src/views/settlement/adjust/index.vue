@@ -255,8 +255,8 @@
           @queryTable="getList"
         />
       </el-row>
-
-      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <!-- :selectable="checkboxT" -->
+      <RefactorTable :loading="loading" :data="adjustlist" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #goodsBigType="{row}">
           <span>{{ selectDictLabel(commodityCategoryCodeOptions, row.goodsBigType) }}</span>
         </template>
@@ -337,14 +337,14 @@
             @click="handleTableBtn(row, 4)"
           >申请打款</el-button>
           <el-button
-            v-if="activeName == '7' && !isAdmin"
+            v-if="activeName == '7' && !isAdmin && !row.score"
             v-hasPermi="['transportation:waybillBalanceInfo:evaluate']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 5)"
           >评价</el-button>
           <el-button
-            v-if="activeName == '7' && isAdmin"
+            v-if="activeName == '7' && row.score"
             v-hasPermi="['transportation:waybillBalanceInfo:evaluate:detail']"
             size="mini"
             type="text"
@@ -615,6 +615,13 @@ export default {
     });
   },
   'methods': {
+    checkboxT(row) {
+      if (this.activeName === '7' && row.score) {
+			  return false;
+      } else {
+			  return true;
+      }
+    },
     datechoose(date) {
       if (date) {
         this.queryParams.orderStartTime = this.parseTime(date[0], '{y}-{m}-{d}');

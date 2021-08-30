@@ -108,6 +108,7 @@
             :shipment-info="shipmentInfo" :货主的详细信息
             :goods-big-types="goodsBigTypes" :大类的值
             :is-t="isT" :是否是详情页面 true是false否(跟上面重复了--不想去改了)
+            :id-code="idCode" : 编辑/详细/复制 都为true
             @goods="nextTo" :选好小类后的回调(告诉我已经选好了, 可以下一步了)
 
          -->
@@ -120,6 +121,7 @@
           :shipment-info="shipmentInfo"
           :goods-big-types="goodsBigTypes"
           :is-t="isT"
+          :id-code="!!idCode"
           @goods="nextTo"
         />
 
@@ -133,7 +135,7 @@
         <div class="app-container">
           <div class="header mb8">地址信息</div>
           <el-form-item label="装卸类型" prop="tin7">
-            <el-radio-group v-model="formData.tin7" size="medium" @change="zhuangOrxiechange">
+            <el-radio-group v-model="formData.tin7" size="medium" :disabled="isHaveWaybill" @change="zhuangOrxiechange">
               <el-radio
                 v-for="(dict,index) in loadType_computed"
                 :key="dict.dictValue + '' + index"
@@ -148,14 +150,15 @@
           <div class="mb8 m-flex" style="width:66%;">
             <div class="m_zhuanghuo">
               装货信息
-              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
+              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '2' || formData.tin7 === '4')" v-model="formData.tin8" :disabled="isHaveWaybill || myisdisabled" style="marginLeft:30px;" @change="handlerCheck('add')">允许自装</el-checkbox>
             </div>
 
             <el-button
-              v-if="!myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
+              v-if="!isHaveWaybill && !myisdisabled && (formData.tin7 === '2' || formData.tin7 === '4')"
               type="primary"
               size="mini"
               plain
+              :disabled="isHaveWaybill"
               @click="_addAddress('address_add')"
             >添加地址</el-button>
           </div>
@@ -188,7 +191,7 @@
                 :ref="address.refName"
                 type="1"
                 :cb-data="address.cbData"
-                :myisdisabled="myisdisabled"
+                :myisdisabled="isHaveWaybill || myisdisabled"
                 @getLnglat="(lnglat)=> {
                   if(isOpenTheElectronicFence){
                     address.centerLocation = lnglat
@@ -197,7 +200,7 @@
                 }"
                 @addSetOK="(valid)=>nextSe(valid, 0)"
               />
-              <div class="ly-t-right">
+              <div v-if="!isHaveWaybill" class="ly-t-right">
                 <div style="display: inline-block;">
                   <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
                     设置电子围栏
@@ -217,6 +220,7 @@
                   size="mini"
                   class="ml10"
                   plain
+                  :disabled="!!idCode"
                   @click="handleElect(address)"
                 >围栏编辑</el-button>
                 <el-button
@@ -242,10 +246,10 @@
           <div class="mb8 m-flex" style="width:66%">
             <div class="m_xie">
               卸货信息
-              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
+              <el-checkbox v-if=" formData.tin7 !== '1' && (formData.tin7 === '3' || formData.tin7 === '4')" v-model="formData.tin9" :disabled="isHaveWaybill || myisdisabled" style="marginLeft:30px;" @change="handlerXie('xie')">允许自卸</el-checkbox>
             </div>
             <el-button
-              v-if="!myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
+              v-if="!isHaveWaybill && !myisdisabled && (formData.tin7 === '3' || formData.tin7 === '4')"
               type="primary"
               size="mini"
               plain
@@ -267,7 +271,7 @@
                 :ref="address.refName"
                 type="2"
                 :cb-data="address.cbData"
-                :myisdisabled="myisdisabled"
+                :myisdisabled="isHaveWaybill ||myisdisabled"
                 @getLnglat="(lnglat)=> {
                   if(isOpenTheElectronicFence){
                     address.loadLnglat = lnglat
@@ -278,7 +282,7 @@
               />
               <!-- address.centerLocation = lnglat -->
 
-              <div class="ly-t-right">
+              <div v-if="!isHaveWaybill" class="ly-t-right">
                 <div style="display: inline-block;">
                   <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
                     设置电子围栏
@@ -298,6 +302,7 @@
                   size="mini"
                   class="ml10"
                   plain
+                  :disabled="!!idCode"
                   @click="handleElect(address)"
                 >围栏编辑</el-button>
                 <el-button
@@ -429,6 +434,8 @@ export default {
   },
   data() {
     return {
+      // 8/30 判断是否有运单(主要是判断能否修改装卸地址)
+      isHaveWaybill: false,
       // 添加2个自动判断地址是否完成
       addressOK: [false, false],
       // s=电子围栏相关
@@ -825,6 +832,7 @@ export default {
       if (newAddress_add.length || newAddress_xie.length) return;
       // e
 
+
       const address_add = this.address_add.map(async(e) => {
         return {
           ...e,
@@ -842,7 +850,6 @@ export default {
 
       this.addr_add = await Promise.all(address_add);
       this.addr_xie = await Promise.all(address_xie);
-
 
       if (this.formData.tin8) {
         this.addr_add.push(
@@ -901,6 +908,11 @@ export default {
           await this.handlerPromise('OrderBasic');
 
           // 判断地址必填
+
+
+
+
+
           const array = this.address_add.concat(this.address_xie);
           for (let index = 0; index < array.length; index++) {
             const refName = array[index].refName;
@@ -1173,14 +1185,21 @@ export default {
         this.addr_add = arr;
       }
 
+      // 处理地址的地方
       let addr_add = JSON.parse(JSON.stringify(this.addr_add));
       let addr_xie = JSON.parse(JSON.stringify(this.addr_xie));
 
-
+      // 电子围栏 this.address_add, '最后处理装' 存着最准确的值
       addr_add = addr_add.map(e => {
+        // 单独处理电子围栏的问题
+        this.address_add.forEach(ee => {
+          if (e.refName === ee.refName) {
+            e.radius = ee.switchRadius ? ee.radius : null;
+            e.enclosureRadius = ee.switchRadius ? ee.radius : null;
+            e.switchRadius = ee.switchRadius;
+          }
+        });
         e.identification = e.identification || 0;
-        e.radius = e.switchRadius ? e.radius : null;
-        e.enclosureRadius = e.switchRadius ? e.enclosureRadius : null;
         // 自装地址处理
         if (e.type && e.type === 'tin8') {
           e = this.addressItem(e, '3');
@@ -1189,15 +1208,27 @@ export default {
         return e;
       });
 
+
+      // 电子围栏 this.address_xie, '最后处理卸' 存着最准确的值
       addr_xie = addr_xie.map(e => {
+        // 单独处理电子围栏的问题
+        this.address_xie.forEach(ee => {
+          if (e.refName === ee.refName) {
+            e.radius = ee.switchRadius ? ee.radius : null;
+            e.enclosureRadius = ee.switchRadius ? ee.radius : null;
+            e.switchRadius = ee.switchRadius;
+          }
+        });
+
         e.identification = e.identification || 0;
-        e.radius = e.switchRadius ? e.radius : null;
-        e.enclosureRadius = e.switchRadius ? e.enclosureRadius : null;
         if (e.type && e.type === 'tin9') {
           e = this.addressItem(e, '4');
         }
         return e;
       });
+
+
+      // console.log([...addr_add, ...addr_xie], '处理后的值');
 
       return { orderGoodsList, orderFreightInfoBoList, orderAddressPublishBoList: [...addr_add, ...addr_xie] };
     },
@@ -1223,6 +1254,9 @@ export default {
         try {
           !this.shipmentInfo && (await this.getShipmentInfo(redisOrderInfoVo.pubilshCode)); // 获取货主详细信息
         } catch (error) { console.log(error); }
+
+        // 8/30 处理是否有运单(有, 不允许修改货源) 0=没有 1=有
+        this.isHaveWaybill = redisOrderInfoVo.haveWaybill === 1;
 
         // 5/18s=特殊商品数据处理
         const redisOrderGoodsVoListRest = redisOrderGoodsVoList.map(e => {
@@ -1475,6 +1509,7 @@ export default {
 
     // 关闭电子围栏
     changeElect(val) {
+      // this.addressChange 是编辑电子围栏选中的当前地址对象指针
       this.addressChange.radius = val.radius;
       this.addressChange.enclosureRadius = val.radius;
       this.addressChange.centerLocation = val.lnglat;
@@ -1494,8 +1529,10 @@ export default {
     radioSelection(data) {
       if (JSON.stringify(data) === '{}') return;
 
+
       if (this.isRadioSelection) {
         const { name, type } = this.isRadioSelection;
+
         this[name].forEach(e => {
           if (e.refName === type) {
             e.enclosureRadius = e.radius;

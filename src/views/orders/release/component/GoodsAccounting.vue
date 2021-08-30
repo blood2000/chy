@@ -319,10 +319,10 @@ export default {
     },
     'formData.totalType': {
       handler(value) {
-        if (value === '1' && this.$refs['formData']) {
+        if (value === '1') {
           this.formData.weight = undefined;
           // this.$refs['formData'].resetFields(); // 移除表单并初始化表单，-般用于添加
-          this.$refs['formData'].clearValidate(['weight']); // 移除表单项的校验结果。传入待移除的表单项的prop
+          this.$refs['formData'] && this.$refs['formData'].clearValidate(['weight']); // 移除表单项的校验结果。传入待移除的表单项的prop
         }
         this.$forceUpdate();
         this.$emit('totalTypeValue', value);

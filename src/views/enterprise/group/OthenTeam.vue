@@ -40,7 +40,7 @@
         :table-columns-config="[
           {
             'label': '调度组名称',
-            'prop': 'disName',
+            'prop': 'name',
             'isShow': true,
             'sortNum': 2,
             'width': '120',
