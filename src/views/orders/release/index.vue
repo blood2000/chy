@@ -1466,17 +1466,18 @@ export default {
         'userCode': this.formData.tin1
       };
 
+
       const res = await estimateCost(qData);
       if (res.code === 501) {
         this.msgError(res.msg);
         return;
       }
-
       this.$nextTick(() => {
         this.$store.dispatch('orders/store_getEst', res.data);
       });
       // 预估值结束
       this.active = 4;
+      return res;
     },
 
     /** e=处理回填数据 */

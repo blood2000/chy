@@ -689,9 +689,10 @@ export default {
 
       const arr2 = this.oneTselected.map(e => {
         return {
-          // ...e, // 需要其他再加
+          ...e, // 需要其他再加
           disUserCode: e.disUserCode,
           disName: e.disName,
+          name: e.name,
           disUserName: e.disUserName,
           disUserPhone: e.disUserPhone,
 

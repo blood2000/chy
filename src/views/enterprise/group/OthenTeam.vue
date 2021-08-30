@@ -18,7 +18,7 @@
           keywords="phoneOrName"
           :show-key="{
             value: 'code',
-            label: 'name'
+            label: 'disUserName'
           }"
           @selected="(data)=>{ handlerDisSelected(data);}"
         >
