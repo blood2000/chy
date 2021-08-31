@@ -219,7 +219,7 @@
             </el-col>
           </el-row>
           <h5 class="g-card-title g-strong mb20 ml10">
-            票制税点
+            票制平台服务费率
             <div class="h5-divider" style="width: 90%" />
           </h5>
           <el-form-item label="票制类别" prop="ticketType">
@@ -240,8 +240,8 @@
           </el-form-item>
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="税点(%)" prop="texPoint">
-                <el-input-number v-model="form.texPoint" class="width100" controls-position="right" :precision="2" placeholder="请输入税点" :step="1" :min="0" :max="99.99" clearable @input="changeTextPoint" />
+              <el-form-item label="平台服务费率(%)" prop="texPoint">
+                <el-input-number v-model="form.texPoint" class="width100" controls-position="right" :precision="2" placeholder="请输入平台服务费率" :step="1" :min="0" :max="99.99" clearable @input="changeTextPoint" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -254,15 +254,15 @@
                   >
                     <i class="el-icon-question" />
                     <ul slot="content">
-                      <li class="g-text">调度费点数 = 税点</li>
-                      <!--  <li class="g-text">一票制：调度费点数 = 税点</li>-->
-                      <!-- <li class="g-text">二票制：调度费点数 = 税点</li>-->
-                      <!--  <li class="g-text">非一票制：调度费点数 = [税点/(100-税点)]*100</li>-->
+                      <li class="g-text">平台服务费比例 = 平台服务费率</li>
+                      <!--  <li class="g-text">一票制：平台服务费比例 = 平台服务费率</li>-->
+                      <!-- <li class="g-text">二票制：平台服务费比例 = 平台服务费率</li>-->
+                      <!--  <li class="g-text">非一票制：平台服务费比例 = [平台服务费率/(100-平台服务费率)]*100</li>-->
                     </ul>
                   </el-tooltip>
-                  调度费点数(%)
+                  平台服务费比例(%)
                 </label>
-                <el-input v-model="form.dispatchPoints" class="width100" disabled placeholder="请输入调度费点数" clearable />
+                <el-input v-model="form.dispatchPoints" class="width100" disabled placeholder="请输入平台服务费比例" clearable />
               </el-form-item>
             </el-col>
           </el-row>
@@ -766,7 +766,7 @@ export default {
           { required: true, message: '票制类别不能为空', trigger: 'blur' }
         ],
         texPoint: [
-          { required: true, message: '税点不能为空', trigger: ['change', 'blur'] }
+          { required: true, message: '平台服务费率不能为空', trigger: ['change', 'blur'] }
         ],
         password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
@@ -863,12 +863,12 @@ export default {
       });
     },
     changeTextPoint(value) {
-      if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
+      if (this.form.ticketType === '1') { // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
         this.$set(this.form, 'serviceRate', '');// 服务费税率
-      } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
+      } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', value);
-      } else if (this.form.ticketType === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+      } else if (this.form.ticketType === '3') { // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
         this.$set(this.form, 'serviceRate', '');// 服务费税率
         if (value === '' || value === undefined || value === null) {
           this.$set(this.form, 'dispatchPoints', undefined);
@@ -878,12 +878,12 @@ export default {
       }
     },
     changeTicketType(value) {
-      if (value === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
+      if (value === '1') { // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
         this.$set(this.form, 'serviceRate', '');// 服务费税率
-      } else if (value === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
+      } else if (value === '2') { // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
         this.$set(this.form, 'dispatchPoints', this.form.texPoint);
-      } else if (value === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+      } else if (value === '3') { // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
         this.$set(this.form, 'serviceRate', '');// 服务费税率
         if (this.form.texPoint === '' || this.form.texPoint === undefined || this.form.texPoint === null) {
           this.$set(this.form, 'dispatchPoints', undefined);
@@ -965,12 +965,12 @@ export default {
             this.form.creditAmount = null;
           }*/
           this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-          if (this.form.ticketType === '1') { // 一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例
+          if (this.form.ticketType === '1') { // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
             this.$set(this.form, 'dispatchPoints', this.form.texPoint);
             this.$set(this.form, 'serviceRate', '');// 服务费税率
-          } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、调度费点数=原来的『服务费比例』备注：运单结算使用的比例
+          } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
             this.$set(this.form, 'dispatchPoints', this.form.texPoint);
-          } else if (this.form.ticketType === '3') { // 非一票制：调度费点数=原来的『税点(%) 』备注：运单结算使用的比例是「合同税点/（1-合同税点）」
+          } else if (this.form.ticketType === '3') { // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
             this.$set(this.form, 'serviceRate', '');// 服务费税率
             this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
           }
