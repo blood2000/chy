@@ -148,6 +148,17 @@
             />
           </el-select>
         </el-form-item>
+        <!--  -->
+        <el-form-item label="上报状态" prop="isReport">
+          <el-select v-model="queryParams.isReport" placeholder="----请选择----" clearable filterable style="width: 228px">
+            <el-option
+              v-for="(dict,index) in reportStatusOP"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
 
         <!-- 时间筛选框 -->
         <el-form-item label="接单日期" prop="receiveTime">
@@ -280,6 +291,13 @@
         <!-- :height="theight" -->
         <!-- :row-class-name="tableRowClassName" -->
         <!-- 装货地 -->
+
+        <template #isReport="{row}">
+          <el-tooltip v-if="row.noReportMsg" class="item" effect="dark" :content="row.noReportMsg" placement="top">
+            <span class="g-color-error shou">{{ row.isReport || row.isReport == 0 ? selectDictLabel( reportStatusOP, row.isReport - 0 ): '-' }}</span>
+          </el-tooltip>
+          <span v-else>{{ row.isReport || row.isReport == 0 ? selectDictLabel( reportStatusOP, row.isReport - 0 ): '-' }}</span>
+        </template>
 
         <template #isAbnormal="{row}">
           <span :class="row.isAbnormal == '1'?'g-color-success':'g-color-error'">{{ selectDictLabel(dicts['isAbnormal_option'], (row.isAbnormal? row.isAbnormal: 0)) }}</span>
@@ -470,7 +488,8 @@ import { listApi,
   waybillReportUnload,
   waybillReportBill,
   batch,
-  reportMark
+  reportMark,
+  getReportStatus
 } from '@/api/data/report';
 
 
@@ -528,7 +547,9 @@ export default {
         waybillNo: undefined, //	运输单号
         startReceiveTime: undefined,
         endReceiveTime: undefined,
-        reportMarkStatus: undefined
+        reportMarkStatus: undefined,
+        isReport: undefined // 是否可以上报0未扫描过1可以自动上报2不可以上报的3.上报扫描时出现了异常4上报中5.上报完成6被客服标记了异常不上报7.上报的时候出现了异常联系管理员
+
       },
       receiveTime: [],
       /* 字典集合 取名规则 ***_option */
@@ -579,7 +600,7 @@ export default {
       openImport: false,
 
       addition: -10,
-      loadingExport: false
+      loadingExport: false,
 
       /* 其他额外参数 */
       // shipmentList: [], // 远程搜索的时候使用
@@ -588,6 +609,9 @@ export default {
       //   keywords: '',
       //   pageSize: 10
       // }
+
+      /* 字典值 */
+      reportStatusOP: []
 
 
     };
@@ -640,6 +664,12 @@ export default {
       //     this.dicts[e] = response.data;
       //   });
       // });
+
+      getReportStatus().then(res => {
+        this.reportStatusOP = res.data.map(e => {
+          return { dictLabel: e.label, dictValue: e.status };
+        });
+      });
     },
 
     /** 列表 */
