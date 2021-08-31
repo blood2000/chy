@@ -358,6 +358,7 @@ export default {
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
+        'mainOrderNumber': undefined,
         'clarifyStatus': undefined,
         'companyName': undefined,
         'driverName': undefined,

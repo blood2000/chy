@@ -42,7 +42,10 @@ export default {
       type: Number,
       default: NaN
     },
-    fresh: Boolean
+    fresh: {
+      type: Boolean,
+      default: false
+    }
   },
   data() {
     return {
@@ -66,16 +69,19 @@ export default {
     };
   },
   watch: {
-    fresh(val) {
-      if (val) {
-        this.imageList = this.value.map(function(res) {
-          return { url: res, code: res };
-        });
-        // console.log(this.imageList);
-        this.imageOldList = this.imageList;
-        this.isShowUpload = this.imageOldList.length >= this.limit;
-        this.images = this.value;
-      }
+    fresh: {
+      handler(val) {
+        if (val) {
+          this.imageList = this.value.map(function(res) {
+            return { url: res, code: res };
+          });
+          // console.log(this.imageList);
+          this.imageOldList = this.imageList;
+          this.isShowUpload = this.imageOldList.length >= this.limit;
+          this.images = this.value;
+        }
+      },
+      immediate: true
     }
   },
   created() {

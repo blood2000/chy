@@ -96,7 +96,7 @@
           <div class="show-button" :class="{active: isShowDeviceName}" @click="showDeviceName">显示设备名称</div>
         </div>
       </div>
-      <MapBox ref="mapRef" :current-map="currentMap" class="device-info-map-box" @onCloseTrack="onCloseTrack" />
+      <MapBox ref="mapRef" :current-map="currentMap" :is-show-device-name="isShowDeviceName" class="device-info-map-box" @onCloseTrack="onCloseTrack" />
     </div>
   </div>
 </template>
@@ -408,14 +408,13 @@ export default {
     /** 显示设备名称 */
     showDeviceName() {
       this.isShowDeviceName = !this.isShowDeviceName;
-      this.drawDeviceName;
-    },
-    drawDeviceName() {
-      if (this.isShowDeviceName) {
-        //
-      } else {
-        //
-      }
+      this.$nextTick(() => {
+        this.checkedDeviceList.forEach(el => {
+          if (el.lng && el.lng !== 0 && el.lat && el.lat !== 0) {
+            this.$refs.mapRef.drawDeviceName(el.factoryOnlyCode);
+          }
+        });
+      });
     },
     /** 配置刷新时间 */
     changeRefreshTime(val) {

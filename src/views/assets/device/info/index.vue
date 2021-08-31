@@ -56,7 +56,7 @@
                   v-model="queryParams.status"
                   clearable
                   filterable
-                  style="width: 100%"
+                  style="width: 200px"
                   size="small"
                 >
                   <el-option
@@ -72,7 +72,7 @@
                   v-model="queryParams.isBindingCar"
                   clearable
                   filterable
-                  style="width: 100%"
+                  style="width: 200px"
                   size="small"
                 >
                   <el-option
@@ -98,7 +98,7 @@
                   v-model="queryParams.activationFlag"
                   clearable
                   filterable
-                  style="width: 100%"
+                  style="width: 200px"
                   size="small"
                 >
                   <el-option
@@ -114,7 +114,7 @@
                   v-model="queryParams.expireFlag"
                   clearable
                   filterable
-                  style="width: 100%"
+                  style="width: 200px"
                   size="small"
                 >
                   <el-option
