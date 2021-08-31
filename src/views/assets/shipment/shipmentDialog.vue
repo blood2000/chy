@@ -10,8 +10,8 @@
     :close="cancel"
     class="page-shipment-edit-dialog"
   > -->
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="154px" style="margin-right: 5px">
-      <el-row :gutter="60">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px" style="margin-right: 5px">
+      <el-row :gutter="80">
         <el-col :span="12" :lg="12" :md="24" :sm="24" :xs="24" style="border-right: 1px solid #F3F3F3; padding-top: 20px">
           <h5 class="g-card-title g-strong mb20 ml10">
             基础信息
@@ -554,6 +554,17 @@
                 <el-checkbox v-model="form.openScanQuickLoadOrder">是否开启扫码快捷接单装货</el-checkbox>
               </el-form-item>
             </el-col>
+            <el-col :span="24">
+              <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
+                <el-radio-group v-model="form.allowNoAuditDriverToReceive">
+                  <el-radio
+                    v-for="dict in allowOptions"
+                    :key="dict.dictValue"
+                    :label="parseInt(dict.dictValue)"
+                  >{{ dict.dictLabel }}</el-radio>
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
           </el-row>
           <h5 class="g-card-title g-strong mb20 ml10">
             普通货物配置
@@ -610,17 +621,6 @@
             <div class="h5-divider" style="width: 90%" />
           </h5>
           <el-row :gutter="20">
-            <!--<el-col :span="12">
-              <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
-                <el-radio-group v-model="form.allowNoAuditDriverToReceive">
-                  <el-radio
-                    v-for="dict in allowOptions"
-                    :key="dict.dictValue"
-                    :label="parseInt(dict.dictValue)"
-                  >{{ dict.dictLabel }}</el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-col>-->
             <el-col :span="12">
               <!--<el-form-item label="修改司机实收金额" prop="editDriverActualAmount">
                 <el-radio-group v-model="form.editDriverActualAmount">
@@ -1414,7 +1414,7 @@ export default {
 /* checkbox表单样式 */
 .no-label{
   ::v-deep.el-form-item__content{
-    margin-left: 58px !important;
+    margin-left: 74px !important;
   }
 }
 </style>
