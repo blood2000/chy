@@ -200,6 +200,26 @@
               placeholder="请选择"
             />
           </el-form-item>
+          <el-form-item label="资金类型" prop="capitalType">
+            <el-select v-model="frreezeQueryParams.capitalType" placeholder="请选择资金类型" filterable clearable size="small" class="input-width">
+              <el-option
+                v-for="dict in capitalTypeOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="操作类型" prop="operType">
+            <el-select v-model="frreezeQueryParams.operType" placeholder="请选择操作类型" filterable clearable size="small" class="input-width">
+              <el-option
+                v-for="dict in operTypeOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQueryFrreeze">搜索</el-button>
             <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQueryFrreeze">重置</el-button>
@@ -219,12 +239,22 @@
               <span v-if="scope.row.type === 2" class="g-color-success">解冻</span>
             </template>
           </el-table-column>
-          <el-table-column label="冻结总额（元）" align="center" prop="amount">
+          <el-table-column label="资金类型" align="center" prop="capitalType">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(capitalTypeOptions, scope.row.capitalType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作类型" align="center" prop="operType">
+            <template slot-scope="scope">
+              <span>{{ selectDictLabel(operTypeOptions, scope.row.operType) }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="金额（元）" align="center" prop="amount">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.amount) }}</span>
             </template>
           </el-table-column>
-          <el-table-column label="操作后冻结金额（元）" align="center" prop="beforeFreezeAmount">
+          <el-table-column label="操作后金额（元）" align="center" prop="beforeFreezeAmount">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.beforeFreezeAmount) }}</span>
             </template>
@@ -288,6 +318,19 @@ export default {
         { dictLabel: '收入', dictValue: 0 },
         { dictLabel: '支出', dictValue: 1 }
       ],
+      // 资金类型字典
+      capitalTypeOptions: [
+        { dictLabel: '余额', dictValue: 1 },
+        { dictLabel: '授信金额', dictValue: 2 }
+      ],
+      // 操作类型字典
+      operTypeOptions: [
+        { dictLabel: '接单', dictValue: 1 },
+        { dictLabel: '打款', dictValue: 2 },
+        { dictLabel: '提现', dictValue: 3 },
+        { dictLabel: '重置', dictValue: 4 },
+        { dictLabel: '取消接单', dictValue: 5 }
+      ],
       // 参数表格数据
       infoList: [],
       // 查询参数
@@ -298,7 +341,9 @@ export default {
         paidItem: undefined,
         paidFeeType: undefined,
         updateTimeBegin: undefined,
-        updateTimeEnd: undefined
+        updateTimeEnd: undefined,
+        capitalType: undefined,
+        operType: undefined
       },
       frreezeQueryParams: {
         pageNum: 1,
