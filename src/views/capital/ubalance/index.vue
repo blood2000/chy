@@ -86,6 +86,10 @@
         <template #availableBalance="{row}">
           <span>{{ floor(row.availableBalance) }}</span>
         </template>
+        <!-- 授信余额 -->
+        <template #crediBalance="{row}">
+          <span>{{ floor(row.crediBalance) }}</span>
+        </template>
         <!-- 本月已申请提现金额 -->
         <template #monthMoney="{row}">
           <span>{{ floor(row.monthMoney) }}</span>

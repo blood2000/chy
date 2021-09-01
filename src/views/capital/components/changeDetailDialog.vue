@@ -219,6 +219,19 @@
               <span v-if="scope.row.type === 2" class="g-color-success">解冻</span>
             </template>
           </el-table-column>
+          <el-table-column label="资金类型" align="center" prop="capitalType">
+            <template slot-scope="scope">
+              <span v-if="scope.row.capitalType == 1">余额</span>
+              <span v-if="scope.row.capitalType == 2">授信金额</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作类型" align="center" prop="operType">
+            <template slot-scope="scope">
+              <span v-if="scope.row.operType == 1">接单</span>
+              <span v-if="scope.row.operType == 2">打款</span>
+              <span v-if="scope.row.operType == 3">提现</span>
+            </template>
+          </el-table-column>
           <el-table-column label="冻结总额（元）" align="center" prop="amount">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.amount) }}</span>
