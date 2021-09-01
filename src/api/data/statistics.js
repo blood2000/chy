@@ -83,11 +83,19 @@ export function user(data) {
   });
 }
 
-// 查询客服统计报表列表
+// 查询平台统计报表列表
 export const teamDetailReportListApi = '/transportation/platformDataSummary/teamDetailReportList';
 export function teamDetailReportList(query) {
   return request({
     url: '/transportation/platformDataSummary/teamDetailReportList',
+    method: 'get',
+    params: query
+  });
+}
+// 查询平台统计合计
+export function teamDetailReportCount(query) {
+  return request({
+    url: '/transportation/platformDataSummary/teamDetailReportCount',
     method: 'get',
     params: query
   });

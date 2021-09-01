@@ -8,6 +8,7 @@
     v-bind="$attrs"
     highlight-current-row
     @selection-change="handleSelectionChange"
+    @sort-change="handleSortChange"
   >
     <el-table-column v-if="isShowExpand" align="center" type="expand">
       <template slot-scope="props">
@@ -26,7 +27,7 @@
         :min-width="th.width"
         :fixed="th.fixed==='' ? null : th.fixed"
         :show-overflow-tooltip="th.tooltip || false"
-        :sortable="th.sortable || false"
+        :sortable="th.sortable? 'custom' : false"
       >
         <!-- :formatter="th.formatter" -->
         <template slot-scope="scope">
@@ -191,6 +192,10 @@ export default {
     //   console.log('测试');
     //   this.getIndex = row.index;
     // },
+    // 排序事件
+    handleSortChange(val) {
+      this.$emit('sort-change', val);
+    },
     handleSelectionChange(selection) {
       this.$emit('selection-change', selection);
     },

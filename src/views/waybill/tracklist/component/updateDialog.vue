@@ -16,7 +16,7 @@
       <el-form-item :label="'装货数量' + weightLabel" prop="loadWeight">
         <el-input-number v-model="form.loadWeight" placeholder="请输入装货量" :precision="3" controls-position="right" :min="0" style="width:90%;" />
       </el-form-item>
-      <el-form-item v-if="waybill.reviewNoNeedUnloadImg === 0" label="装货单据" prop="loadAttachmentCodes">
+      <el-form-item v-if="waybill.reviewIsNeedLoadingCertificate === 0" label="装货凭证" prop="loadAttachmentCodes">
         <uploadImage v-model="form.loadAttachmentCodes" :limit="9" :fresh="fresh" />
       </el-form-item>
       <el-form-item label="卸货时间" prop="unloadTime">

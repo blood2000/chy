@@ -158,12 +158,84 @@
         :table-columns-config="tableColumnsConfig"
         :summary-method="getSummaries"
       ><!-- @selection-change="handleSelectionChange" -->
-        <!-- <template #driverType="{row}">
-          <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
-        </template> -->
-        <!-- <template #updateTime="{row}">
-          <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template> -->
+        <template #accConfirmedServiceFee="{row}">
+          <span>{{ floor(row.accConfirmedServiceFee) }}</span>
+        </template>
+        <template #arrearsAmount="{row}">
+          <span>{{ floor(row.arrearsAmount) }}</span>
+        </template>
+        <template #closingBalance="{row}">
+          <span>{{ floor(row.closingBalance) }}</span>
+        </template>
+        <template #confirmFreight="{row}">
+          <span>{{ floor(row.confirmFreight) }}</span>
+        </template>
+        <template #conformService="{row}">
+          <span>{{ floor(row.conformService) }}</span>
+        </template>
+        <template #creditAmount="{row}">
+          <span>{{ floor(row.creditAmount) }}</span>
+        </template>
+        <template #creditBalance="{row}">
+          <span>{{ floor(row.creditBalance) }}</span>
+        </template>
+        <template #cumConfirmedFreight="{row}">
+          <span>{{ floor(row.cumConfirmedFreight) }}</span>
+        </template>
+        <template #cumEstimatedFreight="{row}">
+          <span>{{ floor(row.cumEstimatedFreight) }}</span>
+        </template>
+        <template #cumEstimatedService="{row}">
+          <span>{{ floor(row.cumEstimatedService) }}</span>
+        </template>
+        <template #dailyFreight="{row}">
+          <span>{{ floor(row.dailyFreight) }}</span>
+        </template>
+        <template #dailyServiceCharge="{row}">
+          <span>{{ floor(row.dailyServiceCharge) }}</span>
+        </template>
+        <template #deliveryCount="{row}">
+          <span>{{ floor(row.deliveryCount, 3) }}</span>
+        </template>
+        <template #deliveryCountDay="{row}">
+          <span>{{ floor(row.deliveryCountDay, 3) }}</span>
+        </template>
+        <template #drawMoney="{row}">
+          <span>{{ floor(row.drawMoney) }}</span>
+        </template>
+        <template #driverCount="{row}">
+          <span>{{ floor(row.driverCount) }}</span>
+        </template>
+        <template #freightAmount="{row}">
+          <span>{{ floor(row.freightAmount) }}</span>
+        </template>
+        <template #freightInvoiceAmount="{row}">
+          <span>{{ floor(row.freightInvoiceAmount) }}</span>
+        </template>
+        <template #monthDailyFreight="{row}">
+          <span>{{ floor(row.monthDailyFreight) }}</span>
+        </template>
+        <template #monthDailyServiceCharge="{row}">
+          <span>{{ floor(row.monthDailyServiceCharge) }}</span>
+        </template>
+        <template #monthDeliveryCount="{row}">
+          <span>{{ floor(row.monthDeliveryCount, 3) }}</span>
+        </template>
+        <template #monthFreightInvoiceAmount="{row}">
+          <span>{{ floor(row.monthFreightInvoiceAmount) }}</span>
+        </template>
+        <template #paidAmount="{row}">
+          <span>{{ floor(row.paidAmount) }}</span>
+        </template>
+        <template #prepaidFreight="{row}">
+          <span>{{ floor(row.prepaidFreight) }}</span>
+        </template>
+        <template #prepaidService="{row}">
+          <span>{{ floor(row.prepaidService) }}</span>
+        </template>
+        <template #serviceAmount="{row}">
+          <span>{{ floor(row.serviceAmount) }}</span>
+        </template>
       </RefactorTable>
 
       <pagination
@@ -273,85 +345,85 @@ export default {
         }
         switch (column.property) {
           case 'paidAmount':
-            sums[index] = this.customerCount.paidAmountCount;
+            sums[index] = this.floor(this.customerCount.paidAmountCount);
             break;
           case 'drawMoney':
-            sums[index] = this.customerCount.drawMoneyCount;
+            sums[index] = this.floor(this.customerCount.drawMoneyCount);
             break;
           case 'closingBalance':
-            sums[index] = this.customerCount.closingBalanceCount;
+            sums[index] = this.floor(this.customerCount.closingBalanceCount);
             break;
           case 'deliveryCountDay':
-            sums[index] = this.customerCount.deliveryCountDayCount;
+            sums[index] = this.floor(this.customerCount.deliveryCountDayCount, 3);
             break;
           case 'prepaidFreight':
-            sums[index] = this.customerCount.prepaidFreightCount;
+            sums[index] = this.floor(this.customerCount.prepaidFreightCount);
             break;
           case 'confirmFreight':
-            sums[index] = this.customerCount.confirmFreightCount;
+            sums[index] = this.floor(this.customerCount.confirmFreightCount);
             break;
           case 'dailyFreight':
-            sums[index] = this.customerCount.dailyFreightCount;
+            sums[index] = this.floor(this.customerCount.dailyFreightCount);
             break;
           case 'prepaidService':
-            sums[index] = this.customerCount.prepaidServiceCount;
+            sums[index] = this.floor(this.customerCount.prepaidServiceCount);
             break;
           case 'conformService':
-            sums[index] = this.customerCount.conformServiceCount;
+            sums[index] = this.floor(this.customerCount.conformServiceCount);
             break;
           case 'dailyServiceCharge':
-            sums[index] = this.customerCount.dailyServiceChargeCount;
+            sums[index] = this.floor(this.customerCount.dailyServiceChargeCount);
             break;
           case 'deliveryCount':
-            sums[index] = this.customerCount.deliveryCountCount;
+            sums[index] = this.floor(this.customerCount.deliveryCountCount, 3);
             break;
           case 'cumEstimatedFreight':
-            sums[index] = this.customerCount.cumEstimatedFreightCount;
+            sums[index] = this.floor(this.customerCount.cumEstimatedFreightCount);
             break;
           case 'cumConfirmedFreight':
-            sums[index] = this.customerCount.cumConfirmedFreightCount;
+            sums[index] = this.floor(this.customerCount.cumConfirmedFreightCount);
             break;
           case 'freightAmount':
-            sums[index] = this.customerCount.freightAmountCount;
+            sums[index] = this.floor(this.customerCount.freightAmountCount);
             break;
           case 'cumEstimatedService':
-            sums[index] = this.customerCount.cumEstimatedServiceCount;
+            sums[index] = this.floor(this.customerCount.cumEstimatedServiceCount);
             break;
           case 'accConfirmedServiceFee':
-            sums[index] = this.customerCount.accConfirmedServiceFeeCount;
+            sums[index] = this.floor(this.customerCount.accConfirmedServiceFeeCount);
             break;
           case 'serviceAmount':
-            sums[index] = this.customerCount.serviceAmountCount;
+            sums[index] = this.floor(this.customerCount.serviceAmountCount);
             break;
           case 'arrearsAmount':
-            sums[index] = this.customerCount.arrearsAmountCount;
+            sums[index] = this.floor(this.customerCount.arrearsAmountCount);
             break;
           case 'monthFreightInvoiceAmount':
-            sums[index] = this.customerCount.monthFreightInvoiceAmountCount;
+            sums[index] = this.floor(this.customerCount.monthFreightInvoiceAmountCount);
             break;
           case 'freightInvoiceAmount':
-            sums[index] = this.customerCount.freightInvoiceAmountCount;
+            sums[index] = this.floor(this.customerCount.freightInvoiceAmountCount);
             break;
           case 'waybillCount':
             sums[index] = this.customerCount.waybillCountCount;
             break;
           case 'driverCount':
-            sums[index] = this.customerCount.driverCountCount;
+            sums[index] = this.floor(this.customerCount.driverCountCount);
             break;
           case 'creditBalance':
-            sums[index] = this.customerCount.creditBalanceCount;
+            sums[index] = this.floor(this.customerCount.creditBalanceCount);
             break;
           case 'creditAmount':
-            sums[index] = this.customerCount.creditAmountCount;
+            sums[index] = this.floor(this.customerCount.creditAmountCount);
             break;
           case 'monthDeliveryCount':
-            sums[index] = this.customerCount.monthDeliveryCountCount;
+            sums[index] = this.floor(this.customerCount.monthDeliveryCountCount, 3);
             break;
           case 'monthDailyFreight':
-            sums[index] = this.customerCount.monthDailyFreightCount;
+            sums[index] = this.floor(this.customerCount.monthDailyFreightCount);
             break;
           case 'monthDailyServiceCharge':
-            sums[index] = this.customerCount.monthDailyServiceChargeCount;
+            sums[index] = this.floor(this.customerCount.monthDailyServiceChargeCount);
             break;
           default:
             break;

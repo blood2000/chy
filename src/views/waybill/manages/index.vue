@@ -37,7 +37,7 @@ export default {
 
 <style>
 .frame{
-  margin:0 15px;
+  margin:0 15px !important;
   /* height: 100%; */
 }
 </style>

@@ -101,6 +101,21 @@
             {{ selectDictLabel(driverTypeOptions, row.driverType) }}
           </span>
         </template>
+        <template #balanceAmount="{row}">
+          <span>{{ floor(row.balanceAmount) }}</span>
+        </template>
+        <template #closingBalance="{row}">
+          <span>{{ floor(row.closingBalance) }}</span>
+        </template>
+        <template #issueIncome="{row}">
+          <span>{{ floor(row.issueIncome) }}</span>
+        </template>
+        <template #distributionPay="{row}">
+          <span>{{ floor(row.distributionPay) }}</span>
+        </template>
+        <template #issueWithdrawal="{row}">
+          <span>{{ floor(row.issueWithdrawal) }}</span>
+        </template>
         <!-- <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template> -->
@@ -190,19 +205,19 @@ export default {
         }
         switch (column.property) {
           case 'balanceAmount':
-            sums[index] = this.drivertoCount.balanceStatisticsCount;
+            sums[index] = this.floor(this.drivertoCount.balanceStatisticsCount);
             break;
           case 'closingBalance':
-            sums[index] = this.drivertoCount.closingBalanceCount;
+            sums[index] = this.floor(this.drivertoCount.closingBalanceCount);
             break;
           case 'issueIncome':
-            sums[index] = this.drivertoCount.currentIncomeCount;
+            sums[index] = this.floor(this.drivertoCount.currentIncomeCount);
             break;
           case 'distributionPay':
-            sums[index] = this.drivertoCount.sortingOutExpensesCount;
+            sums[index] = this.floor(this.drivertoCount.sortingOutExpensesCount);
             break;
           case 'issueWithdrawal':
-            sums[index] = this.drivertoCount.withdrawalCurrentPeriodCount;
+            sums[index] = this.floor(this.drivertoCount.withdrawalCurrentPeriodCount);
             break;
           default:
             break;
