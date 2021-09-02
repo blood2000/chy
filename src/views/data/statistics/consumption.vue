@@ -66,6 +66,42 @@
         <!-- <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template> -->
+        <template #balanceAmount="{row}">
+          <span>{{ floor(row.balanceAmount) }}</span>
+        </template>
+        <template #closingBalance="{row}">
+          <span>{{ floor(row.closingBalance) }}</span>
+        </template>
+        <template #drawMoney="{row}">
+          <span>{{ floor(row.drawMoney) }}</span>
+        </template>
+        <template #freightAmount="{row}">
+          <span>{{ floor(row.freightAmount) }}</span>
+        </template>
+        <template #freightInvoiceAmount="{row}">
+          <span>{{ floor(row.freightInvoiceAmount) }}</span>
+        </template>
+        <template #freightUnbilledAmount="{row}">
+          <span>{{ floor(row.freightUnbilledAmount) }}</span>
+        </template>
+        <template #paidAmount="{row}">
+          <span>{{ floor(row.paidAmount) }}</span>
+        </template>
+        <template #rechargeNet="{row}">
+          <span>{{ floor(row.rechargeNet) }}</span>
+        </template>
+        <template #serviceAmount="{row}">
+          <span>{{ floor(row.serviceAmount) }}</span>
+        </template>
+        <template #serviceInvoiceAmount="{row}">
+          <span>{{ floor(row.serviceInvoiceAmount) }}</span>
+        </template>
+        <template #serviceUnbilledAmount="{row}">
+          <span>{{ floor(row.serviceUnbilledAmount) }}</span>
+        </template>
+        <template #transferAmount="{row}">
+          <span>{{ floor(row.transferAmount) }}</span>
+        </template>
       </MoreRefactorTable>
 
       <pagination
@@ -175,40 +211,40 @@ export default {
         }
         switch (column.property) {
           case 'balanceAmount':
-            sums[index] = this.consumptionCount.balanceStatisticsCount;
+            sums[index] = this.floor(this.consumptionCount.balanceStatisticsCount);
             break;
           case 'closingBalance':
-            sums[index] = this.consumptionCount.closingBalanceCount;
+            sums[index] = this.floor(this.consumptionCount.closingBalanceCount);
             break;
           case 'paidAmount':
-            sums[index] = this.consumptionCount.currentRechargeCount;
+            sums[index] = this.floor(this.consumptionCount.currentRechargeCount);
             break;
           case 'freightAmount':
-            sums[index] = this.consumptionCount.freightCount;
+            sums[index] = this.floor(this.consumptionCount.freightCount);
             break;
           case 'freightInvoiceAmount':
-            sums[index] = this.consumptionCount.freightInvoicedCount;
+            sums[index] = this.floor(this.consumptionCount.freightInvoicedCount);
             break;
           case 'freightUnbilledAmount':
-            sums[index] = this.consumptionCount.freightNotInvoicedCount;
+            sums[index] = this.floor(this.consumptionCount.freightNotInvoicedCount);
             break;
           case 'rechargeNet':
-            sums[index] = this.consumptionCount.netRechargeCount;
+            sums[index] = this.floor(this.consumptionCount.netRechargeCount);
             break;
           case 'serviceAmount':
-            sums[index] = this.consumptionCount.serviceChargeCount;
+            sums[index] = this.floor(this.consumptionCount.serviceChargeCount);
             break;
           case 'serviceInvoiceAmount':
-            sums[index] = this.consumptionCount.serviceChargeInvoicedCount;
+            sums[index] = this.floor(this.consumptionCount.serviceChargeInvoicedCount);
             break;
           case 'serviceUnbilledAmount':
-            sums[index] = this.consumptionCount.serviceChargeNotInvoicedCount;
+            sums[index] = this.floor(this.consumptionCount.serviceChargeNotInvoicedCount);
             break;
           case 'transferAmount':
-            sums[index] = this.consumptionCount.totalConsumptionCount;
+            sums[index] = this.floor(this.consumptionCount.totalConsumptionCount);
             break;
           case 'drawMoney':
-            sums[index] = this.consumptionCount.withdrawalAmountCount;
+            sums[index] = this.floor(this.consumptionCount.withdrawalAmountCount);
             break;
           default:
             break;

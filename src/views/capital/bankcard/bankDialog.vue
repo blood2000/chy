@@ -29,9 +29,10 @@
       <el-form-item label="银行卡号" prop="account">
         <el-input v-model="form.account" placeholder="请输入银行卡号" class="width90" clearable />
       </el-form-item>
-      <el-form-item label="开户银行" prop="bankCode">
+      <!-- 详情的开户行 -->
+      <el-form-item label="开户银行" prop="bankName">
         <el-select
-          v-model="form.bankCode"
+          v-model="form.bankName"
           class="width90"
           placeholder="请选择开户银行"
           filterable
@@ -42,7 +43,7 @@
             v-for="dict in bankOptions"
             :key="dict.dictValue"
             :label="dict.dictLabel"
-            :value="dict.dictValue"
+            :value="dict.dictLabel"
           />
         </el-select>
       </el-form-item>
@@ -297,10 +298,10 @@ export default {
       });
     },
     // 获取选中银行卡的名称
-    changeBanK(code) {
+    changeBanK(name) {
       this.bankOptions.forEach(el => {
-        if (el.dictValue === code) {
-          this.form.bankName = el.dictLabel;
+        if (el.dictLabel === name) {
+          this.form.bankCode = el.dictValue;
         }
       });
     },

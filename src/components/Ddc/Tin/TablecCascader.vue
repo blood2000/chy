@@ -21,17 +21,25 @@
             style="padding: 10px 20px"
           >
             <el-row :gutter="10" type="flex" align="middle">
-              <el-col :span="4"><el-checkbox v-model="th.isShow"><span>{{ th.prop }}</span></el-checkbox></el-col>
-              <el-col :span="4"><el-input v-model="th.label" placeholder="请输入列名" clearable /></el-col>
+              <el-col :span="3"><el-checkbox v-model="th.isShow"><span>{{ th.prop }}</span></el-checkbox></el-col>
+              <el-col :span="3"><el-input v-model="th.label" placeholder="请输入列名" clearable /></el-col>
               <el-col :span="3" class="g-text-center"><span class="mr5">是否排序</span><el-switch v-model="th.sortable" /></el-col>
               <el-col :span="3" class="g-text-center"><span class="mr5">超出隐藏</span><el-switch v-model="th.tooltip" /></el-col>
               <el-col :span="3"><el-input v-model="th.width" placeholder="最小列宽" /></el-col>
               <el-col :span="3">
-                <el-select v-model="th.fixed" placeholder="固定方向" filterable clearable style="width:100%">
+                <el-select v-model="th.fixed" placeholder="表头固定方向" filterable clearable style="width:100%">
                   <el-option label="固定左边" value="left" />
                   <el-option label="固定右边" value="right" />
-                </el-select></el-col>
-              <el-col :span="4">
+                </el-select>
+              </el-col>
+              <el-col :span="3">
+                <el-select v-model="th.align" placeholder="内容水平方向" filterable clearable style="width:100%">
+                  <el-option label="水平居左" value="left" />
+                  <el-option label="水平居右" value="right" />
+                  <el-option label="水平居中" value="center" />
+                </el-select>
+              </el-col>
+              <el-col :span="3">
                 <el-input v-model="th.sortNum" placeholder="备注" clearable />
               </el-col>
             </el-row>
