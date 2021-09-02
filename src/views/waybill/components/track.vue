@@ -84,6 +84,7 @@ export default {
       queryEndtime: '',
       isPlan: false,
       isShipment: false,
+      roles: [],
       // 轨迹参数
       lineParams: {
         showDir: true,
@@ -187,8 +188,12 @@ export default {
         if (this.wayBillInfo.trackNumber) {
           this.getLieyingTime();
         } else {
-          this.loading = false;
-          this.msgInfo('暂无APP轨迹！');
+          if (this.roles[0] === 'd1f7988f060c4f00b2861b37693bd384') {
+            this.getLyRoutePlan();
+          } else {
+            this.loading = false;
+            this.msgInfo('暂无APP轨迹！');
+          }
         }
       } else {
         const that = this;
@@ -231,8 +236,10 @@ export default {
     }
   },
   created() {
-    const { isShipment = false } = getUserInfo() || {};
+    const { isShipment = false, roles = [] } = getUserInfo() || {};
     this.isShipment = isShipment;
+    this.roles = roles;
+    console.log(this.roles);
     // console.log(this.waybill);
     this.setForm(this.waybill);
   },
@@ -290,8 +297,12 @@ export default {
           }
           this.loading = false;
         } else {
-          this.loading = false;
-          this.msgInfo('暂无APP轨迹！');
+          if (this.roles[0] === 'd1f7988f060c4f00b2861b37693bd384') {
+            this.getLyRoutePlan();
+          } else {
+            this.loading = false;
+            this.msgInfo('暂无APP轨迹！');
+          }
         }
       } else if (this.lyTimePoor !== 0 && this.lyTimePoor < 24 * 60 * 60 * 1000) {
         this.getLieying();
@@ -498,6 +509,43 @@ export default {
           that.$refs.map.$$getInstance().setFitView(that.planline); // 执行定位
         } else {
           this.msgInfo('规划轨迹失败！');
+        }
+        // 未出错时，result即是对应的路线规划方案
+      });
+    },
+    // 获取猎鹰数据为空时路线规划
+    getLyRoutePlan() {
+      const that = this;
+      that.isPlan = true;
+      const driving = new AMap.Driving({
+        policy: AMap.DrivingPolicy.LEAST_TIME
+        // map 指定将路线规划方案绘制到对应的AMap.Map对象上
+        // map: that.$refs.map.$$getInstance()
+        // panel: 'DDCmap',
+      });
+      driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
+        if (status === 'complete') {
+          const { routes = [] } = result;
+          const { steps = [] } = routes[0];
+          const pathArr = [];
+          steps.map(i => {
+            pathArr.push(i.path);
+            return pathArr;
+          });
+          const path = [].concat.apply([], pathArr);
+          // 绘制轨迹
+          that.lyPolyline = new window.AMap.Polyline({
+            map: that.$refs.map.$$getInstance(),
+            path,
+            strokeColor: '#1990FF', // 线颜色
+            ...that.lineParams
+          });
+          that.lyPolyline.setMap(that.$refs.map.$$getInstance());
+          that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
+          that.loading = false;
+        } else {
+          that.loading = false;
+          this.msgInfo('暂无APP轨迹！');
         }
         // 未出错时，result即是对应的路线规划方案
       });

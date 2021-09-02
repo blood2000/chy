@@ -193,6 +193,15 @@
             @click="handlePayment"
           >批量打款</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportLoading"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -415,6 +424,7 @@ export default {
         { 'dictLabel': '打款失败', 'dictValue': '5' }
       ],
       payLoading: false,
+      exportLoading: false,
       batchIndex: 0,
       errList: [],
       sucList: []
@@ -488,6 +498,16 @@ export default {
       this.queryParams.startTime = null;
       this.queryParams.endTime = null;
       this.handleQuery();
+    },
+    handleExport() {
+      this.exportLoading = true;
+      this.download(
+        '/transportation/waybillSettlement/waybillSettlementExport',
+        { ...this.queryParams },
+        `财务打款`
+      ).then(res => {
+        this.exportLoading = false;
+      });
     },
     // 批量打款
     handlePayment() {

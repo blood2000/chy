@@ -325,11 +325,11 @@ export default {
       ],
       // 操作类型字典
       operTypeOptions: [
-        { dictLabel: '接单', dictValue: 1 },
+        { dictLabel: '接单或卸货', dictValue: 1 },
         { dictLabel: '打款', dictValue: 2 },
         { dictLabel: '提现', dictValue: 3 },
         { dictLabel: '重置', dictValue: 4 },
-        { dictLabel: '取消接单', dictValue: 5 }
+        { dictLabel: '取消运单', dictValue: 5 }
       ],
       // 参数表格数据
       infoList: [],
