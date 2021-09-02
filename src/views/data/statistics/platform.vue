@@ -239,6 +239,7 @@
       <pagination
         v-show="total > 0"
         :total="total"
+        :page-sizes="[10, 50, 100, 300]"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
         @pagination="getList(1)"
