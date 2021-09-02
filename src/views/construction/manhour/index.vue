@@ -189,8 +189,8 @@ export default {
         },
         {
           'label': '工作内容',
-          'prop': 'jobContent',
-          // 'prop': 'jobContentName',
+          // 'prop': 'jobContent',
+          'prop': 'jobContentName',
           'isShow': true,
           'width': '90',
           'tooltip': true
@@ -273,17 +273,23 @@ export default {
           'tooltip': true
         },
         {
-          'label': '完工备注',
-          'prop': 'completeRemark',
-          'isShow': true,
-          'tooltip': true
-        },
-        {
-          'label': '复核备注',
-          'prop': 'checkRemark',
+          'label': '备注',
+          'prop': 'remark',
           'isShow': true,
           'tooltip': true
         }
+        // {
+        //   'label': '完工备注',
+        //   'prop': 'completeRemark',
+        //   'isShow': true,
+        //   'tooltip': true
+        // },
+        // {
+        //   'label': '复核备注',
+        //   'prop': 'checkRemark',
+        //   'isShow': true,
+        //   'tooltip': true
+        // }
       ];
     },
 

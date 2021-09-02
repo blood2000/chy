@@ -95,9 +95,8 @@
             v-for="(item, index) in ztJxTasksOp"
             :key="index"
             :label="item.dictLabel"
-            :value="item.dictLabel"
+            :value="item.dictValue"
           />
-          <!-- :value="item.dictValue" -->
         </el-select>
       </el-form-item>
 
