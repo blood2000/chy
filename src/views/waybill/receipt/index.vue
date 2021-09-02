@@ -277,8 +277,8 @@ export default {
       ],
       // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
       statusOptions: [
-        { 'dictLabel': '未接单', 'dictValue': '0' },
-        { 'dictLabel': '已接单', 'dictValue': '1' },
+        // { 'dictLabel': '未接单', 'dictValue': '0' },
+        // { 'dictLabel': '已接单', 'dictValue': '1' },
         { 'dictLabel': '已装货', 'dictValue': '2' },
         { 'dictLabel': '已签收', 'dictValue': '3' },
         { 'dictLabel': '已回单', 'dictValue': '4' },

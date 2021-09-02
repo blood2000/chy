@@ -507,7 +507,7 @@ export default {
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
       ],
-      // 配载方式字典
+      // 来源字典
       sourceTypeOptions: [
         { 'dictLabel': '承运码', 'dictValue': '1' },
         { 'dictLabel': '调度者指派', 'dictValue': '2' },

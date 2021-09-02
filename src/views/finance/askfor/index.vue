@@ -24,8 +24,8 @@
             @change="chooseShipment"
           >
             <el-option
-              v-for="dict in shipmentlist"
-              :key="dict.code"
+              v-for="(dict, index) in shipmentlist"
+              :key="index"
               :label="dict.adminName"
               :value="dict.code"
             >
@@ -324,8 +324,10 @@ export default {
         'receiveDateBegin': undefined,
         'receiveDateEnd': undefined,
         'shipmentCode': undefined,
-        'waybillNo': undefined
+        'waybillNo': undefined,
+        'orgCode': undefined
       },
+      shipmentSelect: {},
       loadTime: [],
       unloadTime: [],
       // 弹框 内容
@@ -411,6 +413,7 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
+    console.log(this.shipment);
     this.getList();
     /* if (this.isShipment) {
       this.queryParams.shipmentCode = shipment.info.code;
@@ -503,6 +506,7 @@ export default {
     /** 查询【请填写功能名称】列表 */
     getList() {
       if (this.isShipment) {
+        this.queryParams.orgCode = this.shipment.info.companyCode;
         this.queryParams.shipmentCode = this.shipment.info.code;
       }
       if (this.queryParams.shipmentCode) {
@@ -516,7 +520,13 @@ export default {
         this.$message({ type: 'warning', message: '请选择货主查询列表！' });
       }
     },
-    chooseShipment() {
+    chooseShipment(code) {
+      this.shipmentlist.forEach(el => {
+        if (el.code === code) {
+          this.queryParams.orgCode = el.orgCode;
+        }
+      });
+      console.log(this.queryParams);
       this.handleQuery();
     },
     /** 搜索按钮操作 */
