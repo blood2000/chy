@@ -134,13 +134,38 @@
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybillOper:invalidRejected']"
+            :loading="logLoading"
+            type="primary"
+            icon="el-icon-wallet"
+            size="mini"
+            :disabled="multiple"
+            @click="handleLogs"
+          >批量驳回</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybillOper:delInvalid']"
+            :loading="deleteLoading"
+            type="primary"
+            icon="el-icon-delete"
+            size="mini"
+            :disabled="multiple"
+            @click="handleDeletes"
+          >批量确认删除</el-button>
+        </el-col>
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="nullifyList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="nullifyList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <template #sourceType="{row}">
+          <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
+        </template>
         <template #isWarning="{row}">
           <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
         </template>
@@ -259,7 +284,9 @@ export default {
       tableColumnsConfig: [],
       api: listNullifyApi,
       // 遮罩层
-      loading: true,
+      loading: false,
+      deleteLoading: false,
+      logLoading: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -293,6 +320,13 @@ export default {
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
+      ],
+      // 来源字典
+      sourceTypeOptions: [
+        { 'dictLabel': '承运码', 'dictValue': '1' },
+        { 'dictLabel': '调度者指派', 'dictValue': '2' },
+        { 'dictLabel': '自主接单', 'dictValue': '3' },
+        { 'dictLabel': '后台指派', 'dictValue': '4' }
       ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
       isWarningOptions: [
@@ -397,7 +431,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.waybillCode);
+      this.ids = selection.map(item => item.wayBillCode);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -411,13 +445,13 @@ export default {
     },
     /** 驳回按钮操作 */
     handleLog(row) {
-      this.$confirm('请确认驳回此作废运单？', '提示', {
+      this.$confirm('请确认驳回作废运单', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         console.log('驳回点击');
-        invalidRejected(row.wayBillCode).then(response => {
+        invalidRejected([row.wayBillCode]).then(response => {
           this.$message({
             type: 'success',
             message: '驳回成功'
@@ -430,18 +464,58 @@ export default {
     },
     // 确认删除按钮
     handleDelete(row) {
-      this.$confirm('请确认删除此作废运单？', '提示', {
+      this.$confirm('请确认删除作废运单', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        invalidDelete(row.wayBillCode).then(response => {
+        invalidDelete([row.wayBillCode]).then(response => {
           this.$message({
             type: 'success',
             message: '删除成功'
           });
           this.getList();
         });
+      }).catch(() => {
+
+      });
+    },
+    /** 批量驳回按钮操作 */
+    handleLogs() {
+      this.$confirm('请确认批量驳回作废运单', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.logLoading = true;
+        invalidRejected(this.ids).then(response => {
+          this.$message({
+            type: 'success',
+            message: '批量驳回成功'
+          });
+          this.getList();
+          this.logLoading = false;
+        }).catch(() => { this.logLoading = false; });
+      }).catch(() => {
+
+      });
+    },
+    // 批量确认删除按钮
+    handleDeletes() {
+      this.$confirm('请确认批量删除作废运单', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.deleteLoading = true;
+        invalidDelete(this.ids).then(response => {
+          this.$message({
+            type: 'success',
+            message: '批量删除成功'
+          });
+          this.getList();
+          this.deleteLoading = false;
+        }).catch(() => { this.deleteLoading = false; });
       }).catch(() => {
 
       });

@@ -22,7 +22,7 @@
         </el-upload>
       </el-col>
       <el-col :span="1.5">
-        <el-button icon="el-icon-upload2" size="mini" type="primary" @click="submitUpload">立即上传</el-button>
+        <el-button :loading="btnLoading" icon="el-icon-upload2" size="mini" type="primary" @click="submitUpload">立即上传</el-button>
       </el-col>
     </el-row>
     <el-row :gutter="10" class="mb8">
@@ -74,6 +74,7 @@ export default {
     return {
       // 遮罩层
       loading: true,
+      btnLoading: false,
       // 选中数组
       ids: [],
       // 非单个禁用
@@ -157,11 +158,13 @@ export default {
 	    } else {
 	      this.fileData = new FormData(); // new formData对象
 	      this.$refs.upload.submit(); // 提交调用uploadFile函数
+        this.btnLoading = true;
         // 接口
         uploadToHWS(this.fileData).then((res) => {
           console.log(res);
           imagesExtra(res.data).then(response => {
             console.log(response);
+            this.btnLoading = false;
           });
           this.$message(res.msg);
           this.fileList = []; // 清除上传文件

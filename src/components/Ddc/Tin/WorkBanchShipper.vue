@@ -765,7 +765,7 @@ export default {
           return response.status === '0';
         });
         this.noticeList1 = this.noticeList1.concat(notice);
-        // console.log(this.noticeList1);
+        // console.log(this.noticeList1) chaksngksksk;
         this.loading = false;
         if (this.noticeList1) {
           this.disabled = false;

@@ -86,3 +86,10 @@ export function reportMark(waybillReportCode, markFlag) {
   });
 }
 
+export function getReportStatus() {
+  return request({
+    url: `/transportation/waybillReport/getReportStatus`,
+    method: 'get'
+  });
+}
+
