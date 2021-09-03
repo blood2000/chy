@@ -315,6 +315,9 @@ export default {
   computed: {
     routeName() {
       return this.$store.state.settings.quickEntryName;
+    },
+    roles() {
+      return this.$store.state.user.roles;
     }
   },
   watch: {
@@ -345,6 +348,18 @@ export default {
 
     this.getList();
     // this.getRouterQuery(this.$route);
+    console.log(this.roles);
+
+    // 如果是ddc_admin账号，搜索条件不显示调度者
+    const is_ddc_admin = this.roles.find(value => {
+      return value === 'd1f7988f060c4f00b2861b37693bd384';
+    });
+    if (is_ddc_admin) {
+      this.roleOptions = [
+        { dictLabel: '货主', dictValue: 0 },
+        { dictLabel: '司机', dictValue: 2 }
+      ];
+    }
   },
   methods: {
     /** 从快捷入口进 */
