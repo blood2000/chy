@@ -686,7 +686,7 @@ export default {
               } else {
                 driver.vehicleInfo = null;
               }
-              registerDriver(driver).then(response => {
+              registerDriver(Object.assign({}, driver, { fromSource: 2 })).then(response => {
                 this.buttonLoading = false;
                 this.$message('新增成功，请至 司机管理 审核');
                 this.close();
