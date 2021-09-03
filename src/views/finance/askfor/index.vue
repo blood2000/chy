@@ -17,7 +17,7 @@
             remote
             reserve-keyword
             placeholder="请选择货主"
-            :remote-method="remoteMethod"
+            :remote-method="resizeFun"
             :loading="shipmentloading"
             style="width: 230px"
             size="small"
@@ -287,6 +287,7 @@ import { getUserInfo } from '@/utils/auth';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 import { pickerOptions } from '@/utils/dateRange';
+import { ThrottleFun } from '@/utils/index.js';
 
 export default {
   'name': 'Askfor',
@@ -402,7 +403,9 @@ export default {
       shipmentloading: false,
       dataOver: false, // 是否请求完了
       loadingExport: false,
-      loadingAsk: false
+      loadingAsk: false,
+      query: undefined,
+      throttle: undefined
     };
   },
   computed: {
@@ -430,6 +433,7 @@ export default {
     this.listByDict(this.commodityCategory).then(response => {
       this.commodityCategoryCodeOptions = response.data;
     });
+    this.throttle = ThrottleFun(this.remoteMethod, 1000);
     // this.getList();
   },
   'methods': {
@@ -443,13 +447,17 @@ export default {
         this.shipmentloading = false;
       });
     },
+    resizeFun(query) {
+      this.query = query;
+      this.throttle();
+    },
     // 触发货主远程搜索
     remoteMethod(query) {
-      if (query !== '') {
+      if (this.query !== '') {
         this.shipmentloading = true;
         this.shipmentInfoQuery.pageNum = 1;
         this.dataOver = false;
-        this.shipmentInfoQuery.searchValue = query;
+        this.shipmentInfoQuery.searchValue = this.query;
         this.shipmentlist = [];
         this.getShipment();
       } else {
