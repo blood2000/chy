@@ -797,6 +797,8 @@ export default {
                 }
                 if (isReview) {
                   driver.authStatus = 3;
+                } else {
+                  driver.authStatus = 0;
                 }
                 addDriver(Object.assign({}, driver, { fromSource: 2 })).then(response => {
                   this.buttonLoading = false;
