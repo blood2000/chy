@@ -534,7 +534,7 @@
     </el-form>
 
     <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button v-if="title === '新增'" v-hasPermi="['assets:driver:addAndExamine']" type="primary" :loading="buttonLoading" @click="submitForm(true)">确定并审核</el-button>
+      <el-button v-if="title === '新增'" v-hasPermi="['assets:driver:addAndExamine']" type="primary" :loading="buttonLoading" @click="submitForm(1)">确定并审核</el-button>
       <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -795,7 +795,7 @@ export default {
                 } else {
                   driver.vehicleInfo = null;
                 }
-                if (isReview) {
+                if (isReview === 1) {
                   driver.authStatus = 3;
                 } else {
                   driver.authStatus = 0;
