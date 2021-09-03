@@ -25,14 +25,14 @@
         <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
       </template> -->
 
-      <template #edit="{row}">
+      <!-- <template #edit="{row}">
         <el-button
           size="mini"
           type="text"
           icon="el-icon-document"
           @click="handleWaybill(row)"
         >详情</el-button>
-      </template>
+      </template> -->
     </RefactorTable>
 
     <pagination
@@ -100,13 +100,7 @@ export default {
     }
   },
   created() {
-    this.tableHeaderConfig(this.tableColumnsConfig, childListApi, {
-      prop: 'edit',
-      isShow: true,
-      label: '操作',
-      width: 100,
-      fixed: 'left'
-    });
+    this.tableHeaderConfig(this.tableColumnsConfig, childListApi);
   },
   methods: {
     /** 查询子单列表 */
