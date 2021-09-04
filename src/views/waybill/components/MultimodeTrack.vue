@@ -137,7 +137,7 @@ export default {
       planline.setMap(that.$refs.amap.$$getInstance());
     },
     // 起点终点
-    getMark(load, unload) {
+    getMark(load, unload, label) {
       const that = this;
       // 装货地marker
       const startMark = new AMap.Marker({
@@ -145,7 +145,11 @@ export default {
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/162985467678130930d.png',
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(-10, -10)
+        offset: new AMap.Pixel(-10, -10),
+        label: label ? {
+          content: '起点',
+          offset: new AMap.Pixel(0, -25)
+        } : null
       });
       startMark.setMap(that.$refs.amap.$$getInstance()); // 点标记
       // 卸货地marker
@@ -154,7 +158,11 @@ export default {
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/162985464352494a118.png',
         autoFitView: true,
         autoRotation: true,
-        offset: new AMap.Pixel(-10, -10)
+        offset: new AMap.Pixel(-10, -10),
+        label: label ? {
+          content: '终点',
+          offset: new AMap.Pixel(0, -25)
+        } : null
       });
       endMark.setMap(that.$refs.amap.$$getInstance()); // 点标记
       // that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
@@ -172,6 +180,12 @@ export default {
     // 表单赋值
     setForm(data) {
       // console.log(data);
+      // 起点终点
+      if (data) {
+        const loadLocation = data[0].waybillAddressList[0].loadLocations;
+        const unloadLocation = data[data.length - 1].waybillAddressList[0].unloadLocations;
+        this.getMark(loadLocation, unloadLocation, 'label');
+      }
       this.truckList = data.filter(item => item.mtransMode === '200');
       // console.log(this.truckList);
       if (this.truckList.length > 0) {
@@ -223,6 +237,7 @@ export default {
           }
         }
       }
+
       const that = this;
       that.$refs.amap.$$getInstance().setFitView(); // 执行定位
     }
@@ -365,5 +380,11 @@ export default {
   width: 50px;
   border-radius: 4px;
   opacity: 0.7;
+}
+::v-deep .amap-marker-label{
+  border: 0;
+  background-color: #FFFFFF;
+  border-radius: 2px;
+  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.1)
 }
 </style>

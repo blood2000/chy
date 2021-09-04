@@ -225,15 +225,15 @@
                   <div class="g-aligncenter g-justifybetween" style="margin-top:17px">
                     <div style="max-width: 150px;">
                       <div class="child-tag">装货地：</div>
-                      <div class="child-title" style="margin-top:5px">{{ item.loadAddress }}</div>
+                      <div class="child-title" style="margin-top:5px;height:44px;">{{ item.loadAddress }}</div>
                     </div>
                     <div style="max-width: 150px;">
                       <div class="child-tag">卸货地：</div>
-                      <div class="child-title" style="margin-top:5px">{{ item.unloadAddress }}</div>
+                      <div class="child-title" style="margin-top:5px;height:44px;">{{ item.unloadAddress }}</div>
                     </div>
                     <div>
                       <div class="child-tag">状态灯：</div>
-                      <div class="g-color-success" style="margin-top:5px">● {{ selectDictLabel(statusOptions, item.status) }}</div>
+                      <div class="g-color-success" style="margin-top:5px;height:44px;">● {{ selectDictLabel(statusOptions, item.status) }}</div>
                     </div>
                   </div>
                 </div>
