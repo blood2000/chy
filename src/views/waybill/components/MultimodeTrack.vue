@@ -1,6 +1,14 @@
 <template>
   <div>
-    <div style="width:100%; height: 600px;border-radius: 6px; padding: 0 30px">
+    <div style="width:100%; height: 750px;border-radius: 6px; padding: 0 30px">
+      <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
+        <div class="legend-frame">
+          <div class="g-aligncenter" style="margin-bottom: 10px">公路轨迹<div class="legend-color" style="background:#67C23A;" /></div>
+          <div class="g-aligncenter" style="margin-bottom: 10px">水运轨迹<div class="legend-color" style="background:#1990FF;" /></div>
+          <div class="g-aligncenter" style="margin-bottom: 10px">空运轨迹<div class="legend-color" style="background:#FB8720;" /></div>
+          <div class="g-aligncenter" style="margin-bottom: 10px">铁路轨迹<div class="legend-color" style="background:#B3B3B3;" /></div>
+        </div>
+      </div>
       <el-amap ref="amap" v-loading="loading" vid="DDCmap" :zoom="zoom" :center="center" :events="events" />
       <div :class="isPlan? 'noliston-frame':'nolist-frame'">
         <div :class="isPlan? 'noliston':'nolist'" />
@@ -345,7 +353,7 @@ export default {
   top: 10px;
   z-index: 10;
   width: 165px;
-  height: 130px;
+  height: 140px;
   background: #FFFFFF;
   padding: 15px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);

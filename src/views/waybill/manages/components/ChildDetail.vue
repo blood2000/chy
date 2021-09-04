@@ -159,7 +159,7 @@
       </el-col>
     </el-row>
     <div class="waybill-title"><div class="waybill-icon" />轨迹<div class="waybill-divider" /></div>
-    <div v-if="form.code" style="height:600px;width:100%;padding: 0 30px;overflow: hidden;">
+    <div v-if="form.code" style="height:600px;width:100%;padding: 0 30px;overflow: hidden; margin-bottom: 30px;">
       <Track :waybill="sonList" />
     </div>
   </el-drawer>
