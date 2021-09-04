@@ -163,12 +163,13 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      this.truckList = data.find(item => item.mtransMode === '200');
-      console.log(this.truckList);
-      if (this.truckList.waybillAddressList) {
-        for (let i = 0; i < this.truckList.waybillAddressList.length; i++) {
-          const loadLocation = this.truckList.waybillAddressList[i].loadLocations;
-          const unloadLocation = this.truckList.waybillAddressList[i].unloadLocations;
+      // console.log(data);
+      this.truckList = data.filter(item => item.mtransMode === '200');
+      // console.log(this.truckList);
+      if (this.truckList.length > 0) {
+        for (let i = 0; i < this.truckList.length; i++) {
+          const loadLocation = this.truckList[i].waybillAddressList[0].loadLocations;
+          const unloadLocation = this.truckList[i].waybillAddressList[0].unloadLocations;
           if (loadLocation && unloadLocation) {
             this.getMark(loadLocation, unloadLocation);
             this.getRoutePlan(loadLocation, unloadLocation);
@@ -176,12 +177,12 @@ export default {
         }
       }
 
-      this.waterList = data.find(item => item.mtransMode === '300');
-      console.log(this.waterList);
+      this.waterList = data.filter(item => item.mtransMode === '300');
+      // console.log(this.waterList);
       if (this.waterList) {
-        for (let i = 0; i < this.waterList.waybillAddressList.length; i++) {
-          const loadLocation = this.waterList.waybillAddressList[i].loadLocations;
-          const unloadLocation = this.waterList.waybillAddressList[i].unloadLocations;
+        for (let i = 0; i < this.waterList.length; i++) {
+          const loadLocation = this.waterList[i].waybillAddressList[0].loadLocations;
+          const unloadLocation = this.waterList[i].waybillAddressList[0].unloadLocations;
           if (loadLocation && unloadLocation) {
             this.getMark(loadLocation, unloadLocation);
             this.getLine(loadLocation, unloadLocation, '300');
@@ -189,12 +190,12 @@ export default {
         }
       }
 
-      this.flyList = data.find(item => item.mtransMode === '400');
-      console.log(this.flyList);
+      this.flyList = data.filter(item => item.mtransMode === '400');
+      // console.log(this.flyList);
       if (this.flyList) {
-        for (let i = 0; i < this.flyList.waybillAddressList.length; i++) {
-          const loadLocation = this.flyList.waybillAddressList[i].loadLocations;
-          const unloadLocation = this.flyList.waybillAddressList[i].unloadLocations;
+        for (let i = 0; i < this.flyList.length; i++) {
+          const loadLocation = this.flyList[i].waybillAddressList[0].loadLocations;
+          const unloadLocation = this.flyList[i].waybillAddressList[0].unloadLocations;
           if (loadLocation && unloadLocation) {
             this.getMark(loadLocation, unloadLocation);
             this.getLine(loadLocation, unloadLocation, '400');
@@ -202,12 +203,12 @@ export default {
         }
       }
 
-      this.trainList = data.find(item => item.mtransMode === '500');
-      console.log(this.trainList);
+      this.trainList = data.filter(item => item.mtransMode === '500');
+      // console.log(this.trainList);
       if (this.trainList) {
-        for (let i = 0; i < this.trainList.waybillAddressList.length; i++) {
-          const loadLocation = this.trainList.waybillAddressList[i].loadLocations;
-          const unloadLocation = this.trainList.waybillAddressList[i].unloadLocations;
+        for (let i = 0; i < this.trainList.length; i++) {
+          const loadLocation = this.trainList[i].waybillAddressList[0].loadLocations;
+          const unloadLocation = this.trainList[i].waybillAddressList[0].unloadLocations;
           if (loadLocation && unloadLocation) {
             this.getMark(loadLocation, unloadLocation);
             this.getLine(loadLocation, unloadLocation, '500');
