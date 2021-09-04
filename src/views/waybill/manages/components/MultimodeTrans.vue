@@ -554,5 +554,10 @@ export default {
   font-weight: bold;
   line-height: 22px;
   color: #7A8DA0;
+  overflow: hidden; //超出隐藏
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
 }
 </style>
