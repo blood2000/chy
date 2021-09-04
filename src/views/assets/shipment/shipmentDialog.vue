@@ -846,9 +846,8 @@ export default {
       if (data) {
         this.form.marketId = this.marketList[data];
         this.getOperateUserList(data);
-      } else {
-        this.form.operateUserCode = '';
       }
+      this.$set(this.form, 'operateUserCode', undefined);
       /* this.$nextTick(() => {
         this.$refs.form.validateField('operateOrgCode');
         if (this.form.operateOrgCode) {
