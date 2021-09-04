@@ -329,7 +329,9 @@ export default {
         { dictLabel: '打款', dictValue: 2 },
         { dictLabel: '提现', dictValue: 3 },
         { dictLabel: '重置', dictValue: 4 },
-        { dictLabel: '取消运单', dictValue: 5 }
+        { dictLabel: '取消运单', dictValue: 5 },
+        { dictLabel: '增加授信金额', dictValue: 6 },
+        { dictLabel: '扣除授信额度', dictValue: 7 }
       ],
       // 参数表格数据
       infoList: [],
