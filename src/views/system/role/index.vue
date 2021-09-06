@@ -37,7 +37,7 @@
       </el-col>
       <el-col :lg="19" :md="18" :sm="17" :xs="24">
         <div class="app-container app-container--search">
-          <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px">
+          <el-form v-show="showSearch" ref="queryForm" :model="queryParams" :inline="true" label-width="80px" @submit.native.prevent>
             <el-form-item label="角色名称" prop="roleName">
               <el-input
                 v-model="queryParams.roleName"
