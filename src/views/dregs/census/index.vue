@@ -99,8 +99,7 @@
                 <el-table v-loading="inOutLoading" highlight-current-row :data="inOutList">
                   <el-table-column type="index" label="编号" width="60" />
                   <el-table-column label="车牌号" align="left" prop="licenseNumber" />
-                  <!-- sortable -->
-                  <el-table-column label="进场时间" align="left" prop="inTime" />
+                  <el-table-column label="进场时间" align="left" prop="inTime" sortable />
                   <el-table-column label="出场时间" align="left" prop="outTime" />
                   <el-table-column label="驾驶员姓名" align="left" prop="driverName" />
                   <el-table-column label="土石方量(m)²" align="left" prop="loadWeight" min-width="90" />
