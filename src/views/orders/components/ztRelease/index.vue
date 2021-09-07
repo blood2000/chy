@@ -24,17 +24,17 @@
 
         <!-- <span>{{ formData.dispatcherCodes }}</span> -->
         <el-tag
-          v-for="tag in schedSelect"
+          v-for="tag in orderSpecifiedList"
           :key="tag.code"
           class="mr10"
           closable
           :type="'warning'"
           @close="hamdlerClose(tag)"
         >
-          {{ tag.disName }}
+          {{ tag.driverName || tag.teamName }}
         </el-tag>
 
-        <el-button v-if="!isEdit" class="ml10" size="mini" type="primary" @click="scheduling = true">请选择调度</el-button>
+        <el-button v-if="!isEdit" class="ml10" size="mini" type="primary" @click="handlerOpen">请选择调度</el-button>
       </el-form-item>
 
       <el-form-item v-if="false" label="渣土类型" prop="orderType">
@@ -95,7 +95,15 @@
     <!-- 打开弹框 -->
     <el-dialog :close-on-click-modal="false" title="选择调度" :visible.sync="scheduling" width="80%">
       <div v-if="scheduling">
-        <GroupIndex ref="GroupIndex" :shipment-code="shipmentInfo.code" :iscomponent="true" :cb-data-by-keyword="cbDataByKeyword" @groupSelected="(data)=> schedSelect = data" />
+        <GroupIndex
+          ref="GroupIndex"
+          :shipment-code="shipmentInfo.code"
+          :iscomponent="true"
+          :cb-data-by-keyword="cbDataByKeyword"
+          :cbone-tselected="cboneTselected"
+          @groupSelected="(data)=> schedSelect = data"
+          @oneSelected="(data)=> oneTselected = data"
+        />
 
         <el-form-item>
           <div class="ly-t-right">
@@ -128,6 +136,8 @@ import MapDialog from './MapDialog.vue';
 import { getUserInfo } from '@/utils/auth';
 
 import { ztPublishOrder, ztUpdateOrder } from '@/api/order/release'; // 发布渣土请求
+
+import { objReduce } from '@/utils/ddc';
 
 export default {
   components: { ProjectIndex, GroupIndex, MapDialog },
@@ -177,7 +187,12 @@ export default {
       'schedSelect': [], // 选中的调度
 
       'mapDialog': false, // 电子围栏
-      'lnglat': [] // 项目位置
+      'lnglat': [], // 项目位置
+
+      'oneTselected': [], // 选中的调度
+      'cboneTselected': [], // 回填使用
+
+      orderSpecifiedList: [] // 页面展示的调度者(schedSelect + oneTselected)
 
 
 
@@ -202,8 +217,8 @@ export default {
     },
     cbDataByKeyword() {
       let obj = {};
-      if (this.schedSelect.length) {
-        obj = { disUserCode: this.schedSelect.map(e => e.disUserCode) };
+      if (this.orderSpecifiedList.length) {
+        obj = { disUserCode: this.orderSpecifiedList.map(e => e.code) };
         // obj = { id: this.schedSelect.map(e => e.id) };
       }
       return obj;
@@ -223,12 +238,36 @@ export default {
       handler(data) {
         if (data) {
           // 调度者
-          this.schedSelect = data.redisOrderSpecifiedVoList.map(e => {
-            return {
+          this.orderSpecifiedList = data.redisOrderSpecifiedVoList.map(e => {
+            e = {
+              ...e,
               disName: e.teamName,
-              disUserCode: e.teamInfoCode
+              teamName: e.teamName,
+              disUserCode: e.teamInfoCode,
+              code: e.teamInfoCode,
+              disUserName: e.nickName,
+              name: e.teamName,
+              disUserPhone: e.phonenumber.substr(0, 3) + '****' + e.phonenumber.substr(7, 11)
             };
+
+            if (e.isCommonly) {
+              this.schedSelect.push(e);
+            } else {
+              // e.disUserCode = e.code;
+              // e.disName = e.teamName;
+              // e.disName = e.teamName + '的调度组';
+              // e.disUserName = e.nickName;
+              // e.disUserPhone = e.phonenumber.substr(0, 3) + '****' + e.phonenumber.substr(7, 11);
+
+              // bool = !e.isCommonly;
+
+
+              this.oneTselected.push(e);
+            }
+
+            return e;
           });
+
 
           // 项目
           this.selectData = {
@@ -240,7 +279,7 @@ export default {
             ...this.formData,
             'projectName': data.redisOrderInfoVo.projectName, // 项目名
             'projectCode': data.redisOrderInfoVo.projectCode, // 项目Code		false
-            'dispatcherCodes': this.schedSelect.map(e => e.disUserCode), // 调度车队Code		false
+            'dispatcherCodes': this.orderSpecifiedList.map(e => e.code), // 调度车队Code		false
             // 'orderType': '1200', // 货源类型		false 默认写死
             'geofenceToggle': data.redisOrderInfoVo.isOpenEnclosure === 1, // 电子围栏是否开启 1 是 0 否		false
             'remark': data.redisOrderInfoVo.remark, // 备注		false
@@ -273,13 +312,61 @@ export default {
 
     // 调度者
     handlerScheduling() {
-      this.formData.dispatcherCodes = this.schedSelect.map(e => e.disUserCode);
+      // this.formData.dispatcherCodes = this.schedSelect.map(e => e.disUserCode);
+
+
+      const arr = this.schedSelect.map(e => {
+        return {
+          // ...e, // 需要其他再加
+          _tinCode: e.code,
+          code: e.disUserCode,
+          teamName: e.disName,
+          type: 'info',
+          userType: 1,
+          isCommonly: true // 添加一个标识区别独立调度者
+        };
+      });
+
+      const arr2 = this.oneTselected.map(e => {
+        return {
+          ...e, // 需要其他再加
+          disUserCode: e.disUserCode,
+          disName: e.disName,
+          name: e.name,
+          disUserName: e.disUserName,
+          disUserPhone: e.disUserPhone,
+
+          // 上面是列表展示字段使用
+          _tinCode: e.code,
+          code: e.disUserCode,
+          teamName: e.disName,
+          type: 'info',
+          userType: 1,
+          isCommonly: false // 添加一个标识区别独立调度者
+        };
+      });
+
+      // 去重一下
+      this.orderSpecifiedList = objReduce(arr.concat(arr2), 'code');
+
+      this.oneTselected = this.orderSpecifiedList.filter(e => !e.isCommonly);
+
+      this.formData.dispatcherCodes = this.orderSpecifiedList.map(e => e.code);
+
       this.scheduling = false;
     },
 
     // 关闭
     hamdlerClose(tag) {
-      this.schedSelect = this.schedSelect.filter(e => e.disUserCode !== tag.disUserCode);
+      this.orderSpecifiedList = this.orderSpecifiedList.filter(e => e.code !== tag.code);
+
+      this.schedSelect = this.orderSpecifiedList.filter(e => {
+        return e.isCommonly;
+      });
+
+      this.oneTselected = this.orderSpecifiedList.filter(e => {
+        return !e.isCommonly;
+      });
     },
 
     // 预览
@@ -293,6 +380,20 @@ export default {
         this.lnglat = [longitude, latitude];
         this.mapDialog = true;
       }
+    },
+
+    // 打开调度者框
+    handlerOpen() {
+      this.scheduling = true;
+      this.cboneTselected = this.oneTselected.map(e => {
+        // disName: e.disName
+        // disUserName
+        // disUserPhone
+
+        return {
+          ...e
+        };
+      });
     },
 
     // 提交
