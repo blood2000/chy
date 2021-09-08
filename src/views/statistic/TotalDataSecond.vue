@@ -36,10 +36,10 @@ export default {
     };
   },
   methods: {
-    getData(timeType, timeText) {
+    getData(timeType, timeText, timePicker) {
       this.timeType = timeType;
       this.getCount();
-      this.$emit('getTime', timeType, timeText);
+      this.$emit('getTime', timeType, timeText, timePicker);
     },
     getCount() {
       getShipmentWaybillCount(this.branchCode, this.timeType).then(response => {

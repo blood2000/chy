@@ -1,9 +1,24 @@
 <template>
-  <div class="s-choose-time" :class="{isSecond: isSecond}">
-    {{ timeList[currentTime] }}
-    <ul class="time-list">
-      <li v-for="(value, key) in timeList" :key="key" :class="{active: currentTime == key}" @click="changeTime(key)">{{ value }}</li>
-    </ul>
+  <div>
+    <div class="s-choose-time" :class="{isSecond: isSecond}">
+      {{ timeList[currentTime] }}
+      <ul class="time-list">
+        <li v-for="(value, key) in timeList" :key="key" :class="{active: currentTime == key}" @click="changeTime(key)">{{ value }}</li>
+      </ul>
+    </div>
+    <!-- 自定义时间 -->
+    <el-date-picker
+      v-if="currentTime === 6"
+      v-model="timePicker"
+      class="statistic-date-picker"
+      type="daterange"
+      range-separator="至"
+      start-placeholder="开始日期"
+      end-placeholder="结束日期"
+      align="right"
+      :picker-options="pickerOptions"
+      @change="timePickerChange"
+    />
   </div>
 </template>
 
@@ -24,16 +39,30 @@ export default {
         3: '最近3个月',
         4: '最近1年',
         5: '全部数据' // 实际key为0, 为了排序设为5
+      },
+      timePicker: [],
+      pickerOptions: {
+        disabledDate(time) {
+          return time.getTime() > new Date().getTime();
+        }
       }
     };
   },
   created() {
+    if (this.isSecond) {
+      this.timeList[6] = '自定义';
+      this.$forceUpdate();
+    }
     this.setTimeType();
   },
   methods: {
     changeTime(key) {
       if (this.currentTime === Number(key)) return;
       this.currentTime = Number(key);
+      if (this.currentTime === 6) {
+        this.timePicker = [];
+        return;
+      }
       this.setTimeType();
     },
     changeKey() {
@@ -45,6 +74,14 @@ export default {
     setTimeType() {
       const timeKey = this.changeKey();
       this.$emit('getTimeType', timeKey, this.timeList[timeKey === 0 ? 5 : timeKey]);
+    },
+    timePickerChange() {
+      if (this.timePicker && this.timePicker.length && this.timePicker.length === 2) {
+        const timePicker = [];
+        timePicker[0] = this.parseTime(this.timePicker[0]);
+        timePicker[1] = this.parseTime(this.timePicker[1], '{y}-{m}-{d}') + ' 23:59:59';
+        this.$emit('getTimeType', 6, this.timeList[6], timePicker);
+      }
     }
   }
 };
@@ -157,6 +194,37 @@ export default {
     padding-left: 0.6rem;
     font-size: 0.7rem;
     color: rgba(196, 238, 255, 0.5);
+    >.time-list{
+      bottom: -9.1rem;
+    }
+  }
+}
+
+// 时间控件样式
+.statistic-date-picker{
+  position: absolute;
+  right: 1.1rem;
+  top: 2.9rem;
+  background: rgba(0, 45, 93, 0.2);
+  border: 1px solid rgba(55, 255, 248, 0.18);
+  width: 13.3rem;
+  height: 1.8rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 0;
+  ::v-deep.el-range-input{
+    background: transparent;
+    color: #d5eaff;
+    font-size: 0.65rem;
+  }
+  ::v-deep.el-range-separator{
+    color: rgba(196, 238, 255, 0.5);
+    font-size: 0.6rem;
+    line-height: 1.4rem;
+  }
+  ::v-deep.el-input__icon{
+    color: rgba(196, 238, 255, 0.5);
+    font-size: 0.7rem;
+    line-height: 1.4rem;
   }
 }
 </style>

@@ -132,6 +132,12 @@ export default {
     isSecond: {
       type: Boolean,
       default: false
+    },
+    timePicker: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
@@ -143,6 +149,12 @@ export default {
       shipmentData: [],
       wayBillData: []
     };
+  },
+  computed: {
+    // 判断当前是否是按日期筛选统计, 如果是, 则部分数据应该不加websocket
+    hasTimePicker() {
+      return !!(this.timePicker.startTime && this.timePicker.endTime && this.timePicker.startTime !== '' && this.timePicker.endTime !== '');
+    }
   },
   watch: {
     orderVo(val) {
@@ -159,12 +171,12 @@ export default {
       const { orderInfoNumber, publishedNumber } = val;
       // 货单
       if (orderInfoNumber) {
-        this.myOrderVo.orderCount += orderInfoNumber;
+        !this.hasTimePicker && (this.myOrderVo.orderCount += orderInfoNumber);
         this.myOrderVo.newOrderCount += orderInfoNumber;
       }
       // 已发布
       if (publishedNumber) {
-        this.myOrderVo.publishedNum += publishedNumber;
+        !this.hasTimePicker && (this.myOrderVo.publishedNum += publishedNumber);
       }
     },
     // 处理实时数据-运单
@@ -173,32 +185,34 @@ export default {
       const { receiveNum, loadNum, unloadNum, accountNum, settlementNum, moneyNum, newNum } = val;
       // 运单
       if (newNum) {
-        this.myWaillBillVo.wallBillCount += newNum;
+        !this.hasTimePicker && (this.myWaillBillVo.wallBillCount += newNum);
         this.myWaillBillVo.newWallBillCount += newNum;
       }
-      // 已接单
-      if (receiveNum) {
-        this.myWaillBillVo.orderReceiving += receiveNum;
-      }
-      // 已装货
-      if (loadNum) {
-        this.myWaillBillVo.orderLoading += loadNum;
-      }
-      // 已卸货
-      if (unloadNum) {
-        this.myWaillBillVo.orderUnload += unloadNum;
-      }
-      // 已复核
-      if (accountNum) {
-        this.myWaillBillVo.orderReviewer += accountNum;
-      }
-      // 已结算
-      if (settlementNum) {
-        this.myWaillBillVo.orderBalance += settlementNum;
-      }
-      // 已打款
-      if (moneyNum) {
-        this.myWaillBillVo.orderRemit += moneyNum;
+      if (!this.hasTimePicker) {
+        // 已接单
+        if (receiveNum) {
+          this.myWaillBillVo.orderReceiving += receiveNum;
+        }
+        // 已装货
+        if (loadNum) {
+          this.myWaillBillVo.orderLoading += loadNum;
+        }
+        // 已卸货
+        if (unloadNum) {
+          this.myWaillBillVo.orderUnload += unloadNum;
+        }
+        // 已复核
+        if (accountNum) {
+          this.myWaillBillVo.orderReviewer += accountNum;
+        }
+        // 已结算
+        if (settlementNum) {
+          this.myWaillBillVo.orderBalance += settlementNum;
+        }
+        // 已打款
+        if (moneyNum) {
+          this.myWaillBillVo.orderRemit += moneyNum;
+        }
       }
     },
     // chart
