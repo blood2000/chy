@@ -204,7 +204,7 @@
           <span>{{ floor(row.drawMoney) }}</span>
         </template>
         <template #driverCount="{row}">
-          <span>{{ floor(row.driverCount) }}</span>
+          <span>{{ row.driverCount }}</span>
         </template>
         <template #freightAmount="{row}">
           <span>{{ floor(row.freightAmount) }}</span>
@@ -408,7 +408,7 @@ export default {
             sums[index] = this.customerCount.waybillCountCount;
             break;
           case 'driverCount':
-            sums[index] = this.floor(this.customerCount.driverCountCount);
+            sums[index] = this.customerCount.driverCountCount;
             break;
           case 'creditBalance':
             sums[index] = this.floor(this.customerCount.creditBalanceCount);
