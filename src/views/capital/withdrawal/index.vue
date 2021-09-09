@@ -13,10 +13,10 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="申请人" prop="applyerName">
+        <el-form-item label="申请人信息" prop="applyerName">
           <el-input
             v-model.trim="queryParams.applyerName"
-            placeholder="请输入申请人"
+            placeholder="请输入申请人电话/姓名"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
@@ -49,7 +49,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="车牌号" prop="licenseNumber">
+        <!-- <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
             v-model.trim="queryParams.licenseNumber"
             placeholder="请输入车牌号"
@@ -57,7 +57,7 @@
             size="small"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="支付批次号" prop="bizNo">
           <el-input
             v-model.trim="queryParams.bizNo"

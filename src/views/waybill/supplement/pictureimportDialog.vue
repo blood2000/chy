@@ -165,8 +165,8 @@ export default {
           imagesExtra(res.data).then(response => {
             console.log(response);
             this.btnLoading = false;
-          });
-          this.$message(res.msg);
+            this.$message(res.msg);
+          }).catch(() => { this.btnLoading = false; });
           this.fileList = []; // 清除上传文件
         });
 	    }
