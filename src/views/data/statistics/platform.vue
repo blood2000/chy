@@ -260,7 +260,7 @@ import {
 import { pickerOptions } from '@/utils/dateRange';
 
 export default {
-  name: 'Customer',
+  name: 'Platform',
   components: {},
   data() {
     return {

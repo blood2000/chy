@@ -106,6 +106,27 @@
             placeholder="请选择"
           />
         </el-form-item>
+        <el-form-item label="打款时间">
+          <el-date-picker
+            v-model="queryParams.startCreateTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endCreateTime"
+            clearable
+            type="date"
+            size="small"
+            style="width: 130px"
+            value-format="yyyy-MM-dd"
+            placeholder="请选择"
+          />
+        </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
             v-model.trim="queryParams.licenseNumber"
@@ -116,27 +137,27 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="收款方姓名" prop="payeeName">
+        <el-form-item label="收款方信息" prop="payeeName">
           <el-input
             v-model.trim="queryParams.payeeName"
-            placeholder="请输入收款方姓名"
+            placeholder="请输入收款方姓名/电话"
             clearable
             size="small"
             class="input-width"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="运单关联企业" prop="campanyName">
+        <el-form-item label="付款方信息" prop="campanyName">
           <el-input
             v-model.trim="queryParams.campanyName"
-            placeholder="请输入运单关联企业"
+            placeholder="请输入付款方公司/电话/名称"
             clearable
             size="small"
             class="input-width"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="收款人电话" prop="payeeMobile">
+        <!-- <el-form-item label="收款人电话" prop="payeeMobile">
           <el-input
             v-model.trim="queryParams.payeeMobile"
             placeholder="请输入收款人电话"
@@ -145,7 +166,7 @@
             class="input-width"
             @keyup.enter.native="handleQuery"
           />
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="转账结果" prop="responseStatus">
           <el-select v-model="queryParams.responseStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
             <el-option
@@ -166,7 +187,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="打款方式" prop="payByType">
+        <!-- <el-form-item label="打款方式" prop="payByType">
           <el-select v-model="queryParams.payByType" placeholder="请选择" clearable filterable size="small" class="input-width">
             <el-option
               v-for="dict in payByTypeOptions"
@@ -175,7 +196,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="电子路单上报" prop="upWaybillStatus">
           <el-select v-model="queryParams.upWaybillStatus" placeholder="请选择" clearable filterable size="small" class="input-width">
             <el-option
@@ -487,6 +508,8 @@ export default {
         endLoadTime: undefined,
         startUnLoadTime: undefined,
         endUnLoadTime: undefined,
+        startCreateTime: undefined,
+        endCreateTime: undefined,
         licenseNumber: undefined,
         payeeName: undefined,
         campanyName: undefined,
@@ -586,6 +609,8 @@ export default {
       this.queryParams.endLoadTime = undefined;
       this.queryParams.startUnLoadTime = undefined;
       this.queryParams.endUnLoadTime = undefined;
+      this.queryParams.startCreateTime = undefined;
+      this.queryParams.endCreateTime = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },

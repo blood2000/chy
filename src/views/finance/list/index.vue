@@ -125,7 +125,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
         <template #invoiceStatus="{row}">
           <span>
             <span v-if="row.invoiceStatus == 1" class="g-statusDot g-color-warning">●</span>
@@ -249,7 +249,9 @@ export default {
         'invoiceTitle': undefined,
         'invoiceApplyTimeBegin': undefined,
         'invoiceApplyTimeEnd': undefined,
-        'invoiceStatus': '1'
+        'invoiceStatus': '1',
+        order: null,
+        prop: null
       },
       invoiceApplyTime: [],
       // 弹框 内容
@@ -304,6 +306,11 @@ export default {
           label: '服务费开票金额',
           value: 0,
           key: 'serverTotalAmount'
+        },
+        {
+          label: '审核不通过开票金额',
+          value: 0,
+          key: 'totalAmount1'
         }
       ];
 
@@ -314,6 +321,11 @@ export default {
           }
         });
       });
+
+      this.commentlist.filter(item => item.invoiceStatus === '3').forEach(e => {
+        arr.find(ee => ee.key === 'totalAmount1').value += e['totalAmount'] - 0;
+      });
+
 
       arr.map(e => {
         e.value = this.floor(e.value);
@@ -347,6 +359,12 @@ export default {
     !this.$route.query.list && this.getList();
   },
   'methods': {
+    // 排序事件
+    handleSortChange(val) {
+      this.queryParams.order = val.order;
+      this.queryParams.prop = val.prop;
+      this.getList();
+    },
     datechoose(date) {
       if (date) {
         this.queryParams.invoiceApplyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d}');
@@ -402,10 +420,16 @@ export default {
     },
     // 导出运费明细
     handleExportFreight() {
-      this.exportlistLoading = true;
-      this.download('/transportation/invoiceApply/export3', { applyCodes: this.ids, type: 1 }, `运费明细`).then(() => {
-        this.exportlistLoading = false;
-      });
+      const service = this.totalList.find(item => item.key === 'serverTotalAmount').value;
+      console.log(service);
+      if (service > 0) {
+        this.msgInfo('勾选的发票记录含有两票制发票，请重新勾选!');
+      } else {
+        this.exportlistLoading = true;
+        this.download('/transportation/invoiceApply/export3', { applyCodes: this.ids, type: 1 }, `运费明细`).then(() => {
+          this.exportlistLoading = false;
+        });
+      }
     },
     // 导出服务费明细
     handleExportService() {

@@ -120,24 +120,30 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="司机姓名" prop="driverName">
+        <el-form-item label="司机信息" prop="driverName">
           <el-input
             v-model.trim="queryParams.driverName"
-            placeholder="请输入司机姓名"
+            placeholder="请输入司机姓名/电话"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="司机电话" prop="driverPhone">
-          <el-input
-            v-model.trim="queryParams.driverPhone"
-            placeholder="请输入司机电话"
-            clearable
-            size="small"
+        <el-form-item
+          label="打款时间"
+          prop="markTime"
+        >
+          <el-date-picker
+            v-model="markTime"
+            type="daterange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
             style="width: 228px"
-            @keyup.enter.native="handleQuery"
+            @change="markDateChoose"
           />
         </el-form-item>
         <el-form-item label="运单状态" prop="status">
@@ -439,6 +445,7 @@ export default {
       receiveTime: [],
       loadTime: [],
       unloadTime: [],
+      markTime: [],
       tableColumnsConfig: [],
       api: listManagesApi,
       // 遮罩层
@@ -538,6 +545,8 @@ export default {
         'endLoadTime': null,
         'startUnLoadTime': null,
         'endUnLoadTime': null,
+        'startMarkTime': null,
+        'endMarkTime': null,
         'mainOrderNumber': null,
         'waybillNo': null,
         'licenseNumber': null,
@@ -607,6 +616,15 @@ export default {
         this.queryParams.endUnLoadTime = null;
       }
     },
+    markDateChoose(date) {
+      if (date) {
+        this.queryParams.startMarkTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endMarkTime = this.parseTime(date[1], '{y}-{m}-{d}');
+      } else {
+        this.queryParams.startMarkTime = null;
+        this.queryParams.endMarkTime = null;
+      }
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -637,6 +655,9 @@ export default {
       this.unloadTime = [];
       this.queryParams.startUnLoadTime = null;
       this.queryParams.endUnLoadTime = null;
+      this.markTime = [];
+      this.queryParams.startMarkTime = null;
+      this.queryParams.endMarkTime = null;
       this.handleQuery();
     },
     // 多选框选中数据
