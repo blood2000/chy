@@ -21,7 +21,7 @@
       <!--用户数据-->
       <el-col :lg="19" :md="18" :sm="17" :xs="24">
         <div class="app-container app-container--search">
-          <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+          <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px" @submit.native.prevent>
             <el-form-item label="标题" prop="mediaTitle">
               <el-input
                 v-model="queryParams.mediaTitle"
@@ -114,7 +114,7 @@ import VideoLook from './videoLook';
 import WordLook from './wordLook';
 import ImgLook from './imgLook';
 export default {
-  name: 'Param',
+  name: 'Media',
   components: {
     SettingDialog,
     InfoDialog,

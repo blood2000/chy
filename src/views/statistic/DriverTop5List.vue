@@ -57,6 +57,12 @@ export default {
     timeKey: {
       type: Number,
       default: 2
+    },
+    timePicker: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
@@ -69,7 +75,7 @@ export default {
   },
   methods: {
     getData() {
-      getCarrierRankingV2(this.timeKey).then(response => {
+      getCarrierRankingV2(Object.assign({}, { timeType: this.timeKey }, this.timePicker)).then(response => {
         this.driverRankData = response.data || [];
       });
     }

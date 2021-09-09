@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" @submit.native.prevent>
         <el-form-item label="组织名称" prop="orgName">
           <el-input
             v-model="queryParams.orgName"

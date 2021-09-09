@@ -25,6 +25,12 @@ export default {
     branchCode: {
       type: String,
       default: null
+    },
+    timePicker: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
@@ -45,7 +51,7 @@ export default {
   },
   methods: {
     getData() {
-      getCargoTypeListV2(this.branchCode, this.timeKey).then(response => {
+      getCargoTypeListV2(this.branchCode, Object.assign({}, { timeType: this.timeKey }, this.timePicker)).then(response => {
         this.pieData = response.data || [];
         this.pieData.forEach(el => {
           el.value = el.waybillCount;

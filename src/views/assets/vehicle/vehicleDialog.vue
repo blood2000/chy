@@ -391,7 +391,7 @@ export default {
         if (valid) {
           this.buttonLoading = true;
           if (this.driverCode) {
-            addDriverCar(Object.assign({}, this.form, { driverCode: this.driverCode })).then(response => {
+            addDriverCar(Object.assign({}, this.form, { driverCode: this.driverCode }, { fromSource: 2 })).then(response => {
               this.buttonLoading = false;
               this.msgSuccess(response.msg);
               this.close();
@@ -400,7 +400,7 @@ export default {
               this.buttonLoading = false;
             });
           } else if (this.teamCode) {
-            addTeamCar(Object.assign({}, this.form, { teamCode: this.teamCode })).then(response => {
+            addTeamCar(Object.assign({}, this.form, { teamCode: this.teamCode }, { fromSource: 2 })).then(response => {
               this.buttonLoading = false;
               this.msgSuccess('添加成功');
               this.close();

@@ -94,24 +94,20 @@ export function getUserAndCarTop() {
 }
 
 // 货运类型排行v2
-export function getCargoTypeListV2(branchCode, timeType) {
+export function getCargoTypeListV2(branchCode, query) {
   return request({
     url: `/transportation/bigScreenSeach/v2/cargoTypeList/${branchCode}`,
     method: 'get',
-    params: {
-      timeType
-    }
+    params: query
   });
 }
 
 // 承运排行v2
-export function getCarrierRankingV2(timeType) {
+export function getCarrierRankingV2(query) {
   return request({
     url: `/transportation/bigScreenSeach/v2/carrierRanking`,
     method: 'get',
-    params: {
-      timeType
-    }
+    params: query
   });
 }
 
@@ -124,23 +120,19 @@ export function getBusinessListV2(branchCode) {
 }
 
 // 运营情况v2
-export function getOperationStatusV2(branchCode, timeType) {
+export function getOperationStatusV2(branchCode, query) {
   return request({
     url: `/transportation/bigScreenSeach/v2/operationStatus/${branchCode}`,
     method: 'get',
-    params: {
-      timeType
-    }
+    params: query
   });
 }
 
 // 业绩数据v2
-export function getPerformanceDataV2(branchCode, timeType) {
+export function getPerformanceDataV2(branchCode, query) {
   return request({
     url: `/transportation/bigScreenSeach/v2/performanceData/${branchCode}`,
     method: 'get',
-    params: {
-      timeType
-    }
+    params: query
   });
 }
