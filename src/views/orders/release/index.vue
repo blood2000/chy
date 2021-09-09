@@ -386,6 +386,8 @@
       </el-row>
     </div>
 
+    <el-button v-show="false" @click="__show__">$$</el-button>
+
 
     <!-- 设置电子围栏弹窗 -->
     <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :id-code="!!idCode" :title="title" :lnglat="lnglat" @refresh="changeElect" />
@@ -934,6 +936,79 @@ export default {
 
 
     /** ================ s=数据处理  ================*/
+    __show__() {
+      this.$refs['elForm'].validate(async(valid) => {
+        if (valid) {
+          // 先判断基本信息
+          await this.handlerPromise('OrderBasic');
+
+          // 判断地址必填
+          const array = this.address_add.concat(this.address_xie);
+          for (let index = 0; index < array.length; index++) {
+            const refName = array[index].refName;
+            await this.$refs[refName][0]._submitForm();
+          }
+          // 判断其他
+          this.lastData = await this.submAllData();
+
+          // console.log('到这里说明过了------------------还有几个未判断');
+          if (this.lastData) {
+            // 测试
+            if (this.isOpenTheElectronicFence) {
+              let isPost = false;
+              const { orderAddressInfoUpdateBoList, orderSpecifiedUpdateBoList } = this.lastData;
+              const addressInfo = orderAddressInfoUpdateBoList.map(e => {
+                let obj = null;
+                if (e.addressType === '1' && e.switchRadius) {
+                  obj = {
+                    addressType: e.addressType,
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+                  };
+                  isPost = true;
+                } else if (e.addressType === '2' && e.switchRadius) {
+                  obj = {
+                    addressType: e.addressType,
+                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+                  };
+                  isPost = true;
+                }
+
+                return obj;
+              }).filter(e => e);
+
+              const dispatcherCodeList = orderSpecifiedUpdateBoList.map(e => e.teamInfoCode);
+
+              const que = {
+                addressInfo,
+                dispatcherCodeList,
+                orderCode: this.idCode // response.data
+              };
+
+
+              // 有可能不设置围栏了
+              if (isPost) {
+                try {
+                  console.log(que);
+                  await fencePlatCreate(que);
+                  console.log('发布成功~!');
+                } catch (error) {
+                  console.log(error);
+                }
+              }
+            }
+
+            return;
+          }
+        } else {
+          return false;
+        }
+      });
+    },
+
 
     // 步骤6提交发(1.发布接口2.成功1秒后跳转)
     onPubilsh() {
