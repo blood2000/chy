@@ -8,6 +8,8 @@
       :page-sizes="pageSizes"
       :total="total"
       v-bind="$attrs"
+      :small="small"
+      :pager-count="pagerCount"
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
     />
@@ -53,6 +55,14 @@ export default {
     hidden: {
       type: Boolean,
       default: false
+    },
+    small: {
+      type: Boolean,
+      default: false
+    },
+    pagerCount: {
+      type: Number,
+      default: 7
     }
   },
   computed: {

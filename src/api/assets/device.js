@@ -236,3 +236,22 @@ export function getAllMapping() {
     method: 'get'
   });
 }
+
+/** ============================电子围栏============================ */
+// 获取货源列表
+export function getSimpleOrderList(query) {
+  return request({
+    url: '/transportation/orderInfoSearch/simpleOrderList',
+    method: 'get',
+    params: query
+  });
+}
+
+// 电子围栏
+export function getFencePlatList(data) {
+  return request({
+    url: '/iot/fenceBusiness/getFencePlatList',
+    method: 'post',
+    data: data
+  });
+}
