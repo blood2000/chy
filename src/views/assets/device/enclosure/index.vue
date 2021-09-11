@@ -103,6 +103,7 @@
 
 <script>
 import { getConsoleDeviceList, getConsoleDeviceLocation, getConsoleDeviceStatistics, getAllMapping } from '@/api/assets/device.js';
+import { getFencePlatList } from '@/api/assets/device';
 import Tabs from './tabs.vue';
 import MapBox from './map.vue';
 
@@ -399,6 +400,8 @@ export default {
       });
       row.labelArr = labelArr;
       this.$refs.mapRef.onTrackPlayback(row);
+      // 获取电子围栏
+      this.getFencePlatList(row.factoryOnlyCode);
     },
     /** 退出轨迹回放 */
     onCloseTrack() {
@@ -423,6 +426,17 @@ export default {
     },
     handleInfo() {
       this.msgInfo('功能未开发');
+    },
+    /** 获取平台围栏 */
+    getFencePlatList(imei) {
+      getFencePlatList({ imeiList: [imei] }).then(response => {
+        const { data = [] } = response;
+        if (data.length === 0) {
+          this.msgInfo('暂无电子围栏信息');
+        }
+        // 保存电子围栏数据
+        this.$refs.mapRef.saveFenceData(data);
+      });
     }
   }
 };

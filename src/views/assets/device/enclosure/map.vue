@@ -32,7 +32,10 @@
         </h5>
         <div class="content">
           <div class="info">
-            <h5 class="title">{{ trackInfo.factoryOnlyCode }}</h5>
+            <h5 class="title">
+              {{ trackInfo.factoryOnlyCode }}
+              <el-button class="fr" style="margin-top: -4px;" type="primary" plain round size="mini" @click="changeFence">{{ `${isOpenFence ? '关闭' : '开启'}` }}电子围栏</el-button>
+            </h5>
             <p v-for="item in trackInfo.labelArr" :key="item.factoryOnlyCode" class="label">
               <span>{{ item.field_cnname + ':' }}</span>
               {{ item.context }}
@@ -166,7 +169,14 @@ export default {
       // 巡航线路
       navgtr: null,
       // 巡航速度
-      navgtrSpeed: 4000
+      navgtrSpeed: 4000,
+      // 电子围栏集合
+      circleList: {},
+      fenceMarkerList: {},
+      // 电子围栏数据
+      fenceList: [],
+      // 是否开启电子围栏
+      isOpenFence: true
     };
   },
   mounted() {
@@ -192,15 +202,9 @@ export default {
       const marker = new AMap.Marker({
         position: position,
         label: this.setLabelContent(id),
-        // icon: new AMap.Icon({
-        //   image: icon || '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
-        //   size: new AMap.Size(26, 34),
-        //   imageSize: new AMap.Size(26, 34)
-        // }),
         content: '<div class="own-device-marker-car"></div>',
         autoFitView: true,
         autoRotation: true,
-        // offset: new AMap.Pixel(-13, -34),
         offset: new AMap.Pixel(-19, -28),
         clickable: !!labelObj
       });
@@ -430,6 +434,10 @@ export default {
       this.trackInfo = {};
       // 重置巡航轨迹
       this.clearPathSimplifierIns();
+      // 清空电子围栏
+      this.circleList = {};
+      this.fenceMarkerList = {};
+      this.fenceList = [];
     },
     /** 重置巡航轨迹 */
     clearPathSimplifierIns() {
@@ -627,8 +635,98 @@ export default {
     stopPathSimplifiern() {
       this.isPlay = 0;
       this.navgtr.stop();
+    },
+    /** 保存电子围栏数据 */
+    saveFenceData(data) {
+      this.fenceList = data;
+      this.drawFencePlat();
+    },
+    /** 绘制电子围栏 */
+    drawFencePlat() {
+      if (!this.isOpenFence) {
+        return;
+      }
+      this.fenceList.forEach(el => {
+        if (el.lat && el.lng && el.lat !== '0' && el.lng !== '0') {
+          const id = el.orderCode + el.addressCode;
+          const addressType = el.addressType === '1' ? ' [装货]' : (el.addressType === '2' ? ' [卸货]' : '');
+          const text = el.mainOrderNumber + addressType;
+          this.drawCircle(id, [el.lng, el.lat], el.radius);
+          this.drawFenceMarker(id, [el.lng, el.lat], text);
+        }
+      });
+      this.$nextTick(() => {
+        this.map.setFitView();
+      });
+    },
+    /** 绘制电子围栏标记
+     * @param {string} id 唯一值必传
+     * @param {LngLat} position 经纬度必传
+     * @param {Object} text 文本内容
+    */
+    drawFenceMarker(id, position, text) {
+      const _this = this;
+      const marker = new AMap.Marker({
+        map: this.map,
+        position: position,
+        label: {
+          offset: new AMap.Pixel(0, -8),
+          content: '<div>' + text + '</div>',
+          direction: 'top'
+        },
+        icon: new AMap.Icon({
+          image: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
+          size: new AMap.Size(26, 34),
+          imageSize: new AMap.Size(26, 34)
+        }),
+        autoFitView: true,
+        autoRotation: true,
+        offset: new AMap.Pixel(-13, -34)
+      });
+      this.fenceMarkerList[id] = marker;
+      // 双击定位
+      marker.on('dblclick', function(e) {
+        _this.map.setFitView(_this.circleList[id]);
+      });
+    },
+    /**
+     * 绘制圆覆盖物
+     * @param {string} id 唯一值必传
+     * @param {LngLat} center 中心点
+     * @param {Number} radius 半径
+     */
+    drawCircle(id, center, radius) {
+      const circle = new AMap.Circle({
+        map: this.map,
+        center: center,
+        radius: radius,
+        strokeColor: '#ff4d4d', // 边框线颜色
+        strokeOpacity: 1, // 边框线透明度
+        strokeWeight: 3, // 边框线宽
+        fillColor: '#ff4d4d', // 填充色
+        fillOpacity: 0.3// 填充透明度
+      });
+      this.circleList[id] = circle;
+    },
+    /** 控制开启电子围栏开关 */
+    changeFence() {
+      this.isOpenFence = !this.isOpenFence;
+      this.clearFenceMarker();
+      this.drawFencePlat();
+    },
+    /** 清除电子围栏覆盖物 */
+    clearFenceMarker() {
+      for (const key in this.circleList) {
+        this.circleList[key].setMap(null);
+        this.circleList[key] = null;
+      }
+      for (const key in this.fenceMarkerList) {
+        this.fenceMarkerList[key].setMap(null);
+        this.fenceMarkerList[key] = null;
+      }
+      this.circleList = {};
+      this.fenceMarkerList = {};
     }
-
   }
 };
 </script>
@@ -833,7 +931,7 @@ export default {
           font-weight: bold;
           line-height: 22px;
           color: #262626;
-          padding: 0 15px 12px;
+          padding: 0 10px 12px 15px;
         }
         >.label{
           padding: 0 15px;
