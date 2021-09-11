@@ -79,8 +79,8 @@ export default {
           const id = el.orderCode + el.addressCode;
           const addressType = el.addressType === '1' ? ' [装货]' : (el.addressType === '2' ? ' [卸货]' : '');
           const text = el.mainOrderNumber + addressType;
-          this.drawMarker(id, [el.lng, el.lat], text);
           this.drawCircle(id, [el.lng, el.lat], el.radius);
+          this.drawMarker(id, [el.lng, el.lat], text);
         }
       });
       this.$nextTick(() => {

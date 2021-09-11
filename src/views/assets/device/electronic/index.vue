@@ -41,7 +41,6 @@
           <el-table-column label="货源单号" align="center" prop="mainOrderNumber" />
         </el-table>
         <pagination
-          v-show="total>0"
           class="own-device-electronic-pagination"
           :small="true"
           :background="false"
