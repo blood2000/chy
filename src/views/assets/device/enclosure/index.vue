@@ -431,9 +431,6 @@ export default {
     getFencePlatList(imei) {
       getFencePlatList({ imeiList: [imei] }).then(response => {
         const { data = [] } = response;
-        if (data.length === 0) {
-          this.msgInfo('暂无电子围栏信息');
-        }
         // 保存电子围栏数据
         this.$refs.mapRef.saveFenceData(data);
       });

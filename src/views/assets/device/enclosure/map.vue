@@ -646,6 +646,9 @@ export default {
       if (!this.isOpenFence) {
         return;
       }
+      if (this.fenceList.length === 0) {
+        this.msgInfo('暂无电子围栏信息');
+      }
       this.fenceList.forEach(el => {
         if (el.lat && el.lng && el.lat !== '0' && el.lng !== '0') {
           const id = el.orderCode + el.addressCode;
