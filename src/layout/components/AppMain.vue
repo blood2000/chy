@@ -25,7 +25,7 @@ export default {
     // 工作台不显示版本号
     showRecord() {
       const path = this.$route.path;
-      return path !== '/index' && path !== '/dregs/census' && path !== '/assets/device/enclosure';
+      return path !== '/index' && path !== '/dregs/census' && path !== '/assets/device/enclosure' && path !== '/assets/device/electronicFence';
     }
   }
 };

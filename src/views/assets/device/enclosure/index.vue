@@ -6,7 +6,7 @@
         <el-input
           v-model="queryParams.imei"
           class="device-search-input"
-          placeholder="请输入IMEI/设备号"
+          placeholder="请输入IMEI/设备号/车牌号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -36,6 +36,10 @@
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
+                <div class="info-groud-item">
+                  <p class="label">设备名称</p>
+                  {{ item.name }}
+                </div>
                 <div v-if="item.data && item.data.electQuantity" class="info-groud-item">
                   <p class="label">设备电量</p>
                   <div class="ly-flex ly-flex-align-center">
@@ -45,6 +49,12 @@
                     <img v-else class="mr5" src="@/assets/images/device/dl1.png">
                     电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
                   </div>
+                </div>
+              </div>
+              <div class="info-groud ly-flex ly-flex-align-center">
+                <div class="info-groud-item">
+                  <p class="label">厂家</p>
+                  {{ getVendorName(item.vendorCode) }}
                 </div>
                 <div v-if="item.licenseNumber" class="info-groud-item">
                   <p class="label">绑定车辆</p>
@@ -56,6 +66,16 @@
                 <p @click.stop="handleTrackPlayback(item)">轨迹回放</p>
                 <p @click.stop="handleInfo()">实时跟踪</p>
                 <p @click.stop="handleInfo()">更多</p>
+                <!-- <el-dropdown trigger="click" size="small">
+                  <span class="el-dropdown-link">
+                    更多
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>
+                      <span @click="handleInfo()">电子围栏</span>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown> -->
               </div>
             </li>
           </ul>
@@ -103,6 +123,7 @@
 
 <script>
 import { getConsoleDeviceList, getConsoleDeviceLocation, getConsoleDeviceStatistics, getAllMapping } from '@/api/assets/device.js';
+import { getFencePlatList } from '@/api/assets/device';
 import Tabs from './tabs.vue';
 import MapBox from './map.vue';
 
@@ -179,10 +200,13 @@ export default {
       isShowDeviceName: false,
       // 配置n秒刷新
       refreshTime: 20,
-      refreshTimeOptions: [10, 20, 30]
+      refreshTimeOptions: [10, 20, 30],
+      // 厂家字典
+      deviceVendorOptions: []
     };
   },
   mounted() {
+    this.getDictsList();
     this.getList(true);
     this.getMapping();
     this.getStatistics();
@@ -193,6 +217,17 @@ export default {
     this.clearReadTime();
   },
   methods: {
+    getDictsList() {
+      this.getDicts('device_vendors').then(response => {
+        this.deviceVendorOptions = response.data;
+      });
+    },
+    getVendorName(code) {
+      const name = this.deviceVendorOptions.filter(el => {
+        return el.dictValue === code;
+      })[0].dictLabel || '';
+      return name;
+    },
     getBigActiveTab(val) {
 
     },
@@ -399,6 +434,8 @@ export default {
       });
       row.labelArr = labelArr;
       this.$refs.mapRef.onTrackPlayback(row);
+      // 获取电子围栏
+      this.getFencePlatList(row.factoryOnlyCode);
     },
     /** 退出轨迹回放 */
     onCloseTrack() {
@@ -423,6 +460,14 @@ export default {
     },
     handleInfo() {
       this.msgInfo('功能未开发');
+    },
+    /** 获取平台围栏 */
+    getFencePlatList(imei) {
+      getFencePlatList({ imeiList: [imei] }).then(response => {
+        const { data = [] } = response;
+        // 保存电子围栏数据
+        this.$refs.mapRef.saveFenceData(data);
+      });
     }
   }
 };
@@ -525,7 +570,7 @@ export default {
       overflow-y: auto;
       font-size: 14px;
       >li{
-        height: 120px;
+        height: 162px;
         margin: 12px 20px 16px 20px;
         background: #fff;
         border-radius: 6px;
@@ -590,7 +635,7 @@ export default {
             font-weight: bold;
             line-height: 20px;
             color: #262626;
-            margin-bottom: 4px;
+            margin-bottom: 0;
             padding-left: 24px;
             >.label{
               font-weight: 400;
@@ -605,7 +650,8 @@ export default {
         .button-groud{
           position: relative;
           z-index: 1;
-          >p{
+          margin-top: 4px;
+          >p, >.el-dropdown{
             width: 25%;
             height: 30px;
             line-height: 29px;
@@ -643,7 +689,7 @@ export default {
             }
           }
           .button-groud{
-            >p{
+            >p, >.el-dropdown{
               border-top: 1px solid #006CDB;
               color: #fff;
               &:not(:last-child){
