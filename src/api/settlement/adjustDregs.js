@@ -152,3 +152,12 @@ export function receiptInfo(query) {
     params: query
   });
 }
+
+// 核验批次作废
+export function batchCancel(data) {
+  return request({
+    url: '/transportation/batch/batchCancel',
+    method: 'post',
+    data: data
+  });
+}

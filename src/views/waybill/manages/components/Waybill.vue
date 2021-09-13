@@ -519,7 +519,8 @@ export default {
         { 'dictLabel': '承运码', 'dictValue': '1' },
         { 'dictLabel': '调度者指派', 'dictValue': '2' },
         { 'dictLabel': '自主接单', 'dictValue': '3' },
-        { 'dictLabel': '后台指派', 'dictValue': '4' }
+        { 'dictLabel': '后台指派', 'dictValue': '4' },
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
       ],
       // 司机取消订单字典
       'cancelStatusOptions': [

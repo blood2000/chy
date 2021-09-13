@@ -29,6 +29,7 @@
             align="center"
             :label="level2Item.label"
             :prop="level2Item.prop"
+            :show-overflow-tooltip="level2Item.tooltip || false"
             :min-width="level2Item.width"
             :fixed="level2Item.fixed==='' ? null : level2Item.fixed"
           >
@@ -42,6 +43,7 @@
                   v-if="level3Item.isShow"
                   :key="index+'-'+indexChild1+'-'+indexChild2"
                   align="center"
+                  :show-overflow-tooltip="level3Item.tooltip || false"
                   :label="level3Item.label"
                   :prop="level3Item.prop"
                   :min-width="level3Item.width"
