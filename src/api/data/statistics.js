@@ -100,3 +100,31 @@ export function teamDetailReportCount(query) {
     params: query
   });
 }
+
+// 查询云资金记录列表
+export const findListApi = '/payment/cloudMoneyParsing/findList';
+export function findList(query) {
+  return request({
+    url: '/payment/cloudMoneyParsing/findList',
+    method: 'get',
+    params: query
+  });
+}
+
+// 云资金统计
+export function statistical(query) {
+  return request({
+    url: '/payment/cloudMoneyParsing/statistical',
+    method: 'get',
+    params: query
+  });
+}
+
+// 匹配
+export function matching(data) {
+  return request({
+    url: '/payment/cloudMoneyParsing/matchingByIds',
+    method: 'post',
+    data: data
+  });
+}

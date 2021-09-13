@@ -89,6 +89,19 @@
           >批量再复核</el-button>
         </el-col>
 
+        <el-col :span="1.5">
+          <el-button
+            v-if="status===-1"
+            v-hasPermi="['transportation:batch:batchCancel']"
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :loading="loading"
+            :disabled="selections.length<=0"
+            @click="handleNullify()"
+          >批量批次作废</el-button>
+        </el-col>
+
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" /><!-- api 使用computed -->
         </el-col>
@@ -212,6 +225,13 @@
               type="text"
               @click="handleBohui(row)"
             >驳回</el-button>
+            <el-button
+              v-if="row.status===-1"
+              v-hasPermi="['transportation:batch:batchCancel']"
+              size="mini"
+              type="text"
+              @click="handleNullify(row)"
+            >批次作废</el-button>
           </div>
         </template>
       </RefactorTable>
@@ -329,7 +349,7 @@
 
 import { getUserInfo } from '@/utils/auth';
 
-import { rejectionList, adjustDregsList, adjustListApi, passBatchClaim } from '@/api/settlement/adjustDregs';
+import { rejectionList, adjustDregsList, adjustListApi, passBatchClaim, batchCancel } from '@/api/settlement/adjustDregs';
 import { confirmVerification, passPayment } from '@/api/finance/askfor';
 import { getFile } from '@/api/system/image.js';
 
@@ -715,7 +735,7 @@ export default {
         prop: 'edit',
         isShow: true,
         label: '操作',
-        width: 170,
+        width: 210,
         fixed: 'left'
       }, this.tableColumns);
     },
@@ -924,7 +944,26 @@ export default {
       this.$refs.AdjustDialog.setForm(this.selections);
     },
     /* e= */
-
+    // 批次作废
+    handleNullify(row) {
+      let batchNoIds = [];
+      if (row) {
+        batchNoIds = [row.batchNo];
+      } else {
+        // console.log(this.selections);
+        batchNoIds = this.selections.map(e => e.batchNo);
+      }
+      this.$confirm('是否确认作废批次?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        batchCancel(batchNoIds).then(res => {
+          this.msgSuccess('批次作废成功！');
+          this.getList();
+        });
+      });
+    },
     // 提示去编辑票务信息
     handleError(msg) {
       this.$confirm(msg + '需要立即去编辑票务信息吗?', '提示', {
