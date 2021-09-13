@@ -66,6 +66,16 @@
                 <p @click.stop="handleTrackPlayback(item)">轨迹回放</p>
                 <p @click.stop="handleInfo()">实时跟踪</p>
                 <p @click.stop="handleInfo()">更多</p>
+                <!-- <el-dropdown trigger="click" size="small">
+                  <span class="el-dropdown-link">
+                    更多
+                  </span>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item>
+                      <span @click="handleInfo()">电子围栏</span>
+                    </el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown> -->
               </div>
             </li>
           </ul>
@@ -641,7 +651,7 @@ export default {
           position: relative;
           z-index: 1;
           margin-top: 4px;
-          >p{
+          >p, >.el-dropdown{
             width: 25%;
             height: 30px;
             line-height: 29px;
@@ -679,7 +689,7 @@ export default {
             }
           }
           .button-groud{
-            >p{
+            >p, >.el-dropdown{
               border-top: 1px solid #006CDB;
               color: #fff;
               &:not(:last-child){

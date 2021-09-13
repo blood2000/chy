@@ -1,20 +1,6 @@
 <template>
   <!-- 地图组件 -->
   <div class="c-map-box">
-    <!-- <el-button size="mini" class="mb10" @click="drawMarker(new Date().getTime(), [116.478935, 39.997761], '我是marker的title1')">绘制点标记</el-button>
-    <el-button size="mini" class="mb10" @click="drawMarker(new Date().getTime(), [116.479935, 39.997761], '我是marker的title2')">绘制点标记2</el-button>
-    <el-button size="mini" class="mb10" @click="drawMarker(new Date().getTime(), [116.480935, 39.997761], '我是marker的title3')">绘制点标记3</el-button>
-    <el-button size="mini" @click="removeMarker">清除指定点标记</el-button>
-    <el-button size="mini" @click="removeAllMarker">移除所有点标记</el-button> ////
-    <el-button size="mini" @click="drawLine(jmTracklist)">绘制普通轨迹</el-button>
-    <el-button size="mini" @click="removeLine()">移除普通轨迹</el-button> ////
-    <el-button size="mini" @click="drawReplayLine()">绘制回放轨迹</el-button>
-    <el-button size="mini" @click="startAnimation()">轨迹回放-开始</el-button>
-    <el-button size="mini" @click="pauseAnimation()">轨迹回放-暂停</el-button>
-    <el-button size="mini" @click="resumeAnimation()">轨迹回放-继续</el-button>
-    <el-button size="mini" @click="stopAnimation()">轨迹回放-停止</el-button>
-    <el-button size="mini" @click="removeReplayLine()">清除回放轨迹</el-button> ////
-    <el-button size="mini" @click="clearMap()">清除所有覆盖物</el-button> -->
     <!-- 定位 -->
     <div v-if="currentMap === 'point' && addressMsg && addressMsg!==''" class="address ly-flex ly-flex-pack-center ly-flex-align-center">
       <img class="mr5" src="@/assets/images/device/position.png">
@@ -32,15 +18,17 @@
         </h5>
         <div class="content">
           <div class="info">
-            <h5 class="title">
-              {{ trackInfo.factoryOnlyCode }}
-              <el-button class="fr" style="margin-top: -4px;" type="primary" plain round size="mini" @click="changeFence">{{ `${isOpenFence ? '关闭' : '开启'}` }}电子围栏</el-button>
-            </h5>
+            <h5 class="title">{{ trackInfo.factoryOnlyCode }}</h5>
             <p v-for="item in trackInfo.labelArr" :key="item.factoryOnlyCode" class="label">
               <span>{{ item.field_cnname + ':' }}</span>
               {{ item.context }}
             </p>
             <template v-if="jmTracklist && jmTracklist.length > 0">
+              <!-- 当前时间、速度、方向 -->
+              <div v-if="jmTracklist && jmTracklist.length > 0" class="device-current-view ly-flex-pack-justify">
+                <span>{{ currentTrackTime || '-' }}</span>
+                <span v-if="currentTrackSpeed !== -1">{{ currentTrackSpeed || '-' }} km/h</span>
+              </div>
               <!-- 进度条 -->
               <div class="device-slide-box">
                 <el-slider v-model="slideValue" :show-tooltip="false" @input="handleSlideChange" />
@@ -103,6 +91,10 @@
               <el-button type="primary" size="mini" :loading="buttonLoading" @click="getJimi">查 询</el-button>
             </div>
           </div>
+          <div class="button-box">
+            <el-button class="mr10" type="text" style="mini" @click="changeFence">{{ `${isOpenFence ? '关闭' : '开启'}` }}电子围栏</el-button>
+            <el-button class="mr10" type="text" style="mini" @click="changeTrackTable">轨迹明细</el-button>
+          </div>
         </div>
       </div>
       <!-- <ul class="track-legend ly-flex ly-flex-pack-justify ly-flex-align-center">
@@ -112,10 +104,14 @@
       </ul> -->
     </template>
     <div id="device-map-container" />
+
+    <!-- 轨迹明细 -->
+    <TrackDetail :open.sync="isOpenTrackTable" :track-list="jmTrackInfolist" />
   </div>
 </template>
 
 <script>
+import TrackDetail from './trackDetail.vue';
 import { jimiTrackLocation } from '@/api/waybill/tracklist';
 const geocoder = new AMap.Geocoder({
   radius: 1000,
@@ -123,6 +119,9 @@ const geocoder = new AMap.Geocoder({
 });
 
 export default {
+  components: {
+    TrackDetail
+  },
   props: {
     currentMap: {
       type: String,
@@ -154,6 +153,7 @@ export default {
         mapType: 'GOOGLE' // GOOGOLE或BAIDU
       },
       buttonLoading: false,
+      jmTrackInfolist: [],
       jmTracklist: [],
       trackInfo: {},
       // 轨迹当前状态
@@ -169,14 +169,20 @@ export default {
       // 巡航线路
       navgtr: null,
       // 巡航速度
-      navgtrSpeed: 4000,
+      navgtrSpeed: 3000,
+      // 当前轨迹点时间
+      currentTrackTime: null,
+      // 当前轨迹点速度
+      currentTrackSpeed: null,
       // 电子围栏集合
       circleList: {},
       fenceMarkerList: {},
       // 电子围栏数据
       fenceList: [],
       // 是否开启电子围栏
-      isOpenFence: true
+      isOpenFence: true,
+      // 是否开启轨迹列表
+      isOpenTrackTable: false
     };
   },
   mounted() {
@@ -369,7 +375,7 @@ export default {
       this.trackStart = 1;
       this.trackStatus = 0;
       this.map.setZoomAndCenter(13, this.jmTracklist[0]);
-      this.moveMarker.moveAlong(this.jmTracklist, 4000); // speed 千米/小时
+      this.moveMarker.moveAlong(this.jmTracklist, 3000); // speed 千米/小时
     },
     pauseAnimation() {
       this.trackStatus = 1;
@@ -431,6 +437,9 @@ export default {
       this.endMarker = null;
       this.infoWindow = null;
       this.jmTracklist = [];
+      this.jmTrackInfolist = [];
+      this.currentTrackTime = null;
+      this.currentTrackSpeed = null;
       this.trackInfo = {};
       // 重置巡航轨迹
       this.clearPathSimplifierIns();
@@ -460,6 +469,7 @@ export default {
           this.trackStart = 0;
           this.trackStatus = 1;
           this.jmTracklist = [];
+          this.jmTrackInfolist = response.data;
           for (var i = 0; i < response.data.length; i++) {
             var dataItem = response.data[i];
             var item = [];
@@ -470,6 +480,8 @@ export default {
           // this.removeReplayLine(); // 绘制前先清除
           this.clearPathSimplifierIns(); // 绘制前先清除
           if (this.jmTracklist.length > 0) {
+            // 设置当前轨迹点时间、速度
+            this.setCurrentTrackTimeAndSpeed(0);
             // this.drawReplayLine();
             this.initPathSimplifier();
           } else {
@@ -583,6 +595,8 @@ export default {
           const tail = position.tail; // 至下一个节点的比例位置
           const totalIdx = idx + tail;
           const len = path.length;
+          // 设置当前轨迹点时间、速度
+          that.setCurrentTrackTimeAndSpeed(idx);
           // 计算下一个距离速度
           if (idx < len - 1) {
             that.navgtr.setSpeed(that.navgtrSpeed * that.rateTime);
@@ -635,6 +649,11 @@ export default {
     stopPathSimplifiern() {
       this.isPlay = 0;
       this.navgtr.stop();
+    },
+    /** 设置当前轨迹点时间、速度 */
+    setCurrentTrackTimeAndSpeed(index) {
+      this.currentTrackTime = this.jmTrackInfolist[index].gpsTime;
+      this.currentTrackSpeed = this.jmTrackInfolist[index].gpsSpeed;
     },
     /** 保存电子围栏数据 */
     saveFenceData(data) {
@@ -729,6 +748,10 @@ export default {
       }
       this.circleList = {};
       this.fenceMarkerList = {};
+    },
+    /** 查看轨迹列表 */
+    changeTrackTable() {
+      this.isOpenTrackTable = true;
     }
   }
 };
@@ -955,9 +978,16 @@ export default {
         }
       }
       >.form{
-        padding: 16px 16px 4px;
+        padding: 16px 16px 0;
         .form-item{
           margin-bottom: 15px;
+        }
+      }
+      >.button-box{
+        padding: 0 15px 10px;
+        // border-top: 1px solid rgba(159, 162, 181, 0.2);
+        >.el-button{
+          color: rgba(64, 158, 255, 1);
         }
       }
     }
@@ -1011,6 +1041,13 @@ export default {
           font-size: 14px;
         }
       }
+    }
+    // 当前时间、速度、方向
+    .device-current-view{
+      padding: 15px 18px 0px 15px;
+      margin-bottom: -10px;
+      color: #ADB5BD;
+      font-size: 13px;
     }
   }
 
