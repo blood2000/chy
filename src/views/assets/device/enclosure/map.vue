@@ -710,6 +710,18 @@ export default {
       marker.on('dblclick', function(e) {
         _this.map.setFitView(_this.circleList[id]);
       });
+      // 单击
+      marker.on('click', function(e) {
+        if (JSON.stringify(marker.getLabel()) === '{}') {
+          marker.setLabel({
+            offset: new AMap.Pixel(0, -8),
+            content: '<div>' + text + '</div>',
+            direction: 'top'
+          });
+        } else {
+          marker.setLabel({});
+        }
+      });
     },
     /**
      * 绘制圆覆盖物
