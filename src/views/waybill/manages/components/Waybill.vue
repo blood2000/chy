@@ -42,54 +42,6 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item
-          label="接单日期"
-          prop="receiveTime"
-        >
-          <el-date-picker
-            v-model="receiveTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 228px"
-            @change="datechoose"
-          />
-        </el-form-item>
-        <el-form-item
-          label="装货日期"
-          prop="loadTime"
-        >
-          <el-date-picker
-            v-model="loadTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 228px"
-            @change="loadDateChoose"
-          />
-        </el-form-item>
-        <el-form-item
-          label="卸货日期"
-          prop="unloadTime"
-        >
-          <el-date-picker
-            v-model="unloadTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 228px"
-            @change="unloadDateChoose"
-          />
-        </el-form-item>
         <el-form-item label="货源单号" prop="mainOrderNumber">
           <el-input
             v-model.trim="queryParams.mainOrderNumber"
@@ -128,22 +80,6 @@
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item
-          label="打款时间"
-          prop="markTime"
-        >
-          <el-date-picker
-            v-model="markTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 228px"
-            @change="markDateChoose"
           />
         </el-form-item>
         <el-form-item label="运单状态" prop="status">
@@ -188,6 +124,70 @@
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+        <el-form-item
+          label="接单日期"
+          prop="receiveTime"
+        >
+          <el-date-picker
+            v-model="receiveTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="datechoose"
+          />
+        </el-form-item>
+        <el-form-item
+          label="装货日期"
+          prop="loadTime"
+        >
+          <el-date-picker
+            v-model="loadTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="loadDateChoose"
+          />
+        </el-form-item>
+        <el-form-item
+          label="卸货日期"
+          prop="unloadTime"
+        >
+          <el-date-picker
+            v-model="unloadTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="unloadDateChoose"
+          />
+        </el-form-item>
+        <el-form-item
+          label="打款时间"
+          prop="markTime"
+        >
+          <el-date-picker
+            v-model="markTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 228px"
+            @change="markDateChoose"
           />
         </el-form-item>
         <el-form-item>
@@ -429,7 +429,7 @@ import MarkAbnormalDialog from '../markAbnormalDialog';
 import SeperateListDialog from '../seperateListDialog';
 import RemarkDialog from '../remarkDialog';
 import { getUserInfo } from '@/utils/auth';
-import { pickerOptions } from '@/utils/dateRange';
+import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Manages',
@@ -441,7 +441,7 @@ export default {
   },
   data() {
     return {
-      pickerOptions,
+      pickerTimeOptions,
       receiveTime: [],
       loadTime: [],
       unloadTime: [],
@@ -584,16 +584,16 @@ export default {
       width: 180,
       fixed: 'left'
     });
-    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
-    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
+    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
     this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
     this.getList();
   },
   methods: {
     datechoose(date) {
       if (date) {
-        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startReceiveTime = null;
         this.queryParams.endReceiveTime = null;
@@ -601,8 +601,8 @@ export default {
     },
     loadDateChoose(date) {
       if (date) {
-        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startLoadTime = null;
         this.queryParams.endLoadTime = null;
@@ -610,8 +610,8 @@ export default {
     },
     unloadDateChoose(date) {
       if (date) {
-        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startUnLoadTime = null;
         this.queryParams.endUnLoadTime = null;
@@ -619,8 +619,8 @@ export default {
     },
     markDateChoose(date) {
       if (date) {
-        this.queryParams.startMarkTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endMarkTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startMarkTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endMarkTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startMarkTime = null;
         this.queryParams.endMarkTime = null;

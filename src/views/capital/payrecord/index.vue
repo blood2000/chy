@@ -43,90 +43,6 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="接单时间">
-          <el-date-picker
-            v-model="queryParams.tranBeginTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.tranEndTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-        </el-form-item>
-        <el-form-item label="装货时间">
-          <el-date-picker
-            v-model="queryParams.startLoadTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.endLoadTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-        </el-form-item>
-        <el-form-item label="卸货时间">
-          <el-date-picker
-            v-model="queryParams.startUnLoadTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.endUnLoadTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-        </el-form-item>
-        <el-form-item label="打款时间">
-          <el-date-picker
-            v-model="queryParams.startCreateTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.endCreateTime"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-        </el-form-item>
         <el-form-item label="车牌号" prop="licenseNumber">
           <el-input
             v-model.trim="queryParams.licenseNumber"
@@ -226,6 +142,82 @@
               :value="dict.dictValue"
             />
           </el-select>
+        </el-form-item>
+        <el-form-item label="接单时间">
+          <el-date-picker
+            v-model="queryParams.tranBeginTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.tranEndTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="装货时间">
+          <el-date-picker
+            v-model="queryParams.startLoadTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endLoadTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="卸货时间">
+          <el-date-picker
+            v-model="queryParams.startUnLoadTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endUnLoadTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
+        </el-form-item>
+        <el-form-item label="打款时间">
+          <el-date-picker
+            v-model="queryParams.startCreateTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
+          至
+          <el-date-picker
+            v-model="queryParams.endCreateTime"
+            clearable
+            type="datetime"
+            size="small"
+            style="width: 195px"
+            placeholder="请选择"
+          />
         </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>

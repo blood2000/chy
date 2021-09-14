@@ -70,11 +70,10 @@
           <el-date-picker
             v-model="dateRange"
             size="small"
-            style="width: 240px"
-            value-format="yyyy-MM-dd"
-            type="daterange"
+            style="width: 360px"
+            type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
@@ -200,12 +199,12 @@
 
 <script>
 import { list, delOperlog, cleanOperlog } from '@/api/system/operlog';
-import { pickerOptions } from '@/utils/dateRange';
+import { pickerTimeOptions } from '@/utils/dateRange';
 export default {
   name: 'Operlog',
   data() {
     return {
-      pickerOptions,
+      pickerTimeOptions,
       // 遮罩层
       loading: true,
       // 选中数组
