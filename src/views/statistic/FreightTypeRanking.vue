@@ -124,13 +124,6 @@ export default {
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: '#37FFF8'
-                    }, {
-                      offset: 1,
-                      color: '#9DD9FF'
-                    }]),
-                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                      offset: 0,
                       color: '#7061FE'
                     }, {
                       offset: 1,
@@ -138,17 +131,24 @@ export default {
                     }]),
                     new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                       offset: 0,
-                      color: '#FB86FF'
-                    }, {
-                      offset: 1,
-                      color: '#CF5FFF'
-                    }]),
-                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                      offset: 0,
                       color: '#FF7ACB'
                     }, {
                       offset: 1,
                       color: '#FF457D'
+                    }]),
+                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#37FFF8'
+                    }, {
+                      offset: 1,
+                      color: '#9DD9FF'
+                    }]),
+                    new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                      offset: 0,
+                      color: '#FB86FF'
+                    }, {
+                      offset: 1,
+                      color: '#CF5FFF'
                     }])
                   ];
                   return colorList[params.dataIndex];
