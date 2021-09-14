@@ -271,7 +271,7 @@ export default {
           'tooltip': true
         },
         {
-          'label': '计费方式',
+          'label': '结算方式',
           'prop': 'billingMethodName',
           'isShow': true,
           'width': '90',
