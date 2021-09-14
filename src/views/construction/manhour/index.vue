@@ -271,9 +271,10 @@ export default {
           'tooltip': true
         },
         {
-          'label': '备注',
-          'prop': 'remark',
+          'label': '计费方式',
+          'prop': 'billingMethodName',
           'isShow': true,
+          'width': '90',
           'tooltip': true
         },
         {
@@ -281,6 +282,12 @@ export default {
           'prop': 'confirmAuditTime',
           'isShow': true,
           'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '备注',
+          'prop': 'remark',
+          'isShow': true,
           'tooltip': true
         }
         // {
