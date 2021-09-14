@@ -4,7 +4,7 @@
       <Tabs :tablist="bigTablist" @getActiveName="getBigActiveTab" />
       <div class="device-search-box">
         <el-input
-          v-model="queryParams.imei"
+          v-model.trim="queryParams.imei"
           class="device-search-input"
           placeholder="请输入IMEI/设备号/车牌号"
           clearable
