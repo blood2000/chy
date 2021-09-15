@@ -28,7 +28,7 @@
             >
               <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
                 <p class="label ly-flex ly-flex-align-center">
-                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.status !== 1" @click.native.stop="handleCheckActive(item.status, item.typeCode+item.factoryOnlyCode)" />
+                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.expireFlag !== 1" @click.native.stop="handleCheckActive(item.expireFlag, item.typeCode+item.factoryOnlyCode)" />
                   <span class="ml10">{{ item.factoryOnlyCode }}</span>
                 </p>
                 <p class="status" :class="item.expireFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
@@ -406,11 +406,11 @@ export default {
     },
     async handleCardClick(row) {
       if (this.activeCard === (row.typeCode + row.factoryOnlyCode)) return;
-      if (row.status !== 1) {
+      if (row.expireFlag !== 1) {
         this.msgInfo('没有找到该设备的位置信息');
         return;
       }
-      await this.handleCardActive(row.status, row.typeCode, row.factoryOnlyCode);
+      await this.handleCardActive(row.expireFlag, row.typeCode, row.factoryOnlyCode);
       this.changeChecked(this.checkList);
     },
     handleCardActive(status, typeCode, factoryOnlyCode) {
@@ -423,7 +423,7 @@ export default {
     },
     /** 轨迹回放 */
     async handleTrackPlayback(row) {
-      await this.handleCardActive(row.status, row.typeCode, row.factoryOnlyCode);
+      await this.handleCardActive(row.expireFlag, row.typeCode, row.factoryOnlyCode);
       this.currentMap = 'track';
       const labelArr = [];
       this.allMapping[row.typeCode].forEach(val => {
