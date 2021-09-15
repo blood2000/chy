@@ -47,6 +47,7 @@
 
       <div class="slider-box">
         <el-button
+          v-if="!idCode"
           type="primary"
           size="mini"
           style="margin-top: 12px"
@@ -68,6 +69,7 @@ export default {
     //   type: Array,
     //   default: () => []
     // },
+    idCode: Boolean,
     title: {
       type: String,
       default: ''

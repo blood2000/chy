@@ -4,9 +4,9 @@
       <Tabs :tablist="bigTablist" @getActiveName="getBigActiveTab" />
       <div class="device-search-box">
         <el-input
-          v-model="queryParams.imei"
+          v-model.trim="queryParams.imei"
           class="device-search-input"
-          placeholder="请输入IMEI/设备号"
+          placeholder="请输入IMEI/设备号/车牌号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -36,6 +36,10 @@
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
+                <div class="info-groud-item">
+                  <p class="label">设备名称</p>
+                  {{ item.name }}
+                </div>
                 <div v-if="item.data && item.data.electQuantity" class="info-groud-item">
                   <p class="label">设备电量</p>
                   <div class="ly-flex ly-flex-align-center">
@@ -45,6 +49,12 @@
                     <img v-else class="mr5" src="@/assets/images/device/dl1.png">
                     电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
                   </div>
+                </div>
+              </div>
+              <div class="info-groud ly-flex ly-flex-align-center">
+                <div class="info-groud-item">
+                  <p class="label">厂家</p>
+                  {{ getVendorName(item.vendorCode) }}
                 </div>
                 <div v-if="item.licenseNumber" class="info-groud-item">
                   <p class="label">绑定车辆</p>
@@ -179,10 +189,13 @@ export default {
       isShowDeviceName: false,
       // 配置n秒刷新
       refreshTime: 20,
-      refreshTimeOptions: [10, 20, 30]
+      refreshTimeOptions: [10, 20, 30],
+      // 厂家字典
+      deviceVendorOptions: []
     };
   },
   mounted() {
+    this.getDictsList();
     this.getList(true);
     this.getMapping();
     this.getStatistics();
@@ -193,6 +206,17 @@ export default {
     this.clearReadTime();
   },
   methods: {
+    getDictsList() {
+      this.getDicts('device_vendors').then(response => {
+        this.deviceVendorOptions = response.data;
+      });
+    },
+    getVendorName(code) {
+      const name = this.deviceVendorOptions.filter(el => {
+        return el.dictValue === code;
+      })[0].dictLabel || '';
+      return name;
+    },
     getBigActiveTab(val) {
 
     },
@@ -525,7 +549,7 @@ export default {
       overflow-y: auto;
       font-size: 14px;
       >li{
-        height: 120px;
+        height: 162px;
         margin: 12px 20px 16px 20px;
         background: #fff;
         border-radius: 6px;
@@ -590,7 +614,7 @@ export default {
             font-weight: bold;
             line-height: 20px;
             color: #262626;
-            margin-bottom: 4px;
+            margin-bottom: 0;
             padding-left: 24px;
             >.label{
               font-weight: 400;
@@ -605,6 +629,7 @@ export default {
         .button-groud{
           position: relative;
           z-index: 1;
+          margin-top: 4px;
           >p{
             width: 25%;
             height: 30px;

@@ -84,12 +84,24 @@ export default {
     isSecond: {
       type: Boolean,
       default: false
+    },
+    timePicker: {
+      type: Object,
+      default: () => {
+        return {};
+      }
     }
   },
   data() {
     return {
       myPerformance: {}
     };
+  },
+  computed: {
+    // 判断当前是否是按日期筛选统计, 如果是, 则部分数据应该不加websocket
+    hasTimePicker() {
+      return !!(this.timePicker.startTime && this.timePicker.endTime && this.timePicker.startTime !== '' && this.timePicker.endTime !== '');
+    }
   },
   watch: {
     performance(val) {
@@ -102,7 +114,7 @@ export default {
       // console.log('invoiceNotice: ', val);
       const { invoiceAmount } = val;
       if (invoiceAmount) {
-        this.myPerformance.votesAmount += invoiceAmount;
+        !this.hasTimePicker && (this.myPerformance.votesAmount += invoiceAmount);
         this.myPerformance.newVotesAmount += invoiceAmount;
       }
     },
@@ -111,13 +123,13 @@ export default {
       const { shipperRealPay, deliveryCashFee } = val;
       // 交易
       if (shipperRealPay) {
+        !this.hasTimePicker && (this.myPerformance.transactionAmount += shipperRealPay);
         this.myPerformance.newTransactionAmount += shipperRealPay;
-        this.myPerformance.transactionAmount += shipperRealPay;
       }
       // 运费
       if (deliveryCashFee) {
+        !this.hasTimePicker && (this.myPerformance.waybillAmount += deliveryCashFee);
         this.myPerformance.newWaybillAmount += deliveryCashFee;
-        this.myPerformance.waybillAmount += deliveryCashFee;
       }
     }
   }

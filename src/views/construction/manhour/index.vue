@@ -60,6 +60,9 @@
         <template #hours="{row}">
           <span>{{ row.hours || '-' }}</span>
         </template>
+        <template #confirmAuditTime="{row}">
+          <span>{{ parseTime(row.confirmAuditTime) || '-' }}</span>
+        </template>
       </RefactorTable>
 
       <pagination
@@ -108,6 +111,7 @@ export default {
         projectCode: undefined,
         phone: undefined,
         receiveTime: [], // 时间
+        confirmAuditTime: [],
         schedule: undefined,
         jobContent: undefined
 
@@ -235,13 +239,7 @@ export default {
           'width': '135',
           'tooltip': true
         },
-        // {
-        //   'label': '作业开始时间',
-        //   'prop': 'startTime',
-        //   'isShow': false,
-        //   'width': '90',
-        //   'tooltip': true
-        // },
+
         // {
         //   'label': '作业结束时间',
         //   'prop': 'completeTime',
@@ -273,6 +271,20 @@ export default {
           'tooltip': true
         },
         {
+          'label': '结算方式',
+          'prop': 'billingMethodName',
+          'isShow': true,
+          'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '审核时间',
+          'prop': 'confirmAuditTime',
+          'isShow': true,
+          'width': '90',
+          'tooltip': true
+        },
+        {
           'label': '备注',
           'prop': 'remark',
           'isShow': true,
@@ -299,7 +311,10 @@ export default {
         ...this.queryParams,
         bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
         endCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
+        bigConfirmAuditTime: this.queryParams.confirmAuditTime ? this.queryParams.confirmAuditTime[0] : undefined,
+        endConfirmAuditTime: this.queryParams.confirmAuditTime ? this.queryParams.confirmAuditTime[1] : undefined,
         receiveTime: undefined,
+        confirmAuditTime: undefined,
         projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName,
         scheduleName: shift.dictLabel
 

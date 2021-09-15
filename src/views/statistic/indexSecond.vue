@@ -23,7 +23,7 @@
             <div class="ly-left-bottom-left-top ly-border">
               <Title class="title_4 mb05rem" icon="4" :show-time="true" :time-text="timeText">货运类型排行<span>Freight Type list</span></Title>
               <div class="ly-left-bottom-left-box mb05rem ly-border">
-                <FreightTypeRanking ref="FreightTypeRankingRef" :time-key="timeKey" :branch-code="branchCode" />
+                <FreightTypeRanking ref="FreightTypeRankingRef" :time-key="timeKey" :branch-code="branchCode" :time-picker="timePicker" />
               </div>
             </div>
             <div class="ly-left-bottom-left-bottom ly-border">
@@ -36,7 +36,7 @@
           <div class="ly-left-bottom-right ly-border">
             <Title class="title_4 mb1rem" icon="4" :show-time="true" :time-text="timeText">承运排行<span>Shipping list</span></Title>
             <!-- 正常高度: height: calc(100% - 2.1rem) -->
-            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :show-top="false" style="height: calc(100% - 1.8rem);" />
+            <DriverTop5List ref="DriverTop5ListRef" :time-key="timeKey" :time-picker="timePicker" :show-top="false" style="height: calc(100% - 1.8rem);" />
           </div>
         </div>
       </div>
@@ -66,6 +66,7 @@
               :order-vo="businessData.orderVo"
               :waill-bill-vo="businessData.waillBillVo"
               :week-vo-list="businessData.weekVoList"
+              :time-picker="timePicker"
               :is-second="true"
               style="height: 100%"
             />
@@ -79,7 +80,7 @@
         <Title class="title_4 mb05rem" icon="7" :show-time="true" :time-text="timeText">业绩数据<span>Performance data</span></Title>
         <div class="ly-right-right-box ly-border">
           <div class="ly-border" style="height: 15%">
-            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :is-second="true" />
+            <PerformanceInfo ref="PerformanceInfoRef" :performance="performanceData.performance" :time-picker="timePicker" :is-second="true" />
           </div>
           <div class="ly-border mb1rem" style="height: 23%">
             <TargetChart ref="TargetChartRef" :branch-code="branchCode" style="height: 100%" />
@@ -163,7 +164,11 @@ export default {
       },
       // 当前时间
       timeKey: 2,
-      timeText: '最近30天'
+      timeText: '最近30天',
+      timePicker: {
+        startTime: undefined,
+        endTime: undefined
+      }
     };
   },
   computed: {
@@ -337,11 +342,19 @@ export default {
       this.partitionListVo = data;
     },
     // 获取时间
-    getTime(timeKey, timeText) {
+    getTime(timeKey, timeText, timePicker) {
       // 初始化的时候不加载
-      if (timeKey === this.timeKey) return;
+      if (timeKey === this.timeKey && timeKey !== 6) return;
       this.timeKey = timeKey;
       this.timeText = timeText;
+      // 判断是否有时间控件
+      if (timePicker) {
+        this.timePicker.startTime = timePicker[0];
+        this.timePicker.endTime = timePicker[1];
+      } else {
+        this.timePicker.startTime = undefined;
+        this.timePicker.endTime = undefined;
+      }
       // 切换时间后的处理
       // console.log('==============>timeKey: ', this.timeKey);
       this.$nextTick(() => {
@@ -353,7 +366,7 @@ export default {
     },
     // 获取业绩数据
     getPerformanceData() {
-      getPerformanceDataV2(this.branchCode, this.timeKey).then(response => {
+      getPerformanceDataV2(this.branchCode, Object.assign({}, { timeType: this.timeKey }, this.timePicker)).then(response => {
         const data = response.data || {};
         this.performanceData = {
           performance: data.performance || {}, // 数据
@@ -367,7 +380,7 @@ export default {
     },
     // 获取运营情况的数据
     getBusinessData() {
-      getOperationStatusV2(this.branchCode, this.timeKey).then(response => {
+      getOperationStatusV2(this.branchCode, Object.assign({}, { timeType: this.timeKey }, this.timePicker)).then(response => {
         const data = response.data || {};
         this.businessData = {
           orderVo: data.orderVo || {}, // 货单

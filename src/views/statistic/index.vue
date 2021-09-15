@@ -340,7 +340,7 @@ export default {
     },
     // 获取运营情况的数据
     getBusinessData() {
-      getOperationStatusV2(this.branchCode, 0).then(response => {
+      getOperationStatusV2(this.branchCode, { timeType: 0 }).then(response => {
         const data = response.data || {};
         this.businessData = {
           orderVo: data.orderVo || {}, // 货单

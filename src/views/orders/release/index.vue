@@ -20,8 +20,8 @@
       size="medium"
       label-width="110px"
       :label-position="'left'"
-      :disabled="myisdisabled"
     >
+      <!-- :disabled="myisdisabled" -->
 
       <div v-if="!authStatus" class="mb20">
         <el-alert
@@ -220,9 +220,9 @@
                   size="mini"
                   class="ml10"
                   plain
-                  :disabled="!!idCode"
                   @click="handleElect(address)"
                 >围栏编辑</el-button>
+                <!-- :disabled="!!idCode" -->
                 <el-button
                   v-if="!myisdisabled && (address_add.length >= 2 || formData.tin8)"
                   type="danger"
@@ -302,9 +302,9 @@
                   size="mini"
                   class="ml10"
                   plain
-                  :disabled="!!idCode"
                   @click="handleElect(address)"
                 >围栏编辑</el-button>
+                <!-- :disabled="!!idCode" -->
                 <el-button
                   v-if="!myisdisabled && (address_xie.length >= 2 || formData.tin9)"
                   type="danger"
@@ -388,7 +388,7 @@
 
 
     <!-- 设置电子围栏弹窗 -->
-    <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :title="title" :lnglat="lnglat" @refresh="changeElect" />
+    <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :id-code="!!idCode" :title="title" :lnglat="lnglat" @refresh="changeElect" />
     <!-- 打开弹框 -->
     <el-dialog
       :close-on-click-modal="false"
