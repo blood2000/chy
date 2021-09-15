@@ -42,11 +42,29 @@
       </el-form-item>
 
       <el-form-item
-        label="接收时间"
+        label="创建时间"
         prop="receiveTime"
       >
         <el-date-picker
           v-model="queryParams.receiveTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 228px"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="$emit('handleQuery')"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="审核时间"
+        prop="receiveTime"
+      >
+        <el-date-picker
+          v-model="queryParams.confirmAuditTime"
           type="daterange"
           unlink-panels
           :picker-options="pickerOptions"
