@@ -94,7 +94,7 @@ export default {
         strokeWeight: 10, // 线宽
         strokeStyle: 'solid', // 线样式
         lineJoin: 'round', // 折线拐点的绘制样式
-        zIndex: 999
+        zIndex: 101
       },
       markParams: {
         icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_car1624672021156.png',
@@ -158,7 +158,9 @@ export default {
         endTime: undefined,
         trackData: undefined,
         type: 'zjxl'
-      }
+      },
+      passedPolyline: [], // 移动轨迹
+      moveMarker: undefined // 移动车辆
     };
   },
   computed: {
@@ -287,6 +289,7 @@ export default {
           });
           that.lyPolyline.setMap(that.$refs.map.$$getInstance());
           that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
+          that.getMoveLine(path);
           // 显示车辆定位
           if (!that.wayBillInfo.signTime) {
             that.lyMark = new AMap.Marker({
@@ -360,6 +363,7 @@ export default {
           });
           that.jmPolyline.setMap(that.$refs.map.$$getInstance());
           that.$refs.map.$$getInstance().setFitView(that.jmPolyline); // 执行定位
+          that.getMoveLine(path);
           // 显示车辆定位
           if (!that.wayBillInfo.signTime) {
             that.jmMark = new AMap.Marker({
@@ -468,6 +472,7 @@ export default {
       });
       that.zjPolyline.setMap(that.$refs.map.$$getInstance());
       that.$refs.map.$$getInstance().setFitView(that.zjPolyline); // 执行定位
+      that.getMoveLine(path);
       // 显示车辆定位
       if (!that.wayBillInfo.signTime) {
         that.zjMark = new AMap.Marker({
@@ -507,6 +512,7 @@ export default {
           });
           that.planline.setMap(that.$refs.map.$$getInstance());
           that.$refs.map.$$getInstance().setFitView(that.planline); // 执行定位
+          that.getMoveLine(path);
         } else {
           this.msgInfo('规划轨迹失败！');
         }
@@ -549,6 +555,56 @@ export default {
         }
         // 未出错时，result即是对应的路线规划方案
       });
+    },
+    // 回放轨迹
+    getMoveLine(line) {
+      const _this = this;
+      // this.moveMarker.stopMove(); // 停止移动
+      this.passedPolyline = [];
+      this.moveMarker = undefined;
+      this.passedPolyline = new AMap.Polyline({
+        map: _this.$refs.map.$$getInstance(),
+        strokeColor: '#AF5',
+        showDir: true,
+        strokeWeight: 10,
+        zIndex: 102
+      });
+      // 绘制车
+      this.moveMarker = new AMap.Marker({
+        map: _this.$refs.map.$$getInstance(),
+        position: line[0],
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/16316738189596cbbf5.png',
+        offset: new AMap.Pixel(-29, -10),
+        autoRotation: true,
+        angle: -90,
+        zIndex: 103
+      });
+      // 绑定车辆移动事件
+      this.moveMarker.on('moving', function(e) {
+        _this.passedPolyline.setPath(e.passedPath);
+        // 车超出视野范围后重新定位
+        if (!_this.isPointInRing(e.target.getPosition())) {
+          _this.$refs.map.$$getInstance().setCenter(e.target.getPosition());
+        }
+        // 播放结束
+        if (e.target.getPosition() === line[line.length - 1]) {
+          _this.$refs.map.$$getInstance().remove(_this.moveMarker);
+          _this.$refs.map.$$getInstance().remove(_this.passedPolyline);
+        }
+      });
+      _this.$refs.map.$$getInstance().setZoomAndCenter(13, line[0]);
+      this.moveMarker.moveAlong(line, 3000); // 开始移动 speed 千米/小时
+    },
+    /** 判断当前位置是否在可视区域 */
+    isPointInRing(position) {
+      const bounds = this.$refs.map.$$getInstance().getBounds();
+      const NorthEast = bounds.getNorthEast();
+      const SouthWest = bounds.getSouthWest();
+      const SouthEast = [NorthEast.lng, SouthWest.lat];
+      const NorthWest = [SouthWest.lng, NorthEast.lat];
+      const path = [[NorthEast.lng, NorthEast.lat], SouthEast, [SouthWest.lng, SouthWest.lat], NorthWest]; // 将地图可视区域四个角位置按照顺序放入path，用于判断point是否在可视区域
+      const isPointInRing = AMap.GeometryUtil.isPointInRing(position, path); // 判断point是否在可视区域
+      return isPointInRing;
     },
     // 起点终点
     getMark() {
@@ -788,9 +844,9 @@ export default {
   }
 }
 
-::v-deep .amap-icon img{
-  height: 35px;
-}
+// ::v-deep .amap-icon img{
+//   height: 35px;
+// }
 
 .legend-frame{
   position: relative;
