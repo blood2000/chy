@@ -383,6 +383,25 @@
                   @click="handleIsImport(row)"
                 >{{ row.uploadLoadVoucher+''!=='1'?'开启上传凭证':'关闭上传凭证' }}</el-button>
               </el-dropdown-item>
+
+              <el-dropdown-item>
+                <el-button
+                  v-show="false"
+                  v-hasPermi="['iot:iot:fencePlatCreate']"
+                  size="mini"
+                  type="text"
+                  @click="myfencePlatCreate(row)"
+                >Create</el-button>
+              </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-show="false"
+                  v-hasPermi="['iot:iot:fencePlatDelete']"
+                  size="mini"
+                  type="text"
+                  @click="myfencePlatDelete(row)"
+                >Delete</el-button>
+              </el-dropdown-item>
             </TableDropdown>
           </template>
         </template>
@@ -412,6 +431,7 @@
 
 <script>
 import { listManagesApi, getOrderInfoList, delOrder, loadAndUnloadingGoods, isImport } from '@/api/order/manage';
+import { fencePlatDelete, fencePlatCreate } from '@/api/order/iot';
 import { listShipment } from '@/api/assets/shipment';
 import { getUserInfo } from '@/utils/auth';
 import OpenDialog from './component/OpenDialog';
@@ -1078,8 +1098,74 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess(row.status + '' === '0' ? '禁用成功' : '启用成功');
+
+        // 请求
+        // row.status+''==='0'?'禁用':'启用'
+        if (row.status + '' === '0') {
+          this.myfencePlatDelete(row);
+        } else {
+          // 创建
+          this.myfencePlatCreate(row);
+        }
       });
     },
+
+
+    /* 创建电子围栏 */
+    myfencePlatCreate(row) {
+      const { redisAddressList, redisOrderSpecifiedVoList } = row;
+      const addressInfo = redisAddressList.map(e => {
+        let obj = null;
+
+        if (e.enclosureRadius) {
+          const res = (/\((.*?)\)/g).exec(e.localtionOld);
+          if (res) {
+            e.centerLocation = res[1].split(',');
+          }
+
+          if (e.addressType === '1') {
+            obj = {
+              addressType: e.addressType,
+              lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude || '0',
+              lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude || '0',
+              radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius || 0
+            };
+          } else if (e.addressType === '2') {
+            obj = {
+              addressType: e.addressType,
+              lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
+              lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+              radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+            };
+          }
+        }
+
+        return obj;
+      }).filter(e => e);
+
+      if (addressInfo && addressInfo.length > 0) {
+        const dispatcherCodeList = redisOrderSpecifiedVoList?.map(e => e.teamInfoCode);
+
+        const que = {
+          addressInfo,
+          dispatcherCodeList,
+          orderCode: row.orderCode
+        };
+
+        fencePlatCreate(que).then(res => {
+          console.log(res.data);
+        });
+      }
+    },
+
+    /* 删除电子围栏 */
+
+    myfencePlatDelete(row) {
+      fencePlatDelete(row.orderCode).then(res => {
+        console.log(res.data);
+      });
+    },
+
     /** 调价操作 */
     async handleReadjustPrices(row) {
       // 特殊处理, 传入配载方式

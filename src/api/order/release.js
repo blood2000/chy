@@ -90,11 +90,11 @@ export function getByOrderCode(query) {
 }
 
 
-// 创建电子围栏
-export function fencePlatCreate(data) {
-  return request({
-    url: '/iot/fenceBusiness/fencePlatCreate',
-    method: 'post',
-    data: data
-  });
-}
+// // 创建电子围栏
+// export function fencePlatCreate(data) {
+//   return request({
+//     url: '/iot/fenceBusiness/fencePlatCreate',
+//     method: 'post',
+//     data: data
+//   });
+// }

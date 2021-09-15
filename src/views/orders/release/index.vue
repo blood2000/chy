@@ -415,7 +415,9 @@ import WaybillInfo from './WaybillInfo';
 
 import { getUserInfo } from '@/utils/auth';
 import { listShipment, getShipmentByCode } from '@/api/assets/shipment.js';
-import { orderPubilsh, getOrderByCode, update, estimateCost, fencePlatCreate } from '@/api/order/release';
+import { orderPubilsh, getOrderByCode, update, estimateCost } from '@/api/order/release';
+import { fencePlatCreate } from '@/api/order/iot';
+
 import { getProvinceList } from '@/api/system/area';
 
 import ztRelease from '../components/ztRelease';
