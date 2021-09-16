@@ -36,10 +36,6 @@
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
-                <div class="info-groud-item">
-                  <p class="label">设备名称</p>
-                  {{ item.name }}
-                </div>
                 <div v-if="item.data && item.data.electQuantity" class="info-groud-item">
                   <p class="label">设备电量</p>
                   <div class="ly-flex ly-flex-align-center">
@@ -50,17 +46,21 @@
                     电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
                   </div>
                 </div>
-              </div>
-              <div class="info-groud ly-flex ly-flex-align-center">
-                <div class="info-groud-item">
-                  <p class="label">厂家</p>
-                  {{ getVendorName(item.vendorCode) }}
-                </div>
                 <div v-if="item.licenseNumber" class="info-groud-item">
                   <p class="label">绑定车辆</p>
                   {{ item.licenseNumber }}
                 </div>
               </div>
+              <!-- <div class="info-groud ly-flex ly-flex-align-center"> -->
+              <!-- <div class="info-groud-item">
+                  <p class="label">设备名称</p>
+                  {{ item.name }}
+                </div> -->
+              <!-- <div class="info-groud-item">
+                  <p class="label">厂家</p>
+                  {{ getVendorName(item.vendorCode) }}
+                </div> -->
+              <!-- </div> -->
               <div class="ly-flex button-groud">
                 <p @click.stop="handleInfo()">关注</p>
                 <p @click.stop="handleTrackPlayback(item)">轨迹回放</p>
@@ -570,7 +570,8 @@ export default {
       overflow-y: auto;
       font-size: 14px;
       >li{
-        height: 162px;
+        // height: 162px;
+        height: 124px;
         margin: 12px 20px 16px 20px;
         background: #fff;
         border-radius: 6px;

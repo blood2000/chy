@@ -244,14 +244,14 @@
             :disabled="multiple || loading"
             @click="handleClearing"
           >运单清分</el-button>
-          <el-button
+          <!-- <el-button
             v-hasPermi="['transportation:waybillSettlementClarify:batchStatus']"
             type="primary"
             icon="el-icon-refresh"
             size="mini"
             :disabled="multiple || loading"
             @click="handleUpdate"
-          >更新清分状态</el-button>
+          >更新清分状态</el-button> -->
         </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -290,13 +290,13 @@
             type="text"
             @click="handleTableBtn(row, 1)"
           >运单清分</el-button>
-          <el-button
+          <!-- <el-button
             v-if="row.clarifyStatus !== '2' && row.clarifyStatus !== '99'"
             v-hasPermi="['transportation:waybillSettlementClarify:batchStatus']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
-          >更新清分状态</el-button>
+          >更新清分状态</el-button> -->
           <el-button
             v-hasPermi="['transportation:waybillSettlementClarify:detail']"
             size="mini"
