@@ -271,6 +271,8 @@ export default {
 
       if (!this.selected) return;
 
+      this.formData.detail = this.selected.address;
+
       this.midAddressName = this.selected.dictLabel;
 
       var lnglat = [this.selected.lng, this.selected.lat];
@@ -283,15 +285,19 @@ export default {
 
     // 逆解码函数
     getaddress: function(lnglat) {
-      const self = this;
+      const _this = this;
 
       geocoder.getAddress(lnglat, function(status, result) {
         if (status === 'complete' && result.info === 'OK') {
           // 通过经纬度找出详细的地址
 
           const { adcode, province, city, district, township, street, streetNumber } = result.regeocode.addressComponent;
-          self.formData.detail = province + city + district + township + street + streetNumber;
-          self.getAreaCode(adcode, province, city, district);
+
+          if (!_this.formData.detail) {
+            _this.formData.detail = district + township + street + streetNumber;
+          }
+
+          _this.getAreaCode(adcode, province, city, district);
         }
       });
     },
