@@ -266,6 +266,19 @@ export default {
         if (!that.wayBillInfo.signTime && that.zjMark) {
           that.$refs.map.$$getInstance().remove(that.zjMark);
         }
+        // 重置时间控件
+        that.$set(that.zjxlTime, 'qryBtm', undefined);
+        that.$set(that.zjxlTime, 'qryEtm', undefined);
+        // 重置查询轨迹时间
+        this.zjxlQueryParams.qryBtm = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        this.zjxlAddParams.startTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        if (this.wayBillInfo.signTime) {
+          this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+          this.zjxlAddParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        } else {
+          this.zjxlQueryParams.qryEtm = this.time;
+          this.zjxlAddParams.endTime = this.time;
+        }
       }
     }
   },
@@ -771,6 +784,8 @@ export default {
       }
       this.$set(this.zjxlAddParams, 'startTime', this.zjxlTime.qryBtm);
       this.$set(this.zjxlAddParams, 'endTime', this.zjxlTime.qryEtm);
+      this.$set(this.zjxlQueryParams, 'qryBtm', this.zjxlTime.qryBtm);
+      this.$set(this.zjxlQueryParams, 'qryEtm', this.zjxlTime.qryEtm);
       this.zjxlList();
     }
   }
