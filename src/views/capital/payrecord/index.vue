@@ -219,6 +219,16 @@
             placeholder="请选择"
           />
         </el-form-item>
+        <el-form-item label="通道类型" prop="paymentChannels">
+          <el-select v-model="queryParams.paymentChannels" placeholder="请选择通道类型" style="width: 195px" clearable filterable size="small">
+            <el-option
+              v-for="dict in paymentChannelsOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -324,6 +334,10 @@
         <!-- 是否异常 -->
         <template #isAbnormal="{row}">
           <span>{{ selectDictLabel(isAbnormalOptions, row.isAbnormal) }}</span>
+        </template>
+        <!-- 通道类型 -->
+        <template #paymentChannels="{row}">
+          <span>{{ selectDictLabel(paymentChannelsOptions, row.paymentChannels) }}</span>
         </template>
         <!-- 打款时间 -->
         <template #payTime="{row}">
@@ -486,6 +500,11 @@ export default {
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
       ],
+      // 通道类型字典
+      paymentChannelsOptions: [
+        { dictLabel: '网商', dictValue: 'WSBK' },
+        { dictLabel: '民生', dictValue: 'CMBC' }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -511,7 +530,8 @@ export default {
         payByType: undefined,
         upWaybillStatus: undefined,
         isSplit: undefined,
-        abnormal: undefined
+        abnormal: undefined,
+        paymentChannels: undefined
       },
       exportLoading: false
     };

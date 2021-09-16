@@ -4,7 +4,7 @@
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
         <el-form-item label="平台角色" prop="roleName">
-          <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" clearable filterable size="small">
+          <el-select v-model="queryParams.roleName" placeholder="请选择平台角色" style="width: 220px" clearable filterable size="small">
             <el-option
               v-for="dict in roleOptions"
               :key="dict.dictValue"
@@ -19,6 +19,7 @@
             placeholder="请输入用户姓名"
             clearable
             size="small"
+            style="width: 220px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
@@ -28,11 +29,12 @@
             placeholder="请输入手机号码"
             clearable
             size="small"
+            style="width: 220px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
         <el-form-item label="收支类型" prop="paidFeeType">
-          <el-select v-model="queryParams.paidFeeType" placeholder="请选择收支类型" clearable filterable size="small">
+          <el-select v-model="queryParams.paidFeeType" placeholder="请选择收支类型" style="width: 220px" clearable filterable size="small">
             <el-option
               v-for="dict in incomeTypeOptions"
               :key="dict.dictValue"
@@ -42,7 +44,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="支付类型" prop="paidLineType">
-          <el-select v-model="queryParams.paidLineType" placeholder="请选择支付类型" clearable filterable size="small">
+          <el-select v-model="queryParams.paidLineType" placeholder="请选择支付类型" style="width: 220px" clearable filterable size="small">
             <el-option
               v-for="dict in paidLineTypeOptions"
               :key="dict.dictValue"
@@ -52,9 +54,19 @@
           </el-select>
         </el-form-item>
         <el-form-item label="消费项目" prop="paidItem">
-          <el-select v-model="queryParams.paidItem" placeholder="请选择消费项目" clearable filterable size="small">
+          <el-select v-model="queryParams.paidItem" placeholder="请选择消费项目" style="width: 220px" clearable filterable size="small">
             <el-option
               v-for="dict in consumeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="通道类型" prop="paymentChannels">
+          <el-select v-model="queryParams.paymentChannels" placeholder="请选择通道类型" style="width: 220px" clearable filterable size="small">
+            <el-option
+              v-for="dict in paymentChannelsOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -155,6 +167,10 @@
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime) }}</span>
         </template>
+        <!-- 通道类型 -->
+        <template #paymentChannels="{row}">
+          <span>{{ selectDictLabel(paymentChannelsOptions, row.paymentChannels) }}</span>
+        </template>
       </RefactorTable>
 
       <pagination
@@ -231,6 +247,11 @@ export default {
         { dictLabel: '已完成', dictValue: 3 },
         { dictLabel: '无此交易', dictValue: 4 }
       ],
+      // 通道类型字典
+      paymentChannelsOptions: [
+        { dictLabel: '网商', dictValue: 'WSBK' },
+        { dictLabel: '民生', dictValue: 'CMBC' }
+      ],
       // 查询参数
       queryParams: {
         pageNum: 1,
@@ -242,7 +263,8 @@ export default {
         paidLineType: undefined,
         paidItem: undefined,
         updateTimeBegin: undefined,
-        updateTimeEnd: undefined
+        updateTimeEnd: undefined,
+        paymentChannels: undefined
       },
       exportLoading: false
     };
