@@ -273,9 +273,11 @@ export default {
         if (this.wayBillInfo.signTime) {
           this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlAddParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
+          this.queryEndtime = new Date(this.wayBillInfo.signTime);
         } else {
           this.zjxlQueryParams.qryEtm = this.time;
           this.zjxlAddParams.endTime = this.time;
+          this.queryEndtime = new Date();
         }
       }
     }
@@ -730,6 +732,7 @@ export default {
       this.$set(this.zjxlAddParams, 'endTime', this.zjxlTime.qryEtm);
       this.$set(this.zjxlQueryParams, 'qryBtm', this.zjxlTime.qryBtm);
       this.$set(this.zjxlQueryParams, 'qryEtm', this.zjxlTime.qryEtm);
+      this.queryEndtime = this.zjxlTime.qryEtm;
       this.zjxlList();
     }
   }
