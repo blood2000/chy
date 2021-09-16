@@ -37,6 +37,34 @@
             <div :class="trackChange === 2 ? 'track-onicon' : 'track-icon'" />北斗轨迹
           </div>
         </div> -->
+        <div v-if="zjChecked">
+          <div>
+            开始时间：
+            <el-date-picker
+              v-model="zjxlTime.qryBtm"
+              clearable
+              size="small"
+              type="datetime"
+              style="width: 228px;margin-bottom: 15px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择开始时间"
+            />
+          </div>
+          <div>
+            结束时间：
+            <el-date-picker
+              v-model="zjxlTime.qryEtm"
+              clearable
+              size="small"
+              type="datetime"
+              style="width: 228px;margin-bottom: 15px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择结束时间"
+              class="mr10"
+            />
+            <el-button type="primary" size="mini" @click="getZjxlByTime">查 询</el-button>
+          </div>
+        </div>
         <ul class="time-line-content">
           <li v-for="(item, index) in timeLineList" :key="index" :class="index===0?'light':''">
             <p class="g-strong g-text">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}') }}</p>
@@ -151,6 +179,10 @@ export default {
         qryBtm: undefined,
         qryEtm: undefined,
         vclN: '陕YH0008'
+      },
+      zjxlTime: {
+        qryBtm: undefined,
+        qryEtm: undefined
       },
       zjxlAddParams: { // 中交兴路轨迹存储参数
         licenseNumber: undefined,
@@ -670,6 +702,20 @@ export default {
         //   this.timeLineList.unshift(el);
         // });
       });
+    },
+    // 根据时间控件查北斗
+    getZjxlByTime() {
+      if (!this.zjxlTime.qryBtm || this.zjxlTime.qryBtm === '') {
+        this.msgWarning('请选择开始时间');
+        return;
+      }
+      if (!this.zjxlTime.qryEtm || this.zjxlTime.qryEtm === '') {
+        this.msgWarning('请选择结束时间');
+        return;
+      }
+      this.$set(this.zjxlAddParams, 'startTime', this.zjxlTime.qryBtm);
+      this.$set(this.zjxlAddParams, 'endTime', this.zjxlTime.qryEtm);
+      this.zjxlList();
     }
   }
 };
@@ -759,7 +805,6 @@ export default {
 
 /* 轨迹-时间线 */
 .time-line-content{
-  margin: 20px 0 0;
   padding: 20px;
   border: 1px solid rgba(0, 0, 0, 0);
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.09);
