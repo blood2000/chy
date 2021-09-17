@@ -36,11 +36,11 @@
       </div>
       <!-- 货源列表 -->
       <div class="device-info-list-box">
-        <el-table v-loading="loading" height="calc(100% - 94px)" class="own-device-electronic-table" :data="simpleOrderList" @selection-change="handleSelectionChange">
+        <el-table v-loading="loading" height="calc(100% - 40px)" class="own-device-electronic-table" :data="simpleOrderList" @selection-change="handleSelectionChange">
           <el-table-column type="selection" width="55" align="center" />
           <el-table-column label="货源单号" align="center" prop="mainOrderNumber" />
         </el-table>
-        <pagination
+        <!-- <pagination
           class="own-device-electronic-pagination"
           :small="true"
           :background="false"
@@ -51,7 +51,7 @@
           :page.sync="queryParams.pageNum"
           :limit.sync="queryParams.pageSize"
           @pagination="getList"
-        />
+        /> -->
       </div>
     </div>
     <div class="device-info-right">
@@ -63,7 +63,7 @@
 
 <script>
 import { listShipment } from '@/api/assets/shipment';
-import { getSimpleOrderList, getFencePlatList } from '@/api/assets/device';
+import { getFencePlatList } from '@/api/assets/device';
 import MapBox from './map.vue';
 export default {
   name: 'ElectronicFence',
@@ -89,9 +89,7 @@ export default {
         mainOrderNumber: undefined
       },
       simpleOrderList: [],
-      total: 0,
-      // 勾选货源code集合
-      orderCodeList: []
+      total: 0
     };
   },
   created() {
@@ -130,10 +128,9 @@ export default {
     },
     /** 多选框选中数据 */
     handleSelectionChange(selection) {
-      this.orderCodeList = selection.map(item => item.code);
-      if (this.orderCodeList.length > 0) {
+      if (selection.length > 0) {
         // 有勾选
-        this.getFencePlatList();
+        this.getFencePlatList(selection);
       } else {
         // 无勾选
         this.$refs.mapRef.clearMap();
@@ -142,23 +139,20 @@ export default {
     /** 获取货源列表 */
     getList() {
       this.loading = true;
-      getSimpleOrderList(this.queryParams).then(response => {
+      getFencePlatList(this.queryParams).then(response => {
         this.loading = false;
-        this.simpleOrderList = response.data.list;
-        this.total = response.data.total;
+        this.simpleOrderList = response.data;
+        // this.total = response.data.total;
       });
     },
     /** 获取平台围栏 */
-    getFencePlatList() {
-      getFencePlatList({ orderCodeList: this.orderCodeList }).then(response => {
-        const { data = [] } = response;
-        if (data.length === 0) {
-          this.msgInfo('暂无电子围栏信息');
-        }
-        // 绘制电子围栏
-        this.$refs.mapRef.clearMap();
-        this.$refs.mapRef.drawFencePlat(data);
-      });
+    getFencePlatList(data) {
+      if (data.length === 0) {
+        this.msgInfo('暂无电子围栏信息');
+      }
+      // 绘制电子围栏
+      this.$refs.mapRef.clearMap();
+      this.$refs.mapRef.drawFencePlat(data);
     }
   }
 };
