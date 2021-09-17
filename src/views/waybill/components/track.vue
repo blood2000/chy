@@ -356,6 +356,9 @@ export default {
         }
       } else if (this.lyTimePoor !== 0 && this.lyTimePoor < 24 * 60 * 60 * 1000) {
         this.getLieying();
+      } else {
+        this.loading = false;
+        this.msgInfo('暂无APP轨迹！');
       }
     },
     // 猎鹰加载更多

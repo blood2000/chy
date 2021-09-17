@@ -248,6 +248,9 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #invoiceStatus="{row}">
+          <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
+        </template>
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
         </template>
@@ -529,8 +532,8 @@ export default {
       'invoiceStatusOptions': [
         { 'dictLabel': '未索取', 'dictValue': '0' },
         { 'dictLabel': '已申请开票', 'dictValue': '8' },
-        { 'dictLabel': '已开票', 'dictValue': '9' },
-        { 'dictLabel': '确认发票', 'dictValue': '10' }
+        { 'dictLabel': '已开票', 'dictValue': '9' }
+        // { 'dictLabel': '确认发票', 'dictValue': '10' }
       ],
 
 
