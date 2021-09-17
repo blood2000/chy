@@ -74,6 +74,7 @@
             type="datetimerange"
             unlink-panels
             :picker-options="pickerTimeOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
