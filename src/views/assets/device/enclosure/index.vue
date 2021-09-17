@@ -324,6 +324,7 @@ export default {
       const _this = this;
       this.clearTimer();
       this.timer = setInterval(() => {
+        _this.getLocationParams();
         _this.getLocation();
       }, this.currentTime * 1000);
       this.setReadTime();
