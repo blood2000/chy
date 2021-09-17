@@ -256,6 +256,25 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item label="发票状态" prop="invoiceStatus">
+          <el-select
+            v-model="queryParams.invoiceStatus"
+            placeholder="请选择运单状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="dict in invoiceStatusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="分单" prop="isChildList">
           <el-select
             v-model="queryParams.isChildList"
@@ -604,12 +623,20 @@ export default {
         { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
         { 'dictLabel': '已打款', 'dictValue': '7' },
-        { 'dictLabel': '已申请开票', 'dictValue': '8' },
-        { 'dictLabel': '已开票', 'dictValue': '9' },
+        // { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        // { 'dictLabel': '已开票', 'dictValue': '9' },
         { 'dictLabel': '已作废', 'dictValue': '10' },
         { 'dictLabel': '已核验', 'dictValue': '11' },
         { 'dictLabel': '已完成', 'dictValue': '12' }
       ],
+      // 发票状态  0 未索取 / 8 已申请开票 / 9 已开票 /10 确认发票")
+      'invoiceStatusOptions': [
+        { 'dictLabel': '未索取', 'dictValue': '0' },
+        { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        { 'dictLabel': '已开票', 'dictValue': '9' },
+        { 'dictLabel': '确认发票', 'dictValue': '10' }
+      ],
+
       // 配载方式字典
       stowageStatusOptions: [
         { 'dictLabel': '吨', 'dictValue': '0' },
@@ -659,6 +686,7 @@ export default {
         'driverName': null,
         'driverPhone': null,
         'status': null,
+        'invoiceStatus': undefined,
         'teamName': null,
         'shipperCode': undefined,
         'ztcCode': null,
