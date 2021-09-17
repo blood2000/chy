@@ -28,28 +28,24 @@
             >
               <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
                 <p class="label ly-flex ly-flex-align-center">
-                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.expireFlag !== 1" @click.native.stop="handleCheckActive(item.expireFlag, item.typeCode+item.factoryOnlyCode)" />
+                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.activationFlag !== 1" @click.native.stop="handleCheckActive(item.activationFlag, item.typeCode+item.factoryOnlyCode)" />
                   <span class="ml10">{{ item.factoryOnlyCode }}</span>
                 </p>
-                <p class="status" :class="item.expireFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
-                  {{ item.expireFlag === 0 ? '未激活' : item.expireFlag === 0 ? '过期' : item.status === 1 ? '在线' : '离线' }}
+                <p class="status" :class="item.activationFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
+                  {{ item.activationFlag === 0 ? '未激活' : item.expireFlag === 0 ? '过期' : item.status === 1 ? '在线' : '离线' }}
                 </p>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
-                <div class="info-groud-item">
+                <div v-if="item.vendorCode" class="info-groud-item">
+                  <p class="label">厂家</p>
+                  {{ selectDictLabel(deviceVendorOptions, item.vendorCode) }}
+                </div>
+                <div v-if="item.name" class="info-groud-item">
                   <p class="label">设备名称</p>
                   {{ item.name }}
                 </div>
-                <div v-if="item.licenseNumber" class="info-groud-item">
-                  <p class="label">绑定车辆</p>
-                  {{ item.licenseNumber }}
-                </div>
               </div>
               <div class="info-groud ly-flex ly-flex-align-center">
-                <div class="info-groud-item">
-                  <p class="label">厂家</p>
-                  {{ getVendorName(item.vendorCode) }}
-                </div>
                 <div v-if="item.data && item.data.electQuantity" class="info-groud-item">
                   <p class="label">设备电量</p>
                   <div class="ly-flex ly-flex-align-center">
@@ -59,6 +55,10 @@
                     <img v-else class="mr5" src="@/assets/images/device/dl1.png">
                     电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
                   </div>
+                </div>
+                <div v-if="item.licenseNumber" class="info-groud-item">
+                  <p class="label">绑定车辆</p>
+                  {{ item.licenseNumber }}
                 </div>
               </div>
               <div class="ly-flex button-groud">
@@ -221,12 +221,6 @@ export default {
       this.getDicts('device_vendors').then(response => {
         this.deviceVendorOptions = response.data;
       });
-    },
-    getVendorName(code) {
-      const name = this.deviceVendorOptions.filter(el => {
-        return el.dictValue === code;
-      })[0].dictLabel || '';
-      return name;
     },
     getBigActiveTab(val) {
 
@@ -406,11 +400,11 @@ export default {
     },
     async handleCardClick(row) {
       if (this.activeCard === (row.typeCode + row.factoryOnlyCode)) return;
-      if (row.expireFlag !== 1) {
+      if (row.activationFlag !== 1) {
         this.msgInfo('没有找到该设备的位置信息');
         return;
       }
-      await this.handleCardActive(row.expireFlag, row.typeCode, row.factoryOnlyCode);
+      await this.handleCardActive(row.activationFlag, row.typeCode, row.factoryOnlyCode);
       this.changeChecked(this.checkList);
     },
     handleCardActive(status, typeCode, factoryOnlyCode) {
@@ -423,7 +417,7 @@ export default {
     },
     /** 轨迹回放 */
     async handleTrackPlayback(row) {
-      await this.handleCardActive(row.expireFlag, row.typeCode, row.factoryOnlyCode);
+      await this.handleCardActive(row.activationFlag, row.typeCode, row.factoryOnlyCode);
       this.currentMap = 'track';
       const labelArr = [];
       this.allMapping[row.typeCode].forEach(val => {
@@ -570,8 +564,8 @@ export default {
       overflow-y: auto;
       font-size: 14px;
       >li{
-        // height: 162px;
-        height: 124px;
+        max-height: 162px;
+        min-height: 124px;
         margin: 12px 20px 16px 20px;
         background: #fff;
         border-radius: 6px;
