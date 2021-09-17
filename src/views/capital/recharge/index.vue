@@ -63,7 +63,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="通道类型" prop="paymentChannels">
+        <!-- <el-form-item label="通道类型" prop="paymentChannels">
           <el-select v-model="queryParams.paymentChannels" placeholder="请选择通道类型" style="width: 220px" clearable filterable size="small">
             <el-option
               v-for="dict in paymentChannelsOptions"
@@ -72,7 +72,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="变动时间">
           <el-date-picker
             v-model="queryParams.updateTimeBegin"

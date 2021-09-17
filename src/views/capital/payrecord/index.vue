@@ -219,7 +219,7 @@
             placeholder="请选择"
           />
         </el-form-item>
-        <el-form-item label="通道类型" prop="paymentChannels">
+        <!-- <el-form-item label="通道类型" prop="paymentChannels">
           <el-select v-model="queryParams.paymentChannels" placeholder="请选择通道类型" style="width: 195px" clearable filterable size="small">
             <el-option
               v-for="dict in paymentChannelsOptions"
@@ -228,7 +228,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
