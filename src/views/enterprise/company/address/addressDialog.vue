@@ -437,7 +437,9 @@ export default {
           if (result && result.regeocode) {
             const { adcode, province, city, district, township, street, streetNumber } = result.regeocode.addressComponent;
 
-            _this.form.detail = province + city + district + township + street + streetNumber;
+            if (!_this.form.detail) {
+              _this.form.detail = district + township + street + streetNumber;
+            }
 
             _this.getAreaCode(adcode, province, city, district);
           }
