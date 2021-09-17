@@ -377,7 +377,7 @@ export default {
         }).then(() => { this.openObj = true; }).catch(() => {});
       } else {
         const { latitude, longitude } = this.selectData;
-        this.lnglat = [longitude, latitude];
+        this.lnglat = [longitude - 0, latitude - 0];
         this.mapDialog = true;
       }
     },

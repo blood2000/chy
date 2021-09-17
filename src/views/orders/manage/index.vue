@@ -1126,16 +1126,16 @@ export default {
           if (e.addressType === '1') {
             obj = {
               addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude || '0',
-              lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude || '0',
-              radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius || 0
+              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude || '0',
+              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude || '0',
+              radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius || 0
             };
           } else if (e.addressType === '2') {
             obj = {
               addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
-              lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
-              radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
+              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
+              radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius
             };
           }
         }

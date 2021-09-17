@@ -194,7 +194,7 @@
                 :myisdisabled="isHaveWaybill || myisdisabled"
                 @getLnglat="(lnglat)=> {
                   if(isOpenTheElectronicFence){
-                    address.centerLocation = lnglat
+                    address.centerLocation = lnglat.map(e=> e - 0)
                     address.loadLnglat = lnglat
                   };
                 }"
@@ -275,7 +275,7 @@
                 @getLnglat="(lnglat)=> {
                   if(isOpenTheElectronicFence){
                     address.loadLnglat = lnglat
-                    address.centerLocation = lnglat
+                    address.centerLocation = lnglat.map(e=> e - 0)
                   }
                 }"
                 @addSetOK="(valid)=>nextSe(valid, 1)"
@@ -964,17 +964,17 @@ export default {
                 if (e.addressType === '1' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
-                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
-                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+                    lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius
                   };
                   isPost = true;
                 } else if (e.addressType === '2' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
-                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
-                    radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+                    lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
+                    radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius
                   };
                   isPost = true;
                 }
@@ -1039,16 +1039,16 @@ export default {
                 if (e.addressType === '1' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
-                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
                     radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
                   isPost = true;
                 } else if (e.addressType === '2' && e.switchRadius) {
                   obj = {
                     addressType: e.addressType,
-                    lng: e.centerLocation ? e.centerLocation[0] + '' : e.longitude,
-                    lat: e.centerLocation ? e.centerLocation[1] + '' : e.latitude,
+                    lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
+                    lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
                     radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
                   };
                   isPost = true;
@@ -1433,7 +1433,7 @@ export default {
         let dzWLobj = {};
         if (e.enclosureRadius) {
           dzWLobj = {
-            centerLocation: e.centerLocation,
+            centerLocation: e.centerLocation.map(e => e - 0),
             radius: e.enclosureRadius
           };
         }
@@ -1590,7 +1590,7 @@ export default {
       // this.addressChange 是编辑电子围栏选中的当前地址对象指针
       this.addressChange.radius = val.radius;
       this.addressChange.enclosureRadius = val.radius;
-      this.addressChange.centerLocation = val.lnglat;
+      this.addressChange.centerLocation = val.lnglat.map(e => e - 0);
     },
 
     /** e=电子围栏相关 */
@@ -1614,7 +1614,7 @@ export default {
         this[name].forEach(e => {
           if (e.refName === type) {
             e.enclosureRadius = e.radius;
-            e.centerLocation = [this.floor(data.longitude, 6), this.floor(data.latitude, 6)];
+            e.centerLocation = [this.floor(data.longitude, 6) - 0, this.floor(data.latitude, 6) - 0];
             e.cbData = {
               ...data,
               location: [this.floor(data.longitude, 6), this.floor(data.latitude, 6)]
