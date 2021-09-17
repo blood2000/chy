@@ -36,7 +36,7 @@
         <el-row class="feiyong-row">
           <el-col :span="12">
             <el-row>
-              <el-col :span="5"><span class="text-label">调度者：</span></el-col>
+              <el-col :span="5"><span class="text-label">调度组：</span></el-col>
               <el-col :span="18"><span class="text-row">{{ printData.teamNames || '-' }}</span></el-col>
             </el-row>
           </el-col>
