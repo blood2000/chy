@@ -47,6 +47,7 @@ module.exports = {
         // target: `http://192.168.30.160:8080`, // 东
         // target: `http://192.168.30.90:8080`,  // 强
         // target: `http://192.168.30.29:8080`,  // 旗
+        // target: `http://192.168.30.64:8080`,  // 杨
         changeOrigin: true,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
