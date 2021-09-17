@@ -399,6 +399,7 @@
 import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
+import { compareBeginEndTime } from '@/utils/ddc';
 
 export default {
   name: 'Payrecord',
@@ -610,9 +611,41 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
+      // const a = this.queryParams.tranBeginTime;
+      // const b = this.queryParams.tranEndTime;
+
+      // const c = this.queryParams.startLoadTime;
+      // const d = this.queryParams.endLoadTime;
+
+      // const e = this.queryParams.startUnLoadTime;
+      // const f = this.queryParams.endUnLoadTime;
+
+      // const g = this.queryParams.startCreateTime;
+      // const h = this.queryParams.endCreateTime;
+
+      // if (this._timeJudge(a, b, '接单时间: ') && this._timeJudge(c, d, '装货时间: ') && this._timeJudge(e, f, '卸货时间: ') && this._timeJudge(g, h, '打款时间: ')) {
+      //   this.queryParams.pageNum = 1;
+      //   this.getList();
+      // }
+
       this.queryParams.pageNum = 1;
       this.getList();
     },
+    /* 时间判断 */
+
+    _timeJudge(a, b, msg) {
+      let bool = true;
+      if (a && b) {
+        if (compareBeginEndTime(a, b)) {
+          bool = true;
+        } else {
+          bool = false;
+          this.msgError(`${msg}开始时间必须小于结束时间`);
+        }
+      }
+      return bool;
+    },
+
     /** 重置按钮操作 */
     resetQuery() {
       this.queryParams.tranBeginTime = undefined;
