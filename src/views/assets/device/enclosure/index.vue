@@ -6,7 +6,7 @@
         <el-input
           v-model.trim="queryParams.imei"
           class="device-search-input"
-          placeholder="请输入IMEI/设备号/车牌号"
+          placeholder="请输入IMEI/车牌号"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -289,8 +289,19 @@ export default {
     getLocationParams() {
       const _this = this;
       this.factoryList = [];
+      // 获取勾选的数据
+      const checkList = this.checkList.map(el => {
+        const arr = el.split(',');
+        return {
+          typeCode: arr[0],
+          factoryOnlyCode: arr[1]
+        };
+      });
+      // 合并勾选的设备和当前设备列表数据
+      const factoryList = [...checkList, ...this.deviceList];
+      // 构造map
       const obj = {};
-      this.deviceList.forEach(el => {
+      factoryList.forEach(el => {
         if (obj[el.typeCode]) {
           obj[el.typeCode].push(el.factoryOnlyCode);
         } else {
@@ -298,10 +309,11 @@ export default {
           obj[el.typeCode].push(el.factoryOnlyCode);
         }
       });
+      // map转成数组
       for (const key in obj) {
         _this.factoryList.push({
           typeCode: key,
-          factoryOnlyCodeList: obj[key]
+          factoryOnlyCodeList: Array.from(new Set(obj[key]))
         });
       }
     },
@@ -311,7 +323,7 @@ export default {
       this.deviceLocation = data;
       // 重新渲染地图
       if (this.currentMap === 'point') {
-        this.changeChecked(this.checkList);
+        this.changeChecked(this.checkList, 'refresh');
       } else if (this.currentMap === 'track') {
         //
       }
@@ -355,7 +367,7 @@ export default {
       }
     },
     /** 获取勾选的设备 */
-    changeChecked(dataList) {
+    changeChecked(dataList, isRefresh) {
       this.currentMap = 'point';
       // 设置卡片选中
       if (dataList.length === 0) {
@@ -391,6 +403,12 @@ export default {
           this.$refs.mapRef.drawMarker(el.factoryOnlyCode, [el.lng, el.lat], el);
         }
       });
+      if (isRefresh !== 'refresh' && this.checkedDeviceList.length > 0) {
+        const el = this.checkedDeviceList[this.checkedDeviceList.length - 1];
+        if (!el.lng || !el.lng) {
+          this.msgInfo('没有找到该设备的位置信息');
+        }
+      }
     },
     /** 选中设备卡片 */
     handleCheckActive(status, index) {
@@ -435,7 +453,7 @@ export default {
     /** 退出轨迹回放 */
     onCloseTrack() {
       this.currentMap = 'point';
-      this.changeChecked(this.checkList);
+      this.changeChecked(this.checkList, 'refresh');
     },
     /** 显示设备名称 */
     showDeviceName() {
