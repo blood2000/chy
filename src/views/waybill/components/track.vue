@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="20">
       <el-col :span="18">
-        <div style="width:100%; height: 600px;border-radius: 6px">
+        <div style="width:100%; height: 600px;border-radius: 6px; position: relative">
           <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
             <div class="legend-frame">
               <el-checkbox v-model="lyChecked" style="margin-bottom:10px;">
@@ -23,6 +23,8 @@
           <div :class="isPlan? 'noliston-frame':'nolist-frame'">
             <div :class="isPlan? 'noliston':'nolist'" />
           </div>
+          <!-- 重播按钮 -->
+          <el-button v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" icon="el-icon-refresh-right" round size="mini" style="position: absolute; top: 10px; right: 190px" @click="replayMoveLine">重播</el-button>
         </div>
       </el-col>
       <el-col :span="6">
@@ -262,7 +264,8 @@ export default {
         this.zjxlList();
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.zjPolyline);
+        that.clearMoveLine();
+        if (that.zjPolyline) that.$refs.map.$$getInstance().remove(that.zjPolyline);
         if (!that.wayBillInfo.signTime && that.zjMark) {
           that.$refs.map.$$getInstance().remove(that.zjMark);
         }
@@ -514,6 +517,7 @@ export default {
     drawZj() {
       const that = this;
       const path = that.zjTracklist;
+      if (that.zjPolyline) that.$refs.map.$$getInstance().remove(that.zjPolyline);
       that.zjPolyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
         path,
@@ -606,12 +610,20 @@ export default {
         // 未出错时，result即是对应的路线规划方案
       });
     },
+    // 清除回放轨迹
+    clearMoveLine() {
+      console.log('执行清除回放轨迹');
+      this.passedPolyline && this.$refs.map.$$getInstance().remove(this.passedPolyline);
+      this.moveMarker && this.moveMarker.setMap(null);
+      this.moveMarker = undefined;
+      this.passedPolyline = undefined;
+    },
     // 回放轨迹
     getMoveLine(line) {
       const _this = this;
       // this.moveMarker.stopMove(); // 停止移动
-      this.passedPolyline = [];
-      this.moveMarker = undefined;
+      // 绘制回放轨迹前先清除之前的轨迹
+      this.clearMoveLine();
       this.passedPolyline = new AMap.Polyline({
         map: _this.$refs.map.$$getInstance(),
         strokeColor: '#AF5',
@@ -644,6 +656,11 @@ export default {
       });
       _this.$refs.map.$$getInstance().setZoomAndCenter(13, line[0]);
       this.moveMarker.moveAlong(line, 3000); // 开始移动 speed 千米/小时
+    },
+    // 重播
+    replayMoveLine() {
+      this.$refs.map.$$getInstance().setZoomAndCenter(13, this.zjTracklist[0]);
+      this.moveMarker.moveAlong(this.zjTracklist, 3000);
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
