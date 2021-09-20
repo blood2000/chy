@@ -24,7 +24,11 @@
             <div :class="isPlan? 'noliston':'nolist'" />
           </div>
           <!-- 重播按钮 -->
-          <el-button v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" icon="el-icon-refresh-right" round size="mini" style="position: absolute; top: 10px; right: 190px" @click="replayMoveLine">重播</el-button>
+          <div v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" class="g-flex g-aligncenter" style="position: absolute; top: 10px; right: 190px">
+            速度：
+            <el-input-number v-model="speed" :precision="0" style="width:100px;margin-right:10px;" :min="0" controls-position="right" size="mini" />
+            <el-button icon="el-icon-refresh-right" round size="mini" @click="replayMoveLine">重播</el-button>
+          </div>
         </div>
       </el-col>
       <el-col :span="6">
@@ -126,14 +130,16 @@ export default {
         lineJoin: 'round', // 折线拐点的绘制样式
         zIndex: 101
       },
+      // https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_car1624672021156.png
       markParams: {
-        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_car1624672021156.png',
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/163202165922999c4de.png',
         autoFitView: true,
         autoRotation: true,
         offset: new AMap.Pixel(-35, -17)
       },
       // 是否显示规划轨迹
       checked: false,
+      planpath: [],
       planline: {
         path: []
       },
@@ -194,7 +200,8 @@ export default {
         type: 'zjxl'
       },
       passedPolyline: [], // 移动轨迹
-      moveMarker: undefined // 移动车辆
+      moveMarker: undefined, // 移动车辆
+      speed: 3000 // 移动速度
     };
   },
   computed: {
@@ -556,7 +563,15 @@ export default {
             pathArr.push(i.path);
             return pathArr;
           });
-          const path = [].concat.apply([], pathArr);
+          that.planpath = [].concat.apply([], pathArr);
+          if (!that.wayBillInfo.signTime) {
+            if (new Date().getTime() - new Date(that.wayBillInfo.fillTime).getTime() > 3600000) {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 2);
+            } else {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 3);
+            }
+          }
+          const path = that.planpath;
           // 绘制轨迹
           that.planline = new window.AMap.Polyline({
             map: that.$refs.map.$$getInstance(),
@@ -650,8 +665,8 @@ export default {
         }
         // 播放结束
         if (e.target.getPosition() === line[line.length - 1]) {
-          _this.$refs.map.$$getInstance().remove(_this.moveMarker);
-          _this.$refs.map.$$getInstance().remove(_this.passedPolyline);
+          // _this.$refs.map.$$getInstance().remove(_this.moveMarker);
+          // _this.$refs.map.$$getInstance().remove(_this.passedPolyline);
         }
       });
       _this.$refs.map.$$getInstance().setZoomAndCenter(13, line[0]);
@@ -660,7 +675,8 @@ export default {
     // 重播
     replayMoveLine() {
       this.$refs.map.$$getInstance().setZoomAndCenter(13, this.zjTracklist[0]);
-      this.moveMarker.moveAlong(this.zjTracklist, 3000);
+      console.log(111);
+      this.moveMarker.moveAlong(this.zjTracklist, this.speed);
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
