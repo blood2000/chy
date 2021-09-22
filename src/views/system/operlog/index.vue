@@ -78,6 +78,7 @@
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
+            :default-time="defaultTime"
           />
         </el-form-item>
         <el-form-item>
@@ -205,6 +206,7 @@ export default {
   name: 'Operlog',
   data() {
     return {
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
       pickerTimeOptions,
       // 遮罩层
       loading: true,
