@@ -568,7 +568,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.loadingAsk = true;
-        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids }).then(response => {
+        askInvoice({ shipmentCode: this.queryParams.shipmentCode, waybillCodes: this.ids, orgCode: this.queryParams.orgCode }).then(response => {
           this.msgSuccess('索票申请成功');
           this.loadingAsk = false;
           this.ids = null;
