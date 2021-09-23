@@ -544,15 +544,22 @@ export default {
 
         // 搜索触发
         if (this.pcdInfo) {
+          const { p, c, d } = this.pcdInfo;
           const county = response.rows.find(e => {
-            return e.countyCode === this.pcdInfo.d.code;
+            return e.countyCode === d.code;
           });
+
+          console.log(p.code === this.form.provinceCode, '1省相同');
+          console.log(c.code === this.form.cityCode, '2市相同');
+          console.log(!!county, '3区相同');
+
           // 判断库中是否不存在这个code ture 说明不存在
-          if (!county) {
+          if (!county && p.code === this.form.provinceCode && c.code === this.form.cityCode) {
+            console.log('我请求了添加接口');
             await addCounty({
-              countyCode: this.pcdInfo.d.code,
-              countyName: this.pcdInfo.d.name,
-              cityCode: this.pcdInfo.c.code
+              countyCode: d.code,
+              countyName: d.name,
+              cityCode: c.code
             });
             const { rows } = await geCountyList({ cityCode: code });
 

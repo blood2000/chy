@@ -156,6 +156,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="datechoose"
           />
         </el-form-item>
@@ -172,6 +173,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="loadDateChoose"
           />
         </el-form-item>
@@ -188,6 +190,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="unloadDateChoose"
           />
         </el-form-item>
@@ -204,6 +207,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="markDateChoose"
           />
         </el-form-item>
@@ -461,6 +465,7 @@ export default {
   },
   data() {
     return {
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
       pickerTimeOptions,
       receiveTime: [],
       loadTime: [],
@@ -524,7 +529,7 @@ export default {
         { 'dictLabel': '已打款', 'dictValue': '7' },
         // { 'dictLabel': '已申请开票', 'dictValue': '8' },
         // { 'dictLabel': '已开票', 'dictValue': '9' },
-        { 'dictLabel': '已作废', 'dictValue': '10' },
+        // { 'dictLabel': '已作废', 'dictValue': '10' },
         { 'dictLabel': '已核验', 'dictValue': '11' },
         { 'dictLabel': '已完成', 'dictValue': '12' }
       ],

@@ -236,22 +236,30 @@ export default {
       this.countyOption = this._baozhuan(rows, 'countyCode', 'countyName');
 
       // 有值再处理
+      // console.log(this.pcdInfo, '高德返回的');
+      // console.log(this.form.province, '省');
+      // console.log(this.form.city, '市');
+      // console.log(rows, '县');
+
       if (this.pcdInfo) {
+        const { p, c, d } = this.pcdInfo;
+
         const county = rows.find(e => {
-          return e.countyCode === this.pcdInfo.d.code;
+          return e.countyCode === d.code;
         });
+
+
+        console.log(p.code === this.form.province, '省相同');
+        console.log(c.code === this.form.city, '市相同');
+        console.log(!!county, '区相同');
+
         // console.log(county, '找出来, 说明有, 没有这说明要加新的');
         // 判断库中是否不存在这个code ture 说明不存在
-        if (!county) {
-          // this.countyOption.push({
-          //   dictLabel: this.pcdInfo.d.name,
-          //   countyCode: this.pcdInfo.d.code,
-          //   countyName: this.pcdInfo.d.name,
-          //   dictValue: this.pcdInfo.d.code
-          // });
+        if (!county && p.code === this.form.province && c.code === this.form.city) {
+          console.log('我请求了添加接口');
           await addCounty({
-            countyCode: this.pcdInfo.d.code,
-            countyName: this.pcdInfo.d.name,
+            countyCode: d.code,
+            countyName: d.name,
             cityCode: this.form.city
           });
           const { rows } = await geCountyList({ cityCode: this.form.city });

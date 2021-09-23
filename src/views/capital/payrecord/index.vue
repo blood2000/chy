@@ -143,26 +143,63 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="接单时间">
+        <el-form-item label="接单时间" prop="tranTime">
           <el-date-picker
-            v-model="queryParams.tranBeginTime"
-            clearable
-            type="datetime"
-            size="small"
-            style="width: 195px"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.tranEndTime"
-            clearable
-            type="datetime"
-            size="small"
-            style="width: 195px"
-            placeholder="请选择"
+            v-model="queryParams.tranTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 282px"
+            :default-time="defaultTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
-        <el-form-item label="装货时间">
+        <el-form-item label="装货时间" prop="loadTime">
+          <el-date-picker
+            v-model="queryParams.loadTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 282px"
+            :default-time="defaultTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
+        <el-form-item label="卸货时间" prop="unLoadTime">
+          <el-date-picker
+            v-model="queryParams.unLoadTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 282px"
+            :default-time="defaultTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
+        <el-form-item label="打款时间" prop="createTime">
+          <el-date-picker
+            v-model="queryParams.createTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 282px"
+            :default-time="defaultTime"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          />
+        </el-form-item>
+        <!-- <el-form-item label="装货时间">
           <el-date-picker
             v-model="queryParams.startLoadTime"
             clearable
@@ -218,7 +255,7 @@
             style="width: 195px"
             placeholder="请选择"
           />
-        </el-form-item>
+        </el-form-item> -->
         <!-- <el-form-item label="通道类型" prop="paymentChannels">
           <el-select v-model="queryParams.paymentChannels" placeholder="请选择通道类型" style="width: 195px" clearable filterable size="small">
             <el-option
@@ -396,6 +433,7 @@
 </template>
 
 <script>
+import { pickerOptions } from '@/utils/dateRange';
 import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
@@ -409,6 +447,8 @@ export default {
   },
   data() {
     return {
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
+      pickerOptions,
       tableColumnsConfig: [],
       api: payRecordlistApi,
       // 遮罩层
@@ -514,14 +554,19 @@ export default {
         tradOrderNumber: undefined,
         goodId: undefined,
         tranId: undefined,
-        tranBeginTime: undefined,
-        tranEndTime: undefined,
-        startLoadTime: undefined,
-        endLoadTime: undefined,
-        startUnLoadTime: undefined,
-        endUnLoadTime: undefined,
-        startCreateTime: undefined,
-        endCreateTime: undefined,
+
+        tranTime: undefined,
+        // tranBeginTime: undefined,
+        // tranEndTime: undefined,
+        loadTime: undefined,
+        // startLoadTime: undefined,
+        // endLoadTime: undefined,
+        unLoadTime: undefined,
+        // startUnLoadTime: undefined,
+        // endUnLoadTime: undefined,
+        createTime: undefined,
+        // startCreateTime: undefined,
+        // endCreateTime: undefined,
         licenseNumber: undefined,
         payeeName: undefined,
         campanyName: undefined,
@@ -582,7 +627,29 @@ export default {
       });
 
       return arr;
+    },
+    params() {
+      return {
+        ...this.queryParams,
+        tranBeginTime: this.queryParams.tranTime ? this.queryParams.tranTime[0] : undefined,
+        tranEndTime: this.queryParams.tranTime ? this.queryParams.tranTime[1] : undefined,
+        tranTime: undefined,
+
+        startLoadTime: this.queryParams.loadTime ? this.queryParams.loadTime[0] : undefined,
+        endLoadTime: this.queryParams.loadTime ? this.queryParams.loadTime[1] : undefined,
+        loadTime: undefined,
+
+        startUnLoadTime: this.queryParams.unLoadTime ? this.queryParams.unLoadTime[0] : undefined,
+        endUnLoadTime: this.queryParams.unLoadTime ? this.queryParams.unLoadTime[1] : undefined,
+        unLoadTime: undefined,
+
+        startCreateTime: this.queryParams.createTime ? this.queryParams.createTime[0] : undefined,
+        endCreateTime: this.queryParams.createTime ? this.queryParams.createTime[1] : undefined,
+        createTime: undefined
+
+      };
     }
+
   },
   created() {
     this.tableHeaderConfig(this.tableColumnsConfig, payRecordlistApi, {
@@ -599,7 +666,7 @@ export default {
     /** 查询列表 */
     getList() {
       this.loading = true;
-      const params = { ...this.queryParams };
+      const params = this.params;
       if (params.licenseNumber) {
         params.licenseNumber = params.licenseNumber.toUpperCase();
       }
@@ -648,14 +715,14 @@ export default {
 
     /** 重置按钮操作 */
     resetQuery() {
-      this.queryParams.tranBeginTime = undefined;
-      this.queryParams.tranEndTime = undefined;
-      this.queryParams.startLoadTime = undefined;
-      this.queryParams.endLoadTime = undefined;
-      this.queryParams.startUnLoadTime = undefined;
-      this.queryParams.endUnLoadTime = undefined;
-      this.queryParams.startCreateTime = undefined;
-      this.queryParams.endCreateTime = undefined;
+      // this.queryParams.tranBeginTime = undefined;
+      // this.queryParams.tranEndTime = undefined;
+      // this.queryParams.startLoadTime = undefined;
+      // this.queryParams.endLoadTime = undefined;
+      // this.queryParams.startUnLoadTime = undefined;
+      // this.queryParams.endUnLoadTime = undefined;
+      // this.queryParams.startCreateTime = undefined;
+      // this.queryParams.endCreateTime = undefined;
       this.resetForm('queryForm');
       this.handleQuery();
     },
@@ -681,7 +748,7 @@ export default {
     /** 导出按钮操作 */
     handleExport() {
       this.exportLoading = true;
-      const params = Object.assign({}, this.queryParams);
+      const params = Object.assign({}, this.params);
       params.pageSize = undefined;
       params.pageNum = undefined;
       this.download('/payment/wallet/remit/export', params, `打款记录`).then(() => {

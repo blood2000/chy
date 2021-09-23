@@ -84,6 +84,23 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="业务类型" prop="businessType">
+          <el-select
+            v-model="queryParams.businessType"
+            placeholder="请选择业务类型"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="(dict, index) in businessTypeOptions"
+              :key="index"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="运输单号" prop="waybillNo">
           <el-input
             v-model.trim="queryParams.waybillNo"
@@ -126,33 +143,33 @@
       <el-collapse style="margin-bottom: 10px">
         <el-collapse-item v-if="fundCount.totalVo" :title="'统计(总条数：' + fundCount.totalVo.allCount + ')'" name="1">
           <el-row :gutter="20">
-            <el-col :span="4">
-              <div class="count-frame">
-                <div>总条数：{{ fundCount.totalVo.allCount }}</div>
-                <div>总金额：{{ fundCount.totalVo.allAmount }}</div>
-                <div>匹配条数：{{ fundCount.totalVo.matchCount }}</div>
-                <div>匹配金额：{{ fundCount.totalVo.matchAmount }}</div>
-                <div>待匹配条数：{{ fundCount.totalVo.toMatchCount }}</div>
-                <div>待匹配金额：{{ fundCount.totalVo.toMatchAmount }}</div>
-                <div>金额不匹配条数：{{ fundCount.totalVo.unMatchRecordCount }}</div>
-                <div>金额不匹配金额：{{ fundCount.totalVo.unMatchRecordAmount }}</div>
-                <div>未匹配到记录条数：{{ fundCount.totalVo.unMatchCount }}</div>
-                <div>未匹配到记录金额：{{ fundCount.totalVo.unMatchAmount }}</div>
+            <el-col :span="3.2">
+              <div class="count-frame g-directioncenter g-justifycenter">
+                <div v-if="fundCount.totalVo.allCount">总条数：{{ fundCount.totalVo.allCount }}</div>
+                <div v-if="fundCount.totalVo.allAmount">总金额：{{ fundCount.totalVo.allAmount }}</div>
+                <div v-if="fundCount.totalVo.matchCount">匹配条数：{{ fundCount.totalVo.matchCount }}</div>
+                <div v-if="fundCount.totalVo.matchAmount">匹配金额：{{ fundCount.totalVo.matchAmount }}</div>
+                <div v-if="fundCount.totalVo.toMatchCount">待匹配条数：{{ fundCount.totalVo.toMatchCount }}</div>
+                <div v-if="fundCount.totalVo.toMatchAmount">待匹配金额：{{ fundCount.totalVo.toMatchAmount }}</div>
+                <div v-if="fundCount.totalVo.unMatchRecordCount" class="g-color-error">金额不匹配条数：{{ fundCount.totalVo.unMatchRecordCount }}</div>
+                <div v-if="fundCount.totalVo.unMatchRecordAmount" class="g-color-error">金额不匹配金额：{{ fundCount.totalVo.unMatchRecordAmount }}</div>
+                <div v-if="fundCount.totalVo.unMatchCount" class="g-color-error">未匹配到记录条数：{{ fundCount.totalVo.unMatchCount }}</div>
+                <div v-if="fundCount.totalVo.unMatchAmount" class="g-color-error">未匹配到记录金额：{{ fundCount.totalVo.unMatchAmount }}</div>
               </div>
             </el-col>
-            <el-col v-for="(item, index) in fundCount.statisticalList" :key="index" :span="4">
-              <div class="count-frame">
+            <el-col v-for="(item, index) in fundCount.statisticalList" :key="index" :span="3.2">
+              <div class="count-frame g-directioncenter g-justifycenter">
                 <div class="text-bold">{{ selectDictLabel(businessTypeOptions, item.businessType) }}</div>
-                <div>云资金条数：{{ item.allCount }}</div>
-                <div>云资金金额：{{ item.allAmount }}</div>
-                <div>待匹配条数：{{ item.toMatchCount }}</div>
-                <div>待匹配金额：{{ item.toMatchAmount }}</div>
-                <div>匹配条数：{{ item.matchCount }}</div>
-                <div>匹配金额：{{ item.matchAmount }}</div>
-                <div>金额不匹配条数：{{ item.unMatchRecordCount }}</div>
-                <div>金额不匹配金额：{{ item.unMatchRecordAmount }}</div>
-                <div>未匹配到记录条数：{{ item.unMatchCount }}</div>
-                <div>未匹配到记录金额：{{ item.unMatchAmount }}</div>
+                <div v-if="item.allCount">云资金条数：{{ item.allCount }}</div>
+                <div v-if="item.allAmount">云资金金额：{{ item.allAmount }}</div>
+                <div v-if="item.toMatchCount">待匹配条数：{{ item.toMatchCount }}</div>
+                <div v-if="item.toMatchAmount">待匹配金额：{{ item.toMatchAmount }}</div>
+                <div v-if="item.matchCount">匹配条数：{{ item.matchCount }}</div>
+                <div v-if="item.matchAmount">匹配金额：{{ item.matchAmount }}</div>
+                <div v-if="item.unMatchRecordCount" class="g-color-error">金额不匹配条数：{{ item.unMatchRecordCount }}</div>
+                <div v-if="item.unMatchRecordAmount" class="g-color-error">金额不匹配金额：{{ item.unMatchRecordAmount }}</div>
+                <div v-if="item.unMatchCount" class="g-color-error">未匹配到记录条数：{{ item.unMatchCount }}</div>
+                <div v-if="item.unMatchAmount" class="g-color-error">未匹配到记录金额：{{ item.unMatchAmount }}</div>
               </div>
             </el-col>
           </el-row>
@@ -279,6 +296,7 @@ export default {
         { 'dictLabel': '提现', 'dictValue': '2' },
         { 'dictLabel': '打款', 'dictValue': '3' },
         { 'dictLabel': '清分', 'dictValue': '4' },
+        { 'dictLabel': '平台提现', 'dictValue': '5' },
         { 'dictLabel': '其他', 'dictValue': '99' }
       ],
       morelist: []
@@ -376,9 +394,9 @@ export default {
 
 <style lang="scss" scoped>
 .count-frame{
-  height: 295px;
+  height: 275px;
   text-align: center;
-  padding: 20px;
+  padding: 10px;
   // background: #C4F1D1;
   border-radius: 4px;
   border: 1px solid #ddd;
