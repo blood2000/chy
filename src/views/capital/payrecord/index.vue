@@ -153,6 +153,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 282px"
+            :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
@@ -166,6 +167,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 282px"
+            :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
@@ -179,6 +181,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 282px"
+            :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
@@ -192,6 +195,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 282px"
+            :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
         </el-form-item>
@@ -443,6 +447,7 @@ export default {
   },
   data() {
     return {
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
       pickerOptions,
       tableColumnsConfig: [],
       api: payRecordlistApi,

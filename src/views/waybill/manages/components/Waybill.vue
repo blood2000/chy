@@ -156,6 +156,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="datechoose"
           />
         </el-form-item>
@@ -172,6 +173,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="loadDateChoose"
           />
         </el-form-item>
@@ -188,6 +190,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="unloadDateChoose"
           />
         </el-form-item>
@@ -204,6 +207,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="markDateChoose"
           />
         </el-form-item>
@@ -461,6 +465,7 @@ export default {
   },
   data() {
     return {
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
       pickerTimeOptions,
       receiveTime: [],
       loadTime: [],

@@ -2,7 +2,7 @@
   <div>
     <el-row :gutter="20">
       <el-col :span="18">
-        <div style="width:100%; height: 600px;border-radius: 6px">
+        <div style="width:100%; height: 600px;border-radius: 6px; position: relative">
           <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
             <div class="legend-frame">
               <el-checkbox v-model="lyChecked" style="margin-bottom:10px;">
@@ -22,6 +22,12 @@
           <el-amap ref="map" v-loading="loading" vid="DDCmap" :zoom="zoom" :center="center" />
           <div :class="isPlan? 'noliston-frame':'nolist-frame'">
             <div :class="isPlan? 'noliston':'nolist'" />
+          </div>
+          <!-- 重播按钮 -->
+          <div v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" class="g-flex g-aligncenter" style="position: absolute; top: 10px; right: 190px">
+            速度：
+            <el-input-number v-model="speed" :precision="0" style="width:100px;margin-right:10px;" :min="0" controls-position="right" size="mini" />
+            <el-button icon="el-icon-refresh-right" round size="mini" @click="replayMoveLine">重播</el-button>
           </div>
         </div>
       </el-col>
@@ -124,14 +130,16 @@ export default {
         lineJoin: 'round', // 折线拐点的绘制样式
         zIndex: 101
       },
+      // https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_car1624672021156.png
       markParams: {
-        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/icon_car1624672021156.png',
+        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/163202165922999c4de.png',
         autoFitView: true,
         autoRotation: true,
         offset: new AMap.Pixel(-35, -17)
       },
       // 是否显示规划轨迹
       checked: false,
+      planpath: [],
       planline: {
         path: []
       },
@@ -192,7 +200,8 @@ export default {
         type: 'zjxl'
       },
       passedPolyline: [], // 移动轨迹
-      moveMarker: undefined // 移动车辆
+      moveMarker: undefined, // 移动车辆
+      speed: 3000 // 移动速度
     };
   },
   computed: {
@@ -262,7 +271,8 @@ export default {
         this.zjxlList();
       } else {
         const that = this;
-        that.$refs.map.$$getInstance().remove(that.zjPolyline);
+        that.clearMoveLine();
+        if (that.zjPolyline) that.$refs.map.$$getInstance().remove(that.zjPolyline);
         if (!that.wayBillInfo.signTime && that.zjMark) {
           that.$refs.map.$$getInstance().remove(that.zjMark);
         }
@@ -514,6 +524,7 @@ export default {
     drawZj() {
       const that = this;
       const path = that.zjTracklist;
+      if (that.zjPolyline) that.$refs.map.$$getInstance().remove(that.zjPolyline);
       that.zjPolyline = new window.AMap.Polyline({
         map: that.$refs.map.$$getInstance(),
         path,
@@ -552,7 +563,15 @@ export default {
             pathArr.push(i.path);
             return pathArr;
           });
-          const path = [].concat.apply([], pathArr);
+          that.planpath = [].concat.apply([], pathArr);
+          if (!that.wayBillInfo.signTime) {
+            if (new Date().getTime() - new Date(that.wayBillInfo.fillTime).getTime() > 3600000) {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 2);
+            } else {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 3);
+            }
+          }
+          const path = that.planpath;
           // 绘制轨迹
           that.planline = new window.AMap.Polyline({
             map: that.$refs.map.$$getInstance(),
@@ -606,12 +625,20 @@ export default {
         // 未出错时，result即是对应的路线规划方案
       });
     },
+    // 清除回放轨迹
+    clearMoveLine() {
+      console.log('执行清除回放轨迹');
+      this.passedPolyline && this.$refs.map.$$getInstance().remove(this.passedPolyline);
+      this.moveMarker && this.moveMarker.setMap(null);
+      this.moveMarker = undefined;
+      this.passedPolyline = undefined;
+    },
     // 回放轨迹
     getMoveLine(line) {
       const _this = this;
       // this.moveMarker.stopMove(); // 停止移动
-      this.passedPolyline = [];
-      this.moveMarker = undefined;
+      // 绘制回放轨迹前先清除之前的轨迹
+      this.clearMoveLine();
       this.passedPolyline = new AMap.Polyline({
         map: _this.$refs.map.$$getInstance(),
         strokeColor: '#AF5',
@@ -638,12 +665,18 @@ export default {
         }
         // 播放结束
         if (e.target.getPosition() === line[line.length - 1]) {
-          _this.$refs.map.$$getInstance().remove(_this.moveMarker);
-          _this.$refs.map.$$getInstance().remove(_this.passedPolyline);
+          // _this.$refs.map.$$getInstance().remove(_this.moveMarker);
+          // _this.$refs.map.$$getInstance().remove(_this.passedPolyline);
         }
       });
       _this.$refs.map.$$getInstance().setZoomAndCenter(13, line[0]);
       this.moveMarker.moveAlong(line, 3000); // 开始移动 speed 千米/小时
+    },
+    // 重播
+    replayMoveLine() {
+      this.$refs.map.$$getInstance().setZoomAndCenter(13, this.zjTracklist[0]);
+      console.log(111);
+      this.moveMarker.moveAlong(this.zjTracklist, this.speed);
     },
     /** 判断当前位置是否在可视区域 */
     isPointInRing(position) {
