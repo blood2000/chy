@@ -283,7 +283,7 @@
         </el-col>
       </el-row>
 
-      <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" height="560" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" :height="height" @selection-change="handleSelectionChange">
         <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template>
@@ -601,6 +601,7 @@ export default {
         isIdentityEffective: undefined,
         isDriverLicenseEffective: undefined
       },
+      height: undefined,
       // 表单是否禁用
       formDisable: false,
       // 司机code
@@ -678,6 +679,7 @@ export default {
       listDriver(params).then(response => {
         this.driverList = response.rows;
         this.total = response.total;
+        this.height = 560;
         this.loading = false;
       });
     },

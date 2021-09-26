@@ -239,7 +239,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="shipmentList" :table-columns-config="tableColumnsConfig" height="560" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="shipmentList" :table-columns-config="tableColumnsConfig" :height="height" @selection-change="handleSelectionChange">
         <template #shipperType="{row}">
           <span>{{ selectDictLabel(typeOptions, row.shipperType) }}</span>
         </template>
@@ -483,6 +483,7 @@ export default {
         creditTimeBegin: undefined,
         creditTimeEnd: undefined
       },
+      height: undefined,
       // 表单详情
       form: {},
       // 表单是否禁用
@@ -559,6 +560,7 @@ export default {
       listShipment(this.queryParams).then(response => {
         this.shipmentList = response.rows;
         this.total = response.total;
+        this.height = 560;
         this.loading = false;
       });
     },
