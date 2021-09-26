@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm v-model="queryParams" :shift-op="shift_op" :attendance-status-op="attendanceStatus_op" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" @initPickerOptions="queryParams.projectCode=projectList[0].code" />
+      <QueryForm v-model="queryParams" :shift-op="shift_op" :attendance-status-op="attendanceStatus_op" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
     </div>
 
     <div class="app-container">
@@ -582,6 +582,17 @@ export default {
           pid: 1,
           isChild: false,
           isShow: true,
+          label: '项目',
+          prop: 'projectName',
+          sortNum: 0,
+          fixed: 'left',
+          tooltip: true,
+          width: '120'
+        },
+        {
+          pid: 1,
+          isChild: false,
+          isShow: true,
           label: '岗位',
           prop: 'postName',
           sortNum: 0,
@@ -608,7 +619,7 @@ export default {
         ...this.queryParams,
         attendanceStatus: this.queryParams.attendanceStatus ? this.queryParams.attendanceStatus : undefined,
         schedule: this.queryParams.attendanceStatus ? this.queryParams.schedule : undefined,
-        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName
       };
     }
   },
@@ -623,7 +634,7 @@ export default {
     async initData() {
       const res = await webGetMachineProjectList();
       this.projectList = res.data;
-      this.queryParams.projectCode = this.projectList[0].code;
+      // this.queryParams.projectCode = this.projectList[0].code;
 
       this.getDicts('work-shift').then((response) => {
         this.shift_op = response.data;
@@ -633,7 +644,7 @@ export default {
         this.attendanceStatus_op = response.data;
       });
 
-      this.getList();
+      // this.getList();
     },
 
     // 初始表头
@@ -644,7 +655,13 @@ export default {
     },
     // 初始数据
     async getList() {
+      if (!(this.queParams.projectCode || this.queParams.keyWord)) {
+        this.list = [];
+        this.total = 0;
+        return;
+      }
       this.loading = true;
+
       getEmployeeAttendanceList(this.queParams).then(res => {
         this.list = res.data.list;
         this.total = res.data.total;

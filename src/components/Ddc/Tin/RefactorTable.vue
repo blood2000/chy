@@ -7,6 +7,7 @@
     :data="data"
     v-bind="$attrs"
     highlight-current-row
+    v-on="$listeners"
     @selection-change="handleSelectionChange"
     @sort-change="handleSortChange"
   >
