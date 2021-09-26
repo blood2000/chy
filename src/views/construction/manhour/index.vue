@@ -393,7 +393,7 @@ export default {
       const exportName = projectName || Date.now();
 
       const qp = {
-        ...this.queryParams,
+        ...this.queParams,
         pageNum: undefined,
         pageSize: undefined
 

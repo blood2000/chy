@@ -673,7 +673,7 @@ export default {
       const projectName = this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName;
       const exportName = projectName || this.queryParams.keyWord;
       const qp = {
-        ...this.queryParams,
+        ...this.queParams,
         pageNum: undefined,
         pageSize: undefined
 
