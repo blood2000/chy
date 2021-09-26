@@ -102,7 +102,7 @@ export const formValidate = {
     if (value === undefined || value === null || value === '') {
       callback();
     }
-    if (!phoneReg01.test(value) && !phoneReg02.test(value)) {
+    if (!phoneReg.test(value) && !phoneReg02.test(value)) {
       callback(new Error('请输入正确的号码'));
     } else {
       callback();
