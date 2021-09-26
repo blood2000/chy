@@ -125,7 +125,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" height="560" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" :height="height" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
         <template #invoiceStatus="{row}">
           <span>
             <span v-if="row.invoiceStatus == 1" class="g-statusDot g-color-warning">●</span>
@@ -253,6 +253,7 @@ export default {
         order: null,
         prop: null
       },
+      height: undefined,
       invoiceApplyTime: [],
       // 弹框 内容
       visible: false,
@@ -393,6 +394,7 @@ export default {
       billList(this.queryParams).then(response => {
         this.billlist = response.data.rows;
         this.total = response.data.total;
+        this.height = 545;
         this.loading = false;
       });
     },

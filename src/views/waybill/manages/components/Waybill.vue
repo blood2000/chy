@@ -248,7 +248,7 @@
       </el-row>
 
       <!-- table -->
-      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" height="560">  <!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" :height="height">  <!-- @selection-change="handleSelectionChange" -->
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
@@ -385,7 +385,7 @@
                 type="text"
                 @click="handleDelete(row)"
               >
-                作废运单
+                {{ row.status === '1'?'取消运单':'作废运单' }}
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
@@ -591,6 +591,7 @@ export default {
         'invoiceStatus': null,
         'teamName': null
       },
+      height: undefined,
       // 表单参数
       'form': {},
       // 表单校验
@@ -671,6 +672,7 @@ export default {
       listManages(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
+        this.height = 560;
         this.loading = false;
       });
     },
@@ -734,7 +736,8 @@ export default {
     /** 作废运单按钮操作 */
     handleDelete(row) {
       const code = row.wayBillCode;
-      this.$confirm('是否确认作废单号为"' + row.waybillNo + '"的运单?', '警告', {
+      const title = row.status === '1' ? '取消' : '作废';
+      this.$confirm('是否确认' + title + '单号为"' + row.waybillNo + '"的运单?', '警告', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
