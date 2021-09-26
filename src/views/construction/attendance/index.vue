@@ -672,9 +672,14 @@ export default {
     async handleExport() {
       const projectName = this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName;
       const exportName = projectName || this.queryParams.keyWord;
-      console.log(exportName);
+      const qp = {
+        ...this.queryParams,
+        pageNum: undefined,
+        pageSize: undefined
+
+      };
       this.exportLoading = true;
-      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, exportName + `_工地考勤`);
+      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', qp, exportName + `_工地考勤`);
       this.exportLoading = false;
     },
 

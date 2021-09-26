@@ -298,8 +298,18 @@ export default {
       }).catch(() => { this.loading = false; });
     },
     async handleExport() {
+      const projectName = this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName;
+      const exportName = projectName || Date.now();
+
+      const qp = {
+        ...this.queryParams,
+        pageNum: undefined,
+        pageSize: undefined
+
+      };
+
       this.exportLoading = true;
-      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_工地土票列表`);
+      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', qp, exportName + `_工地土票列表`);
       this.exportLoading = false;
     },
 

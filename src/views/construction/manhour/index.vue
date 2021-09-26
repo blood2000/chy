@@ -389,8 +389,18 @@ export default {
       }).catch(() => { this.loading = false; });
     },
     async handleExport() {
+      const projectName = this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName;
+      const exportName = projectName || Date.now();
+
+      const qp = {
+        ...this.queryParams,
+        pageNum: undefined,
+        pageSize: undefined
+
+      };
+
       this.exportLoading = true;
-      await this.download('/kydsz/machineWorkHours/web—getMachineWorkingListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_机械工时登记`);
+      await this.download('/kydsz/machineWorkHours/web—getMachineWorkingListExport', qp, exportName + `_机械工时登记`);
       this.exportLoading = false;
     },
 
