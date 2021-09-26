@@ -248,7 +248,7 @@
       </el-row>
 
       <!-- table -->
-      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig">  <!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" height="560">  <!-- @selection-change="handleSelectionChange" -->
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>

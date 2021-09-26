@@ -3,11 +3,27 @@ import store from './store';
 import { Message } from 'element-ui';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
-import { getToken } from '@/utils/auth';
+import { getToken, setToken } from '@/utils/auth';
+
 
 NProgress.configure({ showSpinner: false });
 
 const whiteList = ['/login', '/auth-redirect', '/bind', '/register'];
+
+function getQueryVariable(variable) {
+  var query = window.location.search.substring(1);
+  var vars = query.split('&');
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split('=');
+    if (pair[0] === variable) { return pair[1]; }
+  }
+  return (false);
+}
+
+const token = getQueryVariable('token');
+if (token) {
+  setToken(decodeURI(token));
+}
 
 router.beforeEach((to, from, next) => {
   NProgress.start();

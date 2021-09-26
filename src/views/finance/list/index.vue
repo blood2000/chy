@@ -125,7 +125,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" height="560" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
         <template #invoiceStatus="{row}">
           <span>
             <span v-if="row.invoiceStatus == 1" class="g-statusDot g-color-warning">●</span>

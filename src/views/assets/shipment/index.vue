@@ -239,7 +239,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="shipmentList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="shipmentList" :table-columns-config="tableColumnsConfig" height="560" @selection-change="handleSelectionChange">
         <template #shipperType="{row}">
           <span>{{ selectDictLabel(typeOptions, row.shipperType) }}</span>
         </template>
