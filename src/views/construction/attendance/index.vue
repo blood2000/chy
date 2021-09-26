@@ -16,6 +16,7 @@
             icon="el-icon-download"
             size="mini"
             :loading="exportLoading"
+            :disabled="!(queryParams.projectCode || queryParams.keyWord)"
             @click="handleExport"
           >导出</el-button>
         </el-col>
@@ -669,8 +670,11 @@ export default {
       }).catch(() => { this.loading = false; });
     },
     async handleExport() {
+      const projectName = this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName;
+      const exportName = projectName || this.queryParams.keyWord;
+      console.log(exportName);
       this.exportLoading = true;
-      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_工地考勤`);
+      await this.download('/kydsz/employeeAttendance/web—getEmployeeAttendanceListExport', this.queParams, exportName + `_工地考勤`);
       this.exportLoading = false;
     },
 

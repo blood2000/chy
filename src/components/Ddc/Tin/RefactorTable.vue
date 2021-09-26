@@ -34,6 +34,10 @@
         <template slot-scope="scope">
           <slot :name="th.prop" :row="scope.row">{{ scope.row[th.prop] === 0 ? 0 : scope.row[th.prop] || '' }}</slot>
         </template>
+        <template slot="header">
+          <slot :name="'header_' + th.prop" :row="{label:th.label,prop: th.prop, key }">{{ th.label }}</slot>
+        </template>
+
       </el-table-column>
     </template>
   </el-table>
@@ -169,7 +173,6 @@ export default {
       },
       immediate: true
     }
-
   },
   beforeDestroy() {
     clearTimeout(this.time);

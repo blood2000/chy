@@ -30,6 +30,13 @@
       </el-row>
       <!-- @selection-change="(selection)=> selections = selection" -->
       <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" @header-click="headerClick">
+
+
+        <template #header_ticketName="{row}">
+          <span>{{ row.label }}</span>
+          <i class="el-icon-d-caret shou" @click="headerClick2(row.prop)" />
+        </template>
+
         <template #price="{row}">
           <span>{{ floor(row.price - 0) }}</span>
         </template>
@@ -313,12 +320,15 @@ export default {
 
     // 头部点击
     headerClick(column, event) {
-      // console.log(column);
-      const { property } = column;
-      if (property === 'ticketName') {
-        this.queryParams.orderByColumn = property;
-        this.getList();
-      }
+      // const { property } = column;
+      // if (property === 'ticketName') {
+      //   this.queryParams.orderByColumn = property;
+      //   this.getList();
+      // }
+    },
+    headerClick2(property) {
+      this.queryParams.orderByColumn = property;
+      this.getList();
     }
   }
 };
