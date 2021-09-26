@@ -134,7 +134,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" height="560" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <i v-show="row.status === 1" class="el-icon-error g-color-error mr5" />
           <i v-show="row.status === 0" class="el-icon-success g-color-success mr5" />

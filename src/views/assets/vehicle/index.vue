@@ -207,7 +207,7 @@
         </el-col>
       </el-row>
 
-      <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" height="560" @selection-change="handleSelectionChange">
         <!-- 车牌类型 -->
         <!--<template #classificationCode="{row}">
           <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>

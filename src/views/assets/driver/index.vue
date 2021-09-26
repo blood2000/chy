@@ -283,7 +283,7 @@
         </el-col>
       </el-row>
 
-      <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="driverList" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" height="560" @selection-change="handleSelectionChange">
         <template #driverType="{row}">
           <span>{{ selectDictLabel(driverTypeOptions, row.driverType) }}</span>
         </template>
