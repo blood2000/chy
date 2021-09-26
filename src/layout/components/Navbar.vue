@@ -77,7 +77,8 @@ export default {
       'nickName',
       'name',
       'roleName',
-      'isShipment'
+      'isShipment',
+      'isDispatcher'
     ]),
     setting: {
       get() {
@@ -107,7 +108,7 @@ export default {
       });
     },
     goToStatistic() {
-      if (this.isShipment) return;
+      if (this.isShipment || this.isDispatcher) return;
       const routeData = this.$router.resolve({
         // path: '/statistic',
         path: '/statisticSecond',

@@ -73,25 +73,20 @@
             />
           </el-select>
         </el-form-item> -->
-        <el-form-item label="变动时间">
+        <el-form-item label="变动时间" prop="updateTime">
           <el-date-picker
-            v-model="queryParams.updateTimeBegin"
+            v-model="updateTime"
             clearable
-            type="date"
+            unlink-panels
+            type="datetimerange"
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.updateTimeEnd"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
+            style="width: 215px"
+            :default-time="defaultTime"
+            @change="updateTimeChoose"
           />
         </el-form-item>
         <el-form-item>
@@ -187,11 +182,15 @@
 
 <script>
 import { rechargelistApi, rechargelist } from '@/api/capital/recharge';
+import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Recharge',
   data() {
     return {
+      defaultTime: ['00:00:00', '23:59:59'],
+      pickerTimeOptions,
+      updateTime: [],
       tableColumnsConfig: [],
       api: rechargelistApi,
       // 遮罩层
@@ -274,6 +273,16 @@ export default {
     this.getList();
   },
   methods: {
+    // 时间选择
+    updateTimeChoose(date) {
+      if (date) {
+        this.queryParams.updateTimeBegin = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+        this.queryParams.updateTimeEnd = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+      } else {
+        this.queryParams.updateTimeBegin = null;
+        this.queryParams.updateTimeEnd = null;
+      }
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -290,6 +299,7 @@ export default {
     },
     /** 重置按钮操作 */
     resetQuery() {
+      this.updateTime = [];
       this.queryParams.updateTimeBegin = null;
       this.queryParams.updateTimeEnd = null;
       this.resetForm('queryForm');

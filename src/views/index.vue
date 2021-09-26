@@ -3,7 +3,9 @@
     <!-- 货主工作台 -->
     <WorkbanchShipper v-if="isShipment" :width="screenWidth" />
     <!-- 运营工作台 -->
-    <WorkBanch v-else :width="screenWidth" />
+    <WorkBanch v-if="!isShipment && !isDispatcher" :width="screenWidth" />
+    <!-- 调度工作台 -->
+    <div v-if="isDispatcher" class="app-container">欢迎使用超好运~</div>
 
   </div>
 </template>
@@ -26,7 +28,8 @@ export default {
       // 版本号
       version: '1.2.4.0',
       activeName: '0',
-      screenWidth: document.body.clientWidth
+      screenWidth: document.body.clientWidth,
+      isDispatcher: false
     };
   },
   mounted() {
@@ -37,11 +40,9 @@ export default {
   },
   created() {
     this.changeWidth();
-
-
-
-    const { isShipment = false } = getUserInfo() || {};
+    const { isShipment = false, isDispatcher = false } = getUserInfo() || {};
     this.isShipment = isShipment;
+    this.isDispatcher = isDispatcher;
   },
   methods: {
     resizeFun() {
