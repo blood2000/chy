@@ -376,10 +376,10 @@
           >
             分单列表
           </el-button> -->
-          <TableDropdown v-show="row.isChild === 2 || row.status < '7'">
+          <TableDropdown v-show="row.isChild === 2 || row.status < '5'">
             <el-dropdown-item>
               <el-button
-                v-if="row.status < '7'"
+                v-if="row.status < '5'"
                 v-hasPermi="['transportation:waybillOper:invalid']"
                 size="mini"
                 type="text"
