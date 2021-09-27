@@ -240,7 +240,7 @@
           </el-form-item>
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="平台服务费率(%)" prop="texPoint">
+              <el-form-item label="留存运费比例(%)" prop="texPoint">
                 <el-input-number v-model="form.texPoint" class="width100" controls-position="right" :precision="2" placeholder="请输入平台服务费率" :step="1" :min="0" :max="99.99" clearable @input="changeTextPoint" />
               </el-form-item>
             </el-col>
