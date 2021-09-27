@@ -50,21 +50,23 @@
             @change="datechoose"
           />
         </el-form-item>
+
         <el-form-item
-          label="所属团队"
-          prop="suostuandui______"
+          v-if="false"
+          label="运营团队"
+          prop="operateOrgCode"
         >
           <el-select
-            v-model="queryParams.suostuandui______"
+            v-model="queryParams.operateOrgCode"
             clearable
             filterable
             style="width: 230px"
             size="small"
-            placeholder="请选择所属团队"
+            placeholder="请选择运营团队"
             @click="handleQuery"
           >
             <el-option
-              v-for="dict in suostuandui______s"
+              v-for="dict in operateOrgCodes"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -72,6 +74,7 @@
           </el-select>
 
         </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -277,7 +280,7 @@ export default {
         'invoiceStatus': '1',
         order: null,
         prop: null,
-        suostuandui______: undefined
+        operateOrgCode: undefined
       },
       height: undefined,
       invoiceApplyTime: [],
@@ -307,8 +310,8 @@ export default {
         { 'dictLabel': '货主向承运商索取', 'dictValue': '1' }
       ],
 
-      // 所属团队
-      suostuandui______s: []
+      // 运营团队
+      operateOrgCodes: []
     };
   },
   computed: {
@@ -388,10 +391,10 @@ export default {
     });
     !this.$route.query.list && this.getList();
 
-    // 所属团队列表
+    // 运营团队列表
     getMarket().then((response) => {
       if (Array.isArray(response.data)) {
-        this.suostuandui______s = response.data.map(e => {
+        this.operateOrgCodes = response.data.map(e => {
           return {
             'dictLabel': e.market, 'dictValue': e.id
           };

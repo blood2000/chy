@@ -147,13 +147,15 @@
         >
           <el-date-picker
             v-model="receiveTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
             :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00', '23:59:59']"
             @change="datechoose"
           />
         </el-form-item>
@@ -163,13 +165,15 @@
         >
           <el-date-picker
             v-model="loadTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
             :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00', '23:59:59']"
             @change="loadDateChoose"
           />
         </el-form-item>
@@ -179,13 +183,15 @@
         >
           <el-date-picker
             v-model="unloadTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
             :picker-options="pickerOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="['00:00:00', '23:59:59']"
             @change="unloadDateChoose"
           />
         </el-form-item>
@@ -293,9 +299,9 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="装卸货类型" prop="zhianejosjo_________">
+        <el-form-item label="装卸类型" prop="loadUnloadType">
           <el-select
-            v-model="queryParams.zhianejosjo_________"
+            v-model="queryParams.loadUnloadType"
             placeholder="请选择"
             clearable
             filterable
@@ -303,7 +309,7 @@
             style="width: 228px"
           >
             <el-option
-              v-for="dict in zhianejosjo_________s"
+              v-for="dict in loadUnloadTypes"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -424,6 +430,9 @@
         </template> -->
         <template #isWarning="{row}">
           <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
+        </template>
+        <template #loadUnloadType="{row}">
+          <span>{{ selectDictLabel(loadUnloadTypes, row.loadUnloadType) }}</span>
         </template>
         <template #loadWeight="{row}">
           <span v-if="row.loadWeight">
@@ -686,10 +695,10 @@ export default {
         { 'dictLabel': '货主拒绝撤销', 'dictValue': 3 }
       ],
 
-      'zhianejosjo_________s': [
-        { 'dictLabel': '渣土场', 'dictValue': 0 },
-        { 'dictLabel': '场内', 'dictValue': 1 },
-        { 'dictLabel': '自倒', 'dictValue': 2 }
+      'loadUnloadTypes': [
+        { 'dictLabel': '渣土场', 'dictValue': '1001' },
+        { 'dictLabel': '场内', 'dictValue': '1002' },
+        { 'dictLabel': '自倒', 'dictValue': '1003' }
       ],
 
       // 查询参数
@@ -720,7 +729,7 @@ export default {
         'shipperCode': undefined,
         'ztcCode': null,
         'projectCode': null,
-        zhianejosjo_________: undefined
+        loadUnloadType: undefined
       },
       // 表单参数
       'form': {},
@@ -757,37 +766,37 @@ export default {
       width: 180,
       fixed: 'left'
     });
-    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
-    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
+    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
+    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
     this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
     this.getList();
   },
   methods: {
     datechoose(date) {
       if (date) {
-        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startReceiveTime = date[0];
+        this.queryParams.endReceiveTime = date[1];
       } else {
-        this.queryParams.startReceiveTime = null;
-        this.queryParams.endReceiveTime = null;
+        this.queryParams.startReceiveTime = undefined;
+        this.queryParams.endReceiveTime = undefined;
       }
     },
     loadDateChoose(date) {
       if (date) {
-        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startLoadTime = date[0];
+        this.queryParams.endLoadTime = date[1];
       } else {
-        this.queryParams.startLoadTime = null;
-        this.queryParams.endLoadTime = null;
+        this.queryParams.startLoadTime = undefined;
+        this.queryParams.endLoadTime = undefined;
       }
     },
     unloadDateChoose(date) {
       if (date) {
-        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startUnLoadTime = date[0];
+        this.queryParams.endUnLoadTime = date[1];
       } else {
-        this.queryParams.startUnLoadTime = null;
-        this.queryParams.endUnLoadTime = null;
+        this.queryParams.startUnLoadTime = undefined;
+        this.queryParams.endUnLoadTime = undefined;
       }
     },
     /** 查询列表 */
