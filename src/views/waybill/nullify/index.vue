@@ -136,6 +136,16 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
+            v-hasPermi="['transportation:waybill:manageListExport']"
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="loadingExport"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
             v-hasPermi="['transportation:waybillOper:invalidRejected']"
             :loading="logLoading"
             type="primary"
@@ -367,6 +377,7 @@ export default {
         status: null
       },
       receiveTime: [],
+      loadingExport: false,
       // 表单是否禁用
       formDisable: false,
       // 当前选中的运单id
@@ -442,6 +453,13 @@ export default {
       this.open = true;
       this.title = '运输单信息';
       this.formDisable = true;
+    },
+    // 导出
+    handleExport() {
+      this.loadingExport = true;
+      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `作废运单`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 驳回按钮操作 */
     handleLog(row) {
