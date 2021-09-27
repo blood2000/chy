@@ -292,6 +292,25 @@
             />
           </el-select>
         </el-form-item>
+
+        <el-form-item label="装卸货类型" prop="zhianejosjo_________">
+          <el-select
+            v-model="queryParams.zhianejosjo_________"
+            placeholder="请选择"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="dict in zhianejosjo_________s"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item label="调度/调度员" prop="teamName">
           <el-input
             v-model.trim="queryParams.teamName"
@@ -666,6 +685,13 @@ export default {
         { 'dictLabel': '货主同意撤销', 'dictValue': 2 },
         { 'dictLabel': '货主拒绝撤销', 'dictValue': 3 }
       ],
+
+      'zhianejosjo_________s': [
+        { 'dictLabel': '渣土场', 'dictValue': 0 },
+        { 'dictLabel': '场内', 'dictValue': 1 },
+        { 'dictLabel': '自倒', 'dictValue': 2 }
+      ],
+
       // 查询参数
       'queryParams': {
         'pageNum': 1,
@@ -693,7 +719,8 @@ export default {
         'teamName': null,
         'shipperCode': undefined,
         'ztcCode': null,
-        'projectCode': null
+        'projectCode': null,
+        zhianejosjo_________: undefined
       },
       // 表单参数
       'form': {},
