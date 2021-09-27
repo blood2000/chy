@@ -215,7 +215,6 @@
         <template #edit="{row}">
           <el-button
             v-if="row.matching !== 1"
-            v-hasPermi="['transportation:waybill:getWayBillByCode']"
             size="mini"
             type="text"
             @click="handleMatching(row)"
