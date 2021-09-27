@@ -241,7 +241,7 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="留存运费比例(%)" prop="texPoint">
-                <el-input-number v-model="form.texPoint" class="width100" controls-position="right" :precision="2" placeholder="请输入平台服务费率" :step="1" :min="0" :max="99.99" clearable @input="changeTextPoint" />
+                <el-input-number v-model="form.texPoint" class="width100" controls-position="right" :precision="2" placeholder="请输入留存运费比例" :step="1" :min="0" :max="99.99" clearable @input="changeTextPoint" />
               </el-form-item>
             </el-col>
             <el-col :span="12">
