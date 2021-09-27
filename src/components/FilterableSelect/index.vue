@@ -166,9 +166,23 @@ export default {
 
       queryFn && queryFn({ ...this.shipmentreq, ...queryData, [this.keywords]: this.shipmentreq[this.keywords] }).then(
         (res) => {
-          // console.log(res);
-          this.dataOver = !((res[key] || res.data[key]).length);
-          this.shipmentList = this.shipmentList.concat((res[key] || res.data[key]));
+          // console.log(res[key] || res.data[key]);
+
+          if (res[key] || res.data[key]) {
+            this.dataOver = !((res[key] || res.data[key]).length);
+            this.shipmentList = this.shipmentList.concat((res[key] || res.data[key]));
+          } else {
+            if (Array.isArray(res.data)) {
+              this.shipmentList = res.data.map(e => {
+                return {
+                  [this.showKey.value]: e,
+                  [this.showKey.label]: e
+                };
+              });
+            }
+          }
+
+          console.log(this.shipmentList);
           this.loading = false;
         }
       ).catch(() => {

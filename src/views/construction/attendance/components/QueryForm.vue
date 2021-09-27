@@ -16,7 +16,8 @@
         <el-select
           v-model="queryParams.projectCode"
           filterable
-          style="width: 185px"
+          clearable
+          style="width: 228px"
           placeholder="请选择项目"
           @change="$emit('handleQuery')"
         >
@@ -37,7 +38,7 @@
           v-model="queryParams.keyWord"
           placeholder="请输入成员姓名/手机"
           clearable
-          style="width: 185px"
+          style="width: 228px"
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
@@ -66,7 +67,7 @@
           v-model="queryParams.attendanceStatus"
           clearable
           filterable
-          style="width: 185px"
+          style="width: 228px"
           placeholder="请选择考勤类型"
           @change="$emit('handleQuery')"
         >
@@ -87,7 +88,7 @@
           v-model="queryParams.schedule"
           clearable
           filterable
-          style="width: 185px"
+          style="width: 228px"
           placeholder="请选择班次"
           @change="$emit('handleQuery')"
         >
@@ -104,6 +105,7 @@
         <el-button
           type="primary"
           icon="el-icon-search"
+          :disabled="!(queryParams.projectCode || queryParams.keyWord)"
           @click="$emit('handleQuery')"
         >
           搜索

@@ -4,7 +4,7 @@
     :model="queryParams"
     :inline="true"
     size="small"
-    label-width="98px"
+    label-width="100px"
   >
     <div class="app-container app-container--search">
 
@@ -15,7 +15,7 @@
         <el-select
           v-model="queryParams.projectCode"
           filterable
-          style="width: 185px"
+          style="width: 228px"
           placeholder="请选择选择项目"
           @change="$emit('handleQuery')"
         >
@@ -36,7 +36,7 @@
           v-model="queryParams.phone"
           placeholder="请输入外部人员手机"
           clearable
-          style="width: 185px"
+          style="width: 228px"
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
@@ -60,8 +60,26 @@
       </el-form-item>
 
       <el-form-item
+        label="提交审核时间"
+        prop="submitAuditTime"
+      >
+        <el-date-picker
+          v-model="queryParams.submitAuditTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 228px"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="$emit('handleQuery')"
+        />
+      </el-form-item>
+
+      <el-form-item
         label="审核时间"
-        prop="receiveTime"
+        prop="confirmAuditTime"
       >
         <el-date-picker
           v-model="queryParams.confirmAuditTime"
@@ -85,7 +103,7 @@
           v-model="queryParams.schedule"
           clearable
           filterable
-          style="width: 185px"
+          style="width: 228px"
           placeholder="请选择班次"
           @change="$emit('handleQuery')"
         >
@@ -105,7 +123,7 @@
           v-model="queryParams.jobContent"
           clearable
           filterable
-          style="width: 185px"
+          style="width: 228px"
           placeholder="请选择工作内容"
           @change="$emit('handleQuery')"
         >
