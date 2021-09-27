@@ -252,6 +252,9 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #beforeStatus="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.beforeStatus) }}</span>
+        </template>
         <template #invoiceStatus="{row}">
           <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
         </template>
