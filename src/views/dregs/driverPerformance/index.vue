@@ -227,6 +227,14 @@ export default {
           'sortNum': 2,
           'width': '120',
           'tooltip': true
+        },
+        {
+          'label': '备注',
+          'prop': 'remark',
+          'isShow': true,
+          'sortNum': 2,
+          'width': '120',
+          'tooltip': true
         }
       ];
       return arr;
