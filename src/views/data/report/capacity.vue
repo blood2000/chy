@@ -75,7 +75,7 @@
         <p class="label">新增司机：</p>
         <p class="count">{{ capacityCount.addDriver || 0 }}</p>
       </div>
-      <div class="count-box blue">
+      <div v-if="user.userCode !== '9b8afa19203c488282b05e04096b0bdd'" class="count-box blue">
         <p class="label">新增调度者：</p>
         <p class="count">{{ capacityCount.addScheduler || 0 }}</p>
       </div>
@@ -156,6 +156,8 @@
 import { pickerOptions } from '@/utils/dateRange';
 import { capacityStatisticsCount, waybillStatisticsCount, getMarket, waybillStatisticsList } from '@/api/data/capacity';
 import DataNull from '@/components/DataNull/index';
+import { getUserInfo } from '@/utils/auth';
+
 const dTime = '2021-07-04 00:00:00';
 export default {
   name: 'Capacity',
@@ -188,7 +190,8 @@ export default {
       capacityCount: {},
       waybillCount: {},
       exportLoading: false,
-      MarketOptions: []
+      MarketOptions: [],
+      user: {}
     };
   },
   mounted() {
@@ -199,6 +202,10 @@ export default {
     this.getMarketList();
     this.getCapacityCount();
     this.getWaybillCount();
+  },
+  created() {
+    const { user = {}} = getUserInfo() || {};
+    this.user = user;
   },
   methods: {
     datechoose(date) {

@@ -437,7 +437,7 @@
 
 
           <!-- 大于3个按钮的使用这个... -->
-          <TableDropdown v-if="row.isChild == 2">
+          <TableDropdown v-if="row.isChild == 2 && user.userCode !== '9b8afa19203c488282b05e04096b0bdd'">
             <el-dropdown-item>
               <el-button
                 v-hasPermi="['transportation:waybill:childList']"
@@ -498,6 +498,7 @@ import ChildDialog from '@/views/settlement/components/childDialog';
 import DetailDialog from '@/views/waybill/components/detailDialog';
 import importDialog from './components/importDialog';
 import { pickerOptions } from '@/utils/dateRange';
+import { getUserInfo } from '@/utils/auth';
 
 const dictsData1 = [
   { dictLabel: '未上报', dictValue: 0 },
@@ -609,7 +610,7 @@ export default {
       //   keywords: '',
       //   pageSize: 10
       // }
-
+      user: {},
       /* 字典值 */
       reportStatusOP: []
 
@@ -632,6 +633,8 @@ export default {
 
 
   created() {
+    const { user = {}} = getUserInfo() || {};
+    this.user = user;
     // 配置表头 listApi-> 请求的接口, null-> 编辑, tableColumnsConfig-> 外部的表头
     this.tableHeaderConfig(this.tableColumnsConfig, listApi, null, tableColumnsConfig);
 

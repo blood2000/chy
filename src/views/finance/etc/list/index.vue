@@ -125,7 +125,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="分单" prop="isChildList">
+        <!-- <el-form-item label="分单" prop="isChildList">
           <el-select
             v-model="queryParams.isChildList"
             placeholder="请选择是否分单"
@@ -141,7 +141,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="调度/调度员" prop="teamName">
           <el-input
             v-model.trim="queryParams.teamName"
@@ -326,7 +326,7 @@
           >
             查看发票
           </el-button>
-          <el-button
+          <!-- <el-button
             v-if="row.isChild === 2"
             v-hasPermi="['transportation:waybillOper:reinsurance']"
             size="mini"
@@ -334,8 +334,8 @@
             @click="handleSeperate(row)"
           >
             分单列表
-          </el-button>
-          <TableDropdown v-show="false">
+          </el-button> -->
+          <!-- <TableDropdown v-show="false">
             <el-dropdown-item>
               <el-button
                 v-if="row.isChild === 2"
@@ -347,7 +347,7 @@
                 分单列表
               </el-button>
             </el-dropdown-item>
-          </TableDropdown>
+          </TableDropdown> -->
         </template>
       </RefactorTable>
 

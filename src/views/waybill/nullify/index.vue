@@ -368,10 +368,11 @@ export default {
       ],
       // 来源字典
       sourceTypeOptions: [
-        { 'dictLabel': '承运码', 'dictValue': '1' },
-        { 'dictLabel': '调度者指派', 'dictValue': '2' },
-        { 'dictLabel': '自主接单', 'dictValue': '3' },
-        { 'dictLabel': '后台指派', 'dictValue': '4' }
+        { 'dictLabel': 'HZZD', 'dictValue': '1' },
+        { 'dictLabel': 'FM', 'dictValue': '2' },
+        { 'dictLabel': 'ZZJD', 'dictValue': '3' },
+        { 'dictLabel': 'HTZP', 'dictValue': '4' },
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
       ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
       isWarningOptions: [

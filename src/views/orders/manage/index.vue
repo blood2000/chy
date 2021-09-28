@@ -582,7 +582,8 @@ export default {
         keywords: '',
         pageSize: 10
       },
-      floor
+      floor,
+      user: {}
     };
   },
 
@@ -800,8 +801,9 @@ export default {
   created() {
     // console.log('页面初始化');
 
-    const { isShipment = false, shipment = {}} = getUserInfo() || {};
+    const { isShipment = false, shipment = {}, user = {}} = getUserInfo() || {};
     this.isShipment = isShipment;
+    this.user = user;
 
     isShipment && (this.queryParams.tin6 = shipment.info.code);
 
@@ -901,7 +903,11 @@ export default {
 
         e.redisOrderSpecifiedVoList.forEach(specified => {
           if (specified.userType === 1) {
-            e.specified = `调度者：${e.redisOrderSpecifiedVoList.length} 人`;
+            if (this.user.userCode !== '9b8afa19203c488282b05e04096b0bdd') {
+              e.specified = `调度者：${e.redisOrderSpecifiedVoList.length} 人`;
+            } else {
+              e.specified = '-';
+            }
           } else {
             e.specified = `司机：${e.redisOrderSpecifiedVoList.length} 人`;
           }
