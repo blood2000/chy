@@ -938,10 +938,20 @@ export default {
         });
       });
     },
-    // 审核通过，未绑定网商账号的行标红
+    // 审核通过，未绑定网商账号的行标红,身份证和驾驶证过期变成橙色
     tableRowClassName({ row }) {
       if ((!row.wsAccount || row.wsAccount === '') && row.authStatus === 3) {
         return 'warning-row';
+      }
+      if (row.identificationEndTime) {
+        if (new Date(row.identificationEndTime).getTime() < new Date().getTime()) {
+          return 'wrong-row';
+        }
+      }
+      if (row.validPeriodTo) {
+        if (new Date(row.validPeriodTo).getTime() < new Date().getTime()) {
+          return 'wrong-row';
+        }
       }
       return '';
     },
@@ -972,5 +982,8 @@ export default {
 }
 .el-table ::v-deep.warning-row {
   background: #fadbd9 !important;
+}
+.el-table ::v-deep.wrong-row {
+  background: #ffdd80 !important;
 }
 </style>
