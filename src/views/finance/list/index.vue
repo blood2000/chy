@@ -50,6 +50,31 @@
             @change="datechoose"
           />
         </el-form-item>
+
+        <el-form-item
+          v-if="false"
+          label="运营团队"
+          prop="operateOrgCode"
+        >
+          <el-select
+            v-model="queryParams.operateOrgCode"
+            clearable
+            filterable
+            style="width: 230px"
+            size="small"
+            placeholder="请选择运营团队"
+            @click="handleQuery"
+          >
+            <el-option
+              v-for="dict in operateOrgCodes"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+
+        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -125,7 +150,7 @@
         />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="billlist" :table-columns-config="tableColumnsConfig" :height="height" @sort-change="handleSortChange" @selection-change="handleSelectionChange">
         <template #invoiceStatus="{row}">
           <span>
             <span v-if="row.invoiceStatus == 1" class="g-statusDot g-color-warning">●</span>
@@ -211,6 +236,9 @@ import TrackExport from '@/views/waybill/components/trackExport';
 import { pickerOptions } from '@/utils/dateRange';
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
+import { getMarket } from '@/api/assets/shipment';
+
+
 export default {
   'name': 'List',
   components: { VerifyDialog, BillingDialog, TrackExport, TotalBar },
@@ -251,8 +279,10 @@ export default {
         'invoiceApplyTimeEnd': undefined,
         'invoiceStatus': '1',
         order: null,
-        prop: null
+        prop: null,
+        operateOrgCode: undefined
       },
+      height: undefined,
       invoiceApplyTime: [],
       // 弹框 内容
       visible: false,
@@ -278,7 +308,10 @@ export default {
       invoiceFromOptions: [
         { 'dictLabel': '货主向平台索取', 'dictValue': '0' },
         { 'dictLabel': '货主向承运商索取', 'dictValue': '1' }
-      ]
+      ],
+
+      // 运营团队
+      operateOrgCodes: []
     };
   },
   computed: {
@@ -357,6 +390,17 @@ export default {
       fixed: 'left'
     });
     !this.$route.query.list && this.getList();
+
+    // 运营团队列表
+    getMarket().then((response) => {
+      if (Array.isArray(response.data)) {
+        this.operateOrgCodes = response.data.map(e => {
+          return {
+            'dictLabel': e.market, 'dictValue': e.id
+          };
+        });
+      }
+    });
   },
   'methods': {
     // 排序事件
@@ -393,6 +437,7 @@ export default {
       billList(this.queryParams).then(response => {
         this.billlist = response.data.rows;
         this.total = response.data.total;
+        this.height = 545;
         this.loading = false;
       });
     },

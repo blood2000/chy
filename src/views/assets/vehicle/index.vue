@@ -207,7 +207,7 @@
         </el-col>
       </el-row>
 
-      <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="vehicleList" :table-columns-config="tableColumnsConfig" :height="height" @selection-change="handleSelectionChange">
         <!-- 车牌类型 -->
         <!--<template #classificationCode="{row}">
           <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
@@ -477,6 +477,7 @@ export default {
         isFreeze: undefined,
         vehicleTypeCode: undefined
       },
+      height: undefined,
       // 表单是否禁用
       formDisable: false,
       // 车辆code
@@ -573,6 +574,7 @@ export default {
       listInfo(params).then((response) => {
         this.vehicleList = response.rows;
         this.total = response.total;
+        this.height = 560;
         this.loading = false;
       });
     },

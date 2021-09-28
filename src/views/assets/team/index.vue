@@ -134,7 +134,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="infoList" :table-columns-config="tableColumnsConfig" :height="height" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <i v-show="row.status === 1" class="el-icon-error g-color-error mr5" />
           <i v-show="row.status === 0" class="el-icon-success g-color-success mr5" />
@@ -323,6 +323,7 @@ export default {
         applyStatus: undefined,
         authStatus: undefined
       },
+      height: undefined,
       // 表单参数
       form: {},
       // 表单是否禁用
@@ -374,6 +375,7 @@ export default {
       listInfo(this.queryParams).then(response => {
         this.infoList = response.rows;
         this.total = response.total;
+        this.height = 560;
         this.loading = false;
       });
     },

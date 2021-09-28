@@ -51,6 +51,13 @@
         <template #hoursTotal="{row}">
           <span>{{ row.hoursTotal || row.hoursTotal == 0? floor(row.hoursTotal - 0): '-' }}</span>
         </template>
+        <!-- 9/26 起止 -->
+        <template #StartToEnd="{row}">
+          <span>{{ row.startTime + '-' + row.completeTime }}</span>
+        </template>
+        <template #submitAuditTime="{row}">
+          <span>{{ parseTime(row.submitAuditTime) || '-' }}</span>
+        </template>
         <template #actualNumber="{row}">
           <span>{{ row.actualNumber || '-' }}</span>
         </template>
@@ -112,6 +119,7 @@ export default {
         phone: undefined,
         receiveTime: [], // 时间
         confirmAuditTime: [],
+        submitAuditTime: [], // 时间
         schedule: undefined,
         jobContent: undefined
 
@@ -197,6 +205,20 @@ export default {
           'prop': 'jobContentName',
           'isShow': true,
           'width': '90',
+          'tooltip': true
+        },
+        {
+          'label': '起止',
+          'prop': 'StartToEnd',
+          'isShow': true,
+          'width': '110',
+          'tooltip': true
+        },
+        {
+          'label': '提交时间',
+          'prop': 'submitAuditTime',
+          'isShow': true,
+          'width': '160',
           'tooltip': true
         },
 
@@ -307,6 +329,8 @@ export default {
 
     queParams() {
       const shift = this.shift_op.find(e => e.dictValue === this.queryParams.schedule) || {};
+
+      const { submitAuditTime } = this.queryParams;
       return {
         ...this.queryParams,
         bigCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
@@ -315,6 +339,11 @@ export default {
         endConfirmAuditTime: this.queryParams.confirmAuditTime ? this.queryParams.confirmAuditTime[1] : undefined,
         receiveTime: undefined,
         confirmAuditTime: undefined,
+
+        bigSubmitAuditTime: submitAuditTime ? submitAuditTime[0] : undefined,
+        endSubmitAuditTime: submitAuditTime ? submitAuditTime[1] : undefined,
+        submitAuditTime: undefined,
+
         projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName,
         scheduleName: shift.dictLabel
 
@@ -360,8 +389,18 @@ export default {
       }).catch(() => { this.loading = false; });
     },
     async handleExport() {
+      const projectName = this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName;
+      const exportName = projectName || Date.now();
+
+      const qp = {
+        ...this.queParams,
+        pageNum: undefined,
+        pageSize: undefined
+
+      };
+
       this.exportLoading = true;
-      await this.download('/kydsz/machineWorkHours/web—getMachineWorkingListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_机械工时登记`);
+      await this.download('/kydsz/machineWorkHours/web—getMachineWorkingListExport', qp, exportName + `_机械工时登记`);
       this.exportLoading = false;
     },
 

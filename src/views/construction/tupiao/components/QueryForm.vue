@@ -15,9 +15,13 @@
         <el-select
           v-model="queryParams.projectCode"
           filterable
-          style="width: 185px"
-          placeholder="请选择选择项目"
-          @change="$emit('handleQuery')"
+          style="width: 228px"
+          placeholder="请选择项目"
+          @change="
+            $emit('handleQuery');
+            queryParams.ticketName=undefined;
+            queryParams.receiveSite=undefined;
+            projectName = projectListOP.find((e)=> e.code === queryParams.projectCode).projectName"
         >
           <el-option
             v-for="item in projectListOP"
@@ -28,7 +32,7 @@
         </el-select>
       </el-form-item>
 
-      <el-form-item
+      <!-- <el-form-item
         label="土票名称"
         prop="ticketName"
       >
@@ -36,12 +40,43 @@
           v-model="queryParams.ticketName"
           placeholder="请输入土票名称"
           clearable
-          style="width: 185px"
+          style="width: 228px"
           @keyup.enter.native="$emit('handleQuery')"
         />
-      </el-form-item>
+      </el-form-item> -->
 
       <el-form-item
+        label="土票名称"
+        prop="ticketName"
+      >
+        <FilterableSelect
+          v-model="queryParams.ticketName"
+          clearable
+          style="width: 228px"
+          placeholder="请输入土票名称"
+          requer-msg="请先选择项目！"
+          :is-sure-key="'projectCode'"
+          :axios="{
+            queryFn: getTicketName,
+            queryData:{
+              // projectName: queryParams.projectName,
+              projectCode: queryParams.projectCode,
+            },
+          }"
+          :keywords="'ticketName'"
+          :show-key="{
+            value: 'value',
+            label: 'label',
+          }"
+          @selected="(data)=>{ $emit('handleQuery') }"
+        >
+          <template #default="{row}">
+            <span>{{ row.label }}</span>
+          </template>
+        </FilterableSelect>
+      </el-form-item>
+
+      <!-- <el-form-item
         label="接收工地"
         prop="receiveSite"
       >
@@ -49,10 +84,42 @@
           v-model="queryParams.receiveSite"
           placeholder="请输入接收工地"
           clearable
-          style="width: 185px"
+          style="width: 228px"
           @keyup.enter.native="$emit('handleQuery')"
         />
+      </el-form-item> -->
+
+      <el-form-item
+        label="接收工地"
+        prop="receiveSite"
+      >
+        <FilterableSelect
+          v-model="queryParams.receiveSite"
+          clearable
+          style="width: 228px"
+          placeholder="请输入接收工地"
+          requer-msg="请先选择项目！"
+          :is-sure-key="'projectCode'"
+          :axios="{
+            queryFn: getReceiveSite,
+            queryData:{
+              // projectName: queryParams.projectName,
+              projectCode: queryParams.projectCode,
+            }
+          }"
+          :keywords="'receiveSite'"
+          :show-key="{
+            value: 'value',
+            label: 'label',
+          }"
+          @selected="(data)=>{ $emit('handleQuery') }"
+        >
+          <template #default="{row}">
+            <span>{{ row.label }}</span>
+          </template>
+        </FilterableSelect>
       </el-form-item>
+
 
 
       <el-form-item
@@ -97,8 +164,12 @@
 
 <script>
 import { pickerOptions } from '@/utils/dateRange';
+import FilterableSelect from '@/components/FilterableSelect'; // 远程组件
+import { getTicketName, getReceiveSite } from '@/api/construction/tupiao';
 
 export default {
+  components: { FilterableSelect },
+
   props: {
     value: {
       type: Object,
@@ -111,7 +182,11 @@ export default {
   },
   data() {
     return {
-      pickerOptions
+      pickerOptions,
+      getTicketName,
+      getReceiveSite
+
+      // projectName: ''
       // 'projectList': []
     };
   },
@@ -124,9 +199,6 @@ export default {
         this.$emit('input', value);
       }
     }
-  },
-  created() {
-
   },
   methods: {
 

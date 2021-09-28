@@ -10,3 +10,21 @@ export function getProjectTicketList(data) {
   });
 }
 
+// web土票名称模糊
+export function getTicketName(query) {
+  return request({
+    url: '/kydsz/projectTicket/web—getTicketName',
+    method: 'get',
+    params: query
+  });
+}
+
+// web土票名称模糊
+export function getReceiveSite(query) {
+  return request({
+    url: '/kydsz/projectTicket/web—getReceiveSite',
+    method: 'get',
+    params: query
+  });
+}
+

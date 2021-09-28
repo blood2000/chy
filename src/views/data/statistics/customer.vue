@@ -156,6 +156,7 @@
         :summary="summary"
         :data="customerList"
         :table-columns-config="tableColumnsConfig"
+        :height="height"
         :summary-method="getSummaries"
       ><!-- @selection-change="handleSelectionChange" -->
         <template #accConfirmedServiceFee="{row}">
@@ -294,6 +295,7 @@ export default {
         creditBalanceCondition: null,
         creditBalance: null
       },
+      height: undefined,
       // 合计
       summary: true,
       loadingExport: false,
@@ -449,6 +451,7 @@ export default {
         // console.log(response);
         this.customerList = response.data.list;
         this.total = response.data.total;
+        this.height = 560;
         this.loading = false;
       });
       // 查询列表合计

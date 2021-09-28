@@ -509,7 +509,7 @@ export default {
             spinner: 'el-icon-loading',
             background: 'rgba(0, 0, 0, 0.7)'
           });
-          if (this.form.loadWeight > 0) {
+          if (this.form.loadWeight <= 150) {
             if (!this.stowage && this.form.loadWeight !== 1) {
               this.msgWarning('运单车数只能为1车！');
               loading.close();
@@ -531,7 +531,7 @@ export default {
               });
             }
           } else {
-            this.msgWarning('运单重量或车数必须大于0！');
+            this.msgWarning('运单吨数或立方数最高限制为150！');
             loading.close();
           }
         }

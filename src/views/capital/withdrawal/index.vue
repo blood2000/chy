@@ -77,46 +77,36 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="转账日期">
+        <el-form-item label="转账日期" prop="transferTime">
           <el-date-picker
-            v-model="queryParams.transferTimeBegin"
+            v-model="transferTime"
             clearable
-            type="date"
+            unlink-panels
+            type="datetimerange"
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.transferTimeEnd"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
+            style="width: 215px"
+            :default-time="defaultTime"
+            @change="transferTimeChoose"
           />
         </el-form-item>
-        <el-form-item label="申请日期">
+        <el-form-item label="申请日期" prop="applyTime">
           <el-date-picker
-            v-model="queryParams.applyTimeBegin"
+            v-model="applyTime"
             clearable
-            type="date"
+            unlink-panels
+            type="datetimerange"
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
-          />
-          至
-          <el-date-picker
-            v-model="queryParams.applyTimeEnd"
-            clearable
-            type="date"
-            size="small"
-            style="width: 130px"
-            value-format="yyyy-MM-dd"
-            placeholder="请选择"
+            style="width: 215px"
+            :default-time="defaultTime"
+            @change="applyTimeChoose"
           />
         </el-form-item>
         <el-form-item>
@@ -236,6 +226,7 @@
 <script>
 import { withDrawalListApi, getWithDrawalList, toCard, reject, reBindCard } from '@/api/capital/withdrawal';
 import PdfLook from '@/views/system/media/pdfLook';
+import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Withdrawal',
@@ -244,6 +235,10 @@ export default {
   },
   data() {
     return {
+      defaultTime: ['00:00:00', '23:59:59'],
+      pickerTimeOptions,
+      applyTime: [],
+      transferTime: [],
       tableColumnsConfig: [],
       api: withDrawalListApi,
       // 遮罩层
@@ -362,6 +357,25 @@ export default {
     }
   },
   methods: {
+    // 时间选择
+    transferTimeChoose(date) {
+      if (date) {
+        this.queryParams.transferTimeBegin = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+        this.queryParams.transferTimeEnd = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+      } else {
+        this.queryParams.transferTimeBegin = null;
+        this.queryParams.transferTimeEnd = null;
+      }
+    },
+    applyTimeChoose(date) {
+      if (date) {
+        this.queryParams.applyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+        this.queryParams.applyTimeEnd = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+      } else {
+        this.queryParams.applyTimeBegin = null;
+        this.queryParams.applyTimeEnd = null;
+      }
+    },
     /** 从快捷入口进 */
     getRouterQuery(route) {
       if (route.name !== this.$options.name) return;
@@ -402,6 +416,8 @@ export default {
       this.handleQuery();
     },
     resetQueryForm() {
+      this.transferTime = [];
+      this.applyTime = [];
       this.queryParams.transferTimeBegin = null;
       this.queryParams.transferTimeEnd = null;
       this.queryParams.applyTimeBegin = null;

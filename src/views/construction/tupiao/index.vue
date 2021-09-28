@@ -2,7 +2,7 @@
 
   <div>
     <div v-show="showSearch">
-      <QueryForm v-model="queryParams" :project-list-o-p="projectList" @handleQuery="queryParams.pageNum = 1;getList()" />
+      <QueryForm v-model="queryParams" :project-list-o-p="projectList" @handleQuery="queryParams.orderByColumn = undefined; queryParams.pageNum = 1;getList()" />
     </div>
 
     <div class="app-container">
@@ -29,7 +29,14 @@
         />
       </el-row>
       <!-- @selection-change="(selection)=> selections = selection" -->
-      <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName">
+      <RefactorTable :loading="loading" :data="list" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" @header-click="headerClick">
+
+
+        <template #header_ticketName="{row}">
+          <span>{{ row.label }}</span>
+          <i class="el-icon-d-caret shou" @click="headerClick2(row.prop)" />
+        </template>
+
         <template #price="{row}">
           <span>{{ floor(row.price - 0) }}</span>
         </template>
@@ -81,9 +88,8 @@ export default {
         projectCode: undefined,
         ticketName: undefined,
         receiveSite: undefined,
-        receiveTime: [] // 时间
-
-
+        receiveTime: [], // 时间
+        orderByColumn: undefined
 
       },
       'list': [],
@@ -266,6 +272,7 @@ export default {
       const res = await webGetMachineProjectList();
       this.projectList = res.data;
       this.queryParams.projectCode = this.projectList[0].code;
+      this.queryParams.projectName = this.projectList[0].projectName;
       this.getList();
     },
     // 初始表头
@@ -291,8 +298,18 @@ export default {
       }).catch(() => { this.loading = false; });
     },
     async handleExport() {
+      const projectName = this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName;
+      const exportName = projectName || Date.now();
+
+      const qp = {
+        ...this.queParams,
+        pageNum: undefined,
+        pageSize: undefined
+
+      };
+
       this.exportLoading = true;
-      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', this.queParams, this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName + `_工地土票列表`);
+      await this.download('/kydsz/projectTicket/web—getProjectTicketListExport', qp, exportName + `_工地土票列表`);
       this.exportLoading = false;
     },
 
@@ -309,6 +326,19 @@ export default {
         return 'tupiao-warning-row';
       }
       return '';
+    },
+
+    // 头部点击
+    headerClick(column, event) {
+      // const { property } = column;
+      // if (property === 'ticketName') {
+      //   this.queryParams.orderByColumn = property;
+      //   this.getList();
+      // }
+    },
+    headerClick2(property) {
+      this.queryParams.orderByColumn = property;
+      this.getList();
     }
   }
 };

@@ -177,16 +177,16 @@
       </el-collapse>
 
       <el-row :gutter="10" class="mb8">
-        <!-- <el-col :span="1.5">
+        <el-col :span="1.5">
           <el-button
-            v-hasPermi="['data:platform:export']"
+            v-hasPermi="['payment:cloudMoneyParsing:export']"
             type="primary"
             icon="el-icon-download"
             size="mini"
             :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
-        </el-col> -->
+        </el-col>
         <el-col :span="1.5" style="float: right">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -214,13 +214,14 @@
         </template>
         <template #edit="{row}">
           <el-button
-            v-hasPermi="['transportation:waybill:getWayBillByCode']"
+            v-if="row.matching !== 1"
             size="mini"
             type="text"
             @click="handleMatching(row)"
           >
             匹配
           </el-button>
+          <span v-else>暂无</span>
         </template>
       </MoreRefactorTable>
 
@@ -324,6 +325,9 @@ export default {
       width: 100,
       fixed: 'left'
     });
+    this.queryParams.startTime = this.parseTime(new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-01'), '{y}-{m}-{d} {h}:{i}:{s}');
+    this.queryParams.endTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
+    this.queryTime = [new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-01'), new Date()];
     this.getList();
   },
   methods: {
@@ -377,11 +381,11 @@ export default {
         this.msgSuccess('匹配成功！');
       });
     },
-    // 导出（暂无）
+    // 导出
     handleExport() {
       this.loadingExport = true;
       this.download(
-        '/transportation/platformDataSummary/teamDetailReportExport',
+        '/payment/cloudMoneyParsing/export',
         { ...this.queryParams },
         `云资金记录`
       ).then(res => {
