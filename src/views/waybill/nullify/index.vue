@@ -108,10 +108,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="状态" prop="status">
+        <el-form-item label="变更前状态" prop="beforeStatus">
           <el-select
-            v-model="queryParams.status"
-            placeholder="请选择状态"
+            v-model="queryParams.beforeStatus"
+            placeholder="请选择变更前状态"
             clearable
             filterable
             size="small"
@@ -119,6 +119,23 @@
           >
             <el-option
               v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否删除" prop="isDel">
+          <el-select
+            v-model="queryParams.isDel"
+            placeholder="请选择是否删除"
+            clearable
+            filterable
+            size="small"
+            style="width: 230px"
+          >
+            <el-option
+              v-for="dict in isDelOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -134,6 +151,16 @@
 
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybill:manageListExport']"
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="loadingExport"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col :span="1.5">
           <el-button
             v-hasPermi="['transportation:waybillOper:invalidRejected']"
@@ -162,9 +189,12 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="nullifyList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+      <RefactorTable :loading="loading" :data="nullifyList" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #sourceType="{row}">
           <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
+        </template>
+        <template #invoiceStatus="{row}">
+          <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
         </template>
         <template #isWarning="{row}">
           <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
@@ -177,6 +207,9 @@
         </template>
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #beforeStatus="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.beforeStatus) }}</span>
         </template>
         <template #stowageStatus="{row}">
           <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
@@ -239,12 +272,14 @@
             @click="handleWaybill(row)"
           >查看运单</el-button>
           <el-button
+            v-if="row.unloadBeforeCancel !== 1 && row.isDel !== 1"
             v-hasPermi="['transportation:waybillOper:invalidRejected']"
             size="mini"
             type="text"
             @click="handleLog(row)"
           >驳回</el-button>
           <el-button
+            v-if="row.unloadBeforeCancel !== 1 && row.isDel !== 1"
             v-hasPermi="['transportation:waybillOper:delInvalid']"
             size="mini"
             type="text"
@@ -315,6 +350,16 @@ export default {
         { 'dictLabel': '子单', 'dictValue': 1 },
         { 'dictLabel': '超载的主单', 'dictValue': 1 }
       ],
+      // 是否卸货之前取消字典
+      unloadBeforeCancelOptions: [
+        { 'dictLabel': '否', 'dictValue': 0 },
+        { 'dictLabel': '是', 'dictValue': 1 }
+      ],
+      // 是否删除
+      isDelOptions: [
+        { 'dictLabel': '否', 'dictValue': 0 },
+        { 'dictLabel': '是', 'dictValue': 1 }
+      ],
       // 配载方式字典
       stowageStatusOptions: [
         { 'dictLabel': '吨', 'dictValue': '0' },
@@ -334,19 +379,28 @@ export default {
         { 'dictLabel': '异常', 'dictValue': 1 },
         { 'dictLabel': '取消', 'dictValue': 2 }
       ],
-      // 运单状态 0未接单/1已接单/2已签收/3已回单/4已结算/5已打款字典
-      statusOptions: [
+      // 运单状态字典
+      'statusOptions': [
         { 'dictLabel': '未接单', 'dictValue': '0' },
         { 'dictLabel': '已接单', 'dictValue': '1' },
         { 'dictLabel': '已装货', 'dictValue': '2' },
-        { 'dictLabel': '已签收', 'dictValue': '3' },
-        { 'dictLabel': '已回单', 'dictValue': '4' },
+        { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
+        { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
         { 'dictLabel': '已核算', 'dictValue': '5' },
-        { 'dictLabel': '已申请打款', 'dictValue': '6' },
-        { 'dictLabel': '已打款', 'dictValue': '7' }
+        { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
+        { 'dictLabel': '已打款', 'dictValue': '7' },
         // { 'dictLabel': '已申请开票', 'dictValue': '8' },
         // { 'dictLabel': '已开票', 'dictValue': '9' },
-        // { 'dictLabel': '已作废', 'dictValue': '10' }
+        { 'dictLabel': '已作废', 'dictValue': '10' },
+        { 'dictLabel': '已核验', 'dictValue': '11' },
+        { 'dictLabel': '已完成', 'dictValue': '12' }
+      ],
+      // 发票状态  0 未索取 / 8 已申请开票 / 9 已开票 /10 确认发票")
+      'invoiceStatusOptions': [
+        { 'dictLabel': '未索取', 'dictValue': '0' },
+        { 'dictLabel': '已申请开票', 'dictValue': '8' },
+        { 'dictLabel': '已开票', 'dictValue': '9' }
+        // { 'dictLabel': '确认发票', 'dictValue': '10' }
       ],
       // 查询参数
       queryParams: {
@@ -364,9 +418,11 @@ export default {
         driverName: null,
         driverPhone: null,
         waybillNo: null,
-        status: null
+        isDel: 0,
+        beforeStatus: null
       },
       receiveTime: [],
+      loadingExport: false,
       // 表单是否禁用
       formDisable: false,
       // 当前选中的运单id
@@ -393,6 +449,13 @@ export default {
     this.getList();
   },
   methods: {
+    checkboxT(row) {
+      if (row.unloadBeforeCancel !== 1 && row.isDel !== 1) {
+			  return true;
+      } else {
+			  return false;
+      }
+    },
     datechoose(date) {
       if (date) {
         this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
@@ -442,6 +505,13 @@ export default {
       this.open = true;
       this.title = '运输单信息';
       this.formDisable = true;
+    },
+    // 导出
+    handleExport() {
+      this.loadingExport = true;
+      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `作废运单`).then(res => {
+        this.loadingExport = false;
+      });
     },
     /** 驳回按钮操作 */
     handleLog(row) {

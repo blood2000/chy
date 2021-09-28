@@ -252,6 +252,9 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
+        <template #beforeStatus="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.beforeStatus) }}</span>
+        </template>
         <template #invoiceStatus="{row}">
           <span>{{ selectDictLabel(invoiceStatusOptions, row.invoiceStatus) }}</span>
         </template>
@@ -376,16 +379,16 @@
           >
             分单列表
           </el-button> -->
-          <TableDropdown v-show="row.isChild === 2 || row.status < '5'">
+          <TableDropdown v-show="row.isChild === 2 || row.status - 0 < 7">
             <el-dropdown-item>
               <el-button
-                v-if="row.status < '5'"
+                v-if="row.status - 0 < 7"
                 v-hasPermi="['transportation:waybillOper:invalid']"
                 size="mini"
                 type="text"
                 @click="handleDelete(row)"
               >
-                {{ row.status === '1'?'取消运单':'作废运单' }}
+                {{ row.status === '1' || row.status === '2'?'取消运单':'作废运单' }}
               </el-button>
             </el-dropdown-item>
             <el-dropdown-item>
@@ -736,7 +739,7 @@ export default {
     /** 作废运单按钮操作 */
     handleDelete(row) {
       const code = row.wayBillCode;
-      const title = row.status === '1' ? '取消' : '作废';
+      const title = row.status === '1' || row.status === '2' ? '取消' : '作废';
       this.$confirm('是否确认' + title + '单号为"' + row.waybillNo + '"的运单?', '警告', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',

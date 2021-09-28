@@ -217,6 +217,16 @@
         :gutter="10"
         class="mb8"
       >
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybillBalanceInfo:export']"
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="loadingExport"
+            @click="handleExport"
+          >导出</el-button>
+        </el-col>
         <el-col v-if="activeName == '4'" :span="1.5">
           <el-button
             v-hasPermi="['transportation:waybillBalanceInfo:batchDetail']"
@@ -459,6 +469,7 @@ export default {
         'isChild': undefined,
         'status': '4'
       },
+      loadingExport: false,
       receiveTime: [],
       // 弹框 内容
       visible: false,
@@ -700,7 +711,13 @@ export default {
       this.title = '评价司机';
       this.$refs.CommentDialog.setForm(this.commentlist);
     },
-
+    // 导出
+    handleExport() {
+      this.loadingExport = true;
+      this.download('/transportation/waybillBalanceInfo/export', { ...this.queryParams }, `运输核算`).then(res => {
+        this.loadingExport = false;
+      });
+    },
     handleTableBtn(row, index) {
       // console.log(row, index);
 
