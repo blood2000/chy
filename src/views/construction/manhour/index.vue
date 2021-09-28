@@ -51,7 +51,7 @@
         <template #hoursTotal="{row}">
           <span>{{ row.hoursTotal || row.hoursTotal == 0? floor(row.hoursTotal - 0): '-' }}</span>
         </template>
-        <!-- 9/26 起止 -->
+        <!-- 9/26 挖机提交时段 -->
         <template #StartToEnd="{row}">
           <span>{{ row.startTime + '-' + row.completeTime }}</span>
         </template>
@@ -208,14 +208,14 @@ export default {
           'tooltip': true
         },
         {
-          'label': '起止',
+          'label': '挖机提交时段',
           'prop': 'StartToEnd',
           'isShow': true,
           'width': '110',
           'tooltip': true
         },
         {
-          'label': '提交时间',
+          'label': '挖机提交时间',
           'prop': 'submitAuditTime',
           'isShow': true,
           'width': '160',
