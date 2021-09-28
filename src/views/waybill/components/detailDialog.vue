@@ -171,14 +171,14 @@
       <el-col :span="5" class="text-row">
         {{ floor(form.balanceVo.serviceFee) || '0.00' }}
       </el-col>
-      <el-col :span="3" class="text-label">
+      <!-- <el-col :span="3" class="text-label">
         不含税价(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ floor(form.balanceVo.taxFreeFee) || '0.00' }}
-      </el-col>
+      </el-col> -->
       <el-col :span="3" class="text-label">
-        纳税金额(元)：
+        留存运费(元)：
       </el-col>
       <el-col :span="5" class="text-row">
         {{ floor(form.balanceVo.taxPayment) || '0.00' }}
