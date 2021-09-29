@@ -58,13 +58,14 @@
         >
           <el-date-picker
             v-model="receiveTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 230px"
+            :default-time="defaultTime"
             @change="datechoose"
           />
         </el-form-item>
@@ -307,7 +308,7 @@ import { listNullify, invalidRejected, listNullifyApi, invalidDelete } from '@/a
 import DetailDialog from '../components/detailDialog';
 import { getUserInfo } from '@/utils/auth';
 // import tableColumnsConfig from './config';
-import { pickerOptions } from '@/utils/dateRange';
+import { pickerTimeOptions } from '@/utils/dateRange';
 export default {
   name: 'Nullify',
   components: {
@@ -315,7 +316,8 @@ export default {
   },
   data() {
     return {
-      pickerOptions,
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
+      pickerTimeOptions,
       tableColumnsConfig: [],
       api: listNullifyApi,
       // 遮罩层
@@ -368,10 +370,11 @@ export default {
       ],
       // 来源字典
       sourceTypeOptions: [
-        { 'dictLabel': '承运码', 'dictValue': '1' },
-        { 'dictLabel': '调度者指派', 'dictValue': '2' },
-        { 'dictLabel': '自主接单', 'dictValue': '3' },
-        { 'dictLabel': '后台指派', 'dictValue': '4' }
+        { 'dictLabel': 'HZZD', 'dictValue': '1' },
+        { 'dictLabel': 'FM', 'dictValue': '2' },
+        { 'dictLabel': 'ZZJD', 'dictValue': '3' },
+        { 'dictLabel': 'HTZP', 'dictValue': '4' },
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
       ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
       isWarningOptions: [
@@ -458,8 +461,8 @@ export default {
     },
     datechoose(date) {
       if (date) {
-        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startReceiveTime = null;
         this.queryParams.endReceiveTime = null;

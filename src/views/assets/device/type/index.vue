@@ -230,7 +230,7 @@
 
     <!-- 添加或修改（树）设备类型对话框 -->
     <el-dialog :title="title" :visible.sync="treeOpen" width="600px" append-to-body :close-on-click-modal="false">
-      <el-form ref="treeForm" :model="treeForm" :rules="treeRules" label-width="86px">
+      <el-form ref="treeForm" :model="treeForm" :rules="treeRules" label-width="120px">
         <el-form-item label="类型分类名称" prop="typeName">
           <el-input v-model="treeForm.typeName" placeholder="请输入类型目录（大类）" />
         </el-form-item>

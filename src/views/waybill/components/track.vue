@@ -607,7 +607,15 @@ export default {
             pathArr.push(i.path);
             return pathArr;
           });
-          const path = [].concat.apply([], pathArr);
+          that.planpath = [].concat.apply([], pathArr);
+          if (!that.wayBillInfo.signTime) {
+            if (new Date().getTime() - new Date(that.wayBillInfo.fillTime).getTime() > 3600000) {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 2);
+            } else {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 3);
+            }
+          }
+          const path = that.planpath;
           // 绘制轨迹
           that.lyPolyline = new window.AMap.Polyline({
             map: that.$refs.map.$$getInstance(),
@@ -617,6 +625,7 @@ export default {
           });
           that.lyPolyline.setMap(that.$refs.map.$$getInstance());
           that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
+          that.getMoveLine(path);
           that.loading = false;
         } else {
           that.loading = false;

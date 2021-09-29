@@ -164,7 +164,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="分单" prop="isChild">
+        <!-- <el-form-item label="分单" prop="isChild">
           <el-select
             v-model="queryParams.isChild"
             placeholder="请选择分单"
@@ -180,7 +180,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item>
           <el-button
             type="primary"
@@ -360,13 +360,13 @@
             type="text"
             @click="handleTableBtn(row, 8)"
           >评价详情</el-button>
-          <el-button
+          <!-- <el-button
             v-if="row.isChild == '2'"
             v-has-permi="['transportation:waybill:childList']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 6)"
-          >分单列表</el-button>
+          >分单列表</el-button> -->
           <el-button
             v-has-permi="['transportation:waybill:getWayBillByCode']"
             size="mini"

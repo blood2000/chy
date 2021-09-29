@@ -52,7 +52,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="所属调度" prop="teamCode">
+        <el-form-item v-if="user.userCode !== '9b8afa19203c488282b05e04096b0bdd'" label="所属调度" prop="teamCode">
           <el-select
             v-model="queryParams.teamCode"
             v-el-select-loadmore="loadmore"
@@ -478,6 +478,7 @@ import ManageDialog from './manageDialog';
 import AgreementDialog from './agreementDialog';
 import AddTeamDialog from './addTeamDialog';
 import applyTeamDialog from './applyTeamDialog';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   name: 'Driver',
@@ -617,6 +618,7 @@ export default {
         pageSize: 10,
         name: null
       },
+      user: {},
       // 导出
       exportLoading: false
     };
@@ -639,6 +641,8 @@ export default {
     }
   },
   created() {
+    const { user = {}} = getUserInfo() || {};
+    this.user = user;
     this.tableHeaderConfig(this.tableColumnsConfig, listDriverApi, {
       prop: 'edit',
       isShow: true,
@@ -934,10 +938,20 @@ export default {
         });
       });
     },
-    // 审核通过，未绑定网商账号的行标红
+    // 审核通过，未绑定网商账号的行标红,身份证和驾驶证过期变成橙色
     tableRowClassName({ row }) {
       if ((!row.wsAccount || row.wsAccount === '') && row.authStatus === 3) {
         return 'warning-row';
+      }
+      if (row.identificationEndTime) {
+        if (new Date(row.identificationEndTime).getTime() < new Date().getTime()) {
+          return 'wrong-row';
+        }
+      }
+      if (row.validPeriodTo) {
+        if (new Date(row.validPeriodTo).getTime() < new Date().getTime()) {
+          return 'wrong-row';
+        }
       }
       return '';
     },
@@ -968,5 +982,8 @@ export default {
 }
 .el-table ::v-deep.warning-row {
   background: #fadbd9 !important;
+}
+.el-table ::v-deep.wrong-row {
+  background: #ffdd80 !important;
 }
 </style>

@@ -78,7 +78,8 @@ export default {
       'name',
       'roleName',
       'isShipment',
-      'isDispatcher'
+      'isDispatcher',
+      'user'
     ]),
     setting: {
       get() {
@@ -108,7 +109,7 @@ export default {
       });
     },
     goToStatistic() {
-      if (this.isShipment || this.isDispatcher) return;
+      if (this.isShipment || this.isDispatcher || this.user.userCode === '9b8afa19203c488282b05e04096b0bdd') return;
       const routeData = this.$router.resolve({
         // path: '/statistic',
         path: '/statisticSecond',
