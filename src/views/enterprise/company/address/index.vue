@@ -303,7 +303,7 @@ export default {
         districtName
       } = row;
 
-      if (provinceName && cityName && districtName) {
+      if (provinceName || cityName || districtName) {
         return provinceName + cityName + districtName;
       } else {
         return row.province + row.city + row.district;
