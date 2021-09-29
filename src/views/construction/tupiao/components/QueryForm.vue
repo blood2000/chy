@@ -10,7 +10,6 @@
 
       <el-form-item
         label="选择项目"
-        prop="projectCode"
       >
         <el-select
           v-model="queryParams.projectCode"
