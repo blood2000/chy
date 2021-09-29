@@ -11,10 +11,10 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="地址" prop="addressName">
+      <el-form-item label="详情地址" prop="detail">
         <el-input
-          v-model="queryParams.addressName"
-          placeholder="请输入地址名称"
+          v-model="queryParams.detail"
+          placeholder="请输入详情地址名称"
           clearable
           size="small"
           @keyup.enter.native="handleQuery"
@@ -74,21 +74,15 @@
           </template>
         </el-table-column>
 
-        <el-table-column show-overflow-tooltip label="地址详情" align="center" prop="addressName">
+        <el-table-column show-overflow-tooltip label="地址" align="center" prop="addressName">
           <template slot-scope="scope">
-            {{ scope.row.addressName }}
-            <!-- <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
-            <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
-            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag> -->
-            <!-- <template v-if="scope.row.addressType == '1'"><el-tag style="margin-right:10px; padding: 0 8px;">装</el-tag>{{ scope.row.addressName }}</template>
-            <template v-else-if="scope.row.addressType == '2'"><el-tag style="margin-right:10px; padding: 0 8px;" type="success">卸</el-tag>{{ scope.row.addressName }}</template>
-            <template v-else>{{ scope.row.addressName }}</template> -->
+            {{ handlerAddressName(scope.row) }}
           </template>
         </el-table-column>
+        <el-table-column show-overflow-tooltip label="详情地址" align="center" prop="detail" />
         <el-table-column show-overflow-tooltip label="地址别名" align="center" prop="addressAlias" />
-        <el-table-column show-overflow-tooltip label="地址门牌" align="center" prop="detail" />
-        <el-table-column show-overflow-tooltip label="手机号码" align="center" prop="contactPhone" />
         <el-table-column show-overflow-tooltip label="联系人" align="center" prop="contact" />
+        <el-table-column show-overflow-tooltip label="联系电话" align="center" prop="contactPhone" />
         <el-table-column show-overflow-tooltip label="状态" align="center" prop="status" :formatter="statusFormat" />
 
       </el-table>
@@ -239,6 +233,20 @@ export default {
 
     handlerClick() {
       this.$emit('radioSelection', this.isSelected);
+    },
+
+    handlerAddressName(row) {
+      const {
+        provinceName,
+        cityName,
+        districtName
+      } = row;
+
+      if (provinceName && cityName && districtName) {
+        return provinceName + cityName + districtName;
+      } else {
+        return row.province + row.city + row.district;
+      }
     }
   }
 };
