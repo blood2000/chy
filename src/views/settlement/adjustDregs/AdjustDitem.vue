@@ -27,6 +27,9 @@
 
       <el-table-column width="120" label="调度组名称" show-overflow-tooltip align="center" prop="teamName" />
 
+      <el-table-column width="120" label="渣土场" show-overflow-tooltip align="center" prop="ztcLandName" />
+      <el-table-column width="120" label="项目" show-overflow-tooltip align="center" prop="projectName" />
+
       <el-table-column width="120" label="司机姓名" show-overflow-tooltip align="center" prop="driverName" />
       <el-table-column width="120" label="司机电话" show-overflow-tooltip align="center" prop="driverPhone" />
       <el-table-column width="120" label="车牌号" show-overflow-tooltip align="center" prop="licenseNumber" />
