@@ -55,6 +55,7 @@
           placeholder="请输入土票名称"
           requer-msg="请先选择项目！"
           :is-sure-key="'projectCode'"
+          is-blur-search
           :axios="{
             queryFn: getTicketName,
             queryData:{
