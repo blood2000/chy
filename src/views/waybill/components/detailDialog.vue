@@ -107,6 +107,12 @@
         <div class="waybill-title"><div class="waybill-icon" />运单信息</div>
         <el-row v-viewer>
           <el-col :span="4" class="text-label">
+            运单单号：
+          </el-col>
+          <el-col :span="20" class="text-row">
+            {{ form.waybillNo || '-' }}
+          </el-col>
+          <el-col :span="4" class="text-label">
             司机：
           </el-col>
           <el-col :span="20" class="text-row">
