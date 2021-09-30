@@ -1,111 +1,90 @@
 <template>
   <div>
-    <div class="g-flex process-frame">
-      <div v-for="(item, index) in timeLineList" :key="index" class="g-flex" style="margin-right: 30px">
-        <div>
-          <svg-icon :icon-class="item.operName? item.icon:item.noicon" :class="item.operName? 'process-icon':'process-noicon'" />
-          <svg-icon v-if="index !== 6" icon-class="detail-to" class="process-to" />
-          <div class="process-title">{{ item.statusName }}</div>
-          <div class="process-tag">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</div>
-          <div class="process-name">{{ item.operName }}</div>
-        </div>
-      </div>
-    </div>
-    <div style="width:100%; height: 740px;border-radius: 6px; position: relative">
-      <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
-        <div class="legend-frame">
-          <el-checkbox v-model="zjzyChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">至简轨迹<div class="legend-color" style="background:#F56C6C;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="lyChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">APP轨迹<div class="legend-color" style="background:#1990FF;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="jmChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">硬件轨迹<div class="legend-color" style="background:#08B8A7;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="zjChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">北斗轨迹<div class="legend-color" style="background:#67C23A;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="checked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">规划轨迹<div class="legend-color" style="background:#FB8720;" /></div>
-          </el-checkbox>
-          <!-- 中交时间查询 -->
-          <div v-if="zjChecked" class="time-frame">
-            <div>
-              开始时间：
-              <el-date-picker
-                v-model="zjxlTime.qryBtm"
-                clearable
-                size="small"
-                type="datetime"
-                style="width: 185px;margin-bottom: 5px"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="请选择开始时间"
-              />
-            </div>
-            <div>
-              结束时间：
-              <el-date-picker
-                v-model="zjxlTime.qryEtm"
-                clearable
-                size="small"
-                type="datetime"
-                style="width: 185px;margin-bottom: 5px"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="请选择结束时间"
-                class="mr10"
-              />
-              <el-button type="primary" size="mini" @click="getZjxlByTime">查 询</el-button>
+    <el-row :gutter="20">
+      <el-col :span="18">
+        <div style="width:100%; height: 600px;border-radius: 6px; position: relative">
+          <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
+            <div class="legend-frame">
+              <el-checkbox v-model="lyChecked" style="margin-bottom:10px;">
+                <div class="g-aligncenter">APP轨迹<div class="legend-color" style="background:#1990FF;" /></div>
+              </el-checkbox>
+              <el-checkbox v-model="jmChecked" style="margin-bottom:10px;">
+                <div class="g-aligncenter">硬件轨迹<div class="legend-color" style="background:#08B8A7;" /></div>
+              </el-checkbox>
+              <el-checkbox v-model="zjChecked" style="margin-bottom:10px;">
+                <div class="g-aligncenter">北斗轨迹<div class="legend-color" style="background:#67C23A;" /></div>
+              </el-checkbox>
+              <el-checkbox v-model="checked" style="margin-bottom:10px;">
+                <div class="g-aligncenter">规划轨迹<div class="legend-color" style="background:#FB8720;" /></div>
+              </el-checkbox>
             </div>
           </div>
-          <!-- 至简时间查询 -->
-          <div v-if="zjzyChecked" class="time-frame">
-            <div>
-              开始时间：
-              <el-date-picker
-                v-model="zjzyQueryParams.collectStartTime"
-                clearable
-                size="small"
-                type="datetime"
-                style="width: 185px;margin-bottom: 5px"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="请选择开始时间"
-              />
-            </div>
-            <div>
-              结束时间：
-              <el-date-picker
-                v-model="zjzyQueryParams.collectEndTime"
-                clearable
-                size="small"
-                type="datetime"
-                style="width: 185px;margin-bottom: 5px"
-                value-format="yyyy-MM-dd HH:mm:ss"
-                placeholder="请选择结束时间"
-                class="mr10"
-              />
-              <el-button type="primary" size="mini" @click="getZjzy(1)">查 询</el-button>
-            </div>
+          <el-amap ref="map" v-loading="loading" vid="DDCmap" :zoom="zoom" :center="center" />
+          <div :class="isPlan? 'noliston-frame':'nolist-frame'">
+            <div :class="isPlan? 'noliston':'nolist'" />
+          </div>
+          <!-- 重播按钮 -->
+          <div v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" class="g-flex g-aligncenter" style="position: absolute; top: 10px; right: 190px">
+            速度：
+            <el-input-number v-model="speed" :precision="0" style="width:100px;margin-right:10px;" :min="0" controls-position="right" size="mini" />
+            <el-button icon="el-icon-refresh-right" round size="mini" @click="replayMoveLine">重播</el-button>
           </div>
         </div>
-      </div>
-      <el-amap ref="map" v-loading="loading" vid="DDCmap" :zoom="zoom" :center="center" />
-      <div :class="isPlan? 'noliston-frame':'nolist-frame'">
-        <div :class="isPlan? 'noliston':'nolist'" />
-      </div>
-      <!-- 重播按钮 -->
-      <div v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" class="g-flex g-aligncenter" style="position: absolute; top: 10px; right: 190px">
-        速度：
-        <el-input-number v-model="speed" :precision="0" style="width:100px;margin-right:10px;" :min="0" controls-position="right" size="mini" />
-        <el-button icon="el-icon-refresh-right" round size="mini" @click="replayMoveLine">重播</el-button>
-      </div>
-    </div>
-
+      </el-col>
+      <el-col :span="6">
+        <!-- <div class="g-flex g-justifyaround">
+          <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 0 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(0)">
+            <div :class="trackChange === 0 ? 'track-onicon' : 'track-icon'" />APP轨迹
+          </div>
+          <div class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 1 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(1)">
+            <div :class="trackChange === 1 ? 'track-onicon' : 'track-icon'" />硬件轨迹
+          </div>
+          <div v-if="!isShipment" class="g-flex g-aligncenter g-justifycenter" :class="trackChange === 2 ? 'track-onbtn' : 'track-btn'" @click="handleTrackChange(2)">
+            <div :class="trackChange === 2 ? 'track-onicon' : 'track-icon'" />北斗轨迹
+          </div>
+        </div> -->
+        <div v-if="zjChecked">
+          <div>
+            开始时间：
+            <el-date-picker
+              v-model="zjxlTime.qryBtm"
+              clearable
+              size="small"
+              type="datetime"
+              style="width: 228px;margin-bottom: 15px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择开始时间"
+            />
+          </div>
+          <div>
+            结束时间：
+            <el-date-picker
+              v-model="zjxlTime.qryEtm"
+              clearable
+              size="small"
+              type="datetime"
+              style="width: 228px;margin-bottom: 15px"
+              value-format="yyyy-MM-dd HH:mm:ss"
+              placeholder="请选择结束时间"
+              class="mr10"
+            />
+            <el-button type="primary" size="mini" @click="getZjxlByTime">查 询</el-button>
+          </div>
+        </div>
+        <ul class="time-line-content">
+          <li v-for="(item, index) in timeLineList" :key="index" :class="index===0?'light':''">
+            <p class="g-strong g-text">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}') }}</p>
+            <p class="g-color-gray g-text">{{ item.content }}</p>
+            <!-- <p class="g-color-warning g-text">状态</p> -->
+          </li>
+        </ul>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
 <script>
-import { jimiTrackLocation, zjxlTrackLocation, getWebDetail, getWaybillTrace, addZjxl, queryZjxl, getDevice, queryZjzy, pointSearchZjzy, getDriverByCode } from '@/api/waybill/tracklist';
+import { jimiTrackLocation, zjxlTrackLocation, getWebDetail, getWaybillTrace, addZjxl, queryZjxl, getDevice } from '@/api/waybill/tracklist';
 import axios from 'axios';
 import { getUserInfo } from '@/utils/auth';
 
@@ -134,57 +113,7 @@ export default {
       unloadAddress: [],
       // 轨迹切换 0：app轨迹、1：硬件轨迹、2：北斗轨迹
       trackChange: 0,
-      // 轨迹时间线
-      timeLineList: [{
-        statusName: '创建运单',
-        status: 0,
-        icon: 'detail-found',
-        noicon: 'detail-nofound',
-        operName: '',
-        time: ''
-      }, {
-        statusName: '接单',
-        status: 1,
-        icon: 'detail-receive',
-        noicon: 'detail-noreceive',
-        operName: '',
-        createTime: ''
-      }, {
-        statusName: '装货',
-        status: 2,
-        icon: 'detail-load',
-        noicon: 'detail-noload',
-        operName: '',
-        time: ''
-      }, {
-        statusName: '卸货',
-        status: 3,
-        icon: 'detail-unload',
-        noicon: 'detail-nounload',
-        operName: '',
-        time: ''
-      }, {
-        statusName: '核算',
-        status: 5,
-        icon: 'detail-adjust',
-        noicon: 'detail-noadjust',
-        operName: '',
-        time: ''
-      }, {
-        statusName: '打款',
-        status: 7,
-        icon: 'detail-pay',
-        noicon: 'detail-nopay',
-        operName: '',
-        time: ''
-      }, {
-        statusName: '开票',
-        status: 9,
-        icon: 'detail-billing',
-        noicon: 'detail-nobilling',
-        operName: '',
-        time: ''
-      }],
+      timeLineList: [],
       // 轨迹查询参数结束时间
       queryEndtime: '',
       isPlan: false,
@@ -213,22 +142,6 @@ export default {
       planpath: [],
       planline: {
         path: []
-      },
-      // 至简轨迹
-      zjzyChecked: false,
-      zjzyTracklist: [], // 至简轨迹列表
-      zjzyPolyline: {}, // 至简轨迹线
-      zjzyLoad: [], // 至简装货定位
-      zjzyUnload: [], // 至简卸货定位
-      zjzystartMark: {},
-      zjzyendMark: {},
-      zjzyMark: undefined, // 至简轨迹车辆定位
-      zjzyQueryParams: { // 至简查询参数
-        collectEndTime: undefined, // 开始时间
-        collectStartTime: undefined, // 结束时间
-        cph: undefined, // 车牌号
-        userCode: undefined, // 司机code
-        waybillCode: undefined // 运单号
       },
       // 猎鹰轨迹相关参数
       lyChecked: false, // 是否显示猎鹰轨迹
@@ -311,19 +224,6 @@ export default {
         that.$refs.map.$$getInstance().remove(that.planline);
       }
     },
-    // 获取至简轨迹
-    zjzyChecked(val) {
-      if (val) {
-        this.loading = true;
-        this.getZjzy();
-      } else {
-        const that = this;
-        that.$refs.map.$$getInstance().remove(that.zjzyPolyline);
-        if (!that.wayBillInfo.signTime && that.zjzyMark) {
-          that.$refs.map.$$getInstance().remove(that.zjzyMark);
-        }
-      }
-    },
     // 获取猎鹰轨迹
     lyChecked(val) {
       if (val) {
@@ -398,61 +298,35 @@ export default {
     const { isShipment = false, roles = [] } = getUserInfo() || {};
     this.isShipment = isShipment;
     this.roles = roles;
-    // console.log(this.roles);
+    console.log(this.roles);
     // console.log(this.waybill);
     this.setForm(this.waybill);
   },
   methods: {
-    // 获取至简轨迹
-    getZjzy(e) {
-      if (e) {
-        this.zjzyQueryParams.waybillCode = undefined;
-      } else {
-        this.zjzyQueryParams.waybillCode = this.wayBillInfo.code;
-        this.zjzyQueryParams.collectStartTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
-        if (this.wayBillInfo.signTime) {
-          this.zjzyQueryParams.collectEndTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
-        } else {
-          this.zjzyQueryParams.collectEndTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-        }
-      }
-      // this.zjzyQueryParams.userCode = '638e39f38c454a799665698763154075';
-      // this.zjzyQueryParams.collectStartTime = '2019-01-01 00:00:00';
-      queryZjzy(this.zjzyQueryParams).then(res => {
-        if (res.data.length > 0) {
-          this.zjzyTracklist = res.data.map(response => {
-            return [response.lng, response.lat];
-          });
-          this.drawZjzy();
-        } else {
-          this.loading = false;
-          this.msgInfo('暂无至简轨迹！');
-        }
-      });
-    },
-    // 绘制至简轨迹
-    drawZjzy() {
-      const that = this;
-      const path = that.zjzyTracklist;
-      that.zjzyPolyline = new window.AMap.Polyline({
-        map: that.$refs.map.$$getInstance(),
-        path,
-        strokeColor: '#F56C6C', // 线颜色
-        ...that.lineParams
-      });
-      that.zjzyPolyline.setMap(that.$refs.map.$$getInstance());
-      that.$refs.map.$$getInstance().setFitView(that.zjzyPolyline); // 执行定位
-      that.getMoveLine(path);
-      // 显示车辆定位
-      if (!that.wayBillInfo.signTime) {
-        that.zjzyMark = new AMap.Marker({
-          position: that.zjzyTracklist[that.zjzyTracklist.length - 1],
-          ...that.markParams
-        });
-        that.zjzyMark.setMap(that.$refs.map.$$getInstance()); // 点标记
-      }
-      this.loading = false;
-    },
+    // 轨迹切换
+    // handleTrackChange(e) {
+    //   this.trackChange = e;
+    //   this.getTrackLocation();
+    //   const that = this;
+    //   if (this.vehicleMark) {
+    //     that.$refs.map.$$getInstance().remove(this.vehicleMark);
+    //   }
+    // },
+    /** 获取轨迹 */
+    // getTrackLocation() {
+    //   this.isPlan = false;
+    //   if (this.wayBillInfo.fillTime) {
+    //     if (this.trackChange === 0) {
+    //       // 获取APP轨迹
+    //       this.getLieyingTime();
+    //     } else if (this.trackChange === 1) {
+    //       // 获取硬件轨迹
+    //       this.getJimi();
+    //     } else if (this.trackChange === 2) {
+    //       this.zjxlList();
+    //     }
+    //   }
+    // },
     // 猎鹰循环判断开始时间与结束时间
     getLieyingTime() {
       this.lyTimePoor = this.lieyingQueryParams.endtime - this.lieyingQueryParams.starttime;
@@ -724,53 +598,41 @@ export default {
         // map: that.$refs.map.$$getInstance()
         // panel: 'DDCmap',
       });
-      console.log(1);
-      console.log(that.loadAddress[0] === '0.0' || that.unloadAddress[0] === '0.0');
-      if (that.loadAddress[0] === '0.0' || that.unloadAddress[0] === '0.0') {
-        that.loading = false;
-        this.msgInfo('暂无APP轨迹！');
-      } else {
-        driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
-          if (status === 'complete') {
-            console.log(222);
-            const { routes = [] } = result;
-            const { steps = [] } = routes[0];
-            const pathArr = [];
-            steps.map(i => {
-              pathArr.push(i.path);
-              return pathArr;
-            });
-            that.planpath = [].concat.apply([], pathArr);
-            console.log(that.wayBillInfo.signTime);
-            if (!that.wayBillInfo.signTime) {
-              if (new Date().getTime() - new Date(that.wayBillInfo.fillTime).getTime() > 3600000) {
-                that.planpath = that.planpath.slice(0, that.planpath.length / 2);
-              } else {
-                that.planpath = that.planpath.slice(0, that.planpath.length / 3);
-              }
+      driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
+        if (status === 'complete') {
+          const { routes = [] } = result;
+          const { steps = [] } = routes[0];
+          const pathArr = [];
+          steps.map(i => {
+            pathArr.push(i.path);
+            return pathArr;
+          });
+          that.planpath = [].concat.apply([], pathArr);
+          if (!that.wayBillInfo.signTime) {
+            if (new Date().getTime() - new Date(that.wayBillInfo.fillTime).getTime() > 3600000) {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 2);
+            } else {
+              that.planpath = that.planpath.slice(0, that.planpath.length / 3);
             }
-            console.log(2);
-
-            const path = that.planpath;
-            // 绘制轨迹
-            that.lyPolyline = new window.AMap.Polyline({
-              map: that.$refs.map.$$getInstance(),
-              path,
-              strokeColor: '#1990FF', // 线颜色
-              ...that.lineParams
-            });
-            console.log(3);
-            that.lyPolyline.setMap(that.$refs.map.$$getInstance());
-            that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
-            that.getMoveLine(path);
-            that.loading = false;
-          } else {
-            that.loading = false;
-            this.msgInfo('暂无APP轨迹！');
           }
+          const path = that.planpath;
+          // 绘制轨迹
+          that.lyPolyline = new window.AMap.Polyline({
+            map: that.$refs.map.$$getInstance(),
+            path,
+            strokeColor: '#1990FF', // 线颜色
+            ...that.lineParams
+          });
+          that.lyPolyline.setMap(that.$refs.map.$$getInstance());
+          that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
+          that.getMoveLine(path);
+          that.loading = false;
+        } else {
+          that.loading = false;
+          this.msgInfo('暂无APP轨迹！');
+        }
         // 未出错时，result即是对应的路线规划方案
-        });
-      }
+      });
     },
     // 清除回放轨迹
     clearMoveLine() {
@@ -859,35 +721,7 @@ export default {
         offset: new AMap.Pixel(-17, -35)
       });
       endMark.setMap(that.$refs.map.$$getInstance()); // 点标记
-      // 至简装货地marker
-      if (that.zjzyLoad.length !== 0) {
-        const zjzystartPosition = that.zjzyLoad;
-        that.zjzystartMark = new AMap.Marker({
-          position: zjzystartPosition,
-          icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/1632992651068d6cd09.png',
-          autoFitView: true,
-          autoRotation: true,
-          offset: new AMap.Pixel(-22, -22)
-        });
-        that.zjzystartMark.setMap(that.$refs.map.$$getInstance()); // 点标记
-      }
-      // 至简卸货地marker
-      if (that.zjzyUnload.length !== 0) {
-        const zjzyendPosition = that.zjzyUnload;
-        that.zjzyendMark = new AMap.Marker({
-          position: zjzyendPosition,
-          icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/1632992188096123e9b.png',
-          autoFitView: true,
-          autoRotation: true,
-          offset: new AMap.Pixel(-22, -22)
-        });
-        that.zjzyendMark.setMap(that.$refs.map.$$getInstance()); // 点标记
-      }
-      if (that.zjzyLoad.length !== 0 && that.zjzyUnload.length !== 0) {
-        that.$refs.map.$$getInstance().setFitView([startMark, endMark, that.zjzystartMark, that.zjzyendMark]); // 执行定位
-      } else {
-        that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
-      }
+      that.$refs.map.$$getInstance().setFitView([startMark, endMark]); // 执行定位
     },
     // 获取车辆设备信息
     getDeviceInfo() {
@@ -897,31 +731,6 @@ export default {
           this.jimiQueryParams.imeis = response.data[0].factoryOnlyCode;
         }
         // console.log(this.deviceInfo);
-      });
-    },
-    // 获取司机信息
-    getDriver() {
-      getDriverByCode(this.wayBillInfo.driverCode).then(res => {
-        this.zjzyQueryParams.userCode = res.data.userCode;
-      });
-    },
-    // 获取至简定位
-    getZjzyLocation() {
-      pointSearchZjzy({ waybillCode: this.wayBillInfo.code }).then(res => {
-        res.data.forEach(item => {
-          if (item.type === 1) {
-            this.zjzyLoad = [item.longitude, item.latitude];
-          }
-          if (item.type === 2) {
-            this.zjzyUnload = [item.longitude, item.latitude];
-          }
-        });
-        if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
-          // 标记装卸货地址
-          this.getMark();
-          // 获取路线
-          this.lyChecked = true;
-        }
       });
     },
     /** 取消按钮 */
@@ -944,8 +753,6 @@ export default {
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
         this.getDeviceInfo();
-        // 获取司机信息
-        this.getDriver();
         // 中交车牌号参数赋值
         this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
         this.zjxlAddParams.licenseNumber = this.wayBillInfo.licenseNumber;
@@ -985,32 +792,31 @@ export default {
         this.zjxlAddParams.startTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
         this.lieyingQueryParams.starttime = new Date(this.wayBillInfo.fillTime).getTime();
         if (this.wayBillInfo.signTime) {
-          this.zjzyQueryParams.collectEndTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.jimiQueryParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlQueryParams.qryEtm = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.zjxlAddParams.endTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
           this.lieyingQueryParams.endtime = new Date(this.wayBillInfo.signTime).getTime();
           this.queryEndtime = new Date(this.wayBillInfo.signTime);
         } else {
-          this.zjzyQueryParams.collectEndTime = this.time;
           this.jimiQueryParams.endTime = this.time;
           this.zjxlQueryParams.qryEtm = this.time;
           this.zjxlAddParams.endTime = this.time;
           this.lieyingQueryParams.endtime = new Date().getTime();
           this.queryEndtime = new Date();
         }
-        // 获取至简定位
-        this.getZjzyLocation();
+        if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
+          // 标记装卸货地址
+          this.getMark();
+          // 获取路线
+          this.lyChecked = true;
+        }
       });
       // 轨迹时间线
       getWaybillTrace(data.code).then(response => {
-        this.timeLineList.forEach(res => {
-          const dataIndex = response.data.findIndex(el => el.status === res.status);
-          if (dataIndex !== -1) {
-            res.operName = response.data[dataIndex].operName;
-            res.createTime = response.data[dataIndex].createTime;
-          }
-        });
+        this.timeLineList = response.data;
+        // response.data.forEach(el => {
+        //   this.timeLineList.unshift(el);
+        // });
       });
     },
     // 根据时间控件查北斗
@@ -1035,39 +841,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.process-frame{
-  padding: 20px;
-  .process-icon{
-    height: 30px;
-    width: 30px;
-  }
-  .process-noicon{
-    height: 22px;
-    width: 22px;
-    margin: 4px;
-  }
-  .process-title{
-    font-weight: bold;
-    color: #20273A;
-  }
-  .process-tag{
-    margin: 5px 0;
-    font-size: 12px;
-    color: #909398;
-  }
-  .process-name{
-    font-size: 12px;
-    font-weight: bold;
-    color: #20273A;
-  }
-  .process-to{
-    position: relative;
-    bottom: 12px;
-    left: 15px;
-    height: 6px;
-    width: 124px;
-  }
-}
 .shadow{
   box-shadow: 10px 10px 5px #888888;
 }
@@ -1087,7 +860,7 @@ export default {
 .noliston-frame{
 	position: relative;
   bottom: 55px;
-	z-index: 998;
+	z-index: 999;
 	height: 0;
 	width: 100%;
 	background: linear-gradient(#FFFFFF00 20%, #FFFFFF 80%);
@@ -1184,20 +957,20 @@ export default {
 // }
 
 .legend-frame{
-  position: absolute;
+  position: relative;
   right: 10px;
   top: 10px;
   z-index: 10;
-  width: 215px;
-  // height: 130px;
-  background: rgba(255, 255, 255, 0.9);
-  padding: 15px 15px 10px;
+  width: 165px;
+  height: 130px;
+  background: #FFFFFF;
+  padding: 15px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
   border-radius: 2px;
 }
 .legend-color{
   margin-left: 10px;
-  height: 8px;
+  height: 15px;
   width: 50px;
   border-radius: 4px;
   opacity: 0.7;

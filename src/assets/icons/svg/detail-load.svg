@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="30" height="30" viewBox="0 0 30 30">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#linear-gradient);
+      }
+
+      .cls-2 {
+        fill: #fff;
+      }
+    </style>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#1990ff"/>
+      <stop offset="1" stop-color="#007aeb"/>
+    </linearGradient>
+  </defs>
+  <g id="组_23828" data-name="组 23828" transform="translate(-11564 -13217)">
+    <circle id="椭圆_281" data-name="椭圆 281" class="cls-1" cx="15" cy="15" r="15" transform="translate(11564 13217)"/>
+    <g id="组_23818" data-name="组 23818" transform="translate(12300.22 12902.031)">
+      <g id="组_23813" data-name="组 23813" transform="translate(-728.805 325.445)">
+        <path id="路径_18810" data-name="路径 18810" class="cls-2" d="M-713.635,338.348H-728.8v-9.3h15.17Zm-13.541-1.629h11.911v-6.04h-11.911Z" transform="translate(728.805 -329.049)"/>
+      </g>
+      <g id="组_23814" data-name="组 23814" transform="translate(-725.393 328.492)">
+        <rect id="矩形_9101" data-name="矩形 9101" class="cls-2" width="1.629" height="3.207"/>
+      </g>
+      <g id="组_23815" data-name="组 23815" transform="translate(-722.035 328.492)">
+        <rect id="矩形_9102" data-name="矩形 9102" class="cls-2" width="1.629" height="3.207" transform="translate(0)"/>
+      </g>
+      <g id="组_23816" data-name="组 23816" transform="translate(-718.677 328.492)">
+        <rect id="矩形_9103" data-name="矩形 9103" class="cls-2" width="1.629" height="3.207" transform="translate(0)"/>
+      </g>
+      <g id="组_23817" data-name="组 23817" transform="translate(-724.711 322.969)">
+        <path id="路径_18811" data-name="路径 18811" class="cls-2" d="M-712.924,327.035l-2.339-2.339-2.339,2.339-1.152-1.152,2.915-2.915h1.152l2.915,2.915Z" transform="translate(718.754 -322.969)"/>
+      </g>
+    </g>
+  </g>
+</svg>

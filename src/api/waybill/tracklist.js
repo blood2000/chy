@@ -240,3 +240,30 @@ export function getDevice(query) {
     params: query
   });
 }
+
+// 查询至简定位
+export function pointSearchZjzy(data) {
+  return request({
+    url: '/gis/zjtrack/pointSearch',
+    method: 'post',
+    data: data
+  });
+}
+
+// 查询至简轨迹
+export function queryZjzy(data) {
+  return request({
+    url: '/gis/zjtrack/search',
+    method: 'post',
+    data: data
+  });
+}
+
+// 获取司机信息
+export function getDriverByCode(code) {
+  return request({
+    url: '/assets/driver/getDriverByCode/' + code,
+    method: 'get'
+  });
+}
+
