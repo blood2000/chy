@@ -3,7 +3,7 @@
     <div class="g-flex process-frame">
       <div v-for="(item, index) in timeLineList" :key="index" class="g-flex" style="margin-right: 30px">
         <div>
-          <svg-icon :icon-class="item.operName? item.icon:item.noicon" :class="item.operName? 'process-icon':'process-noicon'" />
+          <svg-icon :icon-class="item.createTime? item.icon:item.noicon" :class="item.createTime? 'process-icon':'process-noicon'" />
           <svg-icon v-if="index !== 6" icon-class="detail-to" class="process-to" />
           <div class="process-title">{{ item.statusName }}</div>
           <div class="process-tag">{{ parseTime(item.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</div>
