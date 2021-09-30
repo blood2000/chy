@@ -92,6 +92,10 @@ export default {
     requerMsg: { // 必选消息, 为空就没有
       type: String,
       default: ''
+    },
+    isBlurSearch: {
+      type: Boolean,
+      default: false
     }
   },
 
@@ -147,6 +151,9 @@ export default {
         this.shipmentreq.pageNum = 1;
         this.shipmentreq[this.keywords] = query.trim();
 
+        if (this.isBlurSearch) {
+          this.modelData = query.trim();
+        }
         this.shipmentList = [];
         this.getTeamList();
       } else {
