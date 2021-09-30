@@ -146,7 +146,7 @@ export default {
       if (query.trim() !== '') {
         this.shipmentreq.pageNum = 1;
         this.shipmentreq[this.keywords] = query.trim();
-
+        this.modelData = query.trim();
         this.shipmentList = [];
         this.getTeamList();
       } else {

@@ -68,6 +68,7 @@
             label: 'label',
           }"
           @selected="(data)=>{ $emit('handleQuery') }"
+          @handleQuery="$emit('handleQuery')"
         >
           <template #default="{row}">
             <span>{{ row.label }}</span>
