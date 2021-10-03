@@ -922,6 +922,13 @@ export default {
           // 获取路线
           this.lyChecked = true;
         }
+      }).catch(() => {
+        if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
+          // 标记装卸货地址
+          this.getMark();
+          // 获取路线
+          this.lyChecked = true;
+        }
       });
     },
     /** 取消按钮 */
