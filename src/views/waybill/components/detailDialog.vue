@@ -104,7 +104,7 @@
           </el-col>
         </el-row>
 
-        <div class="waybill-title"><div class="waybill-icon" />运单信息</div>
+        <div class="waybill-title"><div class="waybill-icon" />运单信息 <span class="g-color-blue">（{{ form.statusName }}）</span></div>
         <el-row v-viewer>
           <el-col :span="4" class="text-label">
             运单单号：
@@ -276,7 +276,7 @@ export default {
           const bool = (e.ruleItemCode === '6' || e.ruleItemCode === '11' || e.ruleItemCode === '12' || e.ruleItemCode === '13' || e.ruleItemCode === '14' || e.ruleItemCode === '15' || e.ruleItemCode === '16');
           return bool;
         });
-        console.log(this.freightList);
+        // console.log(this.freightList);
         this.loading = false;
       }).catch(e => {
         this.loading = false;

@@ -18,7 +18,7 @@
             <div class="g-aligncenter">至简轨迹<div class="legend-color" style="background:#F56C6C;" /></div>
           </el-checkbox>
           <el-checkbox v-model="lyChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">APP轨迹<div class="legend-color" style="background:#1990FF;" /></div>
+            <div class="g-aligncenter">猎鹰轨迹<div class="legend-color" style="background:#1990FF;" /></div>
           </el-checkbox>
           <el-checkbox v-model="jmChecked" style="margin-bottom:5px;">
             <div class="g-aligncenter">硬件轨迹<div class="legend-color" style="background:#08B8A7;" /></div>
@@ -132,7 +132,7 @@ export default {
       // 装卸货地经纬度
       loadAddress: [],
       unloadAddress: [],
-      // 轨迹切换 0：app轨迹、1：硬件轨迹、2：北斗轨迹
+      // 轨迹切换 0：猎鹰轨迹、1：硬件轨迹、2：北斗轨迹
       trackChange: 0,
       // 轨迹时间线
       timeLineList: [{
@@ -335,7 +335,7 @@ export default {
             this.getLyRoutePlan();
           } else {
             this.loading = false;
-            this.msgInfo('暂无APP轨迹！');
+            this.msgInfo('暂无猎鹰轨迹！');
           }
         }
       } else {
@@ -405,6 +405,7 @@ export default {
   methods: {
     // 获取至简轨迹
     getZjzy(e) {
+      this.loading = true;
       if (e) {
         this.zjzyQueryParams.waybillCode = undefined;
       } else {
@@ -428,6 +429,8 @@ export default {
           this.loading = false;
           this.msgInfo('暂无至简轨迹！');
         }
+      }).catch(() => {
+        this.loading = false;
       });
     },
     // 绘制至简轨迹
@@ -487,14 +490,14 @@ export default {
             this.getLyRoutePlan();
           } else {
             this.loading = false;
-            this.msgInfo('暂无APP轨迹！');
+            this.msgInfo('暂无猎鹰轨迹！');
           }
         }
       } else if (this.lyTimePoor !== 0 && this.lyTimePoor < 24 * 60 * 60 * 1000) {
         this.getLieying();
       } else {
         this.loading = false;
-        this.msgInfo('暂无APP轨迹！');
+        this.msgInfo('暂无猎鹰轨迹！');
       }
     },
     // 猎鹰加载更多
@@ -524,7 +527,7 @@ export default {
           }
         } else {
           this.loading = false;
-          this.msgInfo('暂无APP轨迹！');
+          this.msgInfo('暂无猎鹰轨迹！');
         }
       }).catch(() => { this.loading = false; });
     },
@@ -724,15 +727,13 @@ export default {
         // map: that.$refs.map.$$getInstance()
         // panel: 'DDCmap',
       });
-      console.log(1);
-      console.log(that.loadAddress[0] === '0.0' || that.unloadAddress[0] === '0.0');
+      // console.log(that.loadAddress[0] === '0.0' || that.unloadAddress[0] === '0.0');
       if (that.loadAddress[0] === '0.0' || that.unloadAddress[0] === '0.0') {
         that.loading = false;
-        this.msgInfo('暂无APP轨迹！');
+        this.msgInfo('暂无猎鹰轨迹！');
       } else {
         driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
           if (status === 'complete') {
-            console.log(222);
             const { routes = [] } = result;
             const { steps = [] } = routes[0];
             const pathArr = [];
@@ -741,7 +742,7 @@ export default {
               return pathArr;
             });
             that.planpath = [].concat.apply([], pathArr);
-            console.log(that.wayBillInfo.signTime);
+            // console.log(that.wayBillInfo.signTime);
             if (!that.wayBillInfo.signTime) {
               if (new Date().getTime() - new Date(that.wayBillInfo.fillTime).getTime() > 3600000) {
                 that.planpath = that.planpath.slice(0, that.planpath.length / 2);
@@ -749,8 +750,6 @@ export default {
                 that.planpath = that.planpath.slice(0, that.planpath.length / 3);
               }
             }
-            console.log(2);
-
             const path = that.planpath;
             // 绘制轨迹
             that.lyPolyline = new window.AMap.Polyline({
@@ -759,14 +758,13 @@ export default {
               strokeColor: '#1990FF', // 线颜色
               ...that.lineParams
             });
-            console.log(3);
             that.lyPolyline.setMap(that.$refs.map.$$getInstance());
             that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
             that.getMoveLine(path);
             that.loading = false;
           } else {
             that.loading = false;
-            this.msgInfo('暂无APP轨迹！');
+            this.msgInfo('暂无猎鹰轨迹！');
           }
         // 未出错时，result即是对应的路线规划方案
         });
@@ -822,7 +820,6 @@ export default {
     // 重播
     replayMoveLine() {
       this.$refs.map.$$getInstance().setZoomAndCenter(13, this.zjTracklist[0]);
-      console.log(111);
       this.moveMarker.moveAlong(this.zjTracklist, this.speed);
     },
     /** 判断当前位置是否在可视区域 */
@@ -950,9 +947,11 @@ export default {
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
-        this.getDeviceInfo();
-        // 获取司机信息
-        this.getDriver();
+        if (response.data.status !== 0) {
+          this.getDeviceInfo();
+          // 获取司机信息
+          this.getDriver();
+        }
         // 中交车牌号参数赋值
         this.zjxlQueryParams.vclN = this.wayBillInfo.licenseNumber;
         this.zjxlAddParams.licenseNumber = this.wayBillInfo.licenseNumber;

@@ -21,7 +21,7 @@ export function syncContract(query) {
 // 生成货主电子签章
 export function getShipmentSign(data) {
   return request({
-    url: '/iot/business/cargoOwnerContractCreationAndSigning',
+    url: '/iot/zjtdBusiness/cargoOwnerContractCreationAndSigning',
     method: 'post',
     data: data
   });
@@ -30,7 +30,7 @@ export function getShipmentSign(data) {
 // 生成司机电子签章
 export function getDriverSign(data) {
   return request({
-    url: '/iot/business/driverContractCreationAndSigning',
+    url: '/iot/zjtdBusiness/driverContractCreationAndSigning',
     method: 'post',
     data: data
   });
@@ -39,7 +39,7 @@ export function getDriverSign(data) {
 // 批量生成电子签章
 export function getContractSign(data) {
   return request({
-    url: '/iot/business/contractCreationAndSigning',
+    url: '/iot/zjtdBusiness/contractCreationAndSigning',
     method: 'post',
     data: data
   });
