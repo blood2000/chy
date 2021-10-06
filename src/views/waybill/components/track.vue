@@ -423,6 +423,13 @@ export default {
       }
       // this.zjzyQueryParams.userCode = '638e39f38c454a799665698763154075';
       // this.zjzyQueryParams.collectStartTime = '2019-01-01 00:00:00';
+      if (e) {
+        if (!this.zjzyQueryParams.collectStartTime || !this.zjzyQueryParams.collectEndTime) {
+          this.msgInfo('请选择开始时间与结束时间！');
+          this.loading = false;
+          return;
+        }
+      }
       queryZjzy(this.zjzyQueryParams).then(res => {
         if (res.data.length > 0) {
           this.zjzyTracklist = res.data.map(response => {
