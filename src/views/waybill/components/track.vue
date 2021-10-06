@@ -1018,19 +1018,17 @@ export default {
         }
         // 获取至简定位
         this.getZjzyLocation();
-      });
-      // 轨迹时间线
-      getWaybillTrace(data.code).then(response => {
-        const list = response.data.filter(item => { return item.status <= this.wayBillInfo.status; });
-        console.log(list);
-        this.timeLineList.forEach(res => {
-          const dataIndex = list.findIndex(el => el.status === res.status);
-          if (dataIndex !== -1) {
-            res.operName = list[dataIndex].operName;
-            res.createTime = list[dataIndex].createTime;
-          }
+        // 轨迹时间线
+        getWaybillTrace(data.code).then(response => {
+          const list = response.data.filter(item => { return item.status <= this.wayBillInfo.status || item.status === 9; });
+          this.timeLineList.forEach(res => {
+            const dataIndex = list.findIndex(el => el.status === res.status);
+            if (dataIndex !== -1) {
+              res.operName = list[dataIndex].operName;
+              res.createTime = list[dataIndex].createTime;
+            }
+          });
         });
-        console.log(this.timeLineList);
       });
     },
     // 根据时间控件查北斗
