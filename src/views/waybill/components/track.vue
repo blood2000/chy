@@ -410,7 +410,11 @@ export default {
         this.zjzyQueryParams.waybillCode = undefined;
       } else {
         this.zjzyQueryParams.waybillCode = this.wayBillInfo.code;
-        this.zjzyQueryParams.collectStartTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        if (this.wayBillInfo.fillTime) {
+          this.zjzyQueryParams.collectStartTime = this.parseTime(this.wayBillInfo.fillTime, '{y}-{m}-{d} {h}:{i}:{s}');
+        } else {
+          this.zjzyQueryParams.collectStartTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
+        }
         if (this.wayBillInfo.signTime) {
           this.zjzyQueryParams.collectEndTime = this.parseTime(this.wayBillInfo.signTime, '{y}-{m}-{d} {h}:{i}:{s}');
         } else {
