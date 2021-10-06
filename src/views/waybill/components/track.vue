@@ -1021,13 +1021,16 @@ export default {
       });
       // 轨迹时间线
       getWaybillTrace(data.code).then(response => {
+        const list = response.data.filter(item => { return item.status <= this.wayBillInfo.status; });
+        console.log(list);
         this.timeLineList.forEach(res => {
-          const dataIndex = response.data.findIndex(el => el.status === res.status);
+          const dataIndex = list.findIndex(el => el.status === res.status);
           if (dataIndex !== -1) {
-            res.operName = response.data[dataIndex].operName;
-            res.createTime = response.data[dataIndex].createTime;
+            res.operName = list[dataIndex].operName;
+            res.createTime = list[dataIndex].createTime;
           }
         });
+        console.log(this.timeLineList);
       });
     },
     // 根据时间控件查北斗
