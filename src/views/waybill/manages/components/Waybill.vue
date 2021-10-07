@@ -116,7 +116,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="分单" prop="isChildList">
+        <!-- <el-form-item label="分单" prop="isChildList">
           <el-select
             v-model="queryParams.isChildList"
             placeholder="请选择是否分单"
@@ -132,8 +132,8 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
-        <el-form-item label="调度/调度员" prop="teamName">
+        </el-form-item> -->
+        <el-form-item v-if="user.userCode !== '9b8afa19203c488282b05e04096b0bdd'" label="调度/调度员" prop="teamName">
           <el-input
             v-model.trim="queryParams.teamName"
             placeholder="请输入调度名称/调度员姓名"
@@ -391,7 +391,7 @@
                 {{ row.status === '1' || row.status === '2'?'取消运单':'作废运单' }}
               </el-button>
             </el-dropdown-item>
-            <el-dropdown-item>
+            <!-- <el-dropdown-item>
               <el-button
                 v-if="row.isChild === 2"
                 v-hasPermi="['transportation:waybillOper:reinsurance']"
@@ -401,7 +401,7 @@
               >
                 分单列表
               </el-button>
-            </el-dropdown-item>
+            </el-dropdown-item> -->
           </TableDropdown>
         </template>
       </RefactorTable>
@@ -553,10 +553,10 @@ export default {
       ],
       // 来源字典
       sourceTypeOptions: [
-        { 'dictLabel': '承运码', 'dictValue': '1' },
-        { 'dictLabel': '调度者指派', 'dictValue': '2' },
-        { 'dictLabel': '自主接单', 'dictValue': '3' },
-        { 'dictLabel': '后台指派', 'dictValue': '4' },
+        { 'dictLabel': 'HZZD', 'dictValue': '1' },
+        { 'dictLabel': 'FM', 'dictValue': '2' },
+        { 'dictLabel': 'ZZJD', 'dictValue': '3' },
+        { 'dictLabel': 'HTZP', 'dictValue': '4' },
         { 'dictLabel': 'WLPZ', 'dictValue': '5' }
       ],
       // 司机取消订单字典

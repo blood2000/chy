@@ -220,16 +220,16 @@ export default {
         let serviceFee = 0;
 
         const immediateWaybillBoList = this.adjustlist.map(e => {
-        // immediateWaybillBoList	运单金额BOList		false
-        // deductionDes	减项说明		false
-        // deliveryCashFee	司机实收现金		false
-        // increaseDes	增项说明		false
-        // serviceFee	服务费		false
-        // serviceTaxFee	服务费税费		false
-        // shipperRealPay	货主实付金额		false
-        // taxPayment	纳税金额		false
-        // waybillCode	运单
-        // shipmentCode
+          // immediateWaybillBoList	运单金额BOList		false
+          // deductionDes	减项说明		false
+          // deliveryCashFee	司机实收现金		false
+          // increaseDes	增项说明		false
+          // serviceFee	服务费		false
+          // serviceTaxFee	服务费税费		false
+          // shipperRealPay	货主实付金额		false
+          // taxPayment	纳税金额		false
+          // waybillCode	运单
+          // shipmentCode
           deliveryCashFee += (e.deliveryCashFee ? e.deliveryCashFee - 0 : 0);
           taxPayment += (e.taxPayment ? e.taxPayment - 0 : 0);
           serviceFee += (e.serviceFee ? e.serviceFee - 0 : 0);
@@ -250,28 +250,82 @@ export default {
         });
 
 
+        // 合并
+        let actualTripsNum = 0;
+        let freightAmount = 0;
+        let loadNum = 0;
+        let settlementTripsNum = 0;
+        const loadUnloadType = [];
+        const projectCodeIds = [];
+        const projectNames = [];
+        const teamCodeIds = [];
+        const teamNames = [];
+        const waybillCodeIds = [];
+        const ztcCodeIds = [];
+        const ztcLandNames = [];
+        let batchNo; // 驳回的时候使用
 
-        const batchBusAccBoList = this.list.map(e => {
-          //   actualTripsNum	实发趟数（次）		false
-          //   loadNum	装车数量		false
-          //   projectCodeIds	项目CodeIds		false
-          //   projectLoadNames	项目名称(装货地)		false
-          //   settlementTripsNum	结算趟数		false
-          //   teamCodeIds	调度者codeIds		false
-          //   teamNames	车队名称		false
-          //   waybillCodeIds	运单		false
-          //   ztcCodeIds	渣土场CodeIds		false
-          //   ztcLandNames	渣土场名称(卸货地)
-          return {
-            ...e,
-            deliveryCashFee,
-            taxPayment,
-            serviceFee,
-            shipperCode: shipmentCodeArr[0],
-            batchNo: e.batchNo || undefined,
-            childs: undefined
-          };
+        this.list.forEach(e => {
+          actualTripsNum += e.actualTripsNum - 0;
+          freightAmount += e.freightAmount - 0;
+          loadNum += e.loadNum - 0;
+          settlementTripsNum += e.settlementTripsNum;
+          e.loadUnloadType && loadUnloadType.push(...e.loadUnloadType.split(','));
+          e.projectCodeIds && projectCodeIds.push(...e.projectCodeIds.split(','));
+          e.projectNames && projectNames.push(...e.projectNames.split(','));
+          e.teamCodeIds && teamCodeIds.push(...e.teamCodeIds.split(','));
+          e.teamNames && teamNames.push(...e.teamNames.split(','));
+          e.ztcCodeIds && ztcCodeIds.push(...e.ztcCodeIds.split(','));
+          ztcLandNames.push(...e.ztcLandNames.split(','));
+          waybillCodeIds.push(...e.waybillCodeIds);
+          e.batchNo && (batchNo = e.batchNo);
         });
+
+        const batchBusAccBoList = [{
+          actualTripsNum,
+          freightAmount,
+          loadNum,
+          settlementTripsNum,
+          loadUnloadType: [...new Set(loadUnloadType)].join(','),
+          projectCodeIds: [...new Set(projectCodeIds)].join(','),
+          projectNames: [...new Set(projectNames)].join(','),
+          teamCodeIds: [...new Set(teamCodeIds)].join(','),
+          teamNames: [...new Set(teamNames)].join(','),
+          ztcCodeIds: [...new Set(ztcCodeIds)].join(','),
+          ztcLandNames: [...new Set(ztcLandNames)].join(','),
+          waybillCodeIds,
+
+          deliveryCashFee,
+          taxPayment,
+          serviceFee,
+          shipperCode: shipmentCodeArr[0],
+          childs: undefined,
+          batchNo: batchNo || undefined
+        }];
+        // 合并
+
+
+        // const batchBusAccBoList = this.list.map(e => {
+        //   //   actualTripsNum	实发趟数（次）		false
+        //   //   loadNum	装车数量		false
+        //   //   projectCodeIds	项目CodeIds		false
+        //   //   projectLoadNames	项目名称(装货地)		false
+        //   //   settlementTripsNum	结算趟数		false
+        //   //   teamCodeIds	调度者codeIds		false
+        //   //   teamNames	车队名称		false
+        //   //   waybillCodeIds	运单		false
+        //   //   ztcCodeIds	渣土场CodeIds		false
+        //   //   ztcLandNames	渣土场名称(卸货地)
+        //   return {
+        //     ...e,
+        //     deliveryCashFee,
+        //     taxPayment,
+        //     serviceFee,
+        //     shipperCode: shipmentCodeArr[0],
+        //     batchNo: e.batchNo || undefined,
+        //     childs: undefined
+        //   };
+        // });
 
         // console.log({
         //   batchBusAccBoList,

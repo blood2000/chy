@@ -408,6 +408,14 @@ export default {
         { 'dictLabel': '空运', 'dictValue': '400' },
         { 'dictLabel': '铁路运输', 'dictValue': '500' }
       ],
+      // 来源字典
+      sourceTypeOptions: [
+        { 'dictLabel': 'HZZD', 'dictValue': '1' },
+        { 'dictLabel': 'FM', 'dictValue': '2' },
+        { 'dictLabel': 'ZZJD', 'dictValue': '3' },
+        { 'dictLabel': 'HTZP', 'dictValue': '4' },
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
+      ],
       // 查询参数
       'queryParams': {
         'pageNum': 1,

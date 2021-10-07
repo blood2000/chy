@@ -191,8 +191,8 @@ export default {
     getList() {
       this.loading = true;
       listAbnormal(this.queryParams).then(response => {
-        this.abnormalList = response.data;
-        this.total = response.data.length;
+        this.abnormalList = response.rows;
+        this.total = response.total;
         console.log(this.abnormalList);
         this.loading = false;
       });

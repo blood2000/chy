@@ -58,6 +58,7 @@ import QuickEntry from './QuickEntry';
 // import SizeSelect from '@/components/SizeSelect';
 // import Search from '@/components/HeaderSearch';
 // import DdcYiDoc from '@/components/Ddc/Doc';
+import { getUserInfo } from '@/utils/auth';
 
 export default {
   components: {
@@ -68,6 +69,11 @@ export default {
     // SizeSelect,
     // Search,
     // DdcYiDoc
+  },
+  data() {
+    return {
+      user: {}
+    };
   },
   computed: {
     ...mapGetters([
@@ -92,6 +98,10 @@ export default {
       }
     }
   },
+  created() {
+    const { user = {}} = getUserInfo() || {};
+    this.user = user;
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar');
@@ -108,7 +118,9 @@ export default {
       });
     },
     goToStatistic() {
-      if (this.isShipment || this.isDispatcher) return;
+      console.log(this.user);
+      if (this.isShipment || this.isDispatcher || this.user.userCode === '9b8afa19203c488282b05e04096b0bdd') return;
+      console.log(2);
       const routeData = this.$router.resolve({
         // path: '/statistic',
         path: '/statisticSecond',

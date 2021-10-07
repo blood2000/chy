@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="22.069" height="20" viewBox="0 0 22.069 20">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fb8720;
+      }
+
+      .cls-2 {
+        fill: #fff;
+        font-size: 12px;
+        font-family: PingFang SC Bold, PingFang SC;
+      }
+    </style>
+  </defs>
+  <g id="组_23824" data-name="组 23824" transform="translate(-239.795 -258)">
+    <path id="路径_16" data-name="路径 16" class="cls-1" d="M-1866-840.743v-7.722a3.313,3.313,0,0,0-1.656-2.869l-6.687-3.861a3.313,3.313,0,0,0-3.313,0l-6.687,3.861a3.313,3.313,0,0,0-1.656,2.869v7.722a3.313,3.313,0,0,0,1.656,2.869l6.687,3.861a3.313,3.313,0,0,0,3.313,0l6.687-3.861A3.313,3.313,0,0,0-1866-840.743Z" transform="translate(-593.774 2144) rotate(90)"/>
+    <text id="Active" class="cls-2" transform="translate(245 273)"><tspan x="0" y="0">卸</tspan></text>
+  </g>
+</svg>

@@ -11,10 +11,10 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="地址" prop="addressName">
+        <el-form-item label="详细地址" prop="detail">
           <el-input
-            v-model.trim="queryParams.addressName"
-            placeholder="请输入地址"
+            v-model.trim="queryParams.detail"
+            placeholder="请输入详细地址"
             clearable
             size="small"
             @keyup.enter.native="handleQuery"
@@ -100,15 +100,12 @@
 
       <el-table v-loading="loading" :data="addressList" highlight-current-row border @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" fixed="left" />
-        <el-table-column label="地址" align="center" prop="addressName" />
-        <!-- <el-table-column label="地址" align="center" prop="addressName">
+        <el-table-column label="地址" align="center" prop="addressName">
           <template slot-scope="scope">
-            {{ scope.row.addressName }}
-            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 0" type="success">默认装货地址</el-tag>
-            <el-tag v-if="scope.row.defaultPush === 1 && scope.row.defaultPut === 0" type="warning">默认卸货地址</el-tag>
-            <el-tag v-if="scope.row.defaultPut === 1 && scope.row.defaultPush === 1">默认装卸货地址</el-tag>
+            {{ handlerAddressName(scope.row) }}
           </template>
-        </el-table-column> -->
+        </el-table-column>
+        <el-table-column label="详细地址" align="center" prop="detail" />
         <el-table-column label="地址别名" align="center" prop="addressAlias" />
         <el-table-column label="地址类型" align="center" prop="addressType">
           <template slot-scope="scope">
@@ -116,8 +113,8 @@
             <template v-if="scope.row.addressType == '2'"><el-tag style="margin-right:10px; padding: 0 8px;" type="success">卸</el-tag>卸货地址</template>
           </template>
         </el-table-column>
-        <el-table-column label="手机号码" align="center" prop="contactPhone" />
         <el-table-column label="联系人" align="center" prop="contact" />
+        <el-table-column label="联系电话" align="center" prop="contactPhone" />
         <el-table-column label="状态" align="center" prop="status" :formatter="statusFormat" />
         <el-table-column label="操作" align="center" class-name="small-padding fixed-width" width="200" fixed="left">
           <template slot-scope="scope">
@@ -201,6 +198,7 @@ export default {
         pageSize: 10,
         addressAlias: undefined,
         addressName: undefined,
+        detail: undefined,
         status: undefined,
         addressType: undefined
       },
@@ -296,6 +294,20 @@ export default {
         this.getList();
         this.msgSuccess('删除成功');
       });
+    },
+    /** 与app端同步拼接省市区 */
+    handlerAddressName(row) {
+      const {
+        provinceName,
+        cityName,
+        districtName
+      } = row;
+
+      if (provinceName || cityName || districtName) {
+        return provinceName + cityName + districtName;
+      } else {
+        return row.province + row.city + row.district;
+      }
     }
   }
 };

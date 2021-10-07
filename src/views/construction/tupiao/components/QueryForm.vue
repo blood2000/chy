@@ -10,7 +10,6 @@
 
       <el-form-item
         label="选择项目"
-        prop="projectCode"
       >
         <el-select
           v-model="queryParams.projectCode"
@@ -56,6 +55,7 @@
           placeholder="请输入土票名称"
           requer-msg="请先选择项目！"
           :is-sure-key="'projectCode'"
+          is-blur-search
           :axios="{
             queryFn: getTicketName,
             queryData:{
@@ -69,6 +69,7 @@
             label: 'label',
           }"
           @selected="(data)=>{ $emit('handleQuery') }"
+          @handleQuery="$emit('handleQuery')"
         >
           <template #default="{row}">
             <span>{{ row.label }}</span>

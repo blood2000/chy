@@ -123,7 +123,7 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="是否分单" prop="isSplit">
+        <!-- <el-form-item label="是否分单" prop="isSplit">
           <el-select v-model="queryParams.isSplit" placeholder="请选择" clearable filterable size="small" class="input-width">
             <el-option
               v-for="dict in isOptions"
@@ -132,7 +132,7 @@
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="是否异常" prop="abnormal">
           <el-select v-model="queryParams.abnormal" placeholder="请选择" clearable filterable size="small" class="input-width">
             <el-option
