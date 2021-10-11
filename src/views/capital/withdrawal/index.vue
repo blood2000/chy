@@ -188,7 +188,7 @@
           <i v-if="row.status === 0" class="g-icon-money mr5" />
           <i v-if="row.status === 1" class="g-icon-push mr5" />
           <i v-if="row.status === 2" class="el-icon-success g-color-success mr5" />
-          <i v-if="row.status === 3" class="el-icon-error g-color-error mr5" />
+          <i v-if="row.status === 3 || row.status === 6" class="el-icon-error g-color-error mr5" />
           <i v-if="row.status === 4" class="g-icon-deal mr5" />
           <i v-if="row.status === 5" class="el-icon-remove g-color-light-gray mr5" />
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
@@ -272,7 +272,8 @@ export default {
         { dictLabel: '转账成功', dictValue: 2 },
         { dictLabel: '转账失败', dictValue: 3 },
         { dictLabel: '处理中', dictValue: 4 },
-        { dictLabel: '驳回', dictValue: 5 }
+        { dictLabel: '驳回', dictValue: 5 },
+        { dictLabel: '部分失败', dictValue: 6 }
       ],
       // 转账渠道字典
       payStatusOption: [

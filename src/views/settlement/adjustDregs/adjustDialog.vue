@@ -263,6 +263,7 @@ export default {
         const waybillCodeIds = [];
         const ztcCodeIds = [];
         const ztcLandNames = [];
+        let batchNo; // 驳回的时候使用
 
         this.list.forEach(e => {
           actualTripsNum += e.actualTripsNum - 0;
@@ -277,6 +278,7 @@ export default {
           e.ztcCodeIds && ztcCodeIds.push(...e.ztcCodeIds.split(','));
           ztcLandNames.push(...e.ztcLandNames.split(','));
           waybillCodeIds.push(...e.waybillCodeIds);
+          e.batchNo && (batchNo = e.batchNo);
         });
 
         const batchBusAccBoList = [{
@@ -298,7 +300,7 @@ export default {
           serviceFee,
           shipperCode: shipmentCodeArr[0],
           childs: undefined,
-          batchNo: undefined
+          batchNo: batchNo || undefined
         }];
         // 合并
 
