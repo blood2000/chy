@@ -144,7 +144,7 @@
         <div :class="isPlan? 'noliston':'nolist'" />
       </div>
       <!-- 重播按钮 v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" -->
-      <div v-if="moveMarker" class="g-flex g-aligncenter" style="position: absolute; top: 10px; left: 240px;">
+      <div class="g-flex g-aligncenter" style="position: absolute; top: 10px; left: 240px;">
         速度：
         <el-input-number v-model="speed" :precision="0" style="width:100px;margin-right:10px;" :min="0" controls-position="right" size="mini" />
         <!-- <el-button icon="el-icon-refresh-right" round size="mini" @click="replayMoveLine">重播</el-button> -->
