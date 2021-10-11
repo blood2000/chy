@@ -14,21 +14,71 @@
     <div style="width:100%; height: 740px;border-radius: 6px; position: relative">
       <div class="g-flex g-justifyend" style="width:100%; height: 0;border-radius: 6px">
         <div class="legend-frame">
-          <el-checkbox v-model="zjzyChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">至简轨迹<div class="legend-color" style="background:#F56C6C;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="lyChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">猎鹰轨迹<div class="legend-color" style="background:#1990FF;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="jmChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">硬件轨迹<div class="legend-color" style="background:#08B8A7;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="zjChecked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">北斗轨迹<div class="legend-color" style="background:#67C23A;" /></div>
-          </el-checkbox>
-          <el-checkbox v-model="checked" style="margin-bottom:5px;">
-            <div class="g-aligncenter">规划轨迹<div class="legend-color" style="background:#FB8720;" /></div>
-          </el-checkbox>
+          <div class="g-aligncenter">
+            <div v-if="zjzyChecked && zjzyTracklist.length>0" class="g-color-blue">
+              <div v-if="!zjzyPlay" class="g-title-large el-icon-video-play" @click="getMoveLine(zjzyTracklist, 'zjzy')" />
+              <div v-else class="g-title-large el-icon-video-pause" @click="pauseAnimation()" />
+            </div>
+            <el-checkbox v-model="zjzyChecked" style="margin-bottom:5px;width:100%;text-align:end;">
+              <div class="g-aligncenter">
+                <div class="legend-color" style="background:#F56C6C;" />
+                <div style="margin: 0 10px;">至简轨迹</div>
+              </div>
+            </el-checkbox>
+          </div>
+
+          <div class="g-aligncenter">
+            <div v-if="lyChecked && lyTracklist.length>0" class="g-color-blue">
+              <div v-if="!lyPlay" class="g-title-large el-icon-video-play" @click="getMoveLine(lyTracklist, 'ly')" />
+              <div v-else class="g-title-large el-icon-video-pause" @click="pauseAnimation()" />
+            </div>
+            <el-checkbox v-model="lyChecked" style="margin-bottom:5px;width:100%;text-align:end;">
+              <div class="g-aligncenter">
+                <div class="legend-color" style="background:#1990FF;" />
+                <div style="margin: 0 10px;">猎鹰轨迹</div>
+              </div>
+            </el-checkbox>
+          </div>
+
+          <div class="g-aligncenter">
+            <div v-if="jmChecked && jmTracklist.length>0" class="g-color-blue">
+              <div v-if="!jmPlay" class="g-title-large el-icon-video-play" @click="getMoveLine(jmTracklist, 'jm')" />
+              <div v-else class="g-title-large el-icon-video-pause" @click="pauseAnimation()" />
+            </div>
+            <el-checkbox v-model="jmChecked" style="margin-bottom:5px;width:100%;text-align:end;">
+              <div class="g-aligncenter">
+                <div class="legend-color" style="background:#08B8A7;" />
+                <div style="margin: 0 10px;">硬件轨迹</div>
+              </div>
+            </el-checkbox>
+          </div>
+
+          <div class="g-aligncenter">
+            <div v-if="zjChecked && zjTracklist.length>0" class="g-color-blue">
+              <div v-if="!zjPlay" class="g-title-large el-icon-video-play" @click="getMoveLine(zjTracklist, 'zj')" />
+              <div v-else class="g-title-large el-icon-video-pause" @click="pauseAnimation()" />
+            </div>
+            <el-checkbox v-model="zjChecked" style="margin-bottom:5px;width:100%;text-align:end;">
+              <div class="g-aligncenter">
+                <div class="legend-color" style="background:#67C23A;" />
+                <div style="margin: 0 10px;">北斗轨迹</div>
+              </div>
+            </el-checkbox>
+          </div>
+
+          <div class="g-aligncenter">
+            <div v-if="checked" class="g-color-blue">
+              <div v-if="!planPlay" class="g-title-large el-icon-video-play" @click="getMoveLine(planpath, 'plan')" />
+              <div v-else class="g-title-large el-icon-video-pause" @click="pauseAnimation()" />
+            </div>
+            <el-checkbox v-model="checked" style="margin-bottom:5px;width:100%;text-align:end;">
+              <div class="g-aligncenter">
+                <div class="legend-color" style="background:#FB8720;" />
+                <div style="margin: 0 10px;">规划轨迹</div>
+              </div>
+            </el-checkbox>
+          </div>
+
           <!-- 中交时间查询 -->
           <div v-if="zjChecked" class="time-frame">
             <div>
@@ -55,11 +105,11 @@
                 placeholder="请选择结束时间"
                 class="mr10"
               />
-              <el-button type="primary" size="mini" @click="getZjxlByTime">查 询</el-button>
+              <el-button type="primary" size="mini" @click="getZjxlByTime">北 斗 查 询</el-button>
             </div>
           </div>
           <!-- 至简时间查询 -->
-          <div v-if="zjzyChecked" class="time-frame">
+          <div v-if="zjzyChecked" class="time-frame" style="margin-top: 5px;">
             <div>
               开始时间：
               <el-date-picker
@@ -84,7 +134,7 @@
                 placeholder="请选择结束时间"
                 class="mr10"
               />
-              <el-button type="primary" size="mini" @click="getZjzy(1)">查 询</el-button>
+              <el-button type="primary" size="mini" @click="getZjzy(1)">至 简 查 询</el-button>
             </div>
           </div>
         </div>
@@ -93,11 +143,11 @@
       <div :class="isPlan? 'noliston-frame':'nolist-frame'">
         <div :class="isPlan? 'noliston':'nolist'" />
       </div>
-      <!-- 重播按钮 -->
-      <div v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" class="g-flex g-aligncenter" style="position: absolute; top: 10px; right: 190px">
+      <!-- 重播按钮 v-if="zjChecked&&zjTracklist&&zjTracklist.length>0" -->
+      <div v-if="moveMarker" class="g-flex g-aligncenter" style="position: absolute; top: 10px; left: 240px;">
         速度：
         <el-input-number v-model="speed" :precision="0" style="width:100px;margin-right:10px;" :min="0" controls-position="right" size="mini" />
-        <el-button icon="el-icon-refresh-right" round size="mini" @click="replayMoveLine">重播</el-button>
+        <!-- <el-button icon="el-icon-refresh-right" round size="mini" @click="replayMoveLine">重播</el-button> -->
       </div>
     </div>
 
@@ -210,12 +260,14 @@ export default {
       },
       // 是否显示规划轨迹
       checked: false,
+      planPlay: false,
       planpath: [],
       planline: {
         path: []
       },
       // 至简轨迹
       zjzyChecked: false,
+      zjzyPlay: false,
       zjzyTracklist: [], // 至简轨迹列表
       zjzyPolyline: {}, // 至简轨迹线
       zjzyLoad: [], // 至简装货定位
@@ -232,6 +284,7 @@ export default {
       },
       // 猎鹰轨迹相关参数
       lyChecked: false, // 是否显示猎鹰轨迹
+      lyPlay: false,
       lyTracklist: [], // 猎鹰轨迹列表
       lyPolyline: {}, // 猎鹰轨迹线
       lyMark: undefined, // 猎鹰轨迹车辆定位
@@ -250,6 +303,7 @@ export default {
       },
       // 几米轨迹相关参数
       jmChecked: false, // 是否显示几米轨迹
+      jmPlay: false,
       jmTracklist: [], // 几米轨迹列表
       jmPolyline: { // 几米轨迹线
         path: []
@@ -264,6 +318,7 @@ export default {
       },
       // 中交兴路轨迹相关参数
       zjChecked: false, // 是否显示中交兴路轨迹
+      zjPlay: false,
       zjTracklist: [], // 中交兴路轨迹列表
       zjPolyline: { // 中交兴路轨迹线
         path: []
@@ -288,7 +343,9 @@ export default {
       },
       passedPolyline: [], // 移动轨迹
       moveMarker: undefined, // 移动车辆
-      speed: 3000 // 移动速度
+      speed: 3000, // 移动速度
+      trackStatus: 0, // 播放状态 0未播放 1播放中 2暂停
+      trackType: null
     };
   },
   computed: {
@@ -456,7 +513,7 @@ export default {
       });
       that.zjzyPolyline.setMap(that.$refs.map.$$getInstance());
       that.$refs.map.$$getInstance().setFitView(that.zjzyPolyline); // 执行定位
-      that.getMoveLine(path);
+      // that.getMoveLine(path);
       // 显示车辆定位
       if (!that.wayBillInfo.signTime) {
         that.zjzyMark = new AMap.Marker({
@@ -486,7 +543,7 @@ export default {
           });
           that.lyPolyline.setMap(that.$refs.map.$$getInstance());
           that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
-          that.getMoveLine(path);
+          // that.getMoveLine(path);
           // 显示车辆定位
           if (!that.wayBillInfo.signTime) {
             that.lyMark = new AMap.Marker({
@@ -563,7 +620,7 @@ export default {
           });
           that.jmPolyline.setMap(that.$refs.map.$$getInstance());
           that.$refs.map.$$getInstance().setFitView(that.jmPolyline); // 执行定位
-          that.getMoveLine(path);
+          // that.getMoveLine(path);
           // 显示车辆定位
           if (!that.wayBillInfo.signTime) {
             that.jmMark = new AMap.Marker({
@@ -673,7 +730,7 @@ export default {
       });
       that.zjPolyline.setMap(that.$refs.map.$$getInstance());
       that.$refs.map.$$getInstance().setFitView(that.zjPolyline); // 执行定位
-      that.getMoveLine(path);
+      // that.getMoveLine(path);
       // 显示车辆定位
       if (!that.wayBillInfo.signTime) {
         that.zjMark = new AMap.Marker({
@@ -721,7 +778,7 @@ export default {
           });
           that.planline.setMap(that.$refs.map.$$getInstance());
           that.$refs.map.$$getInstance().setFitView(that.planline); // 执行定位
-          that.getMoveLine(path);
+          // that.getMoveLine(path);
         } else {
           this.msgInfo('规划轨迹失败！');
         }
@@ -771,7 +828,7 @@ export default {
             });
             that.lyPolyline.setMap(that.$refs.map.$$getInstance());
             that.$refs.map.$$getInstance().setFitView(that.lyPolyline); // 执行定位
-            that.getMoveLine(path);
+            // that.getMoveLine(path);
             that.loading = false;
           } else {
             that.loading = false;
@@ -789,44 +846,88 @@ export default {
       this.moveMarker = undefined;
       this.passedPolyline = undefined;
     },
+    // 清除状态
+    clearPlay() {
+      this.zjzyPlay = false;
+      this.lyPlay = false;
+      this.jmPlay = false;
+      this.zjPlay = false;
+      this.planPlay = false;
+    },
     // 回放轨迹
-    getMoveLine(line) {
+    getMoveLine(line, type) {
+      this.clearPlay();
+      if (type === 'zjzy') {
+        this.zjzyPlay = true;
+      } else if (type === 'ly') {
+        this.lyPlay = true;
+      } else if (type === 'jm') {
+        this.jmPlay = true;
+      } else if (type === 'zj') {
+        this.zjPlay = true;
+      } else if (type === 'plan') {
+        this.planPlay = true;
+      }
       const _this = this;
-      // this.moveMarker.stopMove(); // 停止移动
-      // 绘制回放轨迹前先清除之前的轨迹
-      this.clearMoveLine();
-      this.passedPolyline = new AMap.Polyline({
-        map: _this.$refs.map.$$getInstance(),
-        strokeColor: '#AF5',
-        showDir: true,
-        strokeWeight: 10,
-        zIndex: 102
-      });
-      // 绘制车
-      this.moveMarker = new AMap.Marker({
-        map: _this.$refs.map.$$getInstance(),
-        position: line[0],
-        icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/16316738189596cbbf5.png',
-        offset: new AMap.Pixel(-29, -10),
-        autoRotation: true,
-        angle: -90,
-        zIndex: 103
-      });
-      // 绑定车辆移动事件
-      this.moveMarker.on('moving', function(e) {
-        _this.passedPolyline.setPath(e.passedPath);
-        // 车超出视野范围后重新定位
-        if (!_this.isPointInRing(e.target.getPosition())) {
-          _this.$refs.map.$$getInstance().setCenter(e.target.getPosition());
-        }
-        // 播放结束
-        if (e.target.getPosition() === line[line.length - 1]) {
+      if (_this.trackType !== type || _this.trackStatus === 0) {
+        _this.trackType = type;
+        // this.moveMarker.stopMove(); // 停止移动
+        // 绘制回放轨迹前先清除之前的轨迹
+        _this.clearMoveLine();
+        _this.passedPolyline = new AMap.Polyline({
+          map: _this.$refs.map.$$getInstance(),
+          strokeColor: '#AF5',
+          showDir: true,
+          strokeWeight: 10,
+          zIndex: 102
+        });
+        // 绘制车
+        _this.moveMarker = new AMap.Marker({
+          map: _this.$refs.map.$$getInstance(),
+          position: line[0],
+          icon: 'https://css-backup-1579076150310.obs.cn-south-1.myhuaweicloud.com/image_directory/16316738189596cbbf5.png',
+          offset: new AMap.Pixel(-29, -10),
+          autoRotation: true,
+          angle: -90,
+          zIndex: 103
+        });
+        // 绑定车辆移动事件
+        _this.moveMarker.on('moving', function(e) {
+          _this.passedPolyline.setPath(e.passedPath);
+          // 车超出视野范围后重新定位
+          if (!_this.isPointInRing(e.target.getPosition())) {
+            _this.$refs.map.$$getInstance().setCenter(e.target.getPosition());
+          }
+          // 播放结束
+          if (e.target.getPosition() === line[line.length - 1]) {
+            _this.trackStatus = 0;
+            _this.clearPlay();
           // _this.$refs.map.$$getInstance().remove(_this.moveMarker);
           // _this.$refs.map.$$getInstance().remove(_this.passedPolyline);
-        }
-      });
-      _this.$refs.map.$$getInstance().setZoomAndCenter(13, line[0]);
-      this.moveMarker.moveAlong(line, 3000); // 开始移动 speed 千米/小时
+          }
+        });
+        _this.trackStatus = 1;
+        _this.$refs.map.$$getInstance().setZoomAndCenter(13, line[0]);
+        _this.moveMarker.moveAlong(line, this.speed); // 开始移动 speed 千米/小时
+      } else {
+        _this.resumeAnimation();
+      }
+    },
+    // 暂停
+    pauseAnimation() {
+      this.zjzyPlay = false;
+      this.lyPlay = false;
+      this.jmPlay = false;
+      this.zjPlay = false;
+      this.planPlay = false;
+      this.trackStatus = 2;
+      // this.isPlay = 2;
+      this.moveMarker.pauseMove();
+    },
+    // 继续
+    resumeAnimation() {
+      this.trackStatus = 1;
+      this.moveMarker.resumeMove();
     },
     // 重播
     replayMoveLine() {
@@ -1053,6 +1154,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+::v-deep .el-checkbox__input{
+  margin-top: 3px;
+  float: right;
+}
 .process-frame{
   padding: 20px;
   .process-icon{
@@ -1203,7 +1308,7 @@ export default {
 
 .legend-frame{
   position: absolute;
-  right: 10px;
+  left: 10px;
   top: 10px;
   z-index: 10;
   width: 215px;
@@ -1212,6 +1317,7 @@ export default {
   padding: 15px 15px 10px;
   box-shadow: 0 2px 2px rgba(0, 0, 0, 0.15);
   border-radius: 2px;
+  text-align: end;
 }
 .legend-color{
   margin-left: 10px;
