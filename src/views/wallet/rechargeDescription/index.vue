@@ -5,39 +5,67 @@
       <p v-if="companyName" class="g-text mb20">{{ companyName }}：</p>
       <p class="g-text mb20">您好！这是贵司充值运费的账号，必须使用与超好运注册账户一致的企业对公户进行充值，充值成功后在超好运货主端APP的个人中心即可显示充值的金额。</p>
       <el-button class="mb20" type="primary" size="small" @click="copy">复制账号信息</el-button>
-      <table class="table-style mb20">
-        <tr>
-          <td class="label">银行账号</td>
-          <!-- 货主认证后网商生成的账号 -->
-          <td class="text">{{ account ? account : '' }}</td>
-        </tr>
-        <tr>
-          <td class="label">开户名称</td>
-          <td class="text">福建大道成物流科技有限公司</td>
-        </tr>
-        <tr>
-          <td class="label">开户行</td>
-          <td class="text">浙江网商银行</td>
-        </tr>
-        <tr>
-          <td class="label">省份</td>
-          <td class="text">浙江省</td>
-        </tr>
-        <tr>
-          <td class="label">城市</td>
-          <td class="text">杭州市</td>
-        </tr>
-        <tr>
-          <td class="label">联行号</td>
-          <td class="text">323331000001</td>
-        </tr>
-      </table>
-
-      <input
-        id="table-inner-id"
-        :value="inputValue"
-        style="width: 100px;"
-      >
+      <!-- 网商显示 -->
+      <template v-if="form.paymentChannels === 'WSBK'">
+        <table class="table-style mb20">
+          <tr>
+            <td class="label">银行账号</td>
+            <!-- 货主认证后网商生成的账号 -->
+            <td class="text">{{ form.account ? form.account : '' }}</td>
+          </tr>
+          <tr>
+            <td class="label">开户名称</td>
+            <td class="text">福建大道成物流科技有限公司</td>
+          </tr>
+          <tr>
+            <td class="label">开户行</td>
+            <td class="text">浙江网商银行</td>
+          </tr>
+          <tr>
+            <td class="label">省份</td>
+            <td class="text">浙江省</td>
+          </tr>
+          <tr>
+            <td class="label">城市</td>
+            <td class="text">杭州市</td>
+          </tr>
+          <tr>
+            <td class="label">联行号</td>
+            <td class="text">323331000001</td>
+          </tr>
+        </table>
+        <input
+          id="table-inner-id"
+          :value="inputValue"
+          style="width: 100px;"
+        >
+      </template>
+      <!-- 民生显示 -->
+      <template v-if="form.paymentChannels === 'CMBC'">
+        <table class="table-style mb20">
+          <tr>
+            <td class="label">银行账号</td>
+            <td class="text">{{ form.bankAcc ? form.bankAcc : '' }}</td>
+          </tr>
+          <tr>
+            <td class="label">开户名称</td>
+            <td class="text">{{ form.accName ? form.accName : '' }}</td>
+          </tr>
+          <tr>
+            <td class="label">开户行</td>
+            <td class="text">民生银行</td>
+          </tr>
+          <tr>
+            <td class="label">当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）</td>
+            <td class="text">{{ form.atBindBankCard ? form.atBindBankCard : '' }}</td>
+          </tr>
+        </table>
+        <input
+          id="table-inner-id"
+          :value="inputValue"
+          style="width: 100px;"
+        >
+      </template>
       <div style="width: 110px; height: 30px; background: #fff; position: absolute; left: 15px; bottom: 15px" />
     </div>
 
@@ -104,13 +132,20 @@ export default {
   data() {
     return {
       companyName: null,
-      account: null
+      form: {}
     };
   },
   computed: {
     ...mapGetters(['shipment']),
     inputValue() {
-      return `银行账号：${this.account ? this.account : ''}; 开户名称：福建大道成物流科技有限公司; 开户行：浙江网商银行; 省份：浙江省; 城市：杭州市; 联行号：323331000001`;
+      let result = '';
+      if (this.form.paymentChannels === 'WSBK') {
+        result = `银行账号：${this.form.account ? this.form.account : ''}; 开户名称：福建大道成物流科技有限公司; 开户行：浙江网商银行; 省份：浙江省; 城市：杭州市; 联行号：323331000001`;
+      }
+      if (this.form.paymentChannels === 'CMBC') {
+        result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：民生银行; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;
+      }
+      return result;
     }
   },
   created() {
@@ -122,7 +157,7 @@ export default {
         this.companyName = this.shipment.info.companyName;
       }
       getUserWalletBank().then(response => {
-        this.account = response.data;
+        this.form = response.data || {};
       });
     },
     copy() {

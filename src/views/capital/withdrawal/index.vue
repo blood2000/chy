@@ -188,7 +188,7 @@
           <i v-if="row.status === 0" class="g-icon-money mr5" />
           <i v-if="row.status === 1" class="g-icon-push mr5" />
           <i v-if="row.status === 2" class="el-icon-success g-color-success mr5" />
-          <i v-if="row.status === 3" class="el-icon-error g-color-error mr5" />
+          <i v-if="row.status === 3 || row.status === 6" class="el-icon-error g-color-error mr5" />
           <i v-if="row.status === 4" class="g-icon-deal mr5" />
           <i v-if="row.status === 5" class="el-icon-remove g-color-light-gray mr5" />
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
@@ -205,6 +205,11 @@
             type="text"
             @click="handleReBindCard(row)"
           >重新绑卡</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row)"
+          >详情</el-button>
         </template>
       </RefactorTable>
 
@@ -220,6 +225,8 @@
 
     <!-- 查看回单 -->
     <PdfLook :src="pdfSrc" :open.sync="pdfOpen" title="查看回单" />
+    <!-- 查看子单详情 -->
+    <DetailDialog :open.sync="detailOpen" :code="currentCode" />
   </div>
 </template>
 
@@ -227,11 +234,13 @@
 import { withDrawalListApi, getWithDrawalList, toCard, reject, reBindCard } from '@/api/capital/withdrawal';
 import PdfLook from '@/views/system/media/pdfLook';
 import { pickerTimeOptions } from '@/utils/dateRange';
+import DetailDialog from './detailDialog.vue';
 
 export default {
   name: 'Withdrawal',
   components: {
-    PdfLook
+    PdfLook,
+    DetailDialog
   },
   data() {
     return {
@@ -272,7 +281,8 @@ export default {
         { dictLabel: '转账成功', dictValue: 2 },
         { dictLabel: '转账失败', dictValue: 3 },
         { dictLabel: '处理中', dictValue: 4 },
-        { dictLabel: '驳回', dictValue: 5 }
+        { dictLabel: '驳回', dictValue: 5 },
+        { dictLabel: '部分失败', dictValue: 6 }
       ],
       // 转账渠道字典
       payStatusOption: [
@@ -304,7 +314,11 @@ export default {
       sucList: [],
       // 查看回单
       pdfSrc: '',
-      pdfOpen: false
+      pdfOpen: false,
+      // 查看子单
+      detailOpen: false,
+      // 当前选中code
+      currentCode: null
     };
   },
   computed: {
@@ -332,7 +346,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 100,
+      width: 140,
       fixed: 'left'
     });
 
@@ -554,6 +568,11 @@ export default {
           }
         });
       });
+    },
+    /** 查看子单 */
+    handleDetail(row) {
+      this.currentCode = row.code;
+      this.detailOpen = true;
     }
   }
 };
