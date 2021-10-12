@@ -697,6 +697,16 @@ export default {
 
     filterSelect() {
       return this.selections.filter(e => e.isSuccess);
+    },
+
+    que() {
+      return {
+        ...this.queryParams,
+        beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
+        endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
+        receiveTime: undefined,
+        status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
+      };
     }
 
   },
@@ -1084,7 +1094,7 @@ export default {
       const url = this.status === 2 ? '/transportation/batch/batchInvoiceExport' : '/transportation/batch/export';
 
       this.exportLoading = true;
-      await this.download(url, this.queryParams, this.fileName);
+      await this.download(url, this.que, this.fileName);
       this.exportLoading = false;
     }
 
