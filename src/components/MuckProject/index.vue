@@ -114,6 +114,7 @@
       <RefactorTable
         :loading="loading"
         :data="billlist"
+        :row-class-name="tableRowClassName"
         :table-columns-config="tableColumnsConfig"
         @selection-change="(selection)=> selections = selection"
       >
@@ -461,8 +462,10 @@ export default {
       ],
 
 
-      shipmentCode: undefined
+      shipmentCode: undefined,
 
+      errList: [],
+      sucList: []
 
     };
   },
@@ -860,24 +863,61 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        this.errList = [];
+        this.sucList = [];
+        this.$message({ type: 'warning', message: '发起打款成功，请勿关闭或刷新页面！' });
         this.openPlay = false;
         this.loading = true;
-        const que = {
-          batchNos: this.selections.map(e => e.batchNo),
-          passWord: sha1(psw)
-        };
+        this.getBatch(sha1(psw));
+        // const que = {
+        //   batchNos: this.selections.map(e => e.batchNo),
+        //   passWord: sha1(psw)
+        // };
 
         // 支付密码!!
-        passPayment(que).then(res => {
-          this.msgSuccess('打款成功');
-          this.selections = [];
-          this.loading = false;
-          this.playPassword = undefined;
-          this.handleQuery();
-        }).catch(() => { this.loading = false; this.playPassword = undefined; });
+        // passPayment(que).then(res => {
+        //   this.msgSuccess('打款成功');
+        //   this.selections = [];
+        //   this.loading = false;
+        //   this.playPassword = undefined;
+        //   this.handleQuery();
+        // }).catch(() => { this.loading = false; this.playPassword = undefined; });
       }).catch(() => {});
     },
-
+    // 打款接口
+    async getBatch(passWord) {
+      const len = this.selection.map((item) => item.batchNo);
+      // console.log(len);
+      for (let index = 0; index < len.length; index++) {
+        const e = len[index];
+        try {
+          await passPayment({ passWord: passWord, batchNos: [e] });
+          this.sucList.push(e);
+        } catch (error) {
+          this.errList.push(e);
+          continue;
+        }
+        // console.log(index, '----', this.ids.length, len.length);
+      }
+      setTimeout(() => {
+        this.handleQuery();
+      }, 2000);
+      this.loading = false;
+      this.playPassword = undefined;
+      // console.log(this.sucList, this.errList);
+    },
+    tableRowClassName({ row, rowIndex }) {
+      if (this.errList.length > 0) {
+        if (this.errList.includes(row.batchNo)) {
+          return 'warning-row';
+        }
+      }
+      if (this.sucList.length > 0) {
+        if (this.sucList.includes(row.batchNo)) {
+          return 'success-row';
+        }
+      }
+    },
     /* s=状态4 */
     // 回单
     handlerReceipt(row) {
@@ -1063,6 +1103,12 @@ export default {
 }
 .printCss:last-child{
   margin-bottom: 0;
+}
+::v-deep .warning-row{
+  background: #fadbd9 !important;
+}
+::v-deep .success-row{
+  background: #d7f0dbff !important;
 }
 </style>
 

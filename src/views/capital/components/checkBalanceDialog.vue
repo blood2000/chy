@@ -1,10 +1,18 @@
 <template>
   <!-- 查询网商余额 -->
-  <el-dialog :title="title" class="i-amount" :visible="visible" width="600px" append-to-body :close-on-click-modal="false" @close="cancel">
-    <div class="amount-content ly-flex-align-center ly-flex-pack-center">
+  <el-dialog :title="title" class="i-amount" :visible="visible" width="700px" append-to-body :close-on-click-modal="false" @close="cancel">
+    <div class="amount-content ly-flex-align-center ly-flex-pack-justify">
       <div>
-        <p class="label mb10">可用余额：</p>
+        <p class="label mb10">总余额：</p>
         <p class="text">{{ (balanceCount || balanceCount === 0) ? floor(balanceCount) : '---' }}</p>
+      </div>
+      <div>
+        <p class="label mb10">网商余额：</p>
+        <p class="text">{{ (WSBK || WSBK === 0) ? floor(WSBK) : '---' }}</p>
+      </div>
+      <div>
+        <p class="label mb10">民生余额：</p>
+        <p class="text">{{ (CMBC || CMBC === 0) ? floor(CMBC) : '---' }}</p>
       </div>
     </div>
   </el-dialog>
@@ -28,7 +36,9 @@ export default {
   data() {
     return {
       // 表单参数
-      balanceCount: null
+      balanceCount: null,
+      WSBK: null,
+      CMBC: null
     };
   },
   computed: {
@@ -52,7 +62,20 @@ export default {
     /** 查询网商余额 */
     getBalance() {
       getBalance(this.userCode).then(response => {
-        this.balanceCount = response.data.balanceCount;
+        if (response.data) {
+          const { balanceCount, bklist } = response.data;
+          this.balanceCount = balanceCount;
+          if (bklist) {
+            bklist.forEach(el => {
+              if (el.WSBK !== undefined && el.WSBK !== null) {
+                this.WSBK = el.WSBK;
+              }
+              if (el.CMBC !== undefined && el.CMBC !== null) {
+                this.CMBC = el.CMBC;
+              }
+            });
+          }
+        }
       });
     },
     /** 取消按钮 */
@@ -67,6 +90,8 @@ export default {
     // 表单重置
     reset() {
       this.balanceCount = null;
+      this.WSBK = null;
+      this.CMBC = null;
     }
   }
 };
@@ -82,12 +107,13 @@ export default {
   background: #FAFAFA;
   border: 1px dashed #D4D4D4;
   border-radius: 2px;
+  padding: 0 50px;
   .label{
     font-size: 14px;
     font-weight: 400;
     line-height: 22px;
     color: #20273A;
-    text-align: center;
+    text-align: left;
     padding-left: 22px;
     background: url('~@/assets/images/payment/icon_amount.png') no-repeat 0px 1px;
   }
@@ -96,7 +122,7 @@ export default {
     font-weight: bold;
     line-height: 22px;
     color: #20273A;
-    text-align: center;
+    text-align: left;
   }
 }
 </style>
