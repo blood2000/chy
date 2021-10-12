@@ -82,35 +82,37 @@
 
       <el-form-item
         label="渣土场"
-        prop="ztcCode"
+        prop="ztcCodeIds"
       >
-        <FilterableSelect
-          v-model="queryParams.ztcCode"
-          clearable
-          style="width:228px"
-          placeholder="请输入渣土场"
-          :requer-msg="isShipment? null: '请先选择发货企业！'"
-          :is-sure-key="'orgCode'"
-          :axios="{
-            queryFn:listForWeb,
-            queryData:{
-              orgCode: orgCode
-            },
-            key: 'data'
-          }"
-          :show-key="{
-            value: 'code',
-            label: 'name',
-          }"
-          :keywords="'name'"
-          @selected="(data)=>{ $emit('handleQuery')}"
-        >
-          <template #default="{row}">
-            <span>{{ row.name +' - '+ row.goodsName }}</span>
-          </template>
-        </FilterableSelect>
+        <EltagGoup v-model="dynamicTags" @handleClose="myHandleQuery">
+          <FilterableSelect
+            v-model="ztcCode"
+            clearable
+            style="width:228px"
+            placeholder="请输入渣土场"
+            :requer-msg="isShipment? null: '请先选择发货企业！'"
+            :is-sure-key="'orgCode'"
+            :axios="{
+              queryFn:listForWeb,
+              queryData:{
+                orgCode: orgCode
+              },
+              key: 'data'
+            }"
+            :show-key="{
+              value: 'code',
+              label: 'name',
+            }"
+            :keywords="'name'"
+            @selected="handlerSelected"
+          >
+            <!-- @selected="(data)=>{ $emit('handleQuery')}" -->
+            <template #default="{row}">
+              <span>{{ row.name +' - '+ row.goodsName }}</span>
+            </template>
+          </FilterableSelect>
+        </EltagGoup>
       </el-form-item>
-
 
 
       <el-form-item
@@ -243,7 +245,7 @@
           plain
           icon="el-icon-refresh"
           size="mini"
-          @click="queryParams.pageNum = 1; resetForm('queryForm');$emit('handleQuery');"
+          @click="queryParams.pageNum = 1; dynamicTags=[]; ztcCode=undefined; resetForm('queryForm'); myHandleQuery();"
         >
           重置
         </el-button>
@@ -264,8 +266,9 @@ import { pickerOptions } from '@/utils/dateRange';
 
 
 import FilterableSelect from '@/components/FilterableSelect'; // 远程组件
+import EltagGoup from './EltagGoup';
 export default {
-  components: { FilterableSelect },
+  components: { FilterableSelect, EltagGoup },
   props: {
     // 固定 远程
     value: {
@@ -289,7 +292,11 @@ export default {
       listInfo,
       teamListInfo,
 
-      shift_op: []
+      shift_op: [],
+
+      ztcCode: undefined,
+
+      dynamicTags: []
 
     };
   },
@@ -309,6 +316,31 @@ export default {
     this.getDicts('work-shift').then((response) => {
       this.shift_op = response.data.filter(e => e.dictValue !== '2');
     });
+  },
+
+  methods: {
+    handlerSelected(data) {
+      /*
+        code: "8c73afb50add458586c029f42d11f152"
+        name: "0902渣一"
+      */
+      if (data && data.code && data.name) {
+        // 判断如果重复选中不执行push 和 请求 操作
+        for (let i = 0; i < this.dynamicTags.length; i++) {
+          const e = this.dynamicTags[i];
+          if (e.code === data.code && e.name === data.name) {
+            return;
+          }
+        }
+
+        this.dynamicTags.push({ code: data.code, name: data.name });
+        this.myHandleQuery();
+      }
+    },
+    myHandleQuery() {
+      this.queryParams.ztcCodeIds = (this.dynamicTags.map(e => e.code)).join(',');
+      this.$emit('handleQuery');
+    }
   }
 
 };

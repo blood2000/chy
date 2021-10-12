@@ -200,7 +200,7 @@
                 }"
                 @addSetOK="(valid)=>nextSe(valid, 0)"
               />
-              <div v-if="!isHaveWaybill" class="ly-t-right">
+              <div class="ly-t-right">
                 <div style="display: inline-block;">
                   <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
                     设置电子围栏
@@ -231,7 +231,7 @@
                 >删除地址</el-button>
 
                 <el-button
-                  v-if="!myisdisabled"
+                  v-if="!myisdisabled && !isHaveWaybill"
                   type="primary"
                   size="mini"
                   style="margin-top: -12px"
@@ -282,7 +282,7 @@
               />
               <!-- address.centerLocation = lnglat -->
 
-              <div v-if="!isHaveWaybill" class="ly-t-right">
+              <div class="ly-t-right">
                 <div style="display: inline-block;">
                   <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
                     设置电子围栏
@@ -312,7 +312,7 @@
                   @click="_delAddress('address_xie', address.refName)"
                 >删除地址</el-button>
                 <el-button
-                  v-if="!myisdisabled"
+                  v-if="!myisdisabled && !isHaveWaybill"
                   type="primary"
                   size="mini"
                   style="margin-top: -12px"
@@ -611,6 +611,7 @@ export default {
       if (this.shipmentInfo && this.shipmentInfo.openTheElectronicFence === 0 && this.$store.state.orders.tiemList.length > 0) {
         bool = true;
       }
+      console.log(bool);
       return bool;
     },
 
@@ -994,11 +995,15 @@ export default {
               // 有可能不设置围栏了
               if (isPost) {
                 try {
-                  console.log(que);
                   await fencePlatCreate(que);
-                  console.log('发布成功~!');
+                  this.msgSuccess('创建电子围栏成功');
                 } catch (error) {
-                  console.log(error);
+                  this.$message({
+                    showClose: true,
+                    duration: 0,
+                    message: '创建电子围栏失败, 请联系客服',
+                    type: 'error'
+                  });
                 }
               }
             }
@@ -1070,8 +1075,14 @@ export default {
               if (isPost) {
                 try {
                   await fencePlatCreate(que);
+                  this.msgSuccess('创建电子围栏成功');
                 } catch (error) {
-                  console.log(error);
+                  this.$message({
+                    showClose: true,
+                    duration: 0,
+                    message: '创建电子围栏失败, 请联系客服',
+                    type: 'error'
+                  });
                 }
               }
             }

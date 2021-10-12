@@ -17,3 +17,12 @@ export function getBalance(userCode) {
     method: 'post'
   });
 }
+
+// 用户金额统计
+export function getTotalMoney(data) {
+  return request({
+    url: `/payment/wallet/userAmout/totalMoney`,
+    method: 'post',
+    data: data
+  });
+}

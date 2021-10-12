@@ -66,6 +66,27 @@
       </el-form>
     </div>
     <div class="app-container">
+      <el-row
+        :gutter="10"
+        class="total_bg"
+      >
+        <el-col :span="1">
+          <img src="~@/assets/images/icon/total.png">
+        </el-col>
+        <el-col :span="4">
+          <span style="line-height: 31px">总账号余额：{{ statistical.amount ? statistical.amount : 0 }}</span>
+        </el-col>
+        <el-col :span="4">
+          <span style="line-height: 31px">总保证金：{{ statistical.freezeAmount ? statistical.freezeAmount : 0 }}</span>
+        </el-col>
+        <el-col :span="4">
+          <span style="line-height: 31px">总可用余额：{{ statistical.availableBalance ? statistical.availableBalance : 0 }}</span>
+        </el-col>
+        <el-col :span="4">
+          <span style="line-height: 31px">总授信余额：{{ statistical.crediBalance ? statistical.crediBalance : 0 }}</span>
+        </el-col>
+      </el-row>
+
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -132,7 +153,7 @@
 </template>
 
 <script>
-import { balanceListApi, balanceList } from '@/api/capital/ubalance';
+import { balanceListApi, balanceList, getTotalMoney } from '@/api/capital/ubalance';
 import ChangeDetailDialog from '../components/changeDetailDialog';
 import CheckBalanceDialog from '../components/checkBalanceDialog';
 
@@ -177,7 +198,9 @@ export default {
         maxAmount: undefined
       },
       // 选中的用户
-      userCode: null
+      userCode: null,
+      // 统计值
+      statistical: {}
     };
   },
   created() {
@@ -189,8 +212,18 @@ export default {
       fixed: 'left'
     });
     this.getList();
+    this.getTotalMoney();
   },
   methods: {
+    /** 查询用户金额统计 */
+    getTotalMoney() {
+      const params = Object.assign({}, this.queryParams);
+      params.pageNum = undefined;
+      params.pageSize = undefined;
+      getTotalMoney(params).then(res => {
+        this.statistical = res.data || {};
+      });
+    },
     /** 查询列表 */
     getList() {
       this.loading = true;
@@ -204,6 +237,7 @@ export default {
     handleQuery() {
       this.queryParams.pageNum = 1;
       this.getList();
+      this.getTotalMoney();
     },
     /** 重置按钮操作 */
     resetQuery() {
@@ -225,3 +259,12 @@ export default {
   }
 };
 </script>
+
+<style lang="scss" scoped>
+  .total_bg{
+    background: #F8F9FA;
+    border-radius: 4px;
+    padding: 10px 20px;
+    margin-bottom: 10px;
+  }
+</style>
