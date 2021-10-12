@@ -3,7 +3,7 @@
     <!-- <el-dialog v-loading="adjustLoading" class="i-adjust" :title="title" :visible="visible" width="1400px" :close-on-click-modal="false" append-to-body @close="cancel"> -->
     <el-drawer
       v-loading="adjustLoading"
-      size="96%"
+      size="100%"
       title="核算"
       :visible.sync="visible"
       direction="rtl"
@@ -47,9 +47,13 @@
           :summary-method="getSummaries"
           @row-click="showImg"
         >
-          <el-table-column width="160" label="运输单号" show-overflow-tooltip align="center" prop="waybillNo">
-            <!-- <template slot-scope="scope">
-              <div>
+          <el-table-column label="运输单号 / 司机姓名 / 司机电话 / 车牌号" width="138" show-overflow-tooltip align="left" prop="waybillNo">
+            <template slot-scope="scope">
+              <div>{{ scope.row.waybillNo }}</div>
+              <div>{{ scope.row.driverName }}</div>
+              <div>{{ scope.row.driverPhone }}</div>
+              <div>{{ scope.row.licenseNumber }}</div>
+              <!-- <div>
                 <span class="mr10">{{ scope.row.waybillNo }}</span>
 
                 <el-popover
@@ -62,13 +66,13 @@
                   </div>
                   <i slot="reference" class="el-icon-warning shou" />
                 </el-popover>
-              </div>
-            </template> -->
+              </div> -->
+            </template>
           </el-table-column>
-          <el-table-column width="120" label="司机姓名" align="center" prop="driverName" />
-          <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" />
-          <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" />
-          <el-table-column width="120" label="装货数量" align="center" prop="loadWeight">
+          <!-- <el-table-column width="120" label="司机姓名" align="center" prop="driverName" /> -->
+          <!-- <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" /> -->
+          <!-- <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" /> -->
+          <el-table-column label="装货数量" align="center" prop="loadWeight">
             <template slot-scope="scope">
               <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span> -->
               <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.loadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
@@ -90,7 +94,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="卸货数量" align="center" prop="unloadWeight">
+          <el-table-column label="卸货数量" align="center" prop="unloadWeight">
             <template slot-scope="scope">
               <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.unloadWeight }}</span> -->
               <span v-if="scope.row.isDregs === 1">{{ floor(scope.row.unloadWeight, scope.row.stowageStatus === '2'? 0: 3) }}</span>
@@ -112,51 +116,54 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column width="80" label="配载方式" align="center" prop="stowageStatus">
+          <el-table-column label="配载方式" width="50" align="center" prop="stowageStatus">
             <template slot-scope="scope">
               <span>{{ selectDictLabel(stowageStatusOP, scope.row.stowageStatus) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="路耗(吨/方)" align="center" prop="loss">
+          <el-table-column label="路耗(吨/方)" align="center" prop="loss">
             <template slot-scope="scope">
               <span v-if="scope.row.stowageStatus !== '2'">{{ floor((scope.row.loss -0), 3) }}</span>
               <span v-else>{{ scope.row.loss || 0 }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="180" label="路耗允许范围(kg/m³/%)" align="center" prop="lossAllowScope">
+          <el-table-column label="路耗允许范围(kg/m³/%)" align="center" prop="lossAllowScope">
             <template slot-scope="scope">
               <span>{{ _lossAllowScope(scope.row.lossAllowScope) || '--' }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="160" label="货物单价(元)" align="center" prop="goodsPrice">
+          <el-table-column label="单价(元)" align="left" prop="goodsPrice">
             <template slot-scope="scope">
+              <div>货物单价</div>
               <span>{{ floor(scope.row.goodsPrice) }}</span>
-            </template>
-          </el-table-column>
-          <el-table-column width="160" label="运输单价(元)" align="center" prop="freightPrice">
-            <template slot-scope="scope">
+              <div>运输单价</div>
               <span>{{ floor(scope.row.freightPrice) }}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column width="160" label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
-          <el-table-column width="160" label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
+          <!-- <el-table-column label="运输单价(元)" align="center" prop="freightPrice">
+            <template slot-scope="scope">
+              <span>{{ floor(scope.row.freightPrice) }}</span>
+            </template>
+          </el-table-column> -->
+          <!-- <el-table-column label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
+          <el-table-column label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.lossDeductionFee) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="抹零金额(元)" align="center" prop="m0Fee">
+          <el-table-column label="抹零金额(元)" align="center" prop="m0Fee">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.m0Fee) }}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
-          <el-table-column width="160" label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
+          <!-- <el-table-column label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
+          <el-table-column label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.deliveryFeeDeserved) }}</span>
             </template>
           </el-table-column>
           <!-- 补贴项目 -->
-          <el-table-column align="center" width="450" label="补贴项目">
+          <el-table-column align="center" width="120" label="补贴项目">
             <template slot="header">
               <span>补贴项目
                 <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
@@ -203,7 +210,7 @@
             </template>
           </el-table-column>
           <!-- 扣费项目 -->
-          <el-table-column align="center" width="450" label="扣费项目">
+          <el-table-column align="center" width="120" label="扣费项目">
             <template slot="header">
               <span>扣费项目
                 <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button>
@@ -211,7 +218,7 @@
               </span>
             </template>
             <template slot-scope="scope">
-              <span v-if="scope.row.isDregs == 1"> -- </span>
+              <span v-if="scope.row.isDregs === 1"> -- </span>
               <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
                 <div v-for="(freight, index) in scope.row.deductionFreightList" :key="index">
                   <el-form-item :label="freight.cnName + '(元)'">
@@ -235,22 +242,22 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right">
+          <el-table-column label="纳税金额(元)" align="center" prop="taxPayment">
             <template slot-scope="scope">
               <span> {{ floor(scope.row.taxPayment) }} </span>
             </template>
           </el-table-column>
-          <el-table-column width="120" label="服务费(元)" align="center" prop="serviceFee" fixed="right">
+          <el-table-column label="服务费(元)" align="center" prop="serviceFee">
             <template slot-scope="scope">
               <span> {{ floor(scope.row.serviceFee) }} </span>
             </template>
           </el-table-column>
-          <el-table-column width="162" label="司机实收金额(元)" align="center" prop="deliveryCashFee" fixed="right">
+          <el-table-column label="司机实收金额(元)" align="center" prop="deliveryCashFee">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.deliveryCashFee) }}</span>
             </template>
           </el-table-column>
-          <el-table-column width="140" label="货主实付金额(元)" align="center" prop="shipperRealPay" fixed="right">
+          <el-table-column label="货主实付金额(元)" align="center" prop="shipperRealPay">
             <template slot-scope="scope">
               <span> {{ floor(scope.row.shipperRealPay) }} </span>
             </template>
@@ -325,8 +332,8 @@ export default {
 
       //
       isPiliang: false,
-      isEdit2: false,
-      isEdit: false,
+      isEdit2: true,
+      isEdit: true,
       deliveryCashFee: undefined,
       // 遮罩层
       loading: false,
@@ -702,8 +709,8 @@ export default {
       this.selectedValue = '';
       this.selectedNum = '';
       await this.getRuleLists();
-      this.isEdit2 = false;
-      this.isEdit = false;
+      this.isEdit2 = true;
+      this.isEdit = true;
       this.deliveryCashFee = undefined;
       this.queryParams.waybillCodeList = data;
       await this.getList();
@@ -919,6 +926,9 @@ export default {
 
 ::v-deep .warning-row{
   background: #fadbd9;
+}
+::v-deep .cell{
+  padding: 0;
 }
 
 .drawer-footer{
