@@ -87,6 +87,7 @@ export default {
         // status: 2, //	1已申请对账列表 2已申请开票列表 3已申请打款列表 4已完成列表	query	false
         teamCode: undefined, //	调度者名称	query	false
         ztcCode: undefined, //	渣土场	query	false
+        ztcCodeIds: undefined, // 渣土批量
         projectCode: undefined, // 项目
         receiveTime: [],
         cardBatchNo: undefined, // 卡批次
