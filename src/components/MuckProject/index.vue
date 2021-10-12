@@ -868,7 +868,9 @@ export default {
         this.$message({ type: 'warning', message: '发起打款成功，请勿关闭或刷新页面！' });
         this.openPlay = false;
         this.loading = true;
-        this.getBatch(sha1(psw));
+        const passWord = sha1(psw);
+        // console.log(passWord);
+        this.getBatch(passWord);
         // const que = {
         //   batchNos: this.selections.map(e => e.batchNo),
         //   passWord: sha1(psw)
@@ -886,7 +888,7 @@ export default {
     },
     // 打款接口
     async getBatch(passWord) {
-      const len = this.selection.map((item) => item.batchNo);
+      const len = this.selections.map((item) => item.batchNo);
       // console.log(len);
       for (let index = 0; index < len.length; index++) {
         const e = len[index];
