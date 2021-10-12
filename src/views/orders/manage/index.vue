@@ -1160,6 +1160,14 @@ export default {
 
         fencePlatCreate(que).then(res => {
           console.log(res.data);
+          this.msgSuccess('创建电子围栏成功');
+        }).catch(e => {
+          this.$message({
+            showClose: true,
+            duration: 0,
+            message: '创建电子围栏失败, 请联系客服',
+            type: 'error'
+          });
         });
       }
     },
