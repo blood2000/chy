@@ -795,7 +795,7 @@ export default {
         annualVerificationDate: null,
         transportMeson: null,
         authStatus: 0,
-        isFreeze: null,
+        isFreeze: 0, // 0正常1冻结
         createCode: null,
         createTime: null,
         updateCode: null,
