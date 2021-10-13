@@ -943,12 +943,12 @@ export default {
       if ((!row.wsAccount || row.wsAccount === '') && row.authStatus === 3) {
         return 'warning-row';
       }
-      if (row.identificationEndTime) {
+      if (row.identificationEffective === 0) {
         if (new Date(row.identificationEndTime).getTime() < new Date().getTime()) {
           return 'wrong-row';
         }
       }
-      if (row.validPeriodTo) {
+      if (row.validPeriodAlways === 0) {
         if (new Date(row.validPeriodTo).getTime() < new Date().getTime()) {
           return 'wrong-row';
         }
