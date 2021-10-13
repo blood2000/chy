@@ -128,7 +128,7 @@
     </el-row>
 
     <!-- 添加或修改菜单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="700px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <!-- <el-col :span="24">
             <el-form-item label="产品版本">
@@ -230,7 +230,7 @@
             <el-form-item label="菜单图标" prop="icon">
               <el-popover
                 placement="bottom-start"
-                width="460"
+                width="580"
                 trigger="click"
                 @show="$refs['iconSelect'].reset()"
               >

@@ -56,6 +56,7 @@ export default {
         cursor: pointer;
         width: 33%;
         float: left;
+        word-wrap: break-all;
       }
       span {
         display: inline-block;
