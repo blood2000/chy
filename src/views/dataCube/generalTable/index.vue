@@ -41,9 +41,10 @@
               clearable
               size="small"
               type="datetime"
-              value-format="yyyy-MM-dd hh:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="开始时间"
               style="width: 200px"
+              default-time="00:00:00"
             />
             至
             <el-date-picker
@@ -51,9 +52,10 @@
               clearable
               size="small"
               type="datetime"
-              value-format="yyyy-MM-dd hh:mm:ss"
+              value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="结束时间"
               style="width: 200px"
+              default-time="23:59:59"
             />
           </template>
           <!-- 枚举类型 -->
