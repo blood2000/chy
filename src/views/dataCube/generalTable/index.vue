@@ -63,6 +63,7 @@
             v-else-if="item.dataItemInfo.itemType === 'enum'"
             v-model="item.value"
             :placeholder="`请选择${item.dataItemInfo.itemCn}`"
+            filterable
             clearable
             style="width: 200px"
             size="small"
