@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :inline="true" label-width="110px" @submit.native.prevent>
+      <el-form ref="queryForm" :inline="true" label-width="auto" @submit.native.prevent>
         <el-form-item v-for="(item, index) in dataModelDto.queryFields" :key="index" :label="item.dataItemInfo.itemCn">
           <!-- string|整数类型|浮点类型 -->
           <el-input
