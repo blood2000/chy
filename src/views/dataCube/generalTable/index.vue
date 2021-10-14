@@ -222,7 +222,7 @@ export default {
     },
     getList() {
       this.loading = true;
-      searchDataModel(this.dataModelDto).then(res => {
+      searchDataModel(Object.assign({}, this.dataModelDto, { dataModelId: this.modelId }).then(res => {
         this.loading = false;
         if (res.data) {
           const { list, total } = res.data;
@@ -237,7 +237,7 @@ export default {
     /** 导出 */
     async handleExport() {
       this.exportLoading = true;
-      await this.download('/analysis/dataModelInfos/export', this.dataModelDto, '导出文件', 'application/json');
+      await this.download('/analysis/dataModelInfos/export', Object.assign({}, this.dataModelDto, { dataModelId: this.modelId }, '导出文件', 'application/json');
       this.exportLoading = false;
     }
   }
