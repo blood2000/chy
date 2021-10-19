@@ -64,13 +64,13 @@ export default {
   justify-content: space-between;
 }
 .img_box1{
-  width: 510px;
+  width: 410px;
   height: 360px;
   overflow-x: scroll;
   display: flex;
 }
 .img{
-  width: 500px;
+  width: 400px;
   height: 350px;
   object-fit: contain;
   border: 1px dashed #ddd;

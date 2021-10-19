@@ -1124,23 +1124,24 @@ export default {
         let obj = null;
 
         if (e.enclosureRadius) {
-          const res = (/\((.*?)\)/g).exec(e.localtionOld);
-          if (res) {
-            e.centerLocation = res[1].split(',');
-          }
+          // const res = (/\((.*?)\)/g).exec(e.localtionOld);
+          // if (res) {
+          //   e.centerLocation = res[1].split(',');
+          // }
 
+          // console.log(e.centerLocation);
           if (e.addressType === '1') {
             obj = {
               addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude || '0',
-              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude || '0',
+              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.location[0],
+              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.location[1],
               radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius || 0
             };
           } else if (e.addressType === '2') {
             obj = {
               addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
-              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
+              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.location[0],
+              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.location[1],
               radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius
             };
           }
@@ -1177,6 +1178,14 @@ export default {
     myfencePlatDelete(row) {
       fencePlatDelete(row.orderCode).then(res => {
         console.log(res.data);
+      }).catch(error => {
+        console.log(error);
+        this.$message({
+          showClose: true,
+          duration: 0,
+          message: '删除电子围栏失败, 请联系客服',
+          type: 'error'
+        });
       });
     },
 

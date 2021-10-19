@@ -205,6 +205,11 @@
             type="text"
             @click="handleReBindCard(row)"
           >重新绑卡</el-button>
+          <el-button
+            size="mini"
+            type="text"
+            @click="handleDetail(row)"
+          >详情</el-button>
         </template>
       </RefactorTable>
 
@@ -220,6 +225,8 @@
 
     <!-- 查看回单 -->
     <PdfLook :src="pdfSrc" :open.sync="pdfOpen" title="查看回单" />
+    <!-- 查看子单详情 -->
+    <DetailDialog :open.sync="detailOpen" :code="currentCode" />
   </div>
 </template>
 
@@ -227,11 +234,13 @@
 import { withDrawalListApi, getWithDrawalList, toCard, reject, reBindCard } from '@/api/capital/withdrawal';
 import PdfLook from '@/views/system/media/pdfLook';
 import { pickerTimeOptions } from '@/utils/dateRange';
+import DetailDialog from './detailDialog.vue';
 
 export default {
   name: 'Withdrawal',
   components: {
-    PdfLook
+    PdfLook,
+    DetailDialog
   },
   data() {
     return {
@@ -305,7 +314,11 @@ export default {
       sucList: [],
       // 查看回单
       pdfSrc: '',
-      pdfOpen: false
+      pdfOpen: false,
+      // 查看子单
+      detailOpen: false,
+      // 当前选中code
+      currentCode: null
     };
   },
   computed: {
@@ -333,7 +346,7 @@ export default {
       prop: 'edit',
       isShow: true,
       label: '操作',
-      width: 100,
+      width: 140,
       fixed: 'left'
     });
 
@@ -555,6 +568,11 @@ export default {
           }
         });
       });
+    },
+    /** 查看子单 */
+    handleDetail(row) {
+      this.currentCode = row.code;
+      this.detailOpen = true;
     }
   }
 };
