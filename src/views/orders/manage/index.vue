@@ -1178,6 +1178,14 @@ export default {
     myfencePlatDelete(row) {
       fencePlatDelete(row.orderCode).then(res => {
         console.log(res.data);
+      }).catch(error => {
+        console.log(error);
+        this.$message({
+          showClose: true,
+          duration: 0,
+          message: '删除电子围栏失败, 请联系客服',
+          type: 'error'
+        });
       });
     },
 

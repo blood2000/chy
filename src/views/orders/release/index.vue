@@ -212,7 +212,7 @@
                       class="ml10 mr10"
                     />
                   </label>
-                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
                 </div>
                 <el-button
                   v-if="address.switchRadius"
@@ -294,7 +294,7 @@
                       class="ml10 mr10"
                     />
                   </label>
-                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
                 </div>
                 <el-button
                   v-if="address.switchRadius"
