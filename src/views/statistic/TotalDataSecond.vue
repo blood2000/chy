@@ -79,6 +79,7 @@ export default {
 .s-container{
   height: 4.8rem;
   position: relative;
+  z-index: 1;
   &__box{
     width: 22.2rem;
     height: 100%;
