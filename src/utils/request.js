@@ -150,16 +150,19 @@ export function download(url, params, filename, headers, type = '.xlsx') {
     duration: 3 * 1000,
     showClose: true
   });
-  return service.post(url, params, {
-    transformRequest: [(params) => {
-      return tansParams(params);
-    }],
+  const downloadConfig = {
     headers: {
       'Content-Type': headers || 'application/x-www-form-urlencoded'
     },
     responseType: 'blob',
     timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
-  }).then((data) => {
+  };
+  if (!headers) {
+    downloadConfig.transformRequest = [(params) => {
+      return tansParams(params);
+    }];
+  }
+  return service.post(url, params, downloadConfig).then((data) => {
     var reader = new FileReader();
     reader.onload = function(event) {
       const result = reader.result.length < 100 ? JSON.parse(reader.result) : '';// 内容就在这里

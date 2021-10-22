@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #6a6f81;
+      }
+    </style>
+  </defs>
+  <g id="组_23205" data-name="组 23205" transform="translate(-17 -109)">
+    <rect id="矩形_295" data-name="矩形 295" class="cls-1" width="28" height="28" transform="translate(17 109)"/>
+    <g id="组_23934" data-name="组 23934" transform="translate(-1076.036 -200.883)">
+      <g id="组_23928" data-name="组 23928" transform="translate(1097.729 331.785)">
+        <path id="路径_19340" data-name="路径 19340" class="cls-2" d="M1114.8,333.982h-16.082a.988.988,0,1,1,0-1.976H1114.8a.988.988,0,1,1,0,1.976Z" transform="translate(-1097.729 -332.006)"/>
+      </g>
+      <g id="组_23929" data-name="组 23929" transform="translate(1105.76 313.655)">
+        <path id="路径_19341" data-name="路径 19341" class="cls-2" d="M1106.846,317.607a.988.988,0,0,1-.988-.988v-1.976a.988.988,0,0,1,1.976,0v1.976A.987.987,0,0,1,1106.846,317.607Z" transform="translate(-1105.858 -313.655)"/>
+      </g>
+      <g id="组_23930" data-name="组 23930" transform="translate(1111.751 316.189)">
+        <path id="路径_19342" data-name="路径 19342" class="cls-2" d="M1112.91,319.593a.988.988,0,0,1-.7-1.686l1.4-1.4a.988.988,0,1,1,1.4,1.4l-1.4,1.4A.981.981,0,0,1,1112.91,319.593Z" transform="translate(-1111.922 -316.22)"/>
+      </g>
+      <g id="组_23931" data-name="组 23931" transform="translate(1098.601 316.189)">
+        <path id="路径_19343" data-name="路径 19343" class="cls-2" d="M1101,319.593a.985.985,0,0,1-.7-.289l-1.4-1.4a.988.988,0,1,1,1.4-1.4l1.4,1.4a.988.988,0,0,1-.7,1.686Z" transform="translate(-1098.611 -316.22)"/>
+      </g>
+      <g id="组_23932" data-name="组 23932" transform="translate(1105.095 326.086)">
+        <path id="路径_19344" data-name="路径 19344" class="cls-2" d="M1106.847,329.562a1.663,1.663,0,1,1,1.664-1.663A1.664,1.664,0,0,1,1106.847,329.562Zm0-1.976a.313.313,0,1,0,.314.313A.313.313,0,0,0,1106.847,327.587Z" transform="translate(-1105.185 -326.237)"/>
+      </g>
+      <g id="组_23933" data-name="组 23933" transform="translate(1099.684 318.574)">
+        <path id="路径_19345" data-name="路径 19345" class="cls-2" d="M1106.773,320.61a5.094,5.094,0,0,1,5.088,5.089v6.14h-10.177V325.7a5.1,5.1,0,0,1,5.089-5.089m0-1.976a7.065,7.065,0,0,0-7.065,7.065v8.116h14.129V325.7a7.064,7.064,0,0,0-7.064-7.065Z" transform="translate(-1099.708 -318.634)"/>
+      </g>
+    </g>
+  </g>
+</svg>
