@@ -1,7 +1,7 @@
 <template>
   <!-- 运力情况 -->
-  <div class="s-container ly-flex-pack-justify">
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 16%">
+  <div class="s-container ly-flex-pack-justify" :class="[{isThree: isThree}, {'ly-flex-w': isThree}]">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" :style="isThree ? 'width: 34%' : 'width: 16%'">
       <InfoBox
         label="总车辆"
         :count="dataList.vehicleCount"
@@ -16,7 +16,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 14%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" :style="isThree ? 'width: 37%' : 'width: 14%'">
       <InfoBox
         label="总路线"
         :count="dataList.lienCount"
@@ -31,7 +31,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 14%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" :style="isThree ? 'width: 29%' : 'width: 14%'">
       <InfoBox
         label="总网点"
         :count="dataList.branchCount"
@@ -46,7 +46,7 @@
         :yoy-places="1"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 21%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" :style="isThree ? 'width: 34%' : 'width: 21%'">
       <InfoBox
         label="运输总量"
         unit="吨"
@@ -66,7 +66,7 @@
         :has-change-unit="true"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 21%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" :style="isThree ? 'width: 37%' : 'width: 21%'">
       <InfoBox
         label="行驶里程"
         unit="公里"
@@ -86,7 +86,7 @@
         :has-change-unit="true"
       />
     </div>
-    <div class="s-container__box ly-flex-pack-justify ly-flex-v" style="width: 17%">
+    <div class="s-container__box ly-flex-pack-justify ly-flex-v" :style="isThree ? 'width: 29%' : 'width: 17%'">
       <InfoBox
         label="行驶时长"
         unit="月"
@@ -122,6 +122,10 @@ export default {
     branchCode: {
       type: String,
       default: null
+    },
+    isThree: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -200,6 +204,15 @@ export default {
       bottom: 0;
       width: 0.05rem;
       background: linear-gradient(rgba(1, 227, 255, 0), rgba(1, 227, 255, 0.22), rgba(1, 227, 255, 0));
+    }
+  }
+  &.isThree{
+    >.s-container__box{
+      height: calc(50% - 0.5rem);
+      margin-bottom: 0.5rem;
+      &:nth-child(3)::before{
+        display: none;
+      }
     }
   }
 }

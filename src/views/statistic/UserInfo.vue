@@ -1,6 +1,6 @@
 <template>
   <!-- 用户情况 -->
-  <div class="s-container ly-flex-pack-justify" :class="{isSecond: isSecond}">
+  <div class="s-container ly-flex-pack-justify" :class="[{isSecond: isSecond}, {isThree: isThree}]">
     <div class="s-container__box ly-flex-pack-start small">
       <div class="s-container__box__info ly-flex-pack-justify ly-flex-v">
         <InfoBox
@@ -48,7 +48,7 @@
         />
       </div>
     </div>
-    <div class="s-container__box ly-flex-pack-start big">
+    <div v-if="!isThree" class="s-container__box ly-flex-pack-start big">
       <div class="s-container__box__info left ly-flex-pack-justify ly-flex-v">
         <InfoBox
           label="总调度者"
@@ -119,6 +119,10 @@ export default {
       default: null
     },
     isSecond: {
+      type: Boolean,
+      default: false
+    },
+    isThree: {
       type: Boolean,
       default: false
     }
@@ -214,6 +218,16 @@ export default {
       }
       &.last{
         width: 26%;
+      }
+    }
+  }
+  &.isThree{
+    >.s-container__box{
+      &.small{
+        width: 26%;
+      }
+      &.big{
+        width: 37%;
       }
     }
   }

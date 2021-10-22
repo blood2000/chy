@@ -10,7 +10,7 @@
         <p><count-to :end-val="dataList.waybillCount" /></p>
       </div>
     </div>
-    <Time class="s-timer" :is-second="true" @getTimeType="getData" />
+    <Time class="s-timer" :is-second="true" :is-three="isThree" @getTimeType="getData" />
   </div>
 </template>
 
@@ -27,6 +27,10 @@ export default {
     branchCode: {
       type: String,
       default: null
+    },
+    isThree: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -75,6 +79,7 @@ export default {
 .s-container{
   height: 4.8rem;
   position: relative;
+  z-index: 1;
   &__box{
     width: 22.2rem;
     height: 100%;
