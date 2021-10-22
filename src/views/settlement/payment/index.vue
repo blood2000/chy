@@ -116,6 +116,16 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="FM" prop="teamLeaderName">
+          <el-input
+            v-model.trim="queryParams.teamLeaderName"
+            placeholder="请输入FM名称"
+            clearable
+            size="small"
+            style="width: 225px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
         <el-form-item
           label="接单日期"
           prop="receiveTime"
@@ -215,6 +225,9 @@
       <RefactorTable :loading="loading" :data="paymentlist" :table-columns-config="tableColumnsConfig" :row-class-name="tableRowClassName" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #sourceType="{row}">
+          <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
         </template>
         <template #applyStatus="{row}">
           <span>{{ selectDictLabel(applyStatusOptions, row.applyStatus) }}</span>
@@ -372,7 +385,8 @@ export default {
         'startTime': undefined,
         'licenseNumber': undefined,
         'driverName': undefined,
-        'waybillNo': undefined
+        'waybillNo': undefined,
+        'teamLeaderName': undefined
       },
       bodyParams: {
         wayBillSettlementCodeList: []
@@ -423,6 +437,14 @@ export default {
         { 'dictLabel': '打款中', 'dictValue': '3' },
         { 'dictLabel': '打款成功', 'dictValue': '4' },
         { 'dictLabel': '打款失败', 'dictValue': '5' }
+      ],
+      // 来源字典
+      sourceTypeOptions: [
+        { 'dictLabel': 'HZZD', 'dictValue': '1' },
+        { 'dictLabel': 'FM', 'dictValue': '2' },
+        { 'dictLabel': 'ZZJD', 'dictValue': '3' },
+        { 'dictLabel': 'HTZP', 'dictValue': '4' },
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
       ],
       payLoading: false,
       exportLoading: false,
