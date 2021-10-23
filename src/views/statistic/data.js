@@ -158,7 +158,7 @@ export const dataJson = {
   },
   'waybillSettlementNotice': {
     'amount': 0, //	打款金额
-    'totalFee': 0, // 手续费
+    'totalFee': 0, // 留存运费
     'shipperRealPay': 0, // 货主实付金额 (交易)
     'deliveryCashFee': 0, // 司机实收金额 (运费)
     'driver': {
