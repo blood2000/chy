@@ -138,7 +138,7 @@ export default [
     prop: 'taxPayment',
     isShow: true,
     width: 100,
-    label: '纳税金额'
+    label: '留存运费'
   },
   {
     prop: 'freightPrice',

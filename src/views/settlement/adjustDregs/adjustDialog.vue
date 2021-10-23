@@ -227,7 +227,7 @@ export default {
           // serviceFee	服务费		false
           // serviceTaxFee	服务费税费		false
           // shipperRealPay	货主实付金额		false
-          // taxPayment	纳税金额		false
+          // taxPayment	留存运费		false
           // waybillCode	运单
           // shipmentCode
           deliveryCashFee += (e.deliveryCashFee ? e.deliveryCashFee - 0 : 0);

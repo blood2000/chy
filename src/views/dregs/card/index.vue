@@ -217,7 +217,7 @@ const com = [
     'isChild': false
   },
   {
-    'label': '纳税金额',
+    'label': '留存运费',
     'prop': 'taxPayment',
     'isShow': false,
     'sortNum': 0,
