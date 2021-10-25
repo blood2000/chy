@@ -388,7 +388,7 @@
                 type="text"
                 @click="handleDelete(row)"
               >
-                {{ row.status === '0' || row.status === '1'?'取消运单':'作废运单' }}
+                {{ row.status === '1' ?'取消运单':'作废运单' }}
               </el-button>
             </el-dropdown-item>
             <!-- <el-dropdown-item>
@@ -450,7 +450,7 @@
 </template>
 
 <script>
-import { listManagesApi, listManages, waybillInvalid } from '@/api/waybill/manages';
+import { listManagesApi, listManages, waybillInvalid, waybillCancel } from '@/api/waybill/manages';
 import DetailDialog from '../../components/detailDialog';
 import MarkAbnormalDialog from '../markAbnormalDialog';
 import SeperateListDialog from '../seperateListDialog';
@@ -739,13 +739,17 @@ export default {
     /** 作废运单按钮操作 */
     handleDelete(row) {
       const code = row.wayBillCode;
-      const title = row.status === '1' || row.status === '2' ? '取消' : '作废';
+      const title = row.status === '1' ? '取消' : '作废';
       this.$confirm('是否确认' + title + '单号为"' + row.waybillNo + '"的运单?', '警告', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
       }).then(function() {
-        return waybillInvalid(code);
+        if (row.status === '1') {
+          return waybillCancel(code);
+        } else {
+          return waybillInvalid(code);
+        }
       }).then(() => {
         this.getList();
         this.msgSuccess('操作成功');

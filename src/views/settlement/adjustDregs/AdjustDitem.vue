@@ -48,7 +48,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column width="100" label="纳税金额(元)" align="center" prop="taxPayment" fixed="right">
+      <el-table-column width="100" label="留存运费(元)" align="center" prop="taxPayment" fixed="right">
         <template slot-scope="scope">
           <span> {{ floor(scope.row.taxPayment) }} </span>
         </template>
@@ -244,7 +244,7 @@ export default {
                 serviceFee, //	服务费	number
                 serviceTaxFee, //	服务费税费	number
                 shipperRealPay, //	货主实付金额	number
-                taxPayment //	纳税金额	number
+                taxPayment //	留存运费	number
                 // waybillCode //	运单CODE
               } = da;
 

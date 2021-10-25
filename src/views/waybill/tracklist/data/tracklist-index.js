@@ -105,7 +105,7 @@ export default [
   {
     prop: 'taxPayment',
     isShow: true,
-    label: '纳税金额'
+    label: '留存运费'
   },
   {
     prop: 'deliveryCashFee',

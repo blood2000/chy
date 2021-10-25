@@ -156,6 +156,10 @@
         <template #createTime="{row}">
           <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template>
+        <template #distributionPercent="{row}">
+          <span v-if="row.distributionRule== 1&&row.distributionRule">{{ row.distributionRule+"%" }}</span>
+          <span v-if="row.distributionRule!= 1&&row.distributionRule">{{ row.distributionRule+"元" }}</span>
+        </template>
         <template #edit="{row}">
           <el-button
             v-if="row.authStatus != 3"

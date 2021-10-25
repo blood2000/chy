@@ -242,7 +242,7 @@
               </el-form>
             </template>
           </el-table-column>
-          <el-table-column label="纳税金额(元)" align="center" prop="taxPayment">
+          <el-table-column label="留存运费(元)" align="center" prop="taxPayment">
             <template slot-scope="scope">
               <span> {{ floor(scope.row.taxPayment) }} </span>
             </template>
