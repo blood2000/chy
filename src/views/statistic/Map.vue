@@ -2,7 +2,7 @@
   <div class="s-container s-map-container-relative">
     <div ref="map" class="map-box" />
     <!-- 图例 -->
-    <div class="map-legend" :class="{isSecond: isSecond}">
+    <div class="map-legend" :class="[{isSecond: isSecond}, {isThree, isThree}]">
       <h5>运单量</h5>
       <ul class="ly-flex-v ly-flex-pack-around">
         <li v-for="(item, index) in legendList" :key="index">
@@ -12,7 +12,7 @@
       </ul>
     </div>
     <!-- 运单 -->
-    <WaybillCard ref="WaybillCardRef" :is-second="isSecond" />
+    <WaybillCard ref="WaybillCardRef" :is-second="isSecond" :is-three="true" />
   </div>
 </template>
 
@@ -36,6 +36,10 @@ export default {
       }
     },
     isSecond: {
+      type: Boolean,
+      default: false
+    },
+    isThree: {
       type: Boolean,
       default: false
     }
@@ -108,7 +112,7 @@ export default {
       this.chart.setOption({
         geo: {
           map: 'china',
-          zoom: 1.05,
+          zoom: this.isThree ? 0.98 : 1.05,
           z: 2,
           aspectScale: 0.8,
           // layoutCenter: ['49%', '48%'],
@@ -134,7 +138,7 @@ export default {
           type: 'map',
           z: 0,
           map: 'china',
-          zoom: 1.05,
+          zoom: this.isThree ? 0.98 : 1.05,
           aspectScale: 0.8,
           // layoutCenter: ['49%', '48%'],
           // layoutSize: '100%',
@@ -547,6 +551,9 @@ export default {
     }
     &.isSecond{
       right: 1.1rem;
+    }
+    &.isThree{
+      bottom: 1rem;
     }
   }
 }

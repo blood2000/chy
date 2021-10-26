@@ -115,7 +115,7 @@
             {{ form.waybillBalanceInfo.taxFreeFee?floor(form.waybillBalanceInfo.taxFreeFee):'0.00' }}
           </el-col>
           <el-col :span="3" class="text-label">
-            纳税金额(元)：
+            留存运费(元)：
           </el-col>
           <el-col :span="5" class="text-row">
             {{ form.waybillBalanceInfo.taxPayment?floor(form.waybillBalanceInfo.taxPayment):'0.00' }}

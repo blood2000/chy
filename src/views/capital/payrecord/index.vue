@@ -312,7 +312,7 @@
         <template #amount="{row}">
           <span>{{ floor(row.amount) }}</span>
         </template>
-        <!-- 手续费 -->
+        <!-- 留存运费 -->
         <template #totalFee="{row}">
           <span>{{ floor(row.totalFee) }}</span>
         </template>
@@ -602,12 +602,12 @@ export default {
           key: 'deliveryCashFee'
         },
         // {
-        //   label: '纳税金额',
+        //   label: '留存运费',
         //   value: 0,
         //   key: 'taxPayment'
         // },
         {
-          label: '手续费',
+          label: '留存运费',
           value: 0,
           key: 'totalFee'
         }

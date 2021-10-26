@@ -1,7 +1,7 @@
 import request from '@/utils/request';
 
-// 查询运单列表
-export const listManagesApi = '/transportation/waybill/manageList';
+// 查询稽核明细列表
+export const listManagesApi = '/transportation/waybillInspect/inspectList';
 export function listManages(query) {
   return request({
     url: listManagesApi,
@@ -10,54 +10,20 @@ export function listManages(query) {
   });
 }
 
-// 查询渣土运单列表
-export const listDregsManagesApi = '/transportation/waybill/managesDregsList';
-export function listDregsManages(query) {
+// 新增标记稽核情况
+export function waybillInspectSave(data) {
   return request({
-    url: listDregsManagesApi,
-    method: 'get',
-    params: query
-  });
-}
-
-// 标记异常
-export function waybillAbnormal(data) {
-  return request({
-    url: '/transportation/waybillAbnormal/add',
+    url: '/transportation/waybillInspect/save',
     method: 'post',
     data: data
   });
 }
 
-// 运单作废
-export function waybillInvalid(code) {
+// 根据运单CODE查询稽查情况
+export function findInspect(waybillCode) {
   return request({
-    url: `/transportation/waybillOper/invalid?wayBillInCode=${code}`,
+    url: `/transportation/waybillInspect/findByWaybillCode?waybillCode=${waybillCode}`,
     method: 'get'
-  });
-}
-// 运单取消
-export function waybillCancel(code) {
-  return request({
-    url: `/transportation/waybillOper/appCancelOrder/${code}`,
-    method: 'delete'
-  });
-}
-// 货主备注运单
-export function waybillRemark(data) {
-  return request({
-    url: '/transportation/waybillOper/shipperRemark',
-    method: 'post',
-    data: data
-  });
-}
-
-// 查询分单列表
-export function waybillChild(query) {
-  return request({
-    url: '/transportation/waybill/childList',
-    method: 'get',
-    params: query
   });
 }
 

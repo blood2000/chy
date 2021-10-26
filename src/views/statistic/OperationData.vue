@@ -1,9 +1,9 @@
 <template>
   <!-- 运营情况 -->
-  <div class="s-container" :class="{isSecond: isSecond}">
+  <div class="s-container" :class="[{isSecond: isSecond}, {isThree: isThree}]">
     <!-- 货单 -->
     <div class="s-container__box top">
-      <div class="s-container__box__content ly-flex">
+      <div class="s-container__box__content ly-flex" :style="isThree ? 'margin-bottom: 0' : ''">
         <InfoBox
           class="op-content"
           label="货单总数"
@@ -59,7 +59,7 @@
           </div>
         </div>
       </div>
-      <div class="s-container__box__content ly-flex-pack-start">
+      <div class="s-container__box__content ly-flex-pack-start" :style="isThree ? 'margin-bottom: 0.2rem' : ''">
         <InfoBox
           class="op-content"
           label="今日新增运单"
@@ -138,6 +138,10 @@ export default {
       default: () => {
         return {};
       }
+    },
+    isThree: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -322,6 +326,17 @@ export default {
       &.bottom{
         //height: 58%;
         padding: 1.2rem 0 0.8rem;
+      }
+    }
+  }
+
+  &.isThree{
+    .s-container__box{
+      &.top{
+        padding-bottom: 0.8rem;
+      }
+      &.bottom{
+        padding: 1rem 0 1rem;
       }
     }
   }

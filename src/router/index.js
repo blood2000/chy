@@ -164,6 +164,11 @@ export const constantRoutes = [
     path: '/statisticSecond',
     component: (resolve) => require(['@/views/statistic/indexSecond'], resolve),
     hidden: true
+  },
+  {
+    path: '/statisticThree',
+    component: (resolve) => require(['@/views/statistic/indexThree'], resolve),
+    hidden: true
   }
 ];
 
