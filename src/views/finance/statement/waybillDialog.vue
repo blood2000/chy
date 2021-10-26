@@ -31,7 +31,7 @@
           <span>{{ floor(scope.row.shipperRealPay) }}</span>
         </template>
       </el-table-column>
-      <el-table-column width="100" label="纳税金额" align="center" prop="taxPayment">
+      <el-table-column width="100" label="留存运费" align="center" prop="taxPayment">
         <template #default="scope">
           <span>{{ floor(scope.row.taxPayment) }}</span>
         </template>

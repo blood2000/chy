@@ -534,7 +534,7 @@ export default {
           key: 'deliveryCashFee'
         },
         {
-          label: '纳税金额',
+          label: '留存运费',
           value: 0,
           key: 'taxPayment'
         },
@@ -564,7 +564,7 @@ export default {
             key: 'deliveryFeeDeserved'
           },
           {
-            label: '纳税金额',
+            label: '留存运费',
             value: 0,
             key: 'taxPayment'
           }

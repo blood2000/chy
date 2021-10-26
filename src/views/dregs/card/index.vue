@@ -117,6 +117,7 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
+        :page-sizes="[10, 50, 100, 200, 300]"
         @pagination="getList"
       />
 
@@ -217,7 +218,7 @@ const com = [
     'isChild': false
   },
   {
-    'label': '纳税金额',
+    'label': '留存运费',
     'prop': 'taxPayment',
     'isShow': false,
     'sortNum': 0,

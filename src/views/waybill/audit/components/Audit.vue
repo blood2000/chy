@@ -2,15 +2,22 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
-          <el-input
-            v-model.trim="queryParams.orderClient"
-            placeholder="发货企业/操作人/手机号"
+        <el-form-item label="稽核来源" prop="checkSourceType">
+          <el-select
+            v-model="queryParams.checkSourceType"
+            placeholder="请选择稽核来源"
             clearable
+            filterable
             size="small"
             style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
+          >
+            <el-option
+              v-for="dict in checkSourceTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item v-show="!isShipment" label="发货企业" prop="deliveryCompany">
           <el-input
@@ -116,32 +123,22 @@
             />
           </el-select>
         </el-form-item>
-        <!-- <el-form-item label="分单" prop="isChildList">
+        <el-form-item label="轨迹情况" prop="track">
           <el-select
-            v-model="queryParams.isChildList"
-            placeholder="请选择是否分单"
+            v-model="queryParams.track"
+            placeholder="请选择轨迹情况"
             clearable
             filterable
             size="small"
             style="width: 228px"
           >
             <el-option
-              v-for="dict in isChildOptions"
+              v-for="dict in trackOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
             />
           </el-select>
-        </el-form-item> -->
-        <el-form-item v-if="user.userCode !== '9b8afa19203c488282b05e04096b0bdd'" label="调度/调度员" prop="teamName">
-          <el-input
-            v-model.trim="queryParams.teamName"
-            placeholder="请输入调度名称/调度员姓名"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
         </el-form-item>
         <el-form-item
           label="接单日期"
@@ -195,21 +192,24 @@
           />
         </el-form-item>
         <el-form-item
-          label="打款时间"
-          prop="markTime"
+          label="来源"
+          prop="sourceType"
         >
-          <el-date-picker
-            v-model="markTime"
-            type="datetimerange"
-            unlink-panels
-            :picker-options="pickerTimeOptions"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+          <el-select
+            v-model="queryParams.sourceType"
+            placeholder="请选择来源"
+            clearable
+            filterable
+            size="small"
             style="width: 228px"
-            :default-time="defaultTime"
-            @change="markDateChoose"
-          />
+          >
+            <el-option
+              v-for="dict in sourceTypeOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-button
@@ -233,13 +233,31 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybill:manageListExport']"
+            v-hasPermi="['transportation:waybillInspect:inspectListExport']"
             type="primary"
             icon="el-icon-download"
             size="mini"
             :loading="loadingExport"
             @click="handleExport"
           >导出</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-document-checked"
+            size="mini"
+            :loading="loadingExport"
+            @click="handleBatchMark(999)"
+          >批量标记正常</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-document-delete"
+            size="mini"
+            :loading="loadingExport"
+            @click="handleBatchMark(-1)"
+          >批量标记异常</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -248,9 +266,19 @@
       </el-row>
 
       <!-- table -->
-      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" :height="height">  <!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" :height="height" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
+        <template #trackSituation="{row}">
+          <span>{{ selectDictLabel(trackOptions, row.trackSituation) }}</span>
+        </template>
+        <template #receiptSituation="{row}">
+          <span v-if="row.receiptSituation">{{ row.receiptSituation.split(',').map(res => { return selectDictLabel(receiptSituationOptions, res)}).join('，') }}</span>
+        </template>
+        <template #loadUnloadSituation="{row}">
+          <span v-if="row.loadUnloadSituation">{{ row.loadUnloadSituation.split(',').map(res => { return selectDictLabel(loadUnloadSituationOptions, res)}).join('，') }}</span>
+          <!-- <span>{{ selectDictLabel(loadUnloadSituationOptions, row.loadUnloadSituation) }}</span> -->
         </template>
         <template #beforeStatus="{row}">
           <span>{{ selectDictLabel(statusOptions, row.beforeStatus) }}</span>
@@ -347,7 +375,6 @@
         </template>
         <template #edit="{row}">
           <el-button
-            v-hasPermi="['transportation:waybill:getWayBillByCode']"
             size="mini"
             type="text"
             @click="handleUpdate(row)"
@@ -355,54 +382,19 @@
             详情
           </el-button>
           <el-button
-            v-has-permi="['transportation:waybillAbnormal:add']"
             size="mini"
             type="text"
-            @click="handleMark(row)"
+            @click="handleMark(row, -1)"
           >
             标记异常
           </el-button>
           <el-button
-            v-has-permi="['transportation:waybillOper:shipperRemark']"
             size="mini"
             type="text"
-            @click="handleRemarks(row)"
+            @click="handleMark(row, 999)"
           >
-            备注
+            标记正常
           </el-button>
-          <!-- <el-button
-            v-if="row.isChild === 2 && isShipment"
-            v-hasPermi="['transportation:waybillOper:reinsurance']"
-            size="mini"
-            type="text"
-            @click="handleSeperate(row)"
-          >
-            分单列表
-          </el-button> -->
-          <TableDropdown v-show="row.isChild === 2 || row.status - 0 < 7">
-            <el-dropdown-item>
-              <el-button
-                v-if="row.status - 0 < 7"
-                v-hasPermi="['transportation:waybillOper:invalid']"
-                size="mini"
-                type="text"
-                @click="handleDelete(row)"
-              >
-                {{ row.status === '1' ?'取消运单':'作废运单' }}
-              </el-button>
-            </el-dropdown-item>
-            <!-- <el-dropdown-item>
-              <el-button
-                v-if="row.isChild === 2"
-                v-hasPermi="['transportation:waybillOper:reinsurance']"
-                size="mini"
-                type="text"
-                @click="handleSeperate(row)"
-              >
-                分单列表
-              </el-button>
-            </el-dropdown-item> -->
-          </TableDropdown>
         </template>
       </RefactorTable>
 
@@ -415,7 +407,7 @@
       />
     </div>
     <!-- 详情对话框 -->
-    <detail-dialog
+    <audit-detail
       :title="title"
       :open.sync="open"
       :current-id="currentId"
@@ -423,48 +415,19 @@
       :current-row="currentRow"
       @refresh="getList"
     />
-    <!-- 标记异常对话框 -->
-    <mark-abnormal-dialog
-      ref="MarkAbnormalDialog"
-      :title="title"
-      :open.sync="openMarkAbanormal"
-      :current-id="currentId"
-      @refresh="getList"
-    />
-    <!-- 分单列表对话框 -->
-    <seperate-list-dialog
-      :title="title"
-      :open.sync="openSeperateList"
-      :current-id="currentId"
-      @refresh="getList"
-    />
-    <!-- 备注对话框 -->
-    <remark-dialog
-      ref="RemarkDialog"
-      :title="title"
-      :open.sync="openRemark"
-      :current-id="currentId"
-      @refresh="getList"
-    />
   </div>
 </template>
 
 <script>
-import { listManagesApi, listManages, waybillInvalid, waybillCancel } from '@/api/waybill/manages';
-import DetailDialog from '../../components/detailDialog';
-import MarkAbnormalDialog from '../markAbnormalDialog';
-import SeperateListDialog from '../seperateListDialog';
-import RemarkDialog from '../remarkDialog';
+import { listManagesApi, listManages, waybillInspectSave } from '@/api/waybill/audit';
+import AuditDetail from './AuditDetail.vue';
 import { getUserInfo } from '@/utils/auth';
 import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Manages',
   components: {
-    DetailDialog,
-    MarkAbnormalDialog,
-    SeperateListDialog,
-    RemarkDialog
+    AuditDetail
   },
   data() {
     return {
@@ -522,10 +485,10 @@ export default {
       ],
       // 运单状态字典
       'statusOptions': [
-        { 'dictLabel': '未接单', 'dictValue': '0' },
-        { 'dictLabel': '已接单', 'dictValue': '1' },
-        { 'dictLabel': '已装货', 'dictValue': '2' },
-        { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
+        // { 'dictLabel': '未接单', 'dictValue': '0' },
+        // { 'dictLabel': '已接单', 'dictValue': '1' },
+        // { 'dictLabel': '已装货', 'dictValue': '2' },
+        // { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
         { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
         { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
@@ -559,6 +522,15 @@ export default {
         { 'dictLabel': 'HTZP', 'dictValue': '4' },
         { 'dictLabel': 'WLPZ', 'dictValue': '5' }
       ],
+      // 稽核来源
+      checkSourceTypeOptions: [
+        { 'dictLabel': '自动', 'dictValue': '1' },
+        { 'dictLabel': '手动', 'dictValue': '2' }
+      ],
+      // 轨迹稽核情况
+      trackOptions: [],
+      receiptSituationOptions: [],
+      loadUnloadSituationOptions: [],
       // 司机取消订单字典
       'cancelStatusOptions': [
         { 'dictLabel': '正常', 'dictValue': 0 },
@@ -623,9 +595,19 @@ export default {
       width: 180,
       fixed: 'left'
     });
+    // 稽核情况字典获取
+    this.getDicts('situation_track').then(response => {
+      this.trackOptions = response.data;
+    });
+    this.getDicts('situation_load_unload').then(response => {
+      this.loadUnloadSituationOptions = response.data;
+    });
+    this.getDicts('situation_receipt').then(response => {
+      this.receiptSituationOptions = response.data;
+    });
     this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
     this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-    this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
+    this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 30), new Date()];
     this.getList();
   },
   methods: {
@@ -675,7 +657,7 @@ export default {
       listManages(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
-        this.height = 560;
+        this.height = 545;
         this.loading = false;
       });
     },
@@ -703,14 +685,14 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.code);
+      this.ids = selection.map(item => item.wayBillCode);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
     // 导出
     handleExport() {
       this.loadingExport = true;
-      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `运输单管理`).then(res => {
+      this.download('/transportation/waybillInspect/inspectListExport', { ...this.queryParams }, `运输单管理`).then(res => {
         this.loadingExport = false;
       });
     },
@@ -722,46 +704,43 @@ export default {
       this.title = '运输单信息';
       this.formDisable = true;
     },
-    /** 标记异常按钮操作 */
-    handleMark(row) {
-      this.$refs.MarkAbnormalDialog.reset();
-      // this.currentId = row.wayBillCode;
-      this.openMarkAbanormal = true;
-      this.title = '标记异常';
-      this.$refs.MarkAbnormalDialog.setForm(row);
-    },
-    /** 分单列表按钮操作 */
-    handleSeperate(row) {
-      this.currentId = row.wayBillCode;
-      this.openSeperateList = true;
-      this.title = '子单列表';
-    },
-    /** 作废运单按钮操作 */
-    handleDelete(row) {
-      const code = row.wayBillCode;
-      const title = row.status === '1' ? '取消' : '作废';
-      this.$confirm('是否确认' + title + '单号为"' + row.waybillNo + '"的运单?', '警告', {
+    /** 批量标记按钮操作 */
+    handleBatchMark(situation) {
+      this.$confirm('是否确认批量标记?', '警告', {
         'confirmButtonText': '确定',
         'cancelButtonText': '取消',
         'type': 'warning'
-      }).then(function() {
-        if (row.status === '1') {
-          return waybillCancel(code);
-        } else {
-          return waybillInvalid(code);
-        }
       }).then(() => {
-        this.getList();
-        this.msgSuccess('操作成功');
+        const info = this.ids.map(res => {
+          return {
+            situation: situation,
+            userGradeKpiId: 1,
+            waybillCode: res
+          };
+        });
+        waybillInspectSave(info).then(() => {
+          this.getList();
+          this.msgSuccess('操作成功');
+        });
       });
     },
-    /** 备注按钮操作 */
-    handleRemarks(row) {
-      this.$refs.RemarkDialog.reset();
-      // this.currentId = row.wayBillCode;
-      this.openRemark = true;
-      this.title = '编辑运单备注';
-      this.$refs.RemarkDialog.setForm(row);
+    /** 标记按钮操作 */
+    handleMark(row, situation) {
+      this.$confirm('是否确认标记?', '警告', {
+        'confirmButtonText': '确定',
+        'cancelButtonText': '取消',
+        'type': 'warning'
+      }).then(() => {
+        const info = [{
+          situation: situation,
+          userGradeKpiId: 1,
+          waybillCode: row.wayBillCode
+        }];
+        waybillInspectSave(info).then(() => {
+          this.getList();
+          this.msgSuccess('操作成功');
+        });
+      });
     }
   }
 };

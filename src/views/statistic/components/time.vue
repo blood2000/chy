@@ -11,6 +11,7 @@
       v-if="currentTime === 6"
       v-model="timePicker"
       class="statistic-date-picker"
+      :class="{isThree: isThree}"
       type="daterange"
       range-separator="至"
       start-placeholder="开始日期"
@@ -26,6 +27,10 @@
 export default {
   props: {
     isSecond: {
+      type: Boolean,
+      default: false
+    },
+    isThree: {
       type: Boolean,
       default: false
     }
@@ -225,6 +230,10 @@ export default {
     color: rgba(196, 238, 255, 0.5);
     font-size: 0.7rem;
     line-height: 1.4rem;
+  }
+  &.isThree{
+    right: 21.1rem;
+    top: 5.6rem;
   }
 }
 </style>

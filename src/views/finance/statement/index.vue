@@ -141,7 +141,7 @@
                   <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalServiceFee) }}</span>
                 </template>
               </el-table-column>
-              <el-table-column width="120" label="纳税金额" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment">
+              <el-table-column width="120" label="留存运费" align="center" prop="invoiceInfoStatisticsVo.totalTaxPayment">
                 <template #default="scope">
                   <span>{{ floor(scope.row.invoiceInfoStatisticsVo.totalTaxPayment) }}</span>
                 </template>

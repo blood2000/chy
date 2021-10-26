@@ -276,8 +276,8 @@
             v-hasPermi="['transportation:waybillOper:cancel']"
             size="mini"
             type="text"
-            @click="handleTableBtn(row, 4)"
-          >作废运单</el-button>
+            @click="handleTableBtn(row, 13)"
+          >取消运单</el-button>
           <el-button
             v-if="activeName != '1'"
             v-hasPermi="['iot:jimiDevice:getTrackList']"
@@ -376,7 +376,7 @@
 
 <script>
 // import tableColumnsConfig from './data/tracklist-index';
-import { trackList, trackListApi, waybillInvalid } from '@/api/waybill/tracklist';
+import { trackList, trackListApi, waybillInvalid, waybillCancel } from '@/api/waybill/tracklist';
 import { getUserInfo } from '@/utils/auth';
 // 车辆装货弹窗
 import DialogA from './component/DialogA';
@@ -671,6 +671,18 @@ export default {
           this.updatedialog = true;
           this.title = '修改凭证';
           this.$refs.UpdateDialog.setForm(row);
+          break;
+        case 13:
+          this.$confirm('是否确认取消编号为"' + row.waybillNo + '"的运单?', '警告', {
+            'confirmButtonText': '确定',
+            'cancelButtonText': '取消',
+            'type': 'warning'
+          }).then(function() {
+            return waybillCancel(row.code);
+          }).then(() => {
+            this.getList();
+            this.msgSuccess('操作成功');
+          });
           break;
         default:
           break;

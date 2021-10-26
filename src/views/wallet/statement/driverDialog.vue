@@ -33,7 +33,7 @@
           <span>{{ floor(scope.row.deliveryCashFee) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="手续费" align="center" prop="fee">
+      <el-table-column label="留存运费" align="center" prop="fee">
         <template slot-scope="scope">
           <span>{{ floor(scope.row.fee) }}</span>
         </template>

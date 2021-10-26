@@ -17,6 +17,13 @@ export function waybillInvalid(code) {
     method: 'get'
   });
 }
+// 运单取消
+export function waybillCancel(code) {
+  return request({
+    url: `/transportation/waybillOper/appCancelOrder/${code}`,
+    method: 'delete'
+  });
+}
 
 // 车辆装货
 export function load(data) {

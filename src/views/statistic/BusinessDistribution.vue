@@ -113,7 +113,7 @@ export default {
           text-overflow: ellipsis;
         }
         >.line{
-          width: 10.2rem;
+          width: calc(100% - 6.4rem);
           height: 0.4rem;
           .value{
             width: 0%;
