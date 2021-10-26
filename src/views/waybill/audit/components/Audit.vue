@@ -375,7 +375,6 @@
         </template>
         <template #edit="{row}">
           <el-button
-            v-hasPermi="['transportation:waybill:getWayBillByCode']"
             size="mini"
             type="text"
             @click="handleUpdate(row)"
