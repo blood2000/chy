@@ -233,7 +233,7 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybill:manageListExport']"
+            v-hasPermi="['transportation:waybillInspect:inspectListExport']"
             type="primary"
             icon="el-icon-download"
             size="mini"
@@ -243,7 +243,6 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybill:manageListExport']"
             type="primary"
             icon="el-icon-document-checked"
             size="mini"
@@ -253,7 +252,6 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybill:manageListExport']"
             type="primary"
             icon="el-icon-document-delete"
             size="mini"
@@ -488,10 +486,10 @@ export default {
       ],
       // 运单状态字典
       'statusOptions': [
-        { 'dictLabel': '未接单', 'dictValue': '0' },
-        { 'dictLabel': '已接单', 'dictValue': '1' },
-        { 'dictLabel': '已装货', 'dictValue': '2' },
-        { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
+        // { 'dictLabel': '未接单', 'dictValue': '0' },
+        // { 'dictLabel': '已接单', 'dictValue': '1' },
+        // { 'dictLabel': '已装货', 'dictValue': '2' },
+        // { 'dictLabel': '已签收(已卸货)', 'dictValue': '3' },
         { 'dictLabel': '已回单(收单复核)', 'dictValue': '4' },
         { 'dictLabel': '已核算', 'dictValue': '5' },
         { 'dictLabel': '已申请(打款)', 'dictValue': '6' },
@@ -695,7 +693,7 @@ export default {
     // 导出
     handleExport() {
       this.loadingExport = true;
-      this.download('/transportation/waybill/manageListExport', { ...this.queryParams }, `运输单管理`).then(res => {
+      this.download('/transportation/waybillInspect/inspectListExport', { ...this.queryParams }, `运输单管理`).then(res => {
         this.loadingExport = false;
       });
     },
