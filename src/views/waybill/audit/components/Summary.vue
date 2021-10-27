@@ -2,101 +2,38 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
-        <el-form-item label="负责人" prop="mPrincipal">
+        <el-form-item label="客户名称" prop="clientName">
           <el-input
-            v-model.trim="queryParams.mPrincipal"
-            placeholder="请输入负责人姓名"
+            v-model.trim="queryParams.clientName"
+            placeholder="请输入客户名称"
             clearable
             size="small"
             style="width: 228px"
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <!-- <el-form-item label="司机电话" prop="driverPhone">
-          <el-input
-            v-model.trim="queryParams.driverPhone"
-            placeholder="请输入电话号码"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item> -->
-        <el-form-item label="货源单号" prop="mainOrderNumber">
-          <el-input
-            v-model.trim="queryParams.mainOrderNumber"
-            placeholder="请输入货源单号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item label="主运单号" prop="waybillNo">
-          <el-input
-            v-model.trim="queryParams.waybillNo"
-            placeholder="请输入主运单号"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <el-form-item v-show="!isShipment" label="下单客户" prop="orderClient">
-          <el-input
-            v-model.trim="queryParams.orderClient"
-            placeholder="请输入下单客户"
-            clearable
-            size="small"
-            style="width: 228px"
-            @keyup.enter.native="handleQuery"
-          />
-        </el-form-item>
-        <!-- <el-form-item label="独立核算" prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="请选择独立核算"
-            clearable
-            filterable
-            size="small"
-            style="width: 228px"
-          >
-            <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
+          <el-form-item label="所属业务团队" prop="clientName">
+            <el-input
+              v-model.trim="queryParams.teamName"
+              placeholder="请输入团队名称"
+              clearable
+              size="small"
+              style="width: 228px"
+              @keyup.enter.native="handleQuery"
             />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="审核状态" prop="isChildList">
+          </el-form-item>
+
+        <el-form-item label="客户等级" prop="userGradeDictValue">
           <el-select
-            v-model="queryParams.isChildList"
-            placeholder="请选择审核状态"
+            v-model="queryParams.userGradeDictValue"
+            placeholder="请选择运单状态"
             clearable
             filterable
             size="small"
             style="width: 228px"
           >
             <el-option
-              v-for="dict in isChildOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item> -->
-        <el-form-item label="状态" prop="status">
-          <el-select
-            v-model="queryParams.status"
-            placeholder="请选择状态"
-            clearable
-            filterable
-            size="small"
-            style="width: 228px"
-          >
-            <el-option
-              v-for="dict in statusOptions"
+              v-for="dict in userGrade"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -104,18 +41,19 @@
           </el-select>
         </el-form-item>
         <el-form-item
-          label="接单日期"
+          label="检索日期"
           prop="receiveTime"
         >
           <el-date-picker
             v-model="receiveTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="datechoose"
           />
         </el-form-item>
@@ -211,123 +149,7 @@
       </el-table> -->
       <!-- @selection-change="handleSelectionChange" -->
       <RefactorTable :loading="loading" :data="managesList" :is-show-expand="true" :table-columns-config="tableColumnsConfig">
-        <template #expand="{row}">
-          <el-scrollbar always>
-            <div class="g-aligncenter">
-              <div v-for="(item, index) in row.sonList" :key="index" class="child-frame">
-                <div class="child-title">{{ item.updateTime }}</div>
-                <div class="g-aligncenter child-tag" style="font-size:20px">◆ <div class="child-line" /></div>
-                <div class="child-info">
-                  <div class="g-aligncenter g-justifybetween">
-                    <div class="child-title">分运单号{{ item.waybillNo }} {{ selectDictLabel(mtransModeOptions, item.mtransMode) }}</div>
-                    <div class="child-detail">查看详情</div>
-                  </div>
-                  <div class="g-aligncenter g-justifybetween" style="margin-top:17px">
-                    <div style="max-width: 150px;">
-                      <div class="child-tag">装货地：</div>
-                      <div class="child-title" style="margin-top:5px;height:44px;">{{ item.loadAddress }}</div>
-                    </div>
-                    <div style="max-width: 150px;">
-                      <div class="child-tag">卸货地：</div>
-                      <div class="child-title" style="margin-top:5px;height:44px;">{{ item.unloadAddress }}</div>
-                    </div>
-                    <div>
-                      <div class="child-tag">状态灯：</div>
-                      <div class="g-color-success" style="margin-top:5px;height:44px;">● {{ selectDictLabel(statusOptions, item.status) }}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </el-scrollbar>
-        </template>
-        <template #status="{row}">
-          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
-        </template>
-        <template #stowageStatus="{row}">
-          <span>{{ selectDictLabel(stowageStatusOptions, row.stowageStatus) }}</span>
-        </template>
-        <template #sourceType="{row}">
-          <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
-        </template>
-        <template #goodsPrice="{row}">
-          <span>{{ row.goodsPrice ? floor(row.goodsPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
-        </template>
-        <template #mileage="{row}">
-          <span>{{ floor(row.mileage) }}</span>
-        </template>
-        <template #freightPrice="{row}">
-          <span>{{ row.freightPrice ? floor(row.freightPrice) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
-        </template>
-        <template #freightPriceDriver="{row}">
-          <span>{{ row.freightPriceDriver ? floor(row.freightPriceDriver) + ' 元/' + (selectDictLabel(stowageStatusOptions, row.stowageStatus)) :'-' }}</span>
-        </template>
-        <template #taxFee="{row}">
-          <span>{{ floor(row.taxFee) }}</span>
-        </template>
-        <template #shipperCopeFee="{row}">
-          <span>{{ floor(row.shipperCopeFee) }}</span>
-        </template>
-        <template #taxFreeFee="{row}">
-          <span>{{ floor(row.taxFreeFee) }}</span>
-        </template>
-        <template #deliveryFeeDeserved="{row}">
-          <span>{{ floor(row.deliveryFeeDeserved) }}</span>
-        </template>
-        <template #taxPayment="{row}">
-          <span>{{ floor(row.taxPayment) }}</span>
-        </template>
-        <template #serviceFee="{row}">
-          <span>{{ floor(row.serviceFee) }}</span>
-        </template>
-        <template #deliveryFeePractical="{row}">
-          <span>{{ floor(row.deliveryFeePractical) }}</span>
-        </template>
-        <template #lossDeductionFee="{row}">
-          <span>{{ floor(row.lossDeductionFee) }}</span>
-        </template>
-        <template #m0Fee="{row}">
-          <span>{{ floor(row.m0Fee) }}</span>
-        </template>
-        <template #driverAddFee="{row}">
-          <span>{{ floor(row.driverAddFee) }}</span>
-        </template>
-        <template #driverReductionFee="{row}">
-          <span>{{ floor(row.driverReductionFee) }}</span>
-        </template>
-        <template #isWarning="{row}">
-          <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
-        </template>
-        <template #loadWeight="{row}">
-          <span v-if="row.loadWeight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.loadWeight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.loadWeight }} 方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.loadWeight) }} 车</span>
-          </span>
-        </template>
-        <template #unloadWeight="{row}">
-          <span v-if="row.unloadWeight">
-            <span v-if="row.stowageStatus === '0' || !row.stowageStatus">{{ row.unloadWeight }} 吨</span>
-            <span v-if="row.stowageStatus === '1'">{{ row.unloadWeight }} 方</span>
-            <span v-if="row.stowageStatus === '2'">{{ Math.floor(row.unloadWeight) }} 车</span>
-          </span>
-        </template>
-        <template #receiveTime="{row}">
-          <span>{{ parseTime(row.receiveTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-        <template #wayBillUpdateTime="{row}">
-          <span>{{ parseTime(row.wayBillUpdateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
-        </template>
-        <template #edit="{row}">
-          <el-button
-            v-hasPermi="['transportation:waybill:getWayBillByCode']"
-            size="mini"
-            type="text"
-            @click="handleDetail(row)"
-          >
-            详情
-          </el-button>
-        </template>
+
       </RefactorTable>
 
       <pagination
@@ -338,21 +160,14 @@
         @pagination="getList"
       />
     </div>
-    <!-- 详情对话框 -->
-    <multimode-detail
-      :title="title"
-      :open.sync="open"
-      :current-id="currentId"
-      @refresh="getList"
-    />
+
   </div>
 </template>
 
 <script>
-import { multiListApi, getMultiList } from '@/api/waybill/manages';
-// import MultimodeDetail from './MultimodeDetail';
+import { inspectStatisticsListApi,getInspectStatisticsList } from '@/api/waybill/audit';
 import { getUserInfo } from '@/utils/auth';
-import { pickerOptions } from '@/utils/dateRange';
+import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
   name: 'Manages',
@@ -361,10 +176,12 @@ export default {
   },
   data() {
     return {
-      pickerOptions,
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
+      pickerTimeOptions,
       receiveTime: [],
       tableColumnsConfig: [],
-      api: multiListApi,
+      api: inspectStatisticsListApi,
+      userGrade:[],
       // 遮罩层
       'loading': true,
       // 选中数组
@@ -420,13 +237,11 @@ export default {
       'queryParams': {
         'pageNum': 1,
         'pageSize': 10,
-        'mPrincipal': null,
-        'startReceiveTime': null,
-        'endReceiveTime': null,
-        // 'mainOrderNumber': null,
-        'orderClient': null,
-        'status': null,
-        'waybillNo': null
+        'clientName': null,
+        'endTime': null,
+        'startTime': null,
+        'teamName': null,
+        'userGradeDictValue': null
       },
       // 表单参数
       'form': {},
@@ -449,36 +264,34 @@ export default {
     this.isShipment = isShipment;
     this.user = user;
     this.shipment = shipment;
-    this.tableHeaderConfig(this.tableColumnsConfig, multiListApi, {
+    // 稽核情况字典获取
+    this.getDicts('user_grade').then(response => {
+      this.userGrade = response.data;
+    });
+    this.tableHeaderConfig(this.tableColumnsConfig, inspectStatisticsListApi, {
       prop: 'edit',
       isShow: true,
       label: '操作',
       width: 180
       // fixed: 'left'
     });
-    // this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d}');
-    // this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d}');
-    // this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
     this.getList();
   },
   methods: {
     datechoose(date) {
       if (date) {
-        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startTime = this.parseTime(date[0], '{y}-{m}-{d}');
+        this.queryParams.endTime = this.parseTime(date[1], '{y}-{m}-{d}');
       } else {
-        this.queryParams.startReceiveTime = null;
-        this.queryParams.endReceiveTime = null;
+        this.queryParams.startTime = null;
+        this.queryParams.endTime = null;
       }
     },
     /** 查询列表 */
     getList() {
       this.loading = true;
       const params = { ...this.queryParams };
-      if (params.licenseNumber) {
-        params.licenseNumber = params.licenseNumber.toUpperCase();
-      }
-      getMultiList(params).then(response => {
+      getInspectStatisticsList(params.clientName,params.endTime,params.startTime,params.teamName,params.userGradeDictValue,params.pageNum,params.pageSize).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.loading = false;
@@ -493,8 +306,8 @@ export default {
     resetQuery() {
       this.resetForm('queryForm');
       this.receiveTime = [];
-      this.queryParams.startReceiveTime = null;
-      this.queryParams.endReceiveTime = null;
+      this.queryParams.startTime = null;
+      this.queryParams.endTime = null;
       this.handleQuery();
     },
     // 多选框选中数据

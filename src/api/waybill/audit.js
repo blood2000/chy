@@ -59,29 +59,12 @@ export function getWaybillTrace(code) {
   });
 }
 
-// 多式联运列表
-export const multiListApi = '/transportation/waybill/multiList';
-export function getMultiList(query) {
-  return request({
-    url: '/transportation/waybill/multiList',
-    method: 'get',
-    params: query
-  });
-}
 
-// 查询多式联运运单详情
-export function getMultiDetail(code) {
+// 查询运单详情-轨迹(根据运单CODE获取运单轨迹)
+export const inspectStatisticsListApi = '/transportation/waybillInspect/inspectStatisticsList';
+export function getInspectStatisticsList(clientName,endTime,startTime,teamName,userGradeDictValue,pageNum,pageSize) {
   return request({
-    url: `/transportation/waybill/multiDetail?waybillCode=${code}`,
+    url: `/transportation/waybillInspect/inspectStatisticsList?clientName=${clientName}&endTime=${endTime}&startTime=${startTime}&teamName=${teamName}&userGradeDictValue=${userGradeDictValue}&pageNum=${pageNum}&pageSize=${pageSize}`,
     method: 'get'
-  });
-}
-
-// 多式联运子单列表
-export function getMultiSonList(query) {
-  return request({
-    url: '/transportation/waybill/multiSonList',
-    method: 'get',
-    params: query
   });
 }
