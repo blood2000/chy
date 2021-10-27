@@ -92,6 +92,37 @@
             </el-radio-group>
           </el-form-item>
         </template>
+
+        <el-row v-if="isPayfirst">
+          <el-col :span="5">
+            <el-form-item label="预付状态:" prop="prepayStatus">
+              <el-radio-group v-model="formData.prepayStatus">
+                <el-radio :label="0">关闭</el-radio>
+                <el-radio :label="1">开启</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+
+          <template v-if="formData.prepayStatus === 1">
+            <el-col :span="5"><el-form-item label="预付类型:" prop="prepayType">
+              <el-radio-group v-model="formData.prepayType" @change="formData.prepayValue = 0">
+                <el-radio :label="1">定额</el-radio>
+                <el-radio :label="2">定率</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            </el-col>
+            <el-col :span="5"><el-form-item label="预付值:" prop="prepayValue">
+              <div v-if="formData.prepayType===1" class="ly-flex">
+                <el-input-number v-model="formData.prepayValue" style="marginRight:10px;" size="mini" :controls="false" :precision="2" :min="0" placeholder="请输入定额值" clearable /> 元
+              </div>
+              <div v-else-if="formData.prepayType===2" class="ly-flex">
+                <el-input-number v-model="formData.prepayValue" size="mini" style="marginRight:10px;" :controls="false" :precision="2" :min="0" :max="100" placeholder="请输入定率值" clearable /> %
+              </div>
+            </el-form-item>
+            </el-col>
+          </template>
+        </el-row>
+
       </div>
 
       <div class="app-container">
@@ -306,7 +337,11 @@ export default {
         uploadLoadVoucher: true, // 装货时是否必须上传凭证 7/8追加字段
         uploadUnloadVoucher: true, // 卸货时是否必须上传凭证 7/8追加字段
 
-        remark: ''
+        remark: '',
+
+        prepayStatus: 0, // "预付状态 0:关闭 1:开启预付")
+        prepayType: 1, // "预付类型 1:定额 2:定率（百分比）")
+        prepayValue: 0 // "预付值（百分比或值）")
       },
 
       // s= 7/22 追加判断字段 -chj
@@ -372,6 +407,12 @@ export default {
         obj = { disUserCode: this.orderSpecifiedList.map(e => e.disUserCode || e.code) };
       }
       return obj;
+    },
+
+    isPayfirst() {
+      console.log(this.shipmentInfo, '当前用信息');
+
+      return this.shipmentInfo ? this.shipmentInfo.isPayfirst === 1 : false;
     }
   },
   watch: {
@@ -438,7 +479,9 @@ export default {
         await this.handleTin4();
         const { code, projectCode, isPublic, isSpecified, remark, orderSpecifiedList, goodsBigType, goodsType, classList, publishMode } = this.cbData;
 
-
+        this.formData.prepayStatus = this.cbData.prepayStatus;
+        this.formData.prepayType = this.cbData.prepayType;
+        this.formData.prepayValue = this.cbData.prepayValue;
 
         // 1.基本的赋值
 
@@ -534,6 +577,8 @@ export default {
             return e;
           });
         }
+
+        console.log(this.formData);
       },
       immediate: true
     },
@@ -830,6 +875,8 @@ export default {
               }];
             }
 
+            console.log(this.formData, '要获取的数据');
+
             resolve({
               InfoCode: this.InfoCode,
               classList: [
@@ -837,6 +884,12 @@ export default {
                   classCode: this.formData.tin6
                 }
               ],
+
+              prepayStatus: this.formData.prepayStatus,
+              prepayType: this.formData.prepayType,
+              prepayValue: this.formData.prepayValue,
+
+
               publishMode: this.formData.publishMode - 0,
               isPublic: this.formData.tin5 === '1' ? 0 : 1, //	是否公开货源 0.非公开 1.公开,
               isSpecified: this.formData.tin5 === '1', // 是否指定接单人 0否 1是		false
