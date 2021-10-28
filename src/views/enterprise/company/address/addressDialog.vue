@@ -140,7 +140,7 @@
         <amap-search ref="AmapSearchRef" v-model="form.addressName" :search-option="searchOption" class="width100" @change="addressChange" />
       </el-form-item>
       <el-form-item label="地址详情" prop="detail">
-        <el-input v-model="form.detail" placeholder="请输入地址详情" class="width100" clearable />
+        <el-input v-model="form.detail" placeholder="请输入地址详情" disabled class="width100" clearable />
       </el-form-item>
       <el-row :gutter="20">
         <!-- <el-col :span="12">
