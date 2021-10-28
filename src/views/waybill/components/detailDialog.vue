@@ -85,19 +85,19 @@
         <div class="waybill-title"><div class="waybill-icon" />货源信息</div>
         <el-row>
           <el-col :span="4" class="text-label">
-            货主：
+            货主:
           </el-col>
           <el-col :span="20" class="text-row">
             {{ form.shipmentInfo? form.shipmentInfo.companyName:'-' }}
           </el-col>
           <el-col :span="4" class="text-label">
-            货物大类：
+            货物大类:
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.goodsBigType || '-' }}
           </el-col>
           <el-col :span="4" class="text-label">
-            货物小类：
+            货物小类:
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.goodsType || '-' }}
@@ -107,32 +107,32 @@
         <div class="waybill-title"><div class="waybill-icon" />运单信息 <span class="g-color-blue">（{{ form.statusName }}）</span></div>
         <el-row v-viewer>
           <el-col :span="4" class="text-label">
-            运单单号：
+            运单单号:
           </el-col>
           <el-col :span="20" class="text-row">
             {{ form.waybillNo || '-' }}
           </el-col>
           <el-col :span="4" class="text-label">
-            司机：
+            司机:
           </el-col>
           <el-col :span="20" class="text-row">
-            <span style="margin-right: 10px;">{{ form.driverName || '-' }}</span>
+            <span class="driver-name" style="margin-right: 10px;">{{ form.driverName || '-' }}</span>
             <span>{{ form.driverPhone || '-' }}</span>
           </el-col>
           <el-col :span="4" class="text-label">
-            车牌号：
+            车牌号:
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.licenseNumber || '-' }}
           </el-col>
           <el-col :span="4" class="text-label">
-            公里数：
+            公里数:
           </el-col>
           <el-col :span="8" class="text-row">
             {{ form.mileage || '-' }}
           </el-col>
           <el-col :span="4" class="text-label">
-            运单备注：
+            运单备注:
           </el-col>
           <el-col :span="20" class="text-row">
             {{ form.shipperRemark || '-' }}
@@ -273,7 +273,7 @@ export default {
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
         this.freightList = response.data.freightList.filter(e => {
-          const bool = (e.ruleItemCode === '6' || e.ruleItemCode === '11' || e.ruleItemCode === '12' || e.ruleItemCode === '13' || e.ruleItemCode === '14' || e.ruleItemCode === '15' || e.ruleItemCode === '16' || e.ruleItemCode === '21' || e.ruleItemCode === '22');
+          const bool = (e.ruleItemCode !== '1' && e.ruleItemCode !== '2' && e.ruleItemCode !== '3' && e.ruleItemCode !== '17' && e.ruleItemCode !== '18' && e.ruleItemCode !== '19' && e.ruleItemCode !== '20');
           return bool;
         });
         // console.log(this.freightList);
@@ -336,6 +336,12 @@ export default {
 </script>
 
 <style lang="scss" scope>
+.driver-name{
+  width: 50px;
+  overflow: hidden; //超出隐藏
+  white-space: nowrap; //
+  text-overflow: ellipsis;
+}
 .comment{
   position: relative;
 }
