@@ -273,7 +273,7 @@ export default {
         // this.form.unloadAddress = response.data.waybillAddress || {};
         this.form.balanceVo = response.data.balanceVo || {};
         this.freightList = response.data.freightList.filter(e => {
-          const bool = (e.ruleItemCode !== '1' && e.ruleItemCode !== '2' && e.ruleItemCode !== '3' && e.ruleItemCode !== '17' && e.ruleItemCode !== '18' && e.ruleItemCode !== '19' && e.ruleItemCode !== '20');
+          const bool = (e.ruleItemCode !== '1' && e.ruleItemCode !== '2' && e.ruleItemCode !== '3' && e.ruleItemCode !== '17' && e.ruleItemCode !== '18' && e.ruleItemCode !== '19' && e.ruleItemCode !== '20' && e.ruleItemCode !== '21' && e.ruleItemCode !== '22');
           return bool;
         });
         // console.log(this.freightList);
