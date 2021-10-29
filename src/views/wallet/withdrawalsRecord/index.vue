@@ -220,7 +220,8 @@ export default {
         // { dictLabel: '罚款', dictValue: 4 },
         { dictLabel: '提现', dictValue: 5 },
         // { dictLabel: '信息费', dictValue: 6 },
-        { dictLabel: '油费', dictValue: 7 }
+        { dictLabel: '油费', dictValue: 7 },
+        { dictLabel: '预付费', dictValue: 8 }
       ],
       // 支付类型字典
       paidLineTypeOptions: [
