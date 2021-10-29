@@ -156,6 +156,14 @@ export function getUserByPhoneNum(phoneNum) {
   });
 }
 
+// // 获取用户详情
+// export function getUserDetail(phoneNum) {
+//   return request({
+//     url: '/system/user/detail' + ,
+//     method: 'get'
+//   });
+// }
+
 
 // 根据手机号搜索用户名
 export function getTeamInfoByPhone(phoneNum) {

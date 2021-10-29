@@ -197,6 +197,7 @@
                         :controls="false"
                         :precision="2"
                         :min="0"
+                        :disabled="handlerDisabled(freight)"
                         :placeholder="`${freight.cnName}`"
                         style="width:100px;"
                         @change="handlerChangev(scope.row)"
@@ -230,6 +231,7 @@
                         :controls="false"
                         :precision="2"
                         :min="0"
+                        :disabled="handlerDisabled(freight)"
                         :placeholder="`${freight.cnName}`"
                         style="width:100px;"
                         @change="handlerChangev(scope.row)"
@@ -426,6 +428,15 @@ export default {
   },
 
   methods: {
+
+    handlerDisabled(row) {
+      let disable = false;
+      if (row.ruleItemCode === '22' || row.ruleItemCode === '21') {
+        disable = true;
+      }
+      return disable;
+    },
+
     showImg(row) {
       this.rowData = row;
     },

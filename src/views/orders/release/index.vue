@@ -1161,6 +1161,9 @@ export default {
         remark,
         InfoCode,
         publishMode
+
+
+
       } = this.basicInfor; // 货源基本结构和信息
 
       // 处理商品信息和地址相关的规则
@@ -1177,7 +1180,10 @@ export default {
         pubilshCode,
         uploadLoadVoucher: this.basicInfor.uploadLoadVoucher ? 1 : 0,
         uploadUnloadVoucher: this.basicInfor.uploadUnloadVoucher ? 1 : 0,
-        remark
+        remark,
+        prepayStatus: this.basicInfor.prepayStatus,
+        prepayType: this.basicInfor.prepayType,
+        prepayValue: this.basicInfor.prepayValue
       };
 
       const orderBasic = {};
@@ -1402,6 +1408,11 @@ export default {
       this.formData.tin7 = loadType ? loadType + '' : '1';
 
       this.cbOrderBasic = {
+
+        prepayStatus: data.prepayStatus,
+        prepayType: data.prepayType,
+        prepayValue: data.prepayValue,
+
         code,
         projectCode,
         isPublic,
