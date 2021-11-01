@@ -3,15 +3,33 @@
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :inline="true" label-width="auto" @submit.native.prevent>
         <el-form-item v-for="(item, index) in dataModelDto.queryFields" :key="index" :label="item.dataItemInfo.itemCn">
-          <!-- string|整数类型|浮点类型 -->
+          <!-- string -->
           <el-input
-            v-if="item.dataItemInfo.itemType === 'string' || item.dataItemInfo.itemType === 'number' || item.dataItemInfo.itemType === 'float'"
+            v-if="item.dataItemInfo.itemType === 'string'"
             v-model="item.value"
             :placeholder="`请输入${item.dataItemInfo.itemCn}`"
             clearable
             style="width: 200px"
             size="small"
           />
+          <!-- 整数类型|浮点类型 -->
+          <template v-else-if="item.dataItemInfo.itemType === 'number' || item.dataItemInfo.itemType === 'float' || item.dataItemInfo.itemType === 'float4'">
+            <el-input
+              v-model="item.start"
+              :placeholder="`请输入${item.dataItemInfo.itemCn}开始值`"
+              clearable
+              style="width: 200px"
+              size="small"
+            />
+            至
+            <el-input
+              v-model="item.end"
+              :placeholder="`请输入${item.dataItemInfo.itemCn}结束值`"
+              clearable
+              style="width: 200px"
+              size="small"
+            />
+          </template>
           <!-- 时间类型 -->
           <template v-else-if="item.dataItemInfo.itemType === 'date'">
             <el-date-picker
@@ -61,10 +79,27 @@
           <!-- 枚举类型 -->
           <el-select
             v-else-if="item.dataItemInfo.itemType === 'enum'"
-            v-model="item.value"
+            v-model="item.multiple"
             :placeholder="`请选择${item.dataItemInfo.itemCn}`"
-            filterable
             clearable
+            multiple
+            style="width: 200px"
+            size="small"
+          >
+            <el-option
+              v-for="dict in item.itemOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+          <!-- 自定义枚举类型 -->
+          <el-select
+            v-else-if="item.dataItemInfo.itemType === 'custom'"
+            v-model="item.multiple"
+            :placeholder="`请选择${item.dataItemInfo.itemCn}`"
+            clearable
+            multiple
             style="width: 200px"
             size="small"
           >
@@ -129,7 +164,7 @@
 </template>
 
 <script>
-import { getDataModel, searchDataModel } from '@/api/dataCenter/dataCenter.js';
+import { getDataModel, searchDataModel, getCustomEnumById } from '@/api/dataCenter/dataCenter.js';
 import { deepClone } from '@/utils/index';
 export default {
   name: '',
@@ -187,9 +222,16 @@ export default {
           if (dataModelDto.queryFields) {
             dataModelDto.queryFields.forEach((el, i) => {
               if (el.dataItemInfo.itemKey && el.dataItemInfo.itemKey !== '') {
-                this.getDicts(el.dataItemInfo.itemKey).then(value => {
-                  dataModelDto.queryFields[i].itemOptions = value.data;
-                });
+                if (el.dataItemInfo.itemType === 'enum') {
+                  this.getDicts(el.dataItemInfo.itemKey).then(value => {
+                    dataModelDto.queryFields[i].itemOptions = value.data;
+                  });
+                }
+                if (el.dataItemInfo.itemType === 'custom') {
+                  getCustomEnumById(el.dataItemInfo.id).then(value => {
+                    dataModelDto.queryFields[i].itemOptions = value.data;
+                  });
+                }
               }
             });
           }

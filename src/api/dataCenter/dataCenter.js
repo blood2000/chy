@@ -16,3 +16,11 @@ export function searchDataModel(data) {
     data: data
   });
 }
+
+// 根据数据项Id获取枚举类型
+export function getCustomEnumById(id) {
+  return request({
+    url: `/analysis/dataItemInfos/getCustomEnum/${id}`,
+    method: 'get'
+  });
+}
