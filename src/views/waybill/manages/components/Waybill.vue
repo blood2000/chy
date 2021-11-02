@@ -379,7 +379,7 @@
           >
             分单列表
           </el-button> -->
-          <TableDropdown v-show="row.isChild === 2 || row.status - 0 < 7">
+          <TableDropdown v-show="row.status - 0 < 7">
             <el-dropdown-item>
               <el-button
                 v-if="row.status - 0 < 7"
