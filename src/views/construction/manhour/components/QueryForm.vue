@@ -77,11 +77,29 @@
       </el-form-item>
 
       <el-form-item
-        label="审核时间"
+        label="操作时间"
         prop="confirmAuditTime"
       >
         <el-date-picker
           v-model="queryParams.confirmAuditTime"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 228px"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="$emit('handleQuery')"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="审核日期"
+        prop="morningEveningDate"
+      >
+        <el-date-picker
+          v-model="queryParams.morningEveningDate"
           type="daterange"
           unlink-panels
           :picker-options="pickerOptions"
