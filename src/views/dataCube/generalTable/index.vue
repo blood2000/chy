@@ -173,11 +173,6 @@ export default {
       modelId: null,
       // 显示搜索条件
       showSearch: true,
-      // 查询参数
-      page: {
-        pageNum: 1,
-        pageSize: 10
-      },
       queryFields: [],
       tableFields: [],
       // 总条数
@@ -237,10 +232,9 @@ export default {
           }
           // 缓存数据
           this.$nextTick(() => {
-            const { queryFields, tableFields, page } = dataModelDto;
+            const { queryFields, tableFields } = dataModelDto;
             this.queryFields = queryFields || [];
             this.tableFields = tableFields || [];
-            this.page = page || {};
             this.dataModelDto = deepClone(dataModelDto);
           });
           setTimeout(() => {
@@ -251,14 +245,13 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      this.page.pageNum = 1;
+      this.dataModelDto.page.pageNum = 1;
       this.getList();
     },
     /** 重置按钮操作 */
     resetQuery() {
       this.dataModelDto.queryFields = deepClone(this.queryFields);
       this.dataModelDto.tableFields = deepClone(this.tableFields);
-      this.dataModelDto.page = deepClone(this.page);
       this.resetForm('queryForm');
       this.handleQuery();
     },
