@@ -7,6 +7,7 @@ import permission from './modules/permission';
 import settings from './modules/settings';
 import orders from './modules/orders';
 import util from './modules/util';
+import icCard from './modules/icCard';
 import getters from './getters';
 
 Vue.use(Vuex);
@@ -19,7 +20,8 @@ const store = new Vuex.Store({
     permission,
     settings,
     orders,
-    util
+    util,
+    icCard
   },
   getters
 });

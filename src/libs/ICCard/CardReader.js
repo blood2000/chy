@@ -1,4 +1,6 @@
 const CryptoJS = require('crypto-js');
+import store from '@/store';
+// store.commit('icCard/SET_percentage', chjobj.percentage);
 import {
   // MessageBox,
   Message
@@ -779,6 +781,10 @@ const CardReader = {
 };
 
 
+// export function percentage(){
+//   return percentage
+// }
+
 // /**
 //  * ==================== 密码验证==getCard 7/29====================
 //  * @param key
@@ -1208,6 +1214,7 @@ CardReader.action['readData'] = async function(key = CardReader._attr.key, resEn
     index[0] = parseInt(iData[0], 16);
     index[1] = parseInt(iData[1], 16);
     let count = 0;
+    store.commit('icCard/SET_percentage', count);
     let errCount = 0;
     const data = [];
     let meter = '';
@@ -1228,6 +1235,7 @@ CardReader.action['readData'] = async function(key = CardReader._attr.key, resEn
           !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
         }
         count += 1;
+        store.commit('icCard/SET_percentage', count);
       } else {
         errCount += 1;
       }

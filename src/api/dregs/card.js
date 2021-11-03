@@ -23,3 +23,17 @@ export function cardReplacement(data) {
     data: data
   });
 }
+
+
+
+/* 获取迁卡数据 */
+export function cpuCardListCardData(query) {
+  return request({
+    url: '/transportation/cpuCard/listCardData',
+    method: 'get',
+    params: query
+  });
+}
+
+
+
