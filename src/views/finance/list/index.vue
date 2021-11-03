@@ -74,7 +74,27 @@
           </el-select>
 
         </el-form-item>
-
+        <el-form-item
+          label="票制类别"
+          prop="ticketType"
+        >
+          <el-select
+            v-model="queryParams.ticketType"
+            clearable
+            filterable
+            style="width: 230px"
+            size="small"
+            placeholder="请选择"
+            @click="handleQuery"
+          >
+            <el-option
+              v-for="dict in ticketType"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
@@ -99,8 +119,11 @@
 
     <div class="g-radio-group">
       <el-radio-group v-model="activeName" size="small" @change="handleClick">
+        <el-radio-button v-has-permi="['list:applayed']" label="1,2,3,4,5">全部</el-radio-button>
         <el-radio-button v-has-permi="['list:applayed']" label="1">已申请</el-radio-button>
-        <el-radio-button v-has-permi="['list:checked']" label="2,3,4">已审核</el-radio-button>
+        <el-radio-button v-has-permi="['list:checked']" label="2">已取消</el-radio-button>
+        <el-radio-button v-has-permi="['list:checked']" label="3">已拒绝</el-radio-button>
+        <el-radio-button v-has-permi="['list:checked']" label="4">已通过</el-radio-button>
         <el-radio-button v-has-permi="['list:invoiced']" label="5">已开票</el-radio-button>
       </el-radio-group>
     </div>
@@ -140,6 +163,15 @@
             :loading="exportlistLoading"
             @click="handleExportService"
           >导出服务费明细</el-button>
+        </el-col>
+        <el-col :span="1.5">
+          <el-button
+            type="primary"
+            icon="el-icon-download"
+            size="mini"
+            :loading="exportlistLoading"
+            @click="listExport"
+          >导出列表</el-button>
         </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
@@ -227,7 +259,7 @@
 </template>
 
 <script>
-import { billList, billListApi, getApplyWaybill } from '@/api/finance/list';
+import { billList, billListApi, getApplyWaybill,listExportALL } from '@/api/finance/list';
 // 审核弹窗
 import VerifyDialog from './verifyDialog';
 // 开票弹窗
@@ -280,6 +312,7 @@ export default {
         'invoiceStatus': '1',
         order: null,
         prop: null,
+        ticketType: null,
         operateOrgCode: undefined
       },
       height: undefined,
@@ -311,7 +344,8 @@ export default {
       ],
 
       // 运营团队
-      operateOrgCodes: []
+      operateOrgCodes: [],
+      ticketType: []
     };
   },
   computed: {
@@ -401,6 +435,10 @@ export default {
         });
       }
     });
+
+    this.getDicts('assets_ticket_type').then(response => {
+      this.ticketType = response.data;
+    });
   },
   'methods': {
     // 排序事件
@@ -488,7 +526,17 @@ export default {
         this.msgInfo('勾选的发票记录含有一票制发票，请重新勾选!');
       }
     },
-
+    // 导出列表
+    listExport() {
+      this.exportlistLoading = true;
+      const params = Object.assign({}, this.queryParams);
+      params.pageSize = undefined;
+      params.pageNum = undefined;
+      console.log(params);
+      this.download('/transportation/invoiceApply/listExport', params, `运费明细`,'application/json;charset=utf-8').then(res => {
+        this.exportlistLoading = false;
+      });
+    },
     handleTableBtn(row, index) {
       this.visible = true;
       switch (index) {

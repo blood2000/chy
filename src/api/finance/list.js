@@ -69,3 +69,12 @@ export function passPayment(data) {
     data: data
   });
 }
+
+// 确定批量打款(渣土) (状态是3)
+export function listExportALL(data) {
+  return request({
+    url: '/transportation/invoiceApply/listExport',
+    method: 'post',
+    data: data
+  });
+}
