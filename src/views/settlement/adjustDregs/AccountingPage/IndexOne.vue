@@ -91,7 +91,8 @@ export default {
         projectCode: undefined, // 项目
         receiveTime: [],
         cardBatchNo: undefined, // 卡批次
-        waybillClasses: undefined // 班次
+        waybillClasses: undefined, // 班次
+        ztConditionStatus: '4' // 运输核算查询条件
       },
       isShipment: true,
       tableColumnsConfig: [],

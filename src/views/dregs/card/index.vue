@@ -490,7 +490,8 @@ export default {
         'driverNameOrPhone': undefined,
         'licenseNumber': undefined,
         'card16no': undefined,
-        'receiveTime': []
+        'receiveTime': [],
+        'xiekashijian': []
       },
 
       isShipment: true,
@@ -518,7 +519,11 @@ export default {
         ...this.queryParams,
         beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
-        receiveTime: undefined
+        receiveTime: undefined,
+        // 写卡筛选
+        xbeginTime: this.queryParams.xiekashijian ? this.queryParams.xiekashijian[0] : undefined,
+        xendTime: this.queryParams.xiekashijian ? this.queryParams.xiekashijian[1] : undefined,
+        xiekashijian: undefined
       };
     },
 

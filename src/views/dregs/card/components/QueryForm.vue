@@ -70,6 +70,24 @@
         />
       </el-form-item>
 
+      <el-form-item
+        label="写卡日期"
+        prop="xiekashijian"
+      >
+        <el-date-picker
+          v-model.trim="queryParams.xiekashijian"
+          type="daterange"
+          unlink-panels
+          :picker-options="pickerOptions"
+          range-separator="-"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+          style="width: 228px"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          @change="$emit('handleQuery')"
+        />
+      </el-form-item>
+
       <el-form-item>
         <el-button
           type="primary"
