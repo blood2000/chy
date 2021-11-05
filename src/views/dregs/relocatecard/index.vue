@@ -170,6 +170,7 @@
           <el-descriptions v-if="carUserInfo" title="当前卡信息" :column="2">
             <el-descriptions-item label="卡批次号">{{ carUserInfo.cardBatchNo }}</el-descriptions-item>
             <el-descriptions-item label="调度组">{{ carUserInfo.dispatcherName }}</el-descriptions-item>
+            <el-descriptions-item label="调度电话">{{ carUserInfo.dispatcherName }}</el-descriptions-item>
             <el-descriptions-item label="发卡人">{{ carUserInfo.issuerName }}</el-descriptions-item>
             <el-descriptions-item label="发卡电话">{{ carUserInfo.issuerPhone }}</el-descriptions-item>
             <el-descriptions-item label="发卡时间">{{ carUserInfo.issuerTime }}</el-descriptions-item>
@@ -224,19 +225,17 @@
     </div>
 
     <div v-if="percentage1" class="progress-box">
-      <el-alert show-icon type="info" :closable="false">
-        <div style="font-size: 20px">数据抽取中, {{ myDatafilter.length - writeCont }} / {{ selectedData.length }}</div>
-        <!-- <div style="font-size: 20px">数据抽取中, {{ writeCont }} / {{ noSelectArr.length }}</div> -->
-        <!-- <el-progress :percentage="percentage1" /> -->
+      <el-alert show-icon type="success" :closable="false">
+        <div style="font-size: 20px">数据抽取中, {{ (myDatafilter.length - writeCont) }} / {{ selectedData.length }}</div>
       </el-alert>
     </div>
 
     <div v-if="percentage2" class="progress-box">
       <el-alert show-icon type="success" :closable="false">
         <div style="font-size: 20px">迁卡中, 请勿移动卡片. {{ percentage }} / {{ selectedData.length }}</div>
-        <!-- <el-progress :percentage="percentage1" /> -->
       </el-alert>
     </div>
+
   </div>
 </template>
 <script>
@@ -255,6 +254,7 @@ const { action, fn } = CardReader;
 
 import { deepClone } from '@/utils';
 import store from '@/store';
+import TreeNodeDialogVue from '../../tool/build/TreeNodeDialog.vue';
 
 
 
@@ -369,6 +369,13 @@ export default {
     getCardInfo() {
       if (this.isConnect) {
         this.loading = true;
+
+        const _message = this.$message({
+          duration: 0,
+          message: '读卡中, 请勿移动卡片',
+          offset: 400
+        });
+
         // 读取卡数据
         action.readUserInfoAndreadData().then((res) => {
           if (res.success && res.code === '9000') {
@@ -391,6 +398,8 @@ export default {
             this.myDatafilter = [];
             this.myData = [];
           }
+
+          _message.close();
         });
 
         // action.getCardInfo(undefined, true).then((res) => {
@@ -415,8 +424,8 @@ export default {
       const waybillNos = mdataList.map(e => e.waybillNo);
 
 
-      //   getCpuCardListCardData({ waybillNos: waybillNos.join(',') }).then(async res => {
-      cpuCardListCardData({ waybillNos: waybillNos }).then(async res => {
+      getCpuCardListCardData({ waybillNos: waybillNos.join(',') }).then(async res => {
+      // cpuCardListCardData({ waybillNos: waybillNos }).then(async res => {
         const carUserInfo = await this.cpuCardGetCardUserInfo(userInfo);
         console.log(carUserInfo);
 
@@ -438,11 +447,11 @@ export default {
           return e;
         });
 
-        console.log(this.myData);
+        // console.log(this.myData);
 
         this.myDatafilter = this.myData;
         this.total = res.data.length;
-        this.msgSuccess('读卡成功, 读取' + dataList.length + '条, 数据库存在 ' + this.total + '条');
+        // this.msgSuccess('读卡成功, 读取' + dataList.length + '条, 数据库存在 ' + this.total + '条');
         this.loading = false;
       });
     },
@@ -459,7 +468,11 @@ export default {
         cardBatchNo: userInfo.issuing_pc //	是	批次编号
       };
       return cpuCardGetCardUserInfo(que).then(res => {
-        this.carUserInfo = res.data;
+        console.log(res);
+        this.carUserInfo = {
+          ...res.data,
+          teamTelno: userInfo.team_telno
+        };
         return res.data;
       });
     },
@@ -787,6 +800,8 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            this.percentage2 = true;
+            this.cardinfoOpen = false;
             action.getCardInfo(undefined, false).then((res) => {
               if (res.success && res.code === '9000') {
                 const __data = this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
@@ -809,7 +824,7 @@ export default {
             }).catch(() => {});
           });
         } else {
-          this.msgError('请选择 相同的调度者~!');
+          this.msgError('请选择 相同的调度者~!' + '当前卡调度者电话是:' + team_telno);
         }
       }, () => {
         // 获取卡信息
@@ -818,6 +833,8 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
+          this.percentage2 = true;
+          this.cardinfoOpen = false;
           action.getCardInfo(undefined, false).then((res) => {
             if (res.success && res.code === '9000') {
               const __data = this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
@@ -848,7 +865,7 @@ export default {
     handlerEndres() {
       this.msgSuccess('迁卡成功');
       this.loading = false;
-      this.cardinfoOpen = false;
+
       this.myData = this.myData.filter(e => !e.__isselected);
       this.myDatafilter = this.myData;
     },
@@ -861,11 +878,15 @@ export default {
         'pageNum': 1,
         'pageSize': 1000
       };
+      this.loading = true;
       getShipmentTeamList(que).then(res => {
+        this.loading = false;
         this.noShipment = true;
         this.dispatcherOptions = res.data;
         console.log(this.dispatcherOptions);
       }).catch(() => {
+        this.loading = false;
+        this.msgError('当前用户无,常用调度者~!无法迁卡~!');
         this.noShipment = false;
       });
     },
@@ -1154,6 +1175,11 @@ export default {
       successfn,
       errorfn
     ) {
+      const _message = this.$message({
+        duration: 0,
+        message: '读卡中, 请勿移动卡片',
+        offset: 400
+      });
       try { // async await 用try..catch.. 捕获
         // 第一步 销卡
         const cancellation = await action.cancellation();
@@ -1205,8 +1231,11 @@ export default {
             // if(res.data.)
 
             if (arr.length === data.length) {
+              _message.close();
               if (arr.every((e) => e)) {
                 // this.msgSuccess('写回卡成功');
+
+                console.log(res, '写卡成功');
 
                 successfn && successfn(res);
               } else {
