@@ -72,10 +72,10 @@
 
       <el-form-item
         label="写卡日期"
-        prop="xiekashijian"
+        prop="ztCreateTime"
       >
         <el-date-picker
-          v-model.trim="queryParams.xiekashijian"
+          v-model.trim="queryParams.ztCreateTime"
           type="daterange"
           unlink-panels
           :picker-options="pickerOptions"

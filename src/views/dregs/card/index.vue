@@ -459,6 +459,14 @@ const com = [
     'width': 120
   },
   {
+    'prop': 'ztCreateTime',
+    'isShow': true,
+    'tooltip': false,
+    'sortNum': 100,
+    'label': '写卡时间',
+    'width': 120
+  },
+  {
     'prop': 'edit',
     'isShow': false,
     'tooltip': false,
@@ -491,7 +499,7 @@ export default {
         'licenseNumber': undefined,
         'card16no': undefined,
         'receiveTime': [],
-        'xiekashijian': []
+        'ztCreateTime': []
       },
 
       isShipment: true,
@@ -521,9 +529,9 @@ export default {
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
         receiveTime: undefined,
         // 写卡筛选
-        xbeginTime: this.queryParams.xiekashijian ? this.queryParams.xiekashijian[0] : undefined,
-        xendTime: this.queryParams.xiekashijian ? this.queryParams.xiekashijian[1] : undefined,
-        xiekashijian: undefined
+        ztCreateTimeBegin: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[0] : undefined,
+        ztCreateTimeEnd: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[1] : undefined,
+        ztCreateTime: undefined
       };
     },
 
