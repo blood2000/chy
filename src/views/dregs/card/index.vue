@@ -587,7 +587,9 @@ export default {
 
     // 补卡
     handlerMakeUp() {
-      // console.log(this.selectedData, '数据');
+      console.log(this.selectedData, '数据');
+
+      // return;
       if (!this.isConnect) {
         this.msgWarning('未连接本地服务');
         return;
@@ -606,6 +608,8 @@ export default {
               cardBatchNo: user.cardBatchNo
             };
 
+            console.log(cardData);
+
             // 用户数据
             const userInfo = {
               icType: 'r',
@@ -620,6 +624,8 @@ export default {
               user_telno: user.driverPhone || '-' // driverPhone	司机电话
             };
 
+            console.log(userInfo);
+
             // 数据
             const data = this.selectedData.map(e => {
               return {
@@ -633,6 +639,7 @@ export default {
                 waybillNo: e.waybillNo || '-' // waybillNo	运单号
               };
             });
+            console.log(data);
 
             // console.log(userMark, userInfo, versionMark, data, cardData);
 

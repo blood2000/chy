@@ -1651,13 +1651,16 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     await CardReader.fn.exec(CardReader.command.deselect);
     await CardReader.fn.exec(CardReader.command.beep);
 
+    console.log(index);
+
     return {
       code: '9000',
       success: true,
       msg: '写入成功',
       data: {
         data: odata,
-        index: ret.data
+        index: ret.data,
+        indexNow: index
       }
     };
   } catch (error) {
