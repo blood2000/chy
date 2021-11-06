@@ -5,7 +5,7 @@ const state = {
 
 const mutations = {
   SET_percentage: (state, percentage) => { // 页面参数传递格式{key: value}
-    console.log(percentage);
+    // console.log(percentage);
     state.percentage = percentage;
   }
 };

@@ -1,5 +1,5 @@
 const CryptoJS = require('crypto-js');
-import store from '@/store';
+import store1 from '@/store';
 // store.commit('icCard/SET_percentage', chjobj.percentage);
 import {
   // MessageBox,
@@ -423,7 +423,10 @@ const CardReader = {
       let ResetCpuCardNoGetCardNo;
       try {
         ret = await CardReader.fn.exec(CardReader.command.get.card);
+
         GetCardNo = CardReader.fn.getResult(ret); // 卡的信息
+
+        console.log(GetCardNo);
 
         ret = await CardReader.fn.exec(CardReader.command.reset);
         ResetCpuCardNoGetCardNo = CardReader.fn.getResult(ret); // 卡片复位信息
@@ -1214,7 +1217,7 @@ CardReader.action['readData'] = async function(key = CardReader._attr.key, resEn
     index[0] = parseInt(iData[0], 16);
     index[1] = parseInt(iData[1], 16);
     let count = 0;
-    store.commit('icCard/SET_percentage', count);
+    store1.commit('icCard/SET_percentage', count);
     let errCount = 0;
     const data = [];
     let meter = '';
@@ -1235,7 +1238,7 @@ CardReader.action['readData'] = async function(key = CardReader._attr.key, resEn
           !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
         }
         count += 1;
-        store.commit('icCard/SET_percentage', count);
+        store1.commit('icCard/SET_percentage', count);
       } else {
         errCount += 1;
       }
@@ -1369,6 +1372,7 @@ CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._
     let count = 0;
     let errCount = 0;
     let winCount = 0;
+    store1.commit('icCard/SET_percentage', count);
 
     const data = [];
     let meter = null;
@@ -1390,6 +1394,7 @@ CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._
           winCount += 1;
         }
         count += 1;
+        store1.commit('icCard/SET_percentage', count);
       } else {
         errCount += 1;
       }

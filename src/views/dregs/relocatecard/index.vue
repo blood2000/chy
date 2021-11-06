@@ -26,7 +26,7 @@
             >读卡获取ID</el-button>
           </el-form-item>
 
-          <el-form-item label="转货日期" prop="loadTime">
+          <el-form-item label="装货日期" prop="loadTime">
 
             <el-date-picker
               v-model.trim="queryParams.loadTime"
@@ -134,7 +134,7 @@
         </el-table-column>
 
         <!-- <el-table-column type="selection" width="55" /> -->
-        <el-table-column prop="GetCardNo.data" label="卡批号" />
+        <el-table-column prop="userInfo.issuing_pc" label="卡批号" />
         <el-table-column prop="projectName" label="项目" />
 
         <el-table-column prop="waybillNo" label="订单号" />
@@ -161,15 +161,15 @@
           </template>
         </el-table-column>
       </el-table>
-      <div>数据库:{{ total }} / 卡:{{ carTotal }}</div>
-      <div>选中数据: {{ selectedData.length }} 条 </div>
+      <!-- <div>数据库:{{ total }} / 卡:{{ carTotal }}</div> -->
+      <div>选中数据: {{ selectedData.length }} 条 / 卡:{{ myData.length }}</div>
 
       <!-- 已打款的回单 -->
-      <el-dialog v-loading="loading" class="i-adjust" title="迁卡信息" :visible.sync="cardinfoOpen" width="500px" :close-on-click-modal="false" append-to-body :show-close="false">
+      <el-dialog v-loading="loading" class="i-adjust" title="迁卡操作中, 请勿刷新页面或切换页面" :visible.sync="cardinfoOpen" width="500px" :close-on-click-modal="false" append-to-body :show-close="false">
         <div v-if="cardinfoOpen">
           <el-descriptions v-if="carUserInfo" title="当前卡信息" :column="2">
-            <el-descriptions-item label="卡批次号">{{ carUserInfo.cardBatchNo }}</el-descriptions-item>
-            <el-descriptions-item label="调度组">{{ carUserInfo.dispatcherName }}</el-descriptions-item>
+            <el-descriptions-item label="卡批号">{{ carUserInfo.cardBatchNo }}</el-descriptions-item>
+            <el-descriptions-item label="调度组">{{ carUserInfo.teamTelno }}</el-descriptions-item>
             <el-descriptions-item label="调度电话">{{ carUserInfo.dispatcherName }}</el-descriptions-item>
             <el-descriptions-item label="发卡人">{{ carUserInfo.issuerName }}</el-descriptions-item>
             <el-descriptions-item label="发卡电话">{{ carUserInfo.issuerPhone }}</el-descriptions-item>
@@ -213,7 +213,7 @@
 
           <el-descriptions v-if="dispat" title="调度者信息" :column="2">
             <el-descriptions-item label="调度者">{{ dispat.disUserName }}</el-descriptions-item>
-            <el-descriptions-item label="调度者电话">{{ dispat.disUserPhone }}</el-descriptions-item>
+            <el-descriptions-item label="调度者电话">{{ dispat.tel }}</el-descriptions-item>
             <el-descriptions-item label="调度组">{{ dispat.disName }}</el-descriptions-item>
           </el-descriptions>
         </div>
@@ -224,15 +224,21 @@
       </el-dialog>
     </div>
 
+    <div v-if="percentage0" class="progress-box">
+      <el-alert show-icon type="success" :closable="false">
+        <div style="font-size: 20px">读取数据中, 请勿移动卡片 {{ percentage }}</div>
+      </el-alert>
+    </div>
+
     <div v-if="percentage1" class="progress-box">
       <el-alert show-icon type="success" :closable="false">
-        <div style="font-size: 20px">数据抽取中, {{ (myDatafilter.length - writeCont) }} / {{ selectedData.length }}</div>
+        <div style="font-size: 20px">数据抽取中, 请勿移动卡片 {{ selectedData.length }} / {{ myDatafilter.length - writeCont }}</div>
       </el-alert>
     </div>
 
     <div v-if="percentage2" class="progress-box">
       <el-alert show-icon type="success" :closable="false">
-        <div style="font-size: 20px">迁卡中, 请勿移动卡片. {{ percentage }} / {{ selectedData.length }}</div>
+        <div style="font-size: 20px">迁卡中, 请勿移动卡片. {{ writeCont }} / {{ selectedData.length }}</div>
       </el-alert>
     </div>
 
@@ -293,6 +299,7 @@ export default {
       cardinfoOpen: false,
       cardInfoData: null,
 
+      percentage0: false,
       percentage1: false,
       percentage2: false,
       // 数据写回
@@ -314,6 +321,7 @@ export default {
     //   return '454545';
     // },
     percentage() {
+      // console.log('读取中...,' + this.$store.state.icCard.percentage);
       return this.$store.state.icCard.percentage;
     },
 
@@ -370,11 +378,12 @@ export default {
       if (this.isConnect) {
         this.loading = true;
 
-        const _message = this.$message({
-          duration: 0,
-          message: '读卡中, 请勿移动卡片',
-          offset: 400
-        });
+        this.percentage0 = true;
+        // const _message = this.$message({
+        //   duration: 0,
+        //   message: '读卡中, 请勿移动卡片',
+        //   offset: 400
+        // });
 
         // 读取卡数据
         action.readUserInfoAndreadData().then((res) => {
@@ -399,7 +408,8 @@ export default {
             this.myData = [];
           }
 
-          _message.close();
+          // _message.close();
+          this.percentage0 = false;
         });
 
         // action.getCardInfo(undefined, true).then((res) => {
@@ -424,10 +434,9 @@ export default {
       const waybillNos = mdataList.map(e => e.waybillNo);
 
 
-      getCpuCardListCardData({ waybillNos: waybillNos.join(',') }).then(async res => {
-      // cpuCardListCardData({ waybillNos: waybillNos }).then(async res => {
-        const carUserInfo = await this.cpuCardGetCardUserInfo(userInfo);
-        console.log(carUserInfo);
+      // getCpuCardListCardData({ waybillNos: waybillNos.join(',') }).then(async res => {
+      cpuCardListCardData({ waybillNos: waybillNos }).then(async res => {
+        await this.cpuCardGetCardUserInfo(userInfo);
 
         this.myData = res.data.map(e => {
           mdataList.forEach(carData => {
@@ -447,7 +456,7 @@ export default {
           return e;
         });
 
-        // console.log(this.myData);
+        console.log(this.myData, '卡数据基本信息~!');
 
         this.myDatafilter = this.myData;
         this.total = res.data.length;
@@ -468,11 +477,11 @@ export default {
         cardBatchNo: userInfo.issuing_pc //	是	批次编号
       };
       return cpuCardGetCardUserInfo(que).then(res => {
-        console.log(res);
         this.carUserInfo = {
           ...res.data,
           teamTelno: userInfo.team_telno
         };
+        console.log(this.carUserInfo, '当前卡用户信息');
         return res.data;
       });
     },
@@ -600,9 +609,8 @@ export default {
         title: '消息',
         message: h('p', null, [
           h('h3', null, '迁卡步骤: '),
-          h('p', null, '①放置卡片  把卡片放置在读卡器上，点击下方“开始读卡”按钮。'),
-          h('p', null, '②筛选及提取数据 对数据按照一定条件进行筛选，并勾选出需要迁移的“签卡”数据，点击“下一步，核对数据”进行核对数据，核对无误之后点击“下一步，提取数据”，提取数据过程中卡片不能离开读卡器，直至提示“提取成功”语音提示，否则为提取失败。'),
-          h('p', null, '③迁移数据 从读卡器上移除已提取数据的“原始卡”，放置一张新卡用于储存提取的数据，之后点击“下一步，开始迁卡”，迁移数据过程中卡片不能离开读卡器，直至提示“迁卡成功”语音提示，否则为迁卡失败。')
+          h('p', null, '①筛选及提取数据，勾选出需要迁移的“签卡”数据，点击下方“确定” 开始， 提取数据过程中卡片不能离开读卡器，直至提示“提取成功”语音提示，否则为提取失败。'),
+          h('p', null, '②迁移数据 从读卡器上移除已提取数据的“原始卡”，放置一张新卡用于储存提取的数据，之后点击“确定，开始迁卡”，迁移数据过程中卡片不能离开读卡器，直至提示“迁卡成功”语音提示，否则为迁卡失败。')
         ]),
         showCancelButton: true,
         closeOnClickModal: false,
@@ -632,14 +640,12 @@ export default {
               (success) => {
                 // 第二次剩余的数据写回 保存卡日志
                 setTimeout(() => {
-                  store.commit('icCard/SET_percentage', 0); // 清空
                   this.percentage1 = false; // 关闭提示
                   this.cardinfoOpen = true; // 打开下一步窗口
                 }, 1000);
               },
               () => {
                 this.loading = false; // 关闭第一出loading
-                store.commit('icCard/SET_percentage', 0); // 清空
                 this.percentage1 = false; // 关闭提示
               });
           } else {
@@ -647,14 +653,12 @@ export default {
             action.cancellation().then(res => {
               if (res.success) {
                 setTimeout(() => {
-                  store.commit('icCard/SET_percentage', 0); // 清空
                   this.percentage1 = false; // 关闭提示
                   this.cardinfoOpen = true; // 打开下一步窗口
                 }, 1000);
               } else {
                 this.loading = false; // 关闭第一出loading
                 this.percentage1 = false; // 关闭提示
-                store.commit('icCard/SET_percentage', 0); // 清空
                 this.msgError(res.msg);
               }
             });
@@ -685,14 +689,12 @@ export default {
                   // 第二次剩余的数据写回 保存卡日志
                   this.handlerCpuCardSaveCardLog(this.noSelectArr, 2, () => {
                     this.loading = false; // 关闭第一出loading
-                    store.commit('icCard/SET_percentage', 0); // 清空
                     this.percentage1 = false; // 关闭提示
                     this.cardinfoOpen = true; // 打开下一步窗口
                   });
                 },
                 () => {
                   this.loading = false; // 关闭第一出loading
-                  store.commit('icCard/SET_percentage', 0); // 清空
                   this.percentage1 = false; // 关闭提示
                 });
             } else {
@@ -709,13 +711,11 @@ export default {
                   };
                   cpuCardSaveCardLog(que).then(res => {
                     this.loading = false; // 关闭第一出loading
-                    store.commit('icCard/SET_percentage', 0); // 清空
                     this.percentage1 = false; // 关闭提示
                     this.cardinfoOpen = true; // 打开下一步窗口
                   });
                 } else {
                   this.loading = false; // 关闭第一出loading
-                  store.commit('icCard/SET_percentage', 0); // 清空
                   this.percentage1 = false; // 关闭提示
                   this.msgError(res.msg);
                 }
@@ -786,6 +786,7 @@ export default {
     // s= 迁卡二 -- 把选中的数据写入新卡(或者)
     handlerRelocateCard() {
       // 获取新的调度者
+      this.writeCont = 0; // 写会的数据
       const newTem = this.dispatcherOptions.find(e => e.code === this.dispatcher);
 
       this.handlerReadUserinfo((res) => {
@@ -795,7 +796,7 @@ export default {
 
         if (team_telno === new_team_telno) {
           // 同一个调度者
-          this.$confirm('当前卡中已存数据了, 确定继续写入本卡?', '提示', {
+          this.$confirm('确定继续写入本卡?', '当前卡中已存在数据了', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
@@ -808,8 +809,8 @@ export default {
                 this.handlerWriteData(
                   __data.data,
                   __data.versionMark,
-                  () => {
-                    this.handlerEndres();
+                  (res) => {
+                    this.handlerEndres(res);
                     console.log('写卡成功~!');
                     console.log(__data);
                     this.cpuCardUpdateCardWaybillRel(__data.cardData.card16no, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
@@ -828,7 +829,7 @@ export default {
         }
       }, () => {
         // 获取卡信息
-        this.$confirm('当前是一张空白卡, 确定写入本卡?', '提示', {
+        this.$confirm('确定换了要迁移的新卡了吗？', '当前是一张空白卡，', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
@@ -845,10 +846,11 @@ export default {
                 __data.versionMark,
                 __data.data,
                 __data.cardData,
-                () => {
+                (res) => {
                   // 成功
-                  this.handlerEndres();
-                  console.log('写卡成功~!');
+                  this.handlerEndres(res);
+
+                  console.log('迁卡成功, 卡内现有' + this.writeCont + '条记录');
                   console.log(__data);
                   this.cpuCardUpdateCardWaybillRel(__data.cardData.card16no, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
                 }
@@ -862,10 +864,17 @@ export default {
     },
 
     // 最后成功处理
-    handlerEndres() {
-      this.msgSuccess('迁卡成功');
+    handlerEndres(res) {
+      if (res && res.data && Array.isArray(res.data.indexNow)) {
+        const shi = res.data.indexNow[0] - 3;
+        const tiao = res.data.indexNow[1];
+        const writeNmber = shi * 30 + tiao;
+        this.msgSuccess('迁卡成功, 卡内现有' + writeNmber + '条记录');
+      } else {
+        this.msgSuccess('迁卡成功');
+      }
       this.loading = false;
-
+      this.percentage2 = false;
       this.myData = this.myData.filter(e => !e.__isselected);
       this.myDatafilter = this.myData;
     },
@@ -1175,11 +1184,11 @@ export default {
       successfn,
       errorfn
     ) {
-      const _message = this.$message({
-        duration: 0,
-        message: '读卡中, 请勿移动卡片',
-        offset: 400
-      });
+      // const _message = this.$message({
+      //   duration: 0,
+      //   message: '读卡中, 请勿移动卡片',
+      //   offset: 400
+      // });
       try { // async await 用try..catch.. 捕获
         // 第一步 销卡
         const cancellation = await action.cancellation();
@@ -1231,7 +1240,7 @@ export default {
             // if(res.data.)
 
             if (arr.length === data.length) {
-              _message.close();
+              // _message.close();
               if (arr.every((e) => e)) {
                 // this.msgSuccess('写回卡成功');
 
@@ -1251,6 +1260,12 @@ export default {
 
     // 数据继续写入
     handlerWriteData(data, meter, successfn, errorfn) {
+      const _message = this.$message({
+        duration: 0,
+        message: '读卡中, 请勿移动卡片',
+        offset: 400
+      });
+
       this.isWrite = true;
       this.writeCont = 0;
       // 第三步 写卡 时间间隔 500(太快会失败)
@@ -1282,6 +1297,7 @@ export default {
               if (arr.every((e) => e)) {
                 this.loading = false;
                 // this.msgSuccess('写回卡成功');
+                _message.close();
 
                 successfn && successfn(res);
                 // cardReplacement({
