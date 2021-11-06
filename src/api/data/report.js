@@ -93,3 +93,11 @@ export function getReportStatus() {
   });
 }
 
+export function commonDslyReport(data) {
+  return request({
+    url: `/reporting/common/dslyReport`,
+    method: 'post',
+    data: data
+  });
+}
+
