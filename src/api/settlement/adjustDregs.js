@@ -100,6 +100,15 @@ export function batchRelatedWaybill(query) {
   });
 }
 
+// 结算单汇总 transportation:batch:settlementSummaryList
+export function settlementSummaryList(query) {
+  return request({
+    url: '/transportation/batch/settlementSummaryList',
+    method: 'get',
+    params: query
+  });
+}
+
 // 核销列表
 export function checkList(data) {
   return request({

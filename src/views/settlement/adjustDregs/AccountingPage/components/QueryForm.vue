@@ -199,7 +199,7 @@
       </el-form-item>
 
       <el-form-item
-        label="日期"
+        label="接单日期"
         prop="receiveTime"
       >
         <el-date-picker
@@ -218,7 +218,7 @@
 
 
       <el-form-item
-        label="核算数据"
+        label="状态查询"
         prop="ztConditionStatus"
       >
         <el-select
@@ -226,7 +226,7 @@
           clearable
           filterable
           style="width:228px"
-          placeholder="请选择核算数据查询条件"
+          placeholder="请选择状态"
           @change="$emit('handleQuery')"
         >
           <el-option
