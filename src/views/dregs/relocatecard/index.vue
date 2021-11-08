@@ -853,6 +853,11 @@ export default {
                   console.log('迁卡成功, 卡内现有' + this.writeCont + '条记录');
                   console.log(__data);
                   this.cpuCardUpdateCardWaybillRel(__data.cardData.card16no, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
+                },
+                () => { this.percentage2 = true; },
+                (res) => {
+                  this.percentage2 = true;
+                  console.log(res, '暂停写卡');
                 }
               );
             } else {
@@ -895,7 +900,7 @@ export default {
         console.log(this.dispatcherOptions);
       }).catch(() => {
         this.loading = false;
-        this.msgError('当前用户无,常用调度者~!无法迁卡~!');
+        this.msgError('请求不到当前用户下的调度组! 无法进行迁卡操作~!');
         this.noShipment = false;
       });
     },
@@ -1182,13 +1187,21 @@ export default {
       data,
       cardData,
       successfn,
-      errorfn
+      errorfn,
+      pauseWrite
     ) {
       // const _message = this.$message({
       //   duration: 0,
       //   message: '读卡中, 请勿移动卡片',
       //   offset: 400
       // });
+      // const indexc = "[9,20]" 200条了
+
+      const indexc = [3, 2]; // 定义3条写满换卡
+      let isWrite = true; // 可以写卡
+      const alreadyWriteData = [];
+
+      // const oldData = deepClone(data);
       try { // async await 用try..catch.. 捕获
         // 第一步 销卡
         const cancellation = await action.cancellation();
@@ -1217,18 +1230,29 @@ export default {
       this.writeCont = 0;
       // 第三步 写卡 时间间隔 500(太快会失败)
       const arr = [];
+      let timeout = 0;
+
       data.forEach(async(e, index) => {
-        this['time' + index] = setTimeout(() => {
+        // console.log(e.waybillNo);
+
+
+        timeout = setTimeout(() => {
           // 写入一条数据
+          // console.log(isWrite);
+          // console.log('time' + index + 1);
+          if (!isWrite) {
+            // clearTimeout(this['time' + index + 1]);
+            for (let i = 1; i <= timeout; i++) {
+              clearTimeout(timeout);
+            }
+          }
 
           action.writeData(fn.setData(meter, e)).then((res) => {
-            console.log(res);
-
-            clearTimeout(this['time' + index]);
             if (res.success) {
               if (res.code === '9000') {
                 arr.push(true);
                 this.writeCont++;
+                alreadyWriteData.push(e.waybillNo);
               } else {
                 arr.push(false);
                 this.msgError(res.msg);
@@ -1237,22 +1261,30 @@ export default {
               arr.push(false);
             }
 
-            // if(res.data.)
-
-            if (arr.length === data.length) {
-              // _message.close();
-              if (arr.every((e) => e)) {
-                // this.msgSuccess('写回卡成功');
-
-                console.log(res, '写卡成功');
-
-                successfn && successfn(res);
-              } else {
-                this.loading = false;
-                this.msgError('写入失败: ' + arr.filter(e => !e).length + '条');
-                errorfn && errorfn();
+            if (res.data.indexNow[0] === indexc[0] && res.data.indexNow[1] === indexc[1]) {
+              this.msgSuccess('卡已写满, 请换卡');
+              // console.log(oldData);
+              isWrite = false; // 停止写卡
+              pauseWrite && pauseWrite(index);
+              // console.log('time' + index);
+              console.log(alreadyWriteData);
+              // clearTimeout(this['time' + index]);
+            } else {
+              if (arr.length === data.length) {
+                // _message.close();
+                if (arr.every((e) => e)) {
+                  // this.msgSuccess('写回卡成功');
+                  // console.log(res, '写卡成功');
+                  successfn && successfn(res);
+                } else {
+                  this.loading = false;
+                  this.msgError('写入失败: ' + arr.filter(e => !e).length + '条');
+                  errorfn && errorfn();
+                }
               }
             }
+
+            // if(res.data.)
           });
         }, (index + 1) * 1000);
       });
