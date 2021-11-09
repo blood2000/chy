@@ -28,8 +28,9 @@
             label: 'companyName',
           }"
           :keywords="'searchValue'"
-          @selected="(data)=>{ shipmentCode= data.code; orgCode=data.orgCode; companyCode = data.companyCode; $emit('handleQuery')}"
+          @selected="(data)=>{ shipmentCode= data.code; orgCode=data.orgCode; companyCode = data.companyCode; }"
         >
+          <!-- $emit('handleQuery') -->
           <template #default="{row}">
             <span>{{ row.companyName }}</span>
           </template>
@@ -66,8 +67,8 @@
             label: 'name',
           }"
           :keywords="'name'"
+          @selected="(data)=>{ $emit('handleQuery')}"
         >
-          <!-- @selected="(data)=>{ $emit('handleQuery')}" -->
           <!--   -->
           <template #default="{row}">
             <span>{{ row.name +' - '+ row.goodsName }}</span>

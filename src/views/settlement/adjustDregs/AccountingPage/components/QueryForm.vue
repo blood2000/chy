@@ -217,8 +217,8 @@
       </el-form-item>
 
 
-      <el-form-item
-        label="状态查询"
+      <!-- <el-form-item
+        label="状态查询绍林说去掉的"
         prop="ztConditionStatus"
       >
         <el-select
@@ -240,7 +240,7 @@
             :value="item.dictValue"
           />
         </el-select>
-      </el-form-item>
+      </el-form-item> -->
 
       <!-- <el-form-item
         label="操作人"

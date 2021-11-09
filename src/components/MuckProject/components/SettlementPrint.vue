@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
 
     <div v-if="btnShow" id="tin_print-btn" class="box-print">
       <el-button

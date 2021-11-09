@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
 
     <div v-if="btnShow" id="tin_print-btn" class="box-print">
       <el-button
@@ -101,30 +101,30 @@
           </thead>
           <tbody>
             <tr v-for="(item, index) in adjustlist" :key="index" class="tbody_tr">
-              <td>{{ parseTime(item.receiveTime, '{y}-{m}-{d}') }}</td>
+              <td>{{ item.receiveTime || parseTime(item.receiveTime, '{y}-{m}-{d}') }}</td>
               <td>{{ waybillClasses(item.waybillClasses) }}</td>
 
               <!-- <td>{{ item.licenseNumber }}</td> -->
 
               <td>{{ item.projectName }}</td>
               <td>{{ item.ztcName }}</td>
-              <td>{{ floorFn(item.loadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
-              <!-- <td>{{ parseTime(item.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td> -->
+              <td>{{ item.loadNum }}</td>
+              <!-- <td>{{ parseTime(item.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td> floorFn(item.loadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车')-->
 
               <!-- <td>{{ item.ztcName }}</td> -->
               <!-- <td>{{ floorFn(item.unloadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
               <td>{{ parseTime(item.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td> -->
-              <td>{{ floorFn(item.deliveryCashFee) }} 元</td>
-              <td>{{ floorFn( item.loadWeight * item.deliveryCashFee) }} 元</td>
+              <td>{{ floorFn(item.deliveryCashFee - 0) * 100 / 100 }} </td>
+              <td>{{ floorFn( item.shipperRealPay - 0) * 100 / 100 }} </td>
             </tr>
             <tr>
               <td>合计</td>
               <td />
               <td />
               <td />
-              <td>{{ printData.loadNum }} 车</td>
+              <td>{{ sum(adjustlist.map(e=> e.loadNum - 0)) }}</td>
               <td />
-              <td>{{ floorFn(printData.deliveryCashFee) }} 元</td>
+              <td>{{ floorFn( sum(adjustlist.map(e=> e.shipperRealPay - 0))) * 100 / 100 }}</td>
             </tr>
           </tbody>
         </table>
@@ -216,14 +216,15 @@ export default {
       this.loading = true;
       settlementSummaryList({ ...queryParams, batchNo: this.printData.batchNo }).then(res => {
         console.log(res.data, '详情汇总数据~!');
-        this.loading = false;
+        this.adjustlist = res.data;
         this.$emit('onsuccess');
-        this.adjustlist = res.data.list.map(e => {
-          if (e.loadUnloadType !== '1001') {
-            e.ztcName = this.selectDictLabel(this.loadUnloadType_op, e.loadUnloadType) || '-';
-          }
-          return e;
-        });
+        this.loading = false;
+        // .map(e => {
+        //   if (e.loadUnloadType !== '1001') {
+        //     e.ztcName = this.selectDictLabel(this.loadUnloadType_op, e.loadUnloadType) || '-';
+        //   }
+        //   return e;
+        // });
       });
     },
 
@@ -236,7 +237,18 @@ export default {
       } else {
         return '';
       }
+    },
+
+    // 求和
+    sum(arr) {
+      console.log(arr);
+      if (arr.length <= 0) return 0;
+
+      return arr.reduce(function(prev, curr, idx, arr) {
+        return prev + curr;
+      });
     }
+
   }
 };
 </script>
