@@ -533,8 +533,8 @@ export default {
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
         receiveTime: undefined,
         // 写卡筛选
-        ztCreateTimeBegin: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[0] : undefined,
-        ztCreateTimeEnd: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[1] : undefined,
+        writeCardBeginTime: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[0] : undefined,
+        writeCardEndTime: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[1] : undefined,
         ztCreateTime: undefined,
         companyCode: undefined
       };

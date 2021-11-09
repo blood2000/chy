@@ -249,9 +249,9 @@ export default {
         });
 
 
-        console.log(p.code === this.form.province, '省相同');
-        console.log(c.code === this.form.city, '市相同');
-        console.log(!!county, '区相同');
+        console.log(p.code === this.form.province, '省');
+        console.log(c.code === this.form.city, '市');
+        console.log(!!county, '区');
 
         // console.log(county, '找出来, 说明有, 没有这说明要加新的');
         // 判断库中是否不存在这个code ture 说明不存在
