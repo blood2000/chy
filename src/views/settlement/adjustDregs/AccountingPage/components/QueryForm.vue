@@ -199,7 +199,7 @@
       </el-form-item>
 
       <el-form-item
-        label="日期"
+        label="接单日期"
         prop="receiveTime"
       >
         <el-date-picker
@@ -215,6 +215,32 @@
           @change="$emit('handleQuery')"
         />
       </el-form-item>
+
+
+      <!-- <el-form-item
+        label="状态查询绍林说去掉的"
+        prop="ztConditionStatus"
+      >
+        <el-select
+          v-model="queryParams.ztConditionStatus"
+          clearable
+          filterable
+          style="width:228px"
+          placeholder="请选择状态"
+          @change="$emit('handleQuery')"
+        >
+          <el-option
+            v-for="(item, index) in [
+              { dictLabel:'未核算', dictValue:'4' },
+              { dictLabel:'已核算', dictValue:'5' },
+              { dictLabel:'全部', dictValue:'4,5' },
+            ]"
+            :key="index"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item> -->
 
       <!-- <el-form-item
         label="操作人"

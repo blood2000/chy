@@ -185,6 +185,51 @@
           @keyup.enter.native="$emit('handleQuery')"
         />
       </el-form-item>
+
+      <!-- 核验驳回状态 -1 -->
+
+      <el-form-item
+        v-if="queryParams.status === -1"
+        label="状态查询"
+        prop="accountingStatus"
+      >
+        <el-select v-model="queryParams.accountingStatus" placeholder="请选择核算状态" style="width: 228px" @change="$emit('handleQuery')">
+          <el-option
+            v-for="item in [// -1 核验驳回 0 已核算 1 已核验 2 已索票 3 已开票 4 已打款
+              { dictLabel: '全部', dictValue: 0 },
+              { dictLabel: '已核算', dictValue: 1 },
+              { dictLabel: '核验驳回', dictValue: 2 }
+            ]"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
+      <!-- 核验状态 0  -->
+
+      <el-form-item
+        v-if="queryParams.status === 0"
+        label="状态查询"
+        prop="checkStatus"
+      >
+        <el-select v-model="queryParams.checkStatus" placeholder="请选择核验状态" style="width: 228px" @change="$emit('handleQuery')">
+          <el-option
+            v-for="item in [// -1 核验驳回 0 已核算 1 已核验 2 已索票 3 已开票 4 已打款
+              { dictLabel: '全部', dictValue: 0 },
+              { dictLabel: '已核验', dictValue: 1 },
+              { dictLabel: '未核验', dictValue: 2 }
+            ]"
+            :key="item.dictValue"
+            :label="item.dictLabel"
+            :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+
+
+
       <el-form-item
         v-if="queryParams.status === 2"
         label="状态"
