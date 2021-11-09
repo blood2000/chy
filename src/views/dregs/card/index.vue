@@ -857,7 +857,7 @@ export default {
 
         if (!res.success) {
           this.loading = false;
-          this.msgError(res.code ? res.msg : '写卡失败, 请不要移动IC卡!');
+          this.msgError(res.code ? res.msg : '发卡失败!');
           return;
         }
 

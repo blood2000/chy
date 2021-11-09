@@ -219,7 +219,7 @@
         </div>
 
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" :disabled="!dispatcher" @click="handlerRelocateCard">确 定</el-button>
+          <el-button type="primary" :disabled="!dispatcher" @click="handlerRelocateCard()">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -241,7 +241,6 @@
         <div style="font-size: 20px">迁卡中, 请勿移动卡片. {{ writeCont }} / {{ selectedData.length }}</div>
       </el-alert>
     </div>
-
   </div>
 </template>
 <script>
@@ -784,18 +783,18 @@ export default {
     // e=
 
     // s= 迁卡二 -- 把选中的数据写入新卡(或者)
-    handlerRelocateCard() {
+    handlerRelocateCard(handlerAlreadyWriteData__data) {
       // 获取新的调度者
       this.writeCont = 0; // 写会的数据
       const newTem = this.dispatcherOptions.find(e => e.code === this.dispatcher);
 
       this.handlerReadUserinfo((res) => {
-        console.log(res, '存在数据');
+        // 已存在数据
         const team_telno = res.userInfo.team_telno;
         const new_team_telno = newTem.tel;
 
+        // 同一个调度者
         if (team_telno === new_team_telno) {
-          // 同一个调度者
           this.$confirm('确定继续写入本卡?', '当前卡中已存在数据了', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -805,20 +804,26 @@ export default {
             this.cardinfoOpen = false;
             action.getCardInfo(undefined, false).then((res) => {
               if (res.success && res.code === '9000') {
-                const __data = this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
+                // console.log(res, '当前写卡的信息');
+                const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
+                // console.log(__data, '写入的数据');
+
+                // s= 调用写卡函数
                 this.handlerWriteData(
                   __data.data,
                   __data.versionMark,
-                  (res) => {
-                    this.handlerEndres(res);
-                    console.log('写卡成功~!');
-                    console.log(__data);
-                    this.cpuCardUpdateCardWaybillRel(__data.cardData.card16no, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
+                  (success) => {
+                    this.handlerEndres(success);
+                    this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
                   },
-                  () => {
-                    console.log('写入失败~!');
+                  () => { this.percentage2 = true; }, // 失败
+                  (data, alreadyWriteData) => { // 卡满
+                    this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, alreadyWriteData);
+                    this.handlerAlreadyWriteData(data, alreadyWriteData, __data);
                   }
                 );
+
+                // e= 调用写卡函数
               } else {
                 this.msgError(res.msg);
               }
@@ -828,7 +833,7 @@ export default {
           this.msgError('请选择 相同的调度者~!' + '当前卡调度者电话是:' + team_telno);
         }
       }, () => {
-        // 获取卡信息
+        // 白卡处理
         this.$confirm('确定换了要迁移的新卡了吗？', '当前是一张空白卡，', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -838,35 +843,54 @@ export default {
           this.cardinfoOpen = false;
           action.getCardInfo(undefined, false).then((res) => {
             if (res.success && res.code === '9000') {
-              const __data = this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
-
+              console.log(res, '当前写卡的信息__');
+              const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
+              console.log(__data, '写入的数据');
+              // s= 调用写卡函数
               this.xexiaoCheck(
                 __data.userMark,
                 __data.userInfo,
                 __data.versionMark,
                 __data.data,
                 __data.cardData,
-                (res) => {
+                (success) => {
                   // 成功
-                  this.handlerEndres(res);
-
-                  console.log('迁卡成功, 卡内现有' + this.writeCont + '条记录');
-                  console.log(__data);
-                  this.cpuCardUpdateCardWaybillRel(__data.cardData.card16no, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
+                  this.handlerEndres(success);
+                  this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
                 },
-                () => { this.percentage2 = true; },
-                (data, alreadyWriteData) => {
-                  this.percentage2 = false;
-                  // 弹出换卡框
-                  console.log(res, '暂停写卡');
+                () => { this.percentage2 = true; }, // 失败
+                (data, alreadyWriteData) => { // 卡满
+                  this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, alreadyWriteData);
+                  this.handlerAlreadyWriteData(data, alreadyWriteData, __data);
                 }
               );
+              // e= 调用写卡函数
             } else {
               this.msgError(res.msg);
             }
           }).catch(() => {});
         });
       });
+    },
+
+    // 写卡中断
+    handlerAlreadyWriteData(data, alreadyWriteData, __data) {
+      this.percentage2 = false;
+      const xixuWriteData = [];
+      data.forEach((e) => {
+        if (!alreadyWriteData.includes(e.waybillNo)) {
+          xixuWriteData.push(e);
+        }
+      });
+      __data.data = xixuWriteData; // 赋值剩余的数据
+
+      this.$confirm('已满200条,请换卡?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handlerRelocateCard(__data);
+      }).catch(() => {});
     },
 
     // 最后成功处理
@@ -917,6 +941,7 @@ export default {
       };
 
       cpuCardUpdateCardWaybillRel(que).then(res => {
+        this.msgSuccess('迁卡成功');
         console.log(res);
       });
     },
@@ -1197,7 +1222,7 @@ export default {
 
       const arrtime = []; // 定时器标识
 
-      const indexc = [3, 3]; // 定义多少条写满数据
+      const indexc = [3, 2]; // 定义多少条写满数据
 
       const alreadyWriteData = []; // 写入成功的订单集合
 
@@ -1227,8 +1252,68 @@ export default {
       }
       // 第三步 写卡 时间间隔 500(太快会失败)
 
+      let stop = false;
       data.forEach(async(e, index) => {
         arrtime[index] = setTimeout(() => {
+          if (stop) return;
+          action.writeData(fn.setData(meter, e)).then((res) => {
+            if (res.success) {
+              if (res.code === '9000') {
+                arr.push(true);
+                this.writeCont++;
+                alreadyWriteData.push(e.waybillNo);
+              } else {
+                arr.push(false);
+                this.msgError(res.msg);
+              }
+            } else {
+              arr.push(false);
+            }
+            if (arr.length === data.length) {
+              if (arr.every((e) => e)) {
+                successfn && successfn(res);
+              } else {
+                this.loading = false;
+                this.msgError('写入失败: ' + arr.filter(e => !e).length + '条');
+                errorfn && errorfn();
+              }
+            } else if (res.data.indexNow[0] >= indexc[0] && res.data.indexNow[1] === indexc[1]) {
+              stop = true;
+              for (let i = 0; i < arrtime.length; i++) {
+                clearTimeout(arrtime[i]);
+              }
+              // 抛出写卡满了
+              console.log(alreadyWriteData, '我就写一条数据');
+              pauseWrite && pauseWrite(data, alreadyWriteData);
+            }
+          });
+        }, (index + 1) * 1000);
+      });
+    },
+
+    // 数据写入
+    handlerWriteData(data, meter, successfn, errorfn, pauseWrite) {
+      const _message = this.$message({
+        duration: 0,
+        message: '读卡中, 请勿移动卡片',
+        offset: 400
+      });
+
+      this.writeCont = 0; // 下卡成功 + 1
+
+      const arr = []; // 成功 + 1
+
+      const arrtime = []; // 定时器标识
+
+      const indexc = [3, 2]; // 定义多少条写满数据
+
+      const alreadyWriteData = []; // 写入成功的订单集合
+
+      let stop = false;
+
+      data.forEach(async(e, index) => {
+        arrtime[index] = setTimeout(() => {
+          if (stop) return;
           action.writeData(fn.setData(meter, e)).then((res) => {
             if (res.success) {
               if (res.code === '9000') {
@@ -1243,43 +1328,32 @@ export default {
               arr.push(false);
             }
 
-            if (res.data.indexNow[0] === indexc[0] && res.data.indexNow[1] === indexc[1]) {
+            console.log(arr.length === data.length);
+            console.log(res.data.indexNow[0] >= indexc[0] && res.data.indexNow[1] === indexc[1]);
+            if (arr.length === data.length) {
+              _message.close();
+
+              if (arr.every((e) => e)) {
+                successfn && successfn(res);
+              } else {
+                this.loading = false;
+                this.msgError('写入失败: ' + arr.filter(e => !e).length + '条');
+                errorfn && errorfn();
+              }
+            } else if (res.data.indexNow[0] >= indexc[0] && res.data.indexNow[1] === indexc[1]) {
+              stop = true;
               for (let i = 0; i < arrtime.length; i++) {
                 clearTimeout(arrtime[i]);
               }
-
+              // 抛出写卡满了
+              // console.log(alreadyWriteData, '我就写一条数据');
               pauseWrite && pauseWrite(data, alreadyWriteData);
-            } else {
-              if (arr.length === data.length) {
-                if (arr.every((e) => e)) {
-                  successfn && successfn(res);
-                } else {
-                  this.loading = false;
-                  this.msgError('写入失败: ' + arr.filter(e => !e).length + '条');
-                  errorfn && errorfn();
-                }
-              }
             }
           });
         }, (index + 1) * 1000);
       });
-    },
 
-    // 数据继续写入
-    handlerWriteData(data, meter, successfn, errorfn) {
-      const _message = this.$message({
-        duration: 0,
-        message: '读卡中, 请勿移动卡片',
-        offset: 400
-      });
-
-      this.isWrite = true;
-      this.writeCont = 0;
-      // 第三步 写卡 时间间隔 500(太快会失败)
-      const arr = [];
-
-      console.log(data, meter, successfn);
-
+      return;
       data.forEach(async(e, index) => {
         this['time' + index] = setTimeout(() => {
           // 写入一条数据
@@ -1307,19 +1381,6 @@ export default {
                 _message.close();
 
                 successfn && successfn(res);
-                // cardReplacement({
-                //   card16no: cardData.card16no,
-                //   newCard16no: cardData.newCard16no,
-                //   cardBatchNo: cardData.cardBatchNo
-                // })
-                //   .then((res) => {
-                //     this.loading = false;
-                //     this.msgSuccess(res.msg || '补卡成功');
-                //     this.getList();
-                //   })
-                //   .catch(() => {
-                //     this.loading = false;
-                //   });
               } else {
                 this.loading = false;
                 this.msgError('写入失败: ' + arr.filter(e => !e).length + '条');

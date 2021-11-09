@@ -106,6 +106,7 @@ const CardReader = {
     _receiveMessage: function() {
       return new Promise((resolve, reject) => {
         CardReader.socket.onmessage = function(e) {
+          console.log(e, '返回的数据');
           const ret = CardReader.fn.getResult(e.data);
           if (ret.success) {
             resolve(e.data);
@@ -424,6 +425,8 @@ const CardReader = {
       try {
         ret = await CardReader.fn.exec(CardReader.command.get.card);
 
+        console.log(ret, '获取卡第一步');
+
         GetCardNo = CardReader.fn.getResult(ret); // 卡的信息
 
         console.log(GetCardNo);
@@ -431,6 +434,7 @@ const CardReader = {
         ret = await CardReader.fn.exec(CardReader.command.reset);
         ResetCpuCardNoGetCardNo = CardReader.fn.getResult(ret); // 卡片复位信息
 
+        console.log(ret, '获取卡第二步');
 
         if (getCar) {
           const str = CardReader.fn.strReverse(GetCardNo.data.substring(0, 8));
@@ -1466,6 +1470,9 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     return ret;
   }
 
+  console.log(ret, '写卡当前卡数据');
+  const GetCardNo = ret.GetCardNo;
+
   try {
     // 选择索引目录
     ret = await CardReader.fn.apdu((function() {
@@ -1664,6 +1671,7 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
       msg: '写入成功',
       data: {
         data: odata,
+        GetCardNo,
         index: ret.data,
         indexNow: index
       }
@@ -1684,6 +1692,7 @@ CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key = Ca
   if (data) {
     console.log('【发卡流程】');
     let ret = await this.getCard(false, key, false, true);
+
     if (!ret.success) { // 获取卡片失败
       return ret;
     }
