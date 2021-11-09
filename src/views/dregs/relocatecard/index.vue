@@ -1191,17 +1191,16 @@ export default {
       errorfn,
       pauseWrite
     ) {
-
       this.writeCont = 0; // 下卡成功 + 1
 
       const arr = []; // 成功 + 1
-     
-      const arrtime = [] // 定时器标识
 
-      const indexc = [3,3]; // 定义多少条写满数据
+      const arrtime = []; // 定时器标识
+
+      const indexc = [3, 3]; // 定义多少条写满数据
 
       const alreadyWriteData = []; // 写入成功的订单集合
-      
+
 
       try { // async await 用try..catch.. 捕获
         // 第一步 销卡
@@ -1229,9 +1228,7 @@ export default {
       // 第三步 写卡 时间间隔 500(太快会失败)
 
       data.forEach(async(e, index) => {
-
         arrtime[index] = setTimeout(() => {
-
           action.writeData(fn.setData(meter, e)).then((res) => {
             if (res.success) {
               if (res.code === '9000') {
@@ -1247,13 +1244,11 @@ export default {
             }
 
             if (res.data.indexNow[0] === indexc[0] && res.data.indexNow[1] === indexc[1]) {
-
               for (let i = 0; i < arrtime.length; i++) {
                 clearTimeout(arrtime[i]);
               }
-              
-              pauseWrite && pauseWrite(data, alreadyWriteData );
 
+              pauseWrite && pauseWrite(data, alreadyWriteData);
             } else {
               if (arr.length === data.length) {
                 if (arr.every((e) => e)) {
