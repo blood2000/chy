@@ -615,7 +615,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return changeUserStatus(row.userId, row.status);
+        return changeUserStatus(row.userCode, row.status);
       }).then(() => {
         this.msgSuccess(text + '成功');
       }).catch(function() {
