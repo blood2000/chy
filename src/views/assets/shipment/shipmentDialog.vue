@@ -565,6 +565,11 @@
                 </el-radio-group>
               </el-form-item>
             </el-col>
+            <el-col :span="12">
+              <el-form-item prop="isPayfirst" class="no-label">
+                <el-checkbox v-model="form.isPayfirst">是否预付钱给司机</el-checkbox>
+              </el-form-item>
+            </el-col>
           </el-row>
           <h5 class="g-card-title g-strong mb20 ml10">
             普通货物配置
@@ -1013,13 +1018,17 @@ export default {
           if (this.form.openScanQuickLoadOrder === true) {
             openScanQuickLoadOrder = 1;
           }
+          var isPayfirst = 0;
+          if (this.form.isPayfirst === true) {
+            isPayfirst = 1;
+          }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
           this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
           var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg,
             reviewNoNeedUnloadImg: reviewNoNeedUnloadImg, reviewIsNeedLoadingCertificate: reviewIsNeedLoadingCertificate, openProjectDesignView: openProjectDesignView,
             isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView,
-            openTheElectronicFence: openTheElectronicFence, openScanQuickLoadOrder: openScanQuickLoadOrder };
+            openTheElectronicFence: openTheElectronicFence, openScanQuickLoadOrder: openScanQuickLoadOrder,isPayfirst:isPayfirst };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {
@@ -1121,6 +1130,7 @@ export default {
         wipeType: null,
         isMonthly: 0,
         isPrepaid: 1, // 是否预付运费，默认是
+        isPayfirst: 0,
         repaidType: 0, // 预付运费类型
         payInvoiceType: '7',
         isConsumption: null,
@@ -1223,6 +1233,11 @@ export default {
         this.form.openTheElectronicFence = true;
       } else {
         this.form.openTheElectronicFence = false;
+      }
+      if (this.form.isPayfirst === 1) {
+        this.form.isPayfirst = true;
+      } else {
+        this.form.isPayfirst = false;
       }
     },
     // 已读

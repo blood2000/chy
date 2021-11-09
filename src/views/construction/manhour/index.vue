@@ -120,6 +120,7 @@ export default {
         receiveTime: [], // 时间
         confirmAuditTime: [],
         submitAuditTime: [], // 时间
+        morningEveningDate: [], // 时间
         schedule: undefined,
         jobContent: undefined
 
@@ -261,6 +262,13 @@ export default {
           'width': '135',
           'tooltip': true
         },
+        {
+          'label': '审核日期',
+          'prop': 'morningEveningDate',
+          'isShow': true,
+          'width': '90',
+          'tooltip': true
+        },
 
         // {
         //   'label': '作业结束时间',
@@ -300,12 +308,13 @@ export default {
           'tooltip': true
         },
         {
-          'label': '审核时间',
+          'label': '操作时间',
           'prop': 'confirmAuditTime',
           'isShow': true,
           'width': '90',
           'tooltip': true
         },
+
         {
           'label': '备注',
           'prop': 'remark',
@@ -337,8 +346,12 @@ export default {
         endCreateTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
         bigConfirmAuditTime: this.queryParams.confirmAuditTime ? this.queryParams.confirmAuditTime[0] : undefined,
         endConfirmAuditTime: this.queryParams.confirmAuditTime ? this.queryParams.confirmAuditTime[1] : undefined,
+
+        bigMorningEveningDate: this.queryParams.morningEveningDate ? this.queryParams.morningEveningDate[0] : undefined,
+        endMorningEveningDate: this.queryParams.morningEveningDate ? this.queryParams.morningEveningDate[1] : undefined,
         receiveTime: undefined,
         confirmAuditTime: undefined,
+        morningEveningDate: undefined,
 
         bigSubmitAuditTime: submitAuditTime ? submitAuditTime[0] : undefined,
         endSubmitAuditTime: submitAuditTime ? submitAuditTime[1] : undefined,

@@ -24,22 +24,36 @@
     </div>
 
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" :disabled="loading || !adjustlist || adjustlist.length < 1" :loading="isLoading" @click="submitForm">立即核算</el-button>
-      <el-button @click="cancel">返回</el-button>
+      <el-row class="ly-flex-align-center">
+        <el-col :span="14" style="text-align:left;" class="my-all-totalBar">
+          <TotalBar :total-list="totalList" />
+        </el-col>
+        <el-col :span="10">
+          <el-button type="primary" :disabled="loading || !adjustlist || adjustlist.length < 1" :loading="isLoading" @click="submitForm">立即核算</el-button>
+          <el-button @click="cancel">返回</el-button>
+        </el-col>
+      </el-row>
+
     </div>
   </el-dialog>
 </template>
 
 <script>
-
+function sum(arr) {
+  return arr.reduce(function(prev, curr, idx, arr) {
+    return prev + curr;
+  });
+}
+import { floor } from '@/utils/ddc';
 import { batchDetail } from '@/api/settlement/adjust';
 import { immediateAccounting } from '@/api/settlement/adjustDregs';
 
 import AdjustDitem from './AdjustDitem.vue';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   name: 'AdjustDialog',
-  components: { AdjustDitem },
+  components: { AdjustDitem, TotalBar },
   props: {
     title: {
       type: String,
@@ -174,7 +188,49 @@ export default {
       }
 
 
-      // console.log(arr, '出啊发发');
+
+      return arr;
+    },
+
+    totalList() {
+      const arr = [
+        {
+          label: '结算车数',
+          value: 0,
+          key: 'loadWeight'
+        },
+        {
+          label: '留存运费',
+          value: 0,
+          key: 'taxPayment'
+        },
+        {
+          label: '服务费',
+          value: 0,
+          key: 'serviceFee'
+        },
+        {
+          label: '司机实收',
+          value: 0,
+          key: 'deliveryCashFee'
+        },
+        {
+          label: '货主实付',
+          value: 0,
+          key: 'shipperRealPay'
+        }
+      ];
+
+      if (this.list.length > 0) {
+        arr.forEach(item => {
+          const value = sum(this.list.map(e => sum(e.childs.map(e => e[item.key] - 0 || 0))));
+          if (item.key === 'loadWeight') {
+            item.value = value;
+          } else {
+            item.value = floor(value);
+          }
+        });
+      }
 
       return arr;
     }
@@ -184,7 +240,6 @@ export default {
   watch: {
     psort(value) {
       if (value) {
-        // console.log(value);
         this.sort = (value === 'ztcName' ? 'ztcLandName' : value);
       }
     }
@@ -193,14 +248,9 @@ export default {
     handleChange(key) {
 
 
-
-      // console.log(123);
     },
     /** 提交按钮 */
     async submitForm() {
-      // console.log(this.adjustlist);
-
-
       const shipmentCodeArr = [...new Set(this.adjustlist.map(e => e.shipperCode))];
 
       if (shipmentCodeArr.length > 1) {
@@ -402,5 +452,10 @@ export default {
     background: #13ce66;
     border-color: #13ce66;
     color: #FFFFFF;
+}
+::v-deep .my-all-totalBar .total_bg{
+  background-color: #fff;
+  padding: 0;
+  margin: 0;
 }
 </style>

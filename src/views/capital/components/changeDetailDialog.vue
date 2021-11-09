@@ -311,7 +311,8 @@ export default {
         // { dictLabel: '罚款', dictValue: 4 },
         { dictLabel: '提现', dictValue: 5 },
         // { dictLabel: '信息费', dictValue: 6 },
-        { dictLabel: '油费', dictValue: 7 }
+        { dictLabel: '油费', dictValue: 7 },
+        { dictLabel: '预付费', dictValue: 8 }
       ],
       // 交易类型字典
       typeOptions: [
@@ -331,7 +332,8 @@ export default {
         { dictLabel: '重置', dictValue: 4 },
         { dictLabel: '取消运单', dictValue: 5 },
         { dictLabel: '增加授信金额', dictValue: 6 },
-        { dictLabel: '扣除授信额度', dictValue: 7 }
+        { dictLabel: '扣除授信额度', dictValue: 7 },
+        { dictLabel: '预付解冻', dictValue: 8 }
       ],
       // 参数表格数据
       infoList: [],
