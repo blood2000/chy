@@ -83,39 +83,48 @@
         <table width="100%" border="1" bordercolor="#404040" cellspacing="0" cellpadding="0" style="padding: 25px">
           <thead>
             <tr>
-              <th width="50px">运输单号</th>
-              <th width="50px">司机名称</th>
-              <th width="50px">车牌号</th>
-              <!-- <th width="50px">货物</th> -->
-
+              <th width="50px">时间</th>
+              <th width="50px">班次</th>
               <th width="50px">项目</th>
-              <th width="50px">装货数量</th>
-              <th width="50px">装货时间</th>
 
               <th width="50px">渣土场</th>
-              <th width="50px">卸货数量</th>
-              <th width="50px">卸货时间</th>
-              <th width="50px">运费单价</th>
+              <th width="50px">车数</th>
+              <th width="50px">单价</th>
+
+              <th width="50px">金额</th>
+              <!-- <th width="50px">卸货数量</th>
+              <th width="50px">卸货时间</th> -->
+
+              <!-- <th width="50px">运费单价</th> -->
 
             </tr>
           </thead>
           <tbody>
             <tr v-for="(item, index) in adjustlist" :key="index" class="tbody_tr">
-              <td>{{ item.waybillNo }}</td>
-              <td>{{ item.driverName }}</td>
-              <td>{{ item.licenseNumber }}</td>
-              <!-- <td>{{ item.goodsName }}</td> -->
+              <td>{{ item.receiveTime || parseTime(item.receiveTime, '{y}-{m}-{d}') }}</td>
+              <td>{{ waybillClasses(item.waybillClasses) }}</td>
+
+              <!-- <td>{{ item.licenseNumber }}</td> -->
 
               <td>{{ item.projectName }}</td>
-              <td>{{ floorFn(item.loadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
-              <!-- <td>{{ item.loadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td> -->
-              <td>{{ parseTime(item.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td>
-
               <td>{{ item.ztcName }}</td>
-              <td>{{ floorFn(item.unloadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
-              <!-- <td>{{ item.unloadWeight }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td> -->
-              <td>{{ parseTime(item.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td>
-              <td>{{ floorFn(item.deliveryCashFee) }} 元</td>
+              <td>{{ item.loadNum }}</td>
+              <!-- <td>{{ parseTime(item.fillTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td> floorFn(item.loadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车')-->
+
+              <!-- <td>{{ item.ztcName }}</td> -->
+              <!-- <td>{{ floorFn(item.unloadWeight, item.stowageStatus === '2'? 0: 3) }} {{ item.stowageStatus === '0'?'吨':(item.stowageStatus === '1'?'立方' : '车') }}</td>
+              <td>{{ parseTime(item.signTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</td> -->
+              <td>{{ floorFn(item.deliveryCashFee - 0) * 100 / 100 }} </td>
+              <td>{{ floorFn( item.shipperRealPay - 0) * 100 / 100 }} </td>
+            </tr>
+            <tr>
+              <td>合计</td>
+              <td />
+              <td />
+              <td />
+              <td>{{ sum(adjustlist.map(e=> e.loadNum - 0)) }}</td>
+              <td />
+              <td>{{ floorFn( sum(adjustlist.map(e=> e.shipperRealPay - 0))) * 100 / 100 }}</td>
             </tr>
           </tbody>
         </table>
@@ -150,7 +159,7 @@
 
 <script>
 import { floor } from '@/utils/ddc';
-import { batchRelatedWaybill } from '@/api/settlement/adjustDregs';
+import { settlementSummaryList } from '@/api/settlement/adjustDregs';
 import { getUserInfo } from '@/utils/auth';
 export default {
   props: {
@@ -162,12 +171,6 @@ export default {
       type: Boolean,
       default: true
     }
-    // wayBillCodes: {
-    //   type: Array,
-    //   default: () => []
-
-    // }
-
   },
   data() {
     return {
@@ -211,17 +214,41 @@ export default {
         'pageSize': 1000
       };
       this.loading = true;
-      batchRelatedWaybill({ ...queryParams, batchNo: this.printData.batchNo }).then(res => {
-        this.loading = false;
+      settlementSummaryList({ ...queryParams, batchNo: this.printData.batchNo }).then(res => {
+        console.log(res.data, '详情汇总数据~!');
+        this.adjustlist = res.data;
         this.$emit('onsuccess');
-        this.adjustlist = res.data.list.map(e => {
-          if (e.loadUnloadType !== '1001') {
-            e.ztcName = this.selectDictLabel(this.loadUnloadType_op, e.loadUnloadType) || '-';
-          }
-          return e;
-        });
+        this.loading = false;
+        // .map(e => {
+        //   if (e.loadUnloadType !== '1001') {
+        //     e.ztcName = this.selectDictLabel(this.loadUnloadType_op, e.loadUnloadType) || '-';
+        //   }
+        //   return e;
+        // });
+      });
+    },
+
+    // 返回班次
+    waybillClasses(type) {
+      if (type === '0') {
+        return '白班';
+      } else if (type === '1') {
+        return '晚班';
+      } else {
+        return '';
+      }
+    },
+
+    // 求和
+    sum(arr) {
+      console.log(arr);
+      if (arr.length <= 0) return 0;
+
+      return arr.reduce(function(prev, curr, idx, arr) {
+        return prev + curr;
       });
     }
+
   }
 };
 </script>
