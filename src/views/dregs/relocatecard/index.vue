@@ -11,10 +11,11 @@
           <el-form-item label="卡ID" prop="card16no">
             <el-input
               v-model.trim="queryParams.card16no"
-              placeholder="请输入卡ID或读卡获取卡ID"
+              placeholder="请点击读卡按钮"
               clearable
               size="small"
               style="width: 228px"
+              disabled
             />
 
             <el-button
@@ -23,7 +24,7 @@
               type="primary"
               plain
               @click="getCardInfo"
-            >读卡获取ID</el-button>
+            >读卡</el-button>
           </el-form-item>
 
           <el-form-item label="装货日期" prop="loadTime">
@@ -141,8 +142,8 @@
 
         <el-table-column prop="loadUnloadTypeStr" label="装卸类型" />
 
-        <el-table-column prop="loadTime" label="装货时间" />
-        <el-table-column prop="unloadTime" label="卸货时间" />
+        <el-table-column sortable prop="loadTime" label="装货时间" />
+        <el-table-column sortable prop="unloadTime" label="卸货时间" />
 
         <el-table-column prop="dispatcherName" label="调度组" />
 
@@ -162,7 +163,7 @@
         </el-table-column>
       </el-table>
       <!-- <div>数据库:{{ total }} / 卡:{{ carTotal }}</div> -->
-      <div>选中数据: {{ selectedData.length }} 条 / 卡:{{ myData.length }}</div>
+      <div style="paddingTop:10px">选中数据: {{ selectedData.length }} 条 / 卡:{{ myData.length }}</div>
 
       <!-- 已打款的回单 -->
       <el-dialog v-loading="loading" class="i-adjust" title="迁卡操作中, 请勿刷新页面或切换页面" :visible.sync="cardinfoOpen" width="500px" :close-on-click-modal="false" append-to-body :show-close="false">
