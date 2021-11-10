@@ -303,7 +303,8 @@ export default {
       carUserInfo: null,
       user_info: '', // 字符串信息
       creatCardBatchNo: 0,
-      this_sourceData: null
+      this_sourceData: null,
+      ccarNo: null
     };
   },
 
@@ -372,6 +373,8 @@ export default {
               this.getList(dataList, res);
             }
           } else {
+            this.ccarNo = null;
+            this.queryParams.card16no = undefined;
             // 空卡的情况
             this.msgWarning(res.msg);
             this.loading = false;
@@ -388,6 +391,16 @@ export default {
       // getCpuCardListCardData({ waybillNos: waybillNos.join(',') }).then(async res => { // 原来的接口
       cpuCardListCardData({ waybillNos: mdataList.map(e => e.waybillNo) }).then(async res => {
         const { GetCardNo, userInfo, meter, userMark } = CarData;
+
+        // console.log(CarData);
+
+        this.ccarNo = {
+          cardBatchNo: userInfo.issuing_pc,
+          card16no: GetCardNo.data,
+          versionMark: meter.join('|') + '|'
+        }; // 存一下当前的卡信息
+
+        this.queryParams.card16no = GetCardNo.data;
 
         await this.cpuCardGetCardUserInfo(userInfo); // 通过接口获取当前卡调度者信息 存到 this.carUserInfo
 
@@ -796,10 +809,15 @@ export default {
 
       const writeData = [];
 
+      let isok = false;
+
       data.forEach(async(e, index) => {
         arrtime[index] = setTimeout(() => {
           if (stop) return;
+          if (isok) return;
+          isok = true;
           action.writeData(fn.setData(meter, e)).then((res) => {
+            isok = false;
             if (res.success) {
               if (res.code === '9000') {
                 arr.push(true);
@@ -837,7 +855,7 @@ export default {
               }
             }
           });
-        }, (index + 1) * 1000);
+        }, (index + 1) * 500);
       });
     },
     // e=
@@ -876,8 +894,6 @@ export default {
     // s=保存卡日志
     // select 选中的数据  write 写回卡的数据  target目标的数据
     handlerCpuCardSaveCardLog(creatCardBatchNo, stepNo, successfn, select, write, target) {
-      const { cardData, versionMark } = this.xiekaData(this.myData);
-
       const obj = {
         sourceData_1: undefined,
         sourceData_2: undefined,
@@ -892,8 +908,8 @@ export default {
           'source': {
             'user': this.user_info,
             'data': {
-              'all': this.xiekaData(this.myData).data.map(data1 => fn.setData(versionMark, data1)),
-              'select': this.xiekaData(select).data.map(data1 => fn.setData(versionMark, data1))
+              'all': this.xiekaData(this.myData).data.map(data1 => fn.setData(this.ccarNo.versionMark, data1)),
+              'select': this.xiekaData(select).data.map(data1 => fn.setData(this.ccarNo.versionMark, data1))
             }
           }
         };
@@ -904,8 +920,8 @@ export default {
           'source': {
             'user': this.user_info,
             'data': {
-              'all': this.xiekaData(this.myData).data.map(data1 => fn.setData(versionMark, data1)),
-              'select': this.xiekaData(select).data.map(data1 => fn.setData(versionMark, data1)),
+              'all': this.xiekaData(this.myData).data.map(data1 => fn.setData(this.ccarNo.versionMark, data1)),
+              'select': this.xiekaData(select).data.map(data1 => fn.setData(this.ccarNo.versionMark, data1)),
               'write': write.length > 0 ? write : []
             }
           }
@@ -919,10 +935,9 @@ export default {
         };
       }
 
-
       const que = {
         'batchCode': creatCardBatchNo,
-        'cardBatchNo': cardData.cardBatchNo,
+        'cardBatchNo': this.ccarNo.cardBatchNo,
         'stepNo': stepNo,
         'cardData': JSON.stringify(obj['sourceData_' + stepNo])
       };

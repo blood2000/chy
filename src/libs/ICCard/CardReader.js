@@ -1465,7 +1465,6 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     return ret;
   }
 
-  console.log(ret, '写卡当前卡数据');
   const GetCardNo = ret.GetCardNo;
 
   try {

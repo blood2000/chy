@@ -833,7 +833,7 @@ export default {
         this.$refs['elForm'].validate((valid) => {
           if (valid) {
             if (this.formData.tin5 === '1' && !this.formData.tin6_1.length && !this.formData.tin6_2.length) {
-              this.msgInfo('请选择指定联系人');
+              this.msgInfo('请选择指定调度者');
               return;
             }
 
