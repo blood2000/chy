@@ -2,119 +2,175 @@
   <div v-loading="loading" class="app-container">
     <el-row style="width:80%">
       <el-form ref="mform" :model="mform" :rules="rules" label-width="300px">
-        <el-form-item label="原始单号" prop="originalDocumentNumber">
-          <el-input v-model="mform.originalDocumentNumber" style="width:90%; margin-right:10px;" placeholder="请输入原始单号" />
-          <el-tooltip class="item" effect="dark" content="上游企业委托运输单号: 9999999999" placement="right">
-            <i class="el-icon-question" />
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item label="联运单号" prop="shippingNoteNumber">
-          <el-input v-model="mform.shippingNoteNumber" style="width:90%; margin-right:10px;" placeholder="请输入联运单号" />
-          <el-tooltip class="item" effect="dark" placement="right">
-            <div slot="content">多式联运经营者公司代码（4 位大写英文字母）<br>+客户代码（4位字符）<br>+年月日（8位，例如：20210225）<br>+流水号（4 位，例：0001）。<br>联运单证编码总长度 20 位。</div>
-            <i class="el-icon-question" />
-          </el-tooltip>
-        </el-form-item>
-        <el-form-item label="分段号" prop="serialNumber">
-          <el-input v-model="mform.serialNumber" style="width:90%; margin-right:10px;" placeholder="请输入分段号" />
-        </el-form-item>
-        <el-form-item label="运输总工具数" prop="vehicleAmount">
-          <el-input v-model="mform.vehicleAmount" style="width:90%; margin-right:10px;" placeholder="请输入运输总工具数" />
-        </el-form-item>
-        <el-form-item label="运输组织类型代码" prop="transportTypeCode">
-          <el-select v-model="mform.transportTypeCode" placeholder="请选择运输组织类型代码" style="width:90%; margin-right:10px;">
-            <el-option
-              v-for="item in [
-                { label:'公路运输', value:1 },
-                { label:'公铁联运', value:2 },
-                { label:'公水联运', value:3 },
-                { label:'公空联运', value:4 },
-                { label:'公铁水联运', value:5 },
-                { label:'公铁空联运', value:6 },
-                { label:'公水空联运', value:7 },
-                { label:'公铁水空联运', value:8 },
-                { label:'水铁联运', value:9 },
-                { label:'空铁联运', value:10 },
-                { label:'空水联运', value:11 },
-                { label:'水铁空联运', value:12 },
-              ]"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="运单上传时间" prop="sendToProDateTime">
-          <!-- 时间 -->
-          <el-date-picker v-model="mform.sendToProDateTime" type="datetime" placeholder="运单上传时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
-        </el-form-item>
-        <el-form-item label="网络货运" prop="carrier">
-          <el-input v-model="mform.carrier" style="width:90%; margin-right:10px;" placeholder="请输入网络货运" />
-        </el-form-item>
-        <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditIdentifier">
-          <el-input v-model="mform.unifiedSocialCreditIdentifier" style="width:90%; margin-right:10px;" placeholder="请输入统一社会信用代码" />
-        </el-form-item>
-        <el-form-item label="运输经营许可证编号" prop="permitNumber">
-          <el-input v-model="mform.permitNumber" style="width:90%; margin-right:10px;" placeholder="请输入运输经营许可证编号" />
-        </el-form-item>
-        <el-form-item label="运单生成时间" prop="consignmentDateTime">
-          <!-- 时间 -->
-          <el-date-picker v-model="mform.consignmentDateTime" type="datetime" placeholder="运单生成时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
-        </el-form-item>
-        <el-form-item label="业务类型代码" prop="businessTypeCode">
-          <el-select v-model="mform.businessTypeCode" placeholder="请选择业务类型代码" style="width:90%; margin-right:10px;">
-            <el-option
-              v-for="item in [
-                { label:'干线普货运输', value:'1002996' },
-                { label:'城市配送', value:'1003997' },
-                { label:'农村配送', value:'1003998' },
-                { label:'集装箱运输', value:'1002998' },
-                { label:'其他', value:'1003999' },
-              ]"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="发货（装货）日期时间" prop="despatchActualDateTime">
-          <!-- 时间 -->
-          <el-date-picker v-model="mform.despatchActualDateTime" type="datetime" placeholder="发货（装货）日期时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
-        </el-form-item>
-        <el-form-item label="收货（卸货）日期时间" prop="goodsReceiptDateTime">
-          <!-- 时间 -->
-          <el-date-picker v-model="mform.goodsReceiptDateTime" type="datetime" placeholder="选择收货（卸货）日期时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
-        </el-form-item>
-        <el-form-item label="运费金额（元）" prop="totalMonetaryAmount">
-          <el-input-number v-model.number="mform.totalMonetaryAmount" :precision="3" :step="0.1" :controls="false" style="width:90%; margin-right:10px; text-align:left;" />
-        </el-form-item>
 
-        <!--  -->
-        <el-form-item label="托运人名称" prop="consignorInfo.consignor">
-          <el-input v-model="mform.consignorInfo.consignor" style="width:90%; margin-right:10px;" placeholder="请输入托运人名称" />
-        </el-form-item>
-        <el-form-item label="托运人统一社会信用代码或个人证件号" prop="consignorInfo.consignorId">
-          <el-input v-model="mform.consignorInfo.consignorId" style="width:90%; margin-right:10px;" placeholder="请输入托运人统一社会信用代码或个人证件号" />
-        </el-form-item>
-        <el-form-item label="装货地址" prop="consignorInfo.placeOfLoading">
-          <el-input v-model="mform.consignorInfo.placeOfLoading" style="width:90%; margin-right:10px;" placeholder="请输入装货地址" />
-        </el-form-item>
-        <el-form-item label="装货地点的国家行政区划代码或国别代码" prop="consignorInfo.countrySubdivisionCode">
-          <el-input v-model="mform.consignorInfo.countrySubdivisionCode" style="width:90%; margin-right:10px;" placeholder="请输入装货地点的国家行政区划代码或国别代码" />
-        </el-form-item>
-        <!--  -->
-        <el-form-item label="收货方名称" prop="consigneeInfo.consignee">
-          <el-input v-model="mform.consigneeInfo.consignee" style="width:90%; margin-right:10px;" placeholder="请输入收货方名称" />
-        </el-form-item>
-        <el-form-item label="收货方统一社会信用代码或个人证件号码" prop="consigneeInfo.consigneeId">
-          <el-input v-model="mform.consigneeInfo.consigneeId" style="width:90%; margin-right:10px;" placeholder="请输入收货方统一社会信用代码或个人证件号码" />
-        </el-form-item>
-        <el-form-item label="收货地址" prop="consigneeInfo.goodsReceiptPlace">
-          <el-input v-model="mform.consigneeInfo.goodsReceiptPlace" style="width:90%; margin-right:10px;" placeholder="请输入收货地址" />
-        </el-form-item>
-        <el-form-item label="收货地点的国家行政区划代码或国别代码" prop="consigneeInfo.countrySubdivisionCode">
-          <el-input v-model="mform.consigneeInfo.countrySubdivisionCode" style="width:90%; margin-right:10px;" placeholder="请输入收货地点的国家行政区划代码或国别代码" />
-        </el-form-item>
+        <div class="quancen">
+
+          <el-form-item label="原始单号" prop="originalDocumentNumber">
+            <el-input v-model="mform.originalDocumentNumber" style="width:90%; margin-right:10px;" placeholder="请输入原始单号" />
+            <el-tooltip class="item" effect="dark" content="上游企业委托运输单号: 9999999999" placement="right">
+              <i class="el-icon-question" />
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="联运单号" prop="shippingNoteNumber">
+            <el-input v-model="mform.shippingNoteNumber" style="width:90%; margin-right:10px;" placeholder="请输入联运单号" />
+            <el-tooltip class="item" effect="dark" placement="right">
+              <div slot="content">多式联运经营者公司代码（4 位大写英文字母）<br>+客户代码（4位字符）<br>+年月日（8位，例如：20210225）<br>+流水号（4 位，例：0001）。<br>联运单证编码总长度 20 位。</div>
+              <i class="el-icon-question" />
+            </el-tooltip>
+          </el-form-item>
+          <el-form-item label="分段号" prop="serialNumber">
+            <el-input v-model="mform.serialNumber" style="width:90%; margin-right:10px;" placeholder="请输入分段号" />
+          </el-form-item>
+          <el-form-item label="运输总工具数" prop="vehicleAmount">
+            <el-input v-model="mform.vehicleAmount" style="width:90%; margin-right:10px;" placeholder="请输入运输总工具数" />
+          </el-form-item>
+          <el-form-item label="运输组织类型代码" prop="transportTypeCode">
+            <el-select v-model="mform.transportTypeCode" placeholder="请选择运输组织类型代码" style="width:90%; margin-right:10px;">
+              <el-option
+                v-for="item in [
+                  { label:'公路运输', value:1 },
+                  { label:'公铁联运', value:2 },
+                  { label:'公水联运', value:3 },
+                  { label:'公空联运', value:4 },
+                  { label:'公铁水联运', value:5 },
+                  { label:'公铁空联运', value:6 },
+                  { label:'公水空联运', value:7 },
+                  { label:'公铁水空联运', value:8 },
+                  { label:'水铁联运', value:9 },
+                  { label:'空铁联运', value:10 },
+                  { label:'空水联运', value:11 },
+                  { label:'水铁空联运', value:12 },
+                ]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="运单上传时间" prop="sendToProDateTime">
+            <!-- 时间 -->
+            <el-date-picker v-model="mform.sendToProDateTime" type="datetime" placeholder="运单上传时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
+          </el-form-item>
+          <el-form-item label="网络货运" prop="carrier">
+            <el-input v-model="mform.carrier" style="width:90%; margin-right:10px;" placeholder="请输入网络货运" />
+          </el-form-item>
+          <el-form-item label="统一社会信用代码" prop="unifiedSocialCreditIdentifier">
+            <el-input v-model="mform.unifiedSocialCreditIdentifier" style="width:90%; margin-right:10px;" placeholder="请输入统一社会信用代码" />
+          </el-form-item>
+          <el-form-item label="运输经营许可证编号" prop="permitNumber">
+            <el-input v-model="mform.permitNumber" style="width:90%; margin-right:10px;" placeholder="请输入运输经营许可证编号" />
+          </el-form-item>
+          <el-form-item label="运单生成时间" prop="consignmentDateTime">
+            <!-- 时间 -->
+            <el-date-picker v-model="mform.consignmentDateTime" type="datetime" placeholder="运单生成时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
+          </el-form-item>
+          <el-form-item label="业务类型代码" prop="businessTypeCode">
+            <el-select v-model="mform.businessTypeCode" placeholder="请选择业务类型代码" style="width:90%; margin-right:10px;">
+              <el-option
+                v-for="item in [
+                  { label:'干线普货运输', value:'1002996' },
+                  { label:'城市配送', value:'1003997' },
+                  { label:'农村配送', value:'1003998' },
+                  { label:'集装箱运输', value:'1002998' },
+                  { label:'其他', value:'1003999' },
+                ]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="发货（装货）日期时间" prop="despatchActualDateTime">
+            <!-- 时间 -->
+            <el-date-picker v-model="mform.despatchActualDateTime" type="datetime" placeholder="发货（装货）日期时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
+          </el-form-item>
+          <el-form-item label="收货（卸货）日期时间" prop="goodsReceiptDateTime">
+            <!-- 时间 -->
+            <el-date-picker v-model="mform.goodsReceiptDateTime" type="datetime" placeholder="选择收货（卸货）日期时间" value-format="yyyyMMddHHmmss" style="width:90%; margin-right:10px;" />
+          </el-form-item>
+          <el-form-item label="运费金额（元）" prop="totalMonetaryAmount">
+            <el-input-number v-model.number="mform.totalMonetaryAmount" :precision="3" :step="0.1" :controls="false" style="width:90%; margin-right:10px; text-align:left;" />
+          </el-form-item>
+
+          <!--  -->
+          <el-form-item label="托运人名称" prop="consignorInfo.consignor">
+            <el-input v-model="mform.consignorInfo.consignor" style="width:90%; margin-right:10px;" placeholder="请输入托运人名称" />
+          </el-form-item>
+          <el-form-item label="托运人统一社会信用代码或个人证件号" prop="consignorInfo.consignorId">
+            <el-input v-model="mform.consignorInfo.consignorId" style="width:90%; margin-right:10px;" placeholder="请输入托运人统一社会信用代码或个人证件号" />
+          </el-form-item>
+          <el-form-item label="装货地址" prop="consignorInfo.placeOfLoading">
+            <el-input v-model="mform.consignorInfo.placeOfLoading" style="width:90%; margin-right:10px;" placeholder="请输入装货地址" />
+          </el-form-item>
+          <el-form-item label="装货地点的国家行政区划代码或国别代码" prop="consignorInfo.countrySubdivisionCode">
+            <el-input v-model="mform.consignorInfo.countrySubdivisionCode" style="width:90%; margin-right:10px;" placeholder="请输入装货地点的国家行政区划代码或国别代码" />
+          </el-form-item>
+          <!--  -->
+          <el-form-item label="收货方名称" prop="consigneeInfo.consignee">
+            <el-input v-model="mform.consigneeInfo.consignee" style="width:90%; margin-right:10px;" placeholder="请输入收货方名称" />
+          </el-form-item>
+          <el-form-item label="收货方统一社会信用代码或个人证件号码" prop="consigneeInfo.consigneeId">
+            <el-input v-model="mform.consigneeInfo.consigneeId" style="width:90%; margin-right:10px;" placeholder="请输入收货方统一社会信用代码或个人证件号码" />
+          </el-form-item>
+          <el-form-item label="收货地址" prop="consigneeInfo.goodsReceiptPlace">
+            <el-input v-model="mform.consigneeInfo.goodsReceiptPlace" style="width:90%; margin-right:10px;" placeholder="请输入收货地址" />
+          </el-form-item>
+          <el-form-item label="收货地点的国家行政区划代码或国别代码" prop="consigneeInfo.countrySubdivisionCode">
+            <el-input v-model="mform.consigneeInfo.countrySubdivisionCode" style="width:90%; margin-right:10px;" placeholder="请输入收货地点的国家行政区划代码或国别代码" />
+          </el-form-item>
+
+          <!--  -->
+          <el-form-item label="保险单号" prop="insuranceInformation.policyNumber">
+            <el-input v-model="mform.insuranceInformation.policyNumber" style="width:90%; margin-right:10px;" placeholder="请输入保险单号" />
+          </el-form-item>
+          <el-form-item label="保险公司代码" prop="insuranceInformation.insuranceCompanyCode">
+            <el-select v-model="mform.insuranceInformation.insuranceCompanyCode" placeholder="请选择保险公司代码" style="width:90%; margin-right:10px;">
+              <el-option
+                v-for="item in [
+                  { label:'安邦财产保险股份有限公司', value:'ABIC' },
+                  { label:'永诚财产保险股份有限公司', value:'AICS' },
+                  { label:'中银保险有限公司', value:'BOCI' },
+                  { label:'渤海财产保险股份有限公司', value:'BPIC' },
+                  { label:'长安责任保险股份有限公司', value:'CAIC' },
+                  { label:'中国大地财产保险股份有限公司', value:'CCIC' },
+                  { label:'中华联合财产保险公司', value:'CICP' },
+                  { label:'中国太平洋财产保险股份有限公司', value:'CPIC' },
+                  { label:'都邦财产保险股份有限公司', value:'DBIC' },
+                  { label:'中国人寿财产保险公司', value:'GPIC' },
+                  { label:'华安财产保险股份有限公司', value:'HAIC' },
+                  { label:'华泰财产保险股份有限公司', value:'HTIC' },
+                  { label:'民安保险(中国)有限公司', value:'MACN' },
+                  { label:'中国平安财产保险股份有限公司', value:'PAIC' },
+                  { label:'中国人民财产保险股份有限公司', value:'PICC' },
+                  { label:'天安保险股份有限公司', value:'TAIC' },
+                  { label:'太平保险有限公司', value:'TPIC' },
+                  { label:'英大泰和人寿保险股份有限公司', value:'YDCX' },
+                  { label:'阳光财产保险股份有限公司', value:'YGBX' },
+                  { label:'紫金财产保险公司', value:'ZKIC' },
+                  { label:'永安财产保险股份有限公司', value:'YAIC' },
+                  { label:'天平保险公司', value:'TPBX' },
+                  { label:'安诚财产保险股份有限公司', value:'ACIC' },
+                  { label:'鼎和财产保险股份有限公司', value:'DHIC' },
+                  { label:'安联保险公司', value:'ALIC' },
+                  { label:'其他保险公司', value:'QITA' },
+                ]"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              />
+            </el-select>
+          </el-form-item>
+          <!--  -->
+          <el-form-item label="货物运单二维码链接地址" prop="qrCodeUrl">
+            <el-input v-model="mform.qrCodeUrl" style="width:90%; margin-right:10px;" placeholder="请输入货物运单二维码链接地址" />
+          </el-form-item>
+          <el-form-item label="备注" prop="remark">
+            <el-input v-model="mform.remark" style="width:90%; margin-right:10px;" placeholder="请输入备注" />
+          </el-form-item>
+
+
+        </div>
+        <el-divider content-position="left" />
         <!--  -->
         <el-form-item label="运输类型" prop="vehicleInfo.transportType">
           <el-select v-model="mform.vehicleInfo.transportType" placeholder="请选择运输类型" style="width:90%; margin-right:10px;">
@@ -220,59 +276,13 @@
         <el-form-item label="实际承运人道路运输经营许可证号" prop="actualCarrierInfo.actualCarrierBusinessLicense">
           <el-input v-model="mform.actualCarrierInfo.actualCarrierBusinessLicense" style="width:90%; margin-right:10px;" placeholder="请输入实际承运人道路运输经营许可证号" />
         </el-form-item>
-        <!--  -->
-        <el-form-item label="保险单号" prop="insuranceInformation.policyNumber">
-          <el-input v-model="mform.insuranceInformation.policyNumber" style="width:90%; margin-right:10px;" placeholder="请输入保险单号" />
-        </el-form-item>
-        <el-form-item label="保险公司代码" prop="insuranceInformation.insuranceCompanyCode">
-          <el-select v-model="mform.insuranceInformation.insuranceCompanyCode" placeholder="请选择保险公司代码" style="width:90%; margin-right:10px;">
-            <el-option
-              v-for="item in [
-                { label:'安邦财产保险股份有限公司', value:'ABIC' },
-                { label:'永诚财产保险股份有限公司', value:'AICS' },
-                { label:'中银保险有限公司', value:'BOCI' },
-                { label:'渤海财产保险股份有限公司', value:'BPIC' },
-                { label:'长安责任保险股份有限公司', value:'CAIC' },
-                { label:'中国大地财产保险股份有限公司', value:'CCIC' },
-                { label:'中华联合财产保险公司', value:'CICP' },
-                { label:'中国太平洋财产保险股份有限公司', value:'CPIC' },
-                { label:'都邦财产保险股份有限公司', value:'DBIC' },
-                { label:'中国人寿财产保险公司', value:'GPIC' },
-                { label:'华安财产保险股份有限公司', value:'HAIC' },
-                { label:'华泰财产保险股份有限公司', value:'HTIC' },
-                { label:'民安保险(中国)有限公司', value:'MACN' },
-                { label:'中国平安财产保险股份有限公司', value:'PAIC' },
-                { label:'中国人民财产保险股份有限公司', value:'PICC' },
-                { label:'天安保险股份有限公司', value:'TAIC' },
-                { label:'太平保险有限公司', value:'TPIC' },
-                { label:'英大泰和人寿保险股份有限公司', value:'YDCX' },
-                { label:'阳光财产保险股份有限公司', value:'YGBX' },
-                { label:'紫金财产保险公司', value:'ZKIC' },
-                { label:'永安财产保险股份有限公司', value:'YAIC' },
-                { label:'天平保险公司', value:'TPBX' },
-                { label:'安诚财产保险股份有限公司', value:'ACIC' },
-                { label:'鼎和财产保险股份有限公司', value:'DHIC' },
-                { label:'安联保险公司', value:'ALIC' },
-                { label:'其他保险公司', value:'QITA' },
-              ]"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-        </el-form-item>
-        <!--  -->
-        <el-form-item label="货物运单二维码链接地址" prop="qrCodeUrl">
-          <el-input v-model="mform.qrCodeUrl" style="width:90%; margin-right:10px;" placeholder="请输入货物运单二维码链接地址" />
-        </el-form-item>
-        <el-form-item label="备注" prop="remark">
-          <el-input v-model="mform.remark" style="width:90%; margin-right:10px;" placeholder="请输入备注" />
-        </el-form-item>
+
 
 
         <el-form-item>
           <el-button type="primary" @click="onSubmit">提交</el-button>
           <el-button @click="resetForm">重置</el-button>
+          <el-button @click="resetForm2">子单内容重置</el-button>
         </el-form-item>
       </el-form>
     </el-row>
@@ -581,19 +591,27 @@ export default {
     onSubmit() {
       this.$refs['mform'].validate((valid) => {
         if (valid) {
-          this.loading = true;
-          commonDslyReport(this.mform).then(res => {
-            console.log(res);
-            this.loading = false;
-            if (res.data.code === 1001) {
-              this.msgSuccess(res.data.msg);
-            } else {
-              this.msgError(res.data.msg);
-            }
-          }).catch(err => {
-            console.log(err);
-            this.loading = false;
-          });
+          this.$confirm('确定提交, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            // s= 请求
+            this.loading = true;
+            commonDslyReport(this.mform).then(res => {
+              this.loading = false;
+              if (res.data.code === 1001) {
+                this.msgSuccess(res.data.msg);
+              } else {
+                this.msgError(res.data.msg);
+              }
+            }).catch(err => {
+              console.log(err);
+              this.loading = false;
+            });
+
+            // e= 请求
+          }).catch(() => {});
         } else {
           return false;
         }
@@ -601,6 +619,76 @@ export default {
     },
     resetForm(formName) {
       this.$refs['mform'].resetFields();
+    },
+
+    resetForm2() {
+      this.mform = {
+        ...this.mform,
+        // 'originalDocumentNumber': '',
+        // 'shippingNoteNumber': '',
+        // 'serialNumber': '',
+        // 'vehicleAmount': undefined,
+        // 'transportTypeCode': undefined,
+        // 'sendToProDateTime': '',
+        // 'carrier': '',
+        // 'unifiedSocialCreditIdentifier': '',
+        // 'permitNumber': '',
+        // 'consignmentDateTime': '',
+        // 'businessTypeCode': '1002996',
+        // 'despatchActualDateTime': '',
+        // 'goodsReceiptDateTime': '',
+        // 'totalMonetaryAmount': '',
+        // 'consignorInfo': {
+        //   'consignor': '',
+        //   'consignorId': '',
+        //   'placeOfLoading': '',
+        //   'countrySubdivisionCode': ''
+        // },
+        // 'consigneeInfo': {
+        //   'consignee': '',
+        //   'consigneeId': '',
+        //   'goodsReceiptPlace': '',
+        //   'countrySubdivisionCode': ''
+        // },
+        'vehicleInfo': {
+          'transportType': '',
+          'vehicleNumber': '',
+          'vehiclePlateColorCode': '',
+          'despatchActualDateTime': '',
+          'goodsReceiptDateTime': '',
+          'placeOfLoading': '',
+          'goodsReceiptPlace': '',
+          'loadingCountrySubdivisionCode': '',
+          'receiptCountrySubdivisionCode': '',
+          'driver': [
+            {
+              'driverName': '',
+              'drivingLicense': ''
+            }
+          ],
+          'goodsInfo': [
+            {
+              'goodsNo': '',
+              'descriptionOfGoods': '',
+              'cargoTypeClassificationCode': '',
+              'goodsItemGrossWeight': undefined,
+              'cube': undefined,
+              'totalNumberOfPackages': undefined
+            }
+          ]
+        },
+        'actualCarrierInfo': {
+          'actualCarrierName': '',
+          'actualCarrierId': '',
+          'actualCarrierBusinessLicense': ''
+        }
+        // 'insuranceInformation': {
+        //   'policyNumber': '',
+        //   'insuranceCompanyCode': ''
+        // },
+        // 'qrCodeUrl': '',
+        // 'remark': ''
+      };
     }
   }
 };
@@ -609,6 +697,11 @@ export default {
 <style lang="scss" scoped>
 .el-input-number ::v-deep.el-input__inner {
   text-align: left;
+}
+
+.quancen{
+  padding: 20px;
+  background-color: #f2f5f8;
 }
 </style>
 
