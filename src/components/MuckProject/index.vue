@@ -806,6 +806,7 @@ export default {
       return this.selections.filter(e => e.isSuccess);
     },
 
+    // 导出使用
     que() {
       const que = {
         ...this.queryParams,
@@ -814,6 +815,8 @@ export default {
         receiveTime: undefined,
         status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
       };
+      delete que.accountingStatus;
+      delete que.checkStatus;
       return que;
     }
 
