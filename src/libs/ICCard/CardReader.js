@@ -106,7 +106,6 @@ const CardReader = {
     _receiveMessage: function() {
       return new Promise((resolve, reject) => {
         CardReader.socket.onmessage = function(e) {
-          console.log(e, '返回的数据');
           const ret = CardReader.fn.getResult(e.data);
           if (ret.success) {
             resolve(e.data);
@@ -425,16 +424,13 @@ const CardReader = {
       try {
         ret = await CardReader.fn.exec(CardReader.command.get.card);
 
-        console.log(ret, '获取卡第一步');
 
         GetCardNo = CardReader.fn.getResult(ret); // 卡的信息
 
-        console.log(GetCardNo);
 
         ret = await CardReader.fn.exec(CardReader.command.reset);
         ResetCpuCardNoGetCardNo = CardReader.fn.getResult(ret); // 卡片复位信息
 
-        console.log(ret, '获取卡第二步');
 
         if (getCar) {
           const str = CardReader.fn.strReverse(GetCardNo.data.substring(0, 8));
@@ -1394,7 +1390,6 @@ CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._
           data.push(CardReader.fn.resultData(datae, DATAINFO).data);
           !meter && (meter = CardReader.fn.resultData(datae, DATAINFO).meter);
         } else {
-          console.log(datae);
           winCount += 1;
         }
         count += 1;
@@ -1663,8 +1658,6 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     // 取消选择卡片
     await CardReader.fn.exec(CardReader.command.deselect);
     await CardReader.fn.exec(CardReader.command.beep);
-
-    console.log(index);
 
     return {
       code: '9000',

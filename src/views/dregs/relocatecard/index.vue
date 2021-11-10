@@ -245,22 +245,13 @@
 </template>
 <script>
 
-
-
-// import AccountingTable from './components/AccountingTable';
-
-// import CarInfo from './components/CarInfo';
-
-// /transportation/cpuCard/listCardData /transportation/shipmentTeam/list
-import { cardHistoryList, cardReplacement, getCpuCardListCardData, cpuCardListCardData, getShipmentTeamList, cpuCardGetCardUserInfo, cpuCardSaveCardLog, cpuCardUpdateCardWaybillRel } from '@/api/dregs/card';
-
-import CardReader, { versionMark, userMark } from '@/libs/ICCard/CardReader';
-const { action, fn } = CardReader;
-
 import { deepClone } from '@/utils';
-import store from '@/store';
-import TreeNodeDialogVue from '../../tool/build/TreeNodeDialog.vue';
 
+import { cpuCardListCardData, getShipmentTeamList, cpuCardGetCardUserInfo, cpuCardSaveCardLog, cpuCardUpdateCardWaybillRel } from '@/api/dregs/card';
+
+import CardReader, { versionMark, userMark, USERINFO } from '@/libs/ICCard/CardReader';
+
+const { action, fn } = CardReader;
 
 
 export default {
@@ -291,12 +282,10 @@ export default {
       selectedData: [],
       noSelectArr: [],
 
-      //   multiple: false,
-
       // 卡
       isConnect: false,
       cardinfoOpen: false,
-      cardInfoData: null,
+      cardInfoData: null, // 要迁移的卡用户信息
 
       percentage0: false,
       percentage1: false,
@@ -311,14 +300,14 @@ export default {
       noShipment: false, // 是否有调度者
 
       // 当前卡信息
-      carUserInfo: null
+      carUserInfo: null,
+      user_info: '', // 字符串信息
+      creatCardBatchNo: 0,
+      this_sourceData: null
     };
   },
 
   computed: {
-    // api() {
-    //   return '454545';
-    // },
     percentage() {
       // console.log('读取中...,' + this.$store.state.icCard.percentage);
       return this.$store.state.icCard.percentage;
@@ -338,13 +327,8 @@ export default {
     },
 
     dispat() {
-      console.log(this.dispatcherOptions.find(e => e.code === this.dispatcher));
       return this.dispatcherOptions.find(e => e.code === this.dispatcher) || undefined;
     }
-
-    // testProcess() {
-    //   return process.env.NODE_ENV === 'development';
-    // }
   },
 
   watch: {
@@ -360,19 +344,15 @@ export default {
   },
 
   created() {
-    // this.getList();
-    // console.log(this.parseTime(1635403138000, '{y}-{m}-{d} {h}:{i}:{s}'));
-
     this.getShipmentTeamList();
   },
 
   beforeDestroy() {
-    console.log('离开页面了');
     this._close();
   },
 
   methods: {
-    // s= 读取卡基本数据
+    // s= 一初始读取卡基本数据
     getCardInfo() {
       if (this.isConnect) {
         this.loading = true;
@@ -381,7 +361,10 @@ export default {
         action.readUserInfoAndreadData().then((res) => {
           if (res.success && res.code === '9000') {
             // 成功处理
-            const { dataList } = res;
+            const { dataList, userInfo, userMark } = res;
+
+            // 存当前用户信息(记录的时候使用)
+            this.user_info = userMark + (USERINFO.map(e => userInfo[e])).join(';');
 
             if (Array.isArray(dataList)) {
               this.carTotal = dataList.length;
@@ -389,7 +372,12 @@ export default {
               this.getList(dataList, res);
             }
           } else {
+            // 空卡的情况
             this.msgWarning(res.msg);
+            this.loading = false;
+            this.percentage0 = false;
+            this.myData = [];
+            this.myDatafilter = [];
           }
         });
       }
@@ -397,13 +385,11 @@ export default {
 
     // 获取迁卡数据(参数waybillNos, 卡的订单号)
     getList(mdataList, CarData) {
-      const { GetCardNo, userInfo, meter, userMark } = CarData;
-      // 测试数据
-      console.log(CarData, '一:当前卡的基本数据');
-      const waybillNos = mdataList.map(e => e.waybillNo);
       // getCpuCardListCardData({ waybillNos: waybillNos.join(',') }).then(async res => { // 原来的接口
-      cpuCardListCardData({ waybillNos }).then(async res => {
-        await this.cpuCardGetCardUserInfo(userInfo);
+      cpuCardListCardData({ waybillNos: mdataList.map(e => e.waybillNo) }).then(async res => {
+        const { GetCardNo, userInfo, meter, userMark } = CarData;
+
+        await this.cpuCardGetCardUserInfo(userInfo); // 通过接口获取当前卡调度者信息 存到 this.carUserInfo
 
         this.myData = res.data.map(e => {
           mdataList.forEach(carData => {
@@ -424,15 +410,13 @@ export default {
           return e;
         });
 
-        console.log(this.myData, '二:列表数据展示');
-
-        this.myDatafilter = this.myData;
-        this.total = res.data.length;
+        this.myDatafilter = this.myData; // 数据备份
+        this.total = res.data.length; // 返回数据条数(有可能数据有相同的)
         this.loading = false; // 完成第一步读卡
       });
     },
 
-    // 获取当前卡调度者信息
+    // 获取当前卡调度者信息(到app的接口)
     cpuCardGetCardUserInfo(userInfo) {
       // 获取当前持卡用户信息
       const que = {
@@ -448,106 +432,12 @@ export default {
           ...res.data,
           teamTelno: userInfo.team_telno
         };
-        console.log(this.carUserInfo, '三:当前卡用户信息');
         return res.data;
       });
     },
     // e=
-    // s= 时间筛选
-    handleQuery(value, type) {
-      if (value) {
-        if (type === 'loadTime') {
-          this.queryParams.unloadTime = undefined;
-        } else {
-          this.queryParams.loadTime = undefined;
-        }
 
-        this.myDatafilter = this.myData.filter(e => {
-          return this.bjDate(value, e[type]) === '0';
-        });
-      } else {
-        this.myDatafilter = this.myData;
-      }
-    },
-
-    bjDate(date_0, date_1) {
-      const date = new Date(date_0);
-      const date1 = new Date(date_1);
-      if (date.getTime() - date1.getTime() < 0) {
-        return '0'; // 第二个时间大
-      } else {
-        return '1'; // 第一个时间大
-      }
-    },
-    // e=
-
-    // s= 表格选中
-    handleSelectionChange(selected) {
-      this.myDatafilter.forEach(file => {
-        // 默认为未选中
-        file.__isselected = false;
-
-        selected.forEach(ee => {
-          if (ee.waybillNo === file.waybillNo) {
-            file.__isselected = true;
-          }
-        });
-      });
-
-      this.myData.forEach(my => {
-        this.myDatafilter.forEach(file => {
-          if (my.waybillNo === file.waybillNo) {
-            my.__isselected = file.__isselected;
-          }
-        });
-      });
-    },
-
-    handleCheckedCitiesChange(value) {
-      const arr = [];
-      this.myDatafilter.forEach(e => {
-        if (e.__isselected) {
-          arr.push(true);
-        }
-      });
-      const checkedCount = arr.length;
-      this.checkAll = checkedCount !== 0 && (checkedCount === this.myDatafilter.length);
-      this.isIndeterminate = checkedCount > 0 && checkedCount < this.myDatafilter.length;
-    },
-
-    handleCheckAllChange(value) {
-      this.myDatafilter.forEach(e => {
-        this.$set(e, '__isselected', value);
-      });
-
-      this.isIndeterminate = false;
-    },
-    // 新旧数据同步
-    handlerUpDate() {
-      const selectArr = [];
-      const noSelectArr = [];
-
-      this.myData.forEach(e => {
-        this.myDatafilter.forEach(ee => {
-          if (ee.waybillNo === e.waybillNo) {
-            this.$set(e, '__isselected', ee.__isselected);
-          }
-        });
-
-        if (e.__isselected) {
-          selectArr.push(e);
-        } else {
-          noSelectArr.push(e);
-        }
-
-        this.selectedData = selectArr;
-        this.noSelectArr = noSelectArr;
-      });
-    },
-    // e==
-
-
-    // s= 迁卡
+    // s= 二迁卡
     handlerqianka() {
       // 进一步提示
       const h = this.$createElement;
@@ -563,11 +453,10 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消'
       }).then(() => {
-        this.loading = true; // 显示遮罩层
-        this.percentage1 = true; // 显示显示提示框
+        this.loading = true; // 显示遮罩层(一直到迁卡结束为止)
+        this.percentage1 = true; // 显示显示提示框(第一阶段)
         this.writeCont = 0; // 初始写卡的数据
-        // 迁卡读取 清空,回填
-
+        // 迁卡读取 清空/回填
         if (this.isConnect) {
           // if (this.selectedData.length > 0) {
           //   const qiankaData = this.xiekaData(this.selectedData);
@@ -605,18 +494,21 @@ export default {
 
           // 先跳过日记
 
+          // 第一次先保存卡日志(原始卡数据)
+          this.creatCardBatchNo = Date.now() + '999'; // 创建唯一值
 
-          // 第一次保存卡日志(原始卡数据)
-          this.handlerCpuCardSaveCardLog(this.myData, 1, () => {
-            // 继续
+          this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 1, (success) => {
+            // 保存成功继续
             if (this.selectedData.length > 0) {
               const qiankaData = this.xiekaData(this.selectedData);
-              this.setLocalStorage('t_' + qiankaData.cardData.card16no, qiankaData); // 保存当前写卡的信息(如果写卡失败, 可以找回)
+              this.setLocalStorage('t_' + qiankaData.cardData.card16no, qiankaData); // 保存当前写卡的信息(如果写卡失败, 可用于找回)
             }
 
-            // 2中情况(全选和选中部分)
+            // 2中情况(全选/选中部分)
             if (this.noSelectArr.length > 0) {
+              // 整理数据
               const { userMark, userInfo, versionMark, data, cardData } = this.xiekaData(this.noSelectArr);
+              // 写卡操作(这里只要处理成功回调, 不存在写满状态)
               this.xexiaoCheck(
                 userMark,
                 userInfo,
@@ -625,141 +517,116 @@ export default {
                 cardData,
                 (success) => {
                   // 第二次剩余的数据写回 保存卡日志
-                  this.handlerCpuCardSaveCardLog(this.noSelectArr, 2, () => {
-                    // 第二次剩余的数据写回 保存卡日志
+                  this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 2, () => {
                     setTimeout(() => {
-                      this.percentage1 = false; // 关闭提示
+                      this.percentage1 = false; // 关闭第一阶段提示
                       this.cardinfoOpen = true; // 打开下一步窗口
                     }, 1000);
-                  });
+                  }, this.selectedData, success.writeData);
                 });
             } else {
               // 直接清卡
               action.cancellation().then(res => {
                 if (res.success) {
                   // 第二次剩余的数据写回 保存卡日志
-                  this.handlerCpuCardSaveCardLog(this.selectedData, 2, () => {
-                    // 第二次剩余的数据写回 保存卡日志
+                  this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 2, () => {
                     setTimeout(() => {
-                      this.percentage1 = false; // 关闭提示
+                      this.percentage1 = false; // 关闭第一阶段提示
                       this.cardinfoOpen = true; // 打开下一步窗口
                     }, 1000);
-                  }, true);
+                  }, this.selectedData, []);
                 }
               });
             }
-          });
+          }, this.selectedData);
         }
       });
     },
-
-    // 保存卡日志
-    handlerCpuCardSaveCardLog(arr, stepNo, successfn, type) {
-      if (Array.isArray(arr) && arr.length > 0) {
-        const { data, cardData } = this.xiekaData(arr);
-        const que = {
-          'batchCode': cardData.card16no,
-          'cardBatchNo': cardData.cardBatchNo,
-          'cardData': type ? [] : JSON.stringify(data),
-          'stepNo': stepNo
-        };
-        cpuCardSaveCardLog(que).then(res => {
-          successfn && successfn();
-        });
-      }
-    },
-
-    // 数据收集
-    xiekaData(arr, newUser, newCard16no) {
-      if (Array.isArray(arr) && arr.length > 0) {
-        const user = deepClone(arr[0]);
-        const cardData = {
-          card16no: (newCard16no || user.GetCardNo.data) + '',
-          newCard16no: (newCard16no || user.GetCardNo.data) + '', // 获取当前卡的id
-          cardBatchNo: user.userInfo.issuing_pc
-        };
-        // 用户数据
-        // icType: 'r',
-        // issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
-        // issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
-        // issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	发卡时间(白卡为当前时间戳)
-        // project_id: user.projectId || '-', // projectId	项目Id
-        // team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
-        const userInfo = user.userInfo;
-
-        // 不修改原来的值 arr中userInfo的值
-        if (newUser) {
-          userInfo.team_telno = newUser.tel;
-          userInfo.issuing_time = Date.now() + '';
-        }
-
-        // 数据
-        const data = arr.map(e => e.carData);
-        // const userMark = user.userMark || userMark;
-        return {
-          userMark: user.userMark || userMark,
-          userInfo,
-          versionMark: user.meter ? user.meter.join('|') + '|' : versionMark,
-          data,
-          cardData
-        };
-      } else {
-        return undefined;
-      }
-    },
-
     // e=
 
-    // s= 迁卡二 -- 把选中的数据写入新卡(或者)
+    // s= 三迁卡 -- 把选中的数据写入新卡 handlerAlreadyWriteData__data满卡后继续迁移的数据
     handlerRelocateCard(handlerAlreadyWriteData__data) {
-      // 获取新的调度者
-      this.writeCont = 0; // 写会的数据
+      this.writeCont = 0; // 重新开始计算
+      // 获取新的调度者(找不到的情况? 问APP接口)
       const newTem = this.dispatcherOptions.find(e => e.code === this.dispatcher);
 
+      // 先读下卡用户信息
       this.handlerReadUserinfo((res) => {
-        // 已存在数据
+        // 已存在用户(有数据了)
         const team_telno = res.userInfo.team_telno;
         const new_team_telno = newTem.tel;
 
-        // 同一个调度者
+        // 判断是否同一个调度者才能进行下一步操作
         if (team_telno === new_team_telno) {
           this.$confirm('确定继续写入本卡?', '当前卡中已存在数据了', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            this.percentage2 = true;
-            this.cardinfoOpen = false;
+            this.percentage2 = true; // 提示框(第二阶段)
+            this.cardinfoOpen = false; // 关闭对话框(没的返回了)
+            // 开始读卡用户
             action.getCardInfo(undefined, false).then((res) => {
               if (res.success && res.code === '9000') {
-                // console.log(res, '当前写卡的信息');
-                const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
-                // console.log(__data, '写入的数据');
+                // 开始读卡数据(如果是空数据呢???)
+                action.readUserInfoAndreadData().then((readDataRes) => {
+                  if (readDataRes.success && readDataRes.code === '9000') {
+                    // 写死判断
+                    if (readDataRes.dataList.length >= 200) {
+                      this.$confirm('请换新卡?', '提示', {
+                        confirmButtonText: '确定',
+                        type: 'warning'
+                      }).then(() => {
+                        this.handlerRelocateCard();
+                      });
+                      return;
+                    }
 
-                // s= 调用写卡函数
-                this.handlerWriteData(
-                  __data.data,
-                  __data.versionMark,
-                  (success) => {
-                    this.handlerEndres(success);
-                    this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
-                  },
-                  () => { this.percentage2 = true; }, // 失败
-                  (data, alreadyWriteData) => { // 卡满
-                    console.log('写满~~');
-                    this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, alreadyWriteData);
-                    this.handlerAlreadyWriteData(data, alreadyWriteData, __data);
+                    // 整理数据 handlerAlreadyWriteData__data存在说明满卡操作
+                    const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
+
+                    // s= 调用写卡函数
+                    this.handlerWriteData(
+                      __data.data,
+                      __data.versionMark,
+                      (success) => {
+                        this.handlerEndres(success); // 写卡成功
+
+                        // 更新数据库(??)
+                        this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
+
+                        // 保存步骤3
+                        const target = {
+                          'user': __data.userMark + (USERINFO.map(e => __data.userInfo[e])).join(';'),
+                          'data': {
+                            'all': readDataRes.dataList.map(data => fn.setData(readDataRes.meter.join('|') + '|', data)),
+                            'write': success.writeData
+                          }
+                        };
+                        this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 3, () => {}, this.selectedData, [], target);
+                      },
+                      () => { this.percentage2 = true; }, // 失败(刷新吧!~)
+                      (data, alreadyWriteData) => { // 卡满
+                        // 更新数据库(??)
+                        this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, alreadyWriteData);
+                        // 处理数据
+                        this.handlerAlreadyWriteData(data, alreadyWriteData, __data);
+                      }
+                    );
+
+                    // e= 调用写卡函数
+                  } else {
+                    this.msgError(readDataRes.msg);
                   }
-                );
-
-                // e= 调用写卡函数
+                });
               } else {
                 this.msgError(res.msg);
               }
             }).catch(() => {});
           });
         } else {
-          this.msgError('请选择 相同的调度者~!' + '当前卡调度者电话是:' + team_telno);
+          this.msgError('请选择 相同的调度者~!' + '当前卡调度者电话是:' + team_telno); // 提示一下
+          // 卡满的情况提示换新卡
           if (handlerAlreadyWriteData__data) {
             this.$confirm('请换新卡?', '提示', {
               confirmButtonText: '确定',
@@ -775,14 +642,17 @@ export default {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(() => {
-          this.percentage2 = true;
-          this.cardinfoOpen = false;
+        }).then((errres) => {
+          this.percentage2 = true; // 提示框(第二阶段)
+          this.cardinfoOpen = false; // 关闭对话框(没的返回了)
+
+          console.log(errres); // 无用信息(能获取到卡信息吗?----------------------------------todo)
+
           action.getCardInfo(undefined, false).then((res) => {
             if (res.success && res.code === '9000') {
-              console.log(res, '当前写卡的信息__');
+              // 整理数据
               const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
-              console.log(__data, '写入的数据');
+
               // s= 调用写卡函数
               this.xexiaoCheck(
                 __data.userMark,
@@ -793,11 +663,25 @@ export default {
                 (success) => {
                   // 成功
                   this.handlerEndres(success);
+
+                  // 同上
                   this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
+
+                  // 同上
+                  const target = {
+                    'user': __data.userMark + (USERINFO.map(e => __data.userInfo[e])).join(';'),
+                    'data': {
+                      'all': [],
+                      'write': success.writeData
+                    }
+                  };
+
+                  this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 3, () => {}, this.selectedData, [], target);
                 },
                 () => { this.percentage2 = true; }, // 失败
-                (data, alreadyWriteData) => { // 卡满
+                (data, alreadyWriteData) => { // 卡满(迁到新卡不存在写满的问题吧?)
                   this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, alreadyWriteData);
+
                   this.handlerAlreadyWriteData(data, alreadyWriteData, __data);
                 }
               );
@@ -805,20 +689,23 @@ export default {
             } else {
               this.msgError(res.msg);
             }
-          }).catch(() => {});
+          });
         });
       });
     },
 
-    // 写卡中断
+    // 找出未写完的数据并提示换卡
     handlerAlreadyWriteData(data, alreadyWriteData, __data) {
       this.percentage2 = false;
+
       const xixuWriteData = [];
+
       data.forEach((e) => {
         if (!alreadyWriteData.includes(e.waybillNo)) {
           xixuWriteData.push(e);
         }
       });
+
       __data.data = xixuWriteData; // 赋值剩余的数据
 
       this.$confirm('已满200条,请换卡?', '提示', {
@@ -826,6 +713,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        // 重复去写卡
         this.handlerRelocateCard(__data);
       }).catch(() => {});
     },
@@ -844,304 +732,10 @@ export default {
       this.percentage2 = false;
       this.myData = this.myData.filter(e => !e.__isselected);
       this.myDatafilter = this.myData;
+      this.dispatcher = undefined;
     },
 
-    // e=
-
-    // s= 获取常用调度者
-    getShipmentTeamList() {
-      const que = {
-        'pageNum': 1,
-        'pageSize': 1000
-      };
-      this.loading = true;
-      getShipmentTeamList(que).then(res => {
-        this.loading = false;
-        this.noShipment = true;
-        this.dispatcherOptions = res.data;
-        console.log(this.dispatcherOptions);
-      }).catch(() => {
-        this.loading = false;
-        this.msgError('请求不到当前用户下的调度组! 无法进行迁卡操作~!');
-        this.noShipment = false;
-      });
-    },
-
-    // e=
-
-    // s= 更新运单关联信息
-    cpuCardUpdateCardWaybillRel(card16no, cardBatchNo, waybillNos) {
-      const que = {
-        card16no, //	string	 必须  卡原始编号
-        cardBatchNo, //	string	 必须  批次编号
-        waybillNos //	string []	 必须  运单编号集合
-      };
-
-      cpuCardUpdateCardWaybillRel(que).then(res => {
-        console.log(res);
-      });
-    },
-    // e=
-
-
-
-    // s= 连接本地WebSocket服务
-    handlerCarConnect(isConnect) {
-      if (isConnect) {
-        this._close();
-        this.msgSuccess('断开连接成功');
-        this.isConnect = false;
-      } else {
-        CardReader.fn.connect(
-          () => {
-            this.msgSuccess('连接成功');
-            this.isConnect = true;
-          },
-          () => {
-            this.isConnect = false;
-          }
-        );
-      }
-    },
-
-    // e=
-
-
-
-    // 写卡
-    handlerMakeUp() {
-      // console.log(this.selectedData, '数据');
-      if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
-        return;
-      }
-      // console.log(USERINFO);
-      action.getCardInfo(undefined, false).then((res) => {
-        // console.log(res, '先获取卡信息');
-
-        // console.log(this.selectedData);
-        if (res.success) {
-          if (res.code === '9000' && this.selectedData[0]) {
-            const user = this.selectedData[0];
-            const cardData = {
-              card16no: user.card16no,
-              newCard16no: res.GetCardNo.data + '', // 获取当前卡的id
-              cardBatchNo: user.cardBatchNo
-            };
-
-            // 用户数据
-            const userInfo = {
-              icType: 'r',
-              issuing_name: user.orderClient || '-', // orderClient	下单客户
-              issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
-              issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
-              issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	装货时间
-              project_id: user.projectId || '-', // projectId	项目Id
-              team_name: user.teamName || '-', // teamName	车队名称
-              team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
-              user_name: user.driverName || '-', // driverName	司机名字
-              user_telno: user.driverPhone || '-' // driverPhone	司机电话
-            };
-
-            // 数据
-            const data = this.selectedData.map((e) => {
-              return {
-                driverPhone: e.driverPhone || '-', // driverPhone	司机电话
-                fillTime: this.setTimestamp(e.receiveTime) || '-', // loadingTime	接单时间
-                licenseNumber: e.licenseNumber || '-', // '鄂ALF106',
-                orderId: e.mainOrderNumber || '-', // mainOrderNumber	货源编号
-                projectName: e.projectId || '-', // projectId	项目Id
-                serialNumber: e.shipmentMuckyardNo || '-', // shipmentMuckyardNo	渣土场编号
-                signTime: this.setTimestamp(e.loadingTime) || '-', // signTime	装货时间
-                waybillNo: e.waybillNo || '-' // waybillNo	运单号
-              };
-            });
-
-            // console.log(userMark, userInfo, versionMark, data, cardData);
-
-            // 提示, 需要白卡
-
-            this.$confirm(
-              '此操作将初始化本卡后,再写入数据, 是否继续?',
-              '提示',
-              {
-                confirmButtonText: '确定',
-                cancelButtonText: '取消',
-                type: 'warning'
-              }
-            )
-              .then(() => {
-                this.xexiaoCheck(
-                  userMark,
-                  userInfo,
-                  versionMark,
-                  data,
-                  cardData
-                );
-              })
-              .catch(() => {});
-          }
-        } else {
-          this.msgError(res.msg);
-        }
-      });
-    },
-
-    // 初始卡功能
-    handlerCardInit() {
-      if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
-        return;
-      }
-      // ??
-      this.$confirm('此操作将格式化本卡, 恢复到出厂状态, 是否继续?', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      })
-        .then(() => {
-          action.cancellation().then((res) => {
-            if (res.success) {
-              console.log(res);
-              this.msgSuccess(res.msg || '初始化成功');
-            } else {
-              this.msgError(res.msg);
-            }
-            // console.log(res);
-          });
-        })
-        .catch(() => {});
-    },
-
-    // 读取卡用户
-    handlerReadUserinfo(successfn, errorfn) {
-      if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
-        return;
-      }
-      action.readUserInfo().then((res) => {
-        if (res.success && res.code === '9000') {
-          this.cardInfoData = res;
-          //   this.cardinfoOpen = true;
-          // this.msgSuccess(res.msg);
-          //   successfn && successfn(res);
-          successfn && successfn(res);
-        } else {
-        //   this.msgWarning(res.msg);
-          errorfn && errorfn(res);
-        }
-      });
-    },
-
-    // 读卡
-    handlerReadData() {
-      if (!this.isConnect) {
-        this.msgWarning('未连接本地服务');
-        return;
-      }
-      // 读取卡数据
-      action.readUserInfoAndreadData().then((res) => {
-        if (res.success) {
-          if (res.code === '9000') {
-            this.cardInfoData = res;
-            this.cardinfoOpen = true;
-          } else {
-            this.msgWarning(res.msg);
-          }
-        } else {
-          this.msgError(res.msg);
-        }
-      });
-    },
-
-    // 写用户信息
-    async handlerWriteUser() {
-      const userInfo = {
-        icType: 'r',
-        //   issuing_name: user.orderClient || "-", // orderClient	下单客户
-        issuing_pc: 1627559938998505 || '-', // cardBatchNo	卡批次
-        issuing_telno: 15859109601 || '-', // sipperPhone	货主手机号
-        issuing_time: 1627559820000, // loadingTime	装货时间
-        project_id: 72276 || '-', // projectId	项目Id
-        //   team_name:  "-", // teamName	车队名称
-        team_telno: 15859102001 || '-', // dispatchNumber	调度者手机号
-        //   user_name:  "-", // driverName	司机名字
-        user_telno: 15859101001 || '-' // driverPhone	司机电话
-      };
-
-      const cancellation = await action.cancellation();
-      if (!cancellation.success || cancellation.code !== '9000') {
-        this.msgError(cancellation.msg || '核销失败');
-        return;
-      }
-      console.log(userMark);
-      action.issuingCard(userInfo, userMark).then((res) => {
-        console.log(res);
-      });
-    },
-    // 写运单信息
-    async handlerData() {
-      const data = {
-        driverPhone: '15859101001' || '-', // driverPhone	司机电话
-        fillTime: '1627559820000' || '-', // loadingTime	接单时间
-        licenseNumber: '闽BQ7801' || '-', // '鄂ALF106',
-        orderId: '2107291757184088' || '-', // mainOrderNumber	货源编号
-        projectName: '72276' || '-', // projectId	项目Id
-        serialNumber: '74' || '-', // shipmentMuckyardNo	渣土场编号
-        signTime: '1627559820000' || '-', // signTime	装货时间
-        waybillNo: '2107291957141395' || '-' // waybillNo	运单号
-      };
-      //   console.log(fn.setData(versionMark, data)); // 1010|2|2107291757184088;2107291957141395;72276;闽BQ7801;15859101001;1627559820000;1627559820000;74
-      //   return;
-
-      action.writeData(fn.setData(versionMark, data)).then((res) => {
-        console.log(res);
-      });
-    },
-
-    // 选择的数据
-    onAllSeleced(lists) {
-      const arr = [];
-      lists.forEach((e) => {
-        e.childs.forEach((ee) => {
-          arr.push(ee);
-        });
-      });
-      // 判断是不是同一个调度者
-      const object = {};
-      arr.forEach((e) => {
-        const str = e['cardBatchNo'];
-        const array = object[str];
-        if (array) {
-          array.push(e);
-        } else {
-          const suibian = [e];
-          object[str] = suibian;
-        }
-      });
-      if (Object.keys(object).length > 1) {
-        if (this.multiple) {
-          // this.multiple = false;
-          this.msgWarning('只能选择同批次的进行写卡');
-        }
-        this.multiple = false;
-      } else {
-        // console.log(arr);
-        this.selectedData = arr;
-      }
-    },
-
-    // 关闭
-    _close() {
-      if (CardReader.socket) {
-        CardReader.socket.onclose = function() {}; // disable onclose handler first
-        CardReader.socket.close();
-        CardReader.socket = null;
-        this.isConnect = false;
-      }
-    },
-
-    // 第一次写回卡的操作
+    // 写卡操作(重要)
     async xexiaoCheck(
       userMark,
       userInfo,
@@ -1194,11 +788,13 @@ export default {
 
       const arrtime = []; // 定时器标识
 
-      const indexc = [3, 2]; // 定义多少条写满数据
+      const indexc = [3, 30]; // 定义多少条写满数据
 
       const alreadyWriteData = []; // 写入成功的订单集合
 
       let stop = false;
+
+      const writeData = [];
 
       data.forEach(async(e, index) => {
         arrtime[index] = setTimeout(() => {
@@ -1208,6 +804,7 @@ export default {
               if (res.code === '9000') {
                 arr.push(true);
                 this.writeCont++;
+                writeData.push({ data: fn.setData(meter, e), status: 1 });
                 alreadyWriteData.push(e.waybillNo);
 
                 if (res.data.indexNow[0] >= indexc[0] && res.data.indexNow[1] >= indexc[1]) {
@@ -1216,12 +813,12 @@ export default {
                     clearTimeout(arrtime[i]);
                   }
                   // 抛出写卡满了
-                  // console.log(alreadyWriteData, '我就写一条数据');
                   _message.close();
-                  pauseWrite && pauseWrite(data, alreadyWriteData);
+                  pauseWrite && pauseWrite(data, alreadyWriteData, writeData);
                 }
               } else {
                 arr.push(false);
+                writeData.push({ data: fn.setData(meter, e), status: 0 });
                 this.msgError(res.msg);
               }
             } else {
@@ -1232,7 +829,7 @@ export default {
               _message.close();
 
               if (arr.every((e) => e)) {
-                successfn && successfn(res);
+                successfn && successfn({ ...res, writeData });
               } else {
                 this.loading = false;
                 this.msgError('写入失败: ' + arr.filter(e => !e).length + '条');
@@ -1242,6 +839,239 @@ export default {
           });
         }, (index + 1) * 1000);
       });
+    },
+    // e=
+
+    // s= 获取常用调度者
+    getShipmentTeamList() {
+      const que = {
+        'pageNum': 1,
+        'pageSize': 1000
+      };
+      this.loading = true;
+      getShipmentTeamList(que).then(res => {
+        this.loading = false;
+        this.noShipment = true;
+        this.dispatcherOptions = res.data;
+      }).catch(() => {
+        this.loading = false;
+        this.msgError('请求不到当前用户下的调度组! 无法进行迁卡操作~!');
+        this.noShipment = false;
+      });
+    },
+    // e=
+
+    // s= 更新运单关联信息
+    cpuCardUpdateCardWaybillRel(card16no, cardBatchNo, waybillNos) {
+      const que = {
+        card16no, //	string	 必须  卡原始编号
+        cardBatchNo, //	string	 必须  批次编号
+        waybillNos //	string []	 必须  运单编号集合
+      };
+
+      cpuCardUpdateCardWaybillRel(que).then(res => {});
+    },
+    // e=
+
+    // s=保存卡日志
+    // select 选中的数据  write 写回卡的数据  target目标的数据
+    handlerCpuCardSaveCardLog(creatCardBatchNo, stepNo, successfn, select, write, target) {
+      const { cardData, versionMark } = this.xiekaData(this.myData);
+
+      const obj = {
+        sourceData_1: undefined,
+        sourceData_2: undefined,
+        sourceData_3: undefined
+      };
+
+
+      if (stepNo === 1) {
+        obj.sourceData_1 = {
+          'qk_code': creatCardBatchNo,
+          'step': 1,
+          'source': {
+            'user': this.user_info,
+            'data': {
+              'all': this.xiekaData(this.myData).data.map(data1 => fn.setData(versionMark, data1)),
+              'select': this.xiekaData(select).data.map(data1 => fn.setData(versionMark, data1))
+            }
+          }
+        };
+      } else if (stepNo === 2) {
+        obj.sourceData_2 = {
+          'qk_code': creatCardBatchNo,
+          'step': 2,
+          'source': {
+            'user': this.user_info,
+            'data': {
+              'all': this.xiekaData(this.myData).data.map(data1 => fn.setData(versionMark, data1)),
+              'select': this.xiekaData(select).data.map(data1 => fn.setData(versionMark, data1)),
+              'write': write.length > 0 ? write : []
+            }
+          }
+        };
+        this.this_sourceData = obj.sourceData_2;
+      } else {
+        obj.sourceData_3 = {
+          ...this.this_sourceData,
+          'step': 3,
+          'target': target
+        };
+      }
+
+
+      const que = {
+        'batchCode': creatCardBatchNo,
+        'cardBatchNo': cardData.cardBatchNo,
+        'stepNo': stepNo,
+        'cardData': JSON.stringify(obj['sourceData_' + stepNo])
+      };
+
+
+      cpuCardSaveCardLog(que).then(res => {
+        successfn && successfn(res);
+      });
+    },
+    // 数据收集
+    xiekaData(arr, newUser, newCard16no) {
+      if (Array.isArray(arr) && arr.length > 0) {
+        const user = deepClone(arr[0]);
+        const cardData = {
+          card16no: (newCard16no || user.GetCardNo.data) + '',
+          newCard16no: (newCard16no || user.GetCardNo.data) + '', // 获取当前卡的id
+          cardBatchNo: user.userInfo.issuing_pc
+        };
+        // 用户数据
+        // icType: 'r',
+        // issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
+        // issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
+        // issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	发卡时间(白卡为当前时间戳)
+        // project_id: user.projectId || '-', // projectId	项目Id
+        // team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
+        const userInfo = user.userInfo;
+
+        // 不修改原来的值 arr中userInfo的值
+        if (newUser) {
+          userInfo.team_telno = newUser.tel;
+          userInfo.issuing_time = Date.now() + '';
+        }
+
+        // 数据
+        const data = arr.map(e => e.carData);
+        // const userMark = user.userMark || userMark;
+        return {
+          userMark: user.userMark || userMark,
+          userInfo,
+          versionMark: user.meter ? user.meter.join('|') + '|' : versionMark,
+          data,
+          cardData
+        };
+      } else {
+        return undefined;
+      }
+    },
+    // e=
+
+    // s= 连接本地WebSocket服务
+    handlerCarConnect(isConnect) {
+      if (isConnect) {
+        this._close();
+        this.msgSuccess('断开连接成功');
+        this.isConnect = false;
+      } else {
+        CardReader.fn.connect(
+          () => {
+            this.msgSuccess('连接成功');
+            this.isConnect = true;
+          },
+          () => {
+            this.isConnect = false;
+          }
+        );
+      }
+    },
+    // e=
+
+    // s= 其他的方法
+    // 销卡功能
+    handlerCardInit() {
+      if (!this.isConnect) {
+        this.msgWarning('未连接本地服务');
+        return;
+      }
+      // ??
+      this.$confirm('此操作将格式化本卡, 恢复到出厂状态, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+        .then(() => {
+          action.cancellation().then((res) => {
+            if (res.success) {
+              this.msgSuccess(res.msg || '初始化成功');
+            } else {
+              this.msgError(res.msg);
+            }
+          });
+        })
+        .catch(() => {});
+    },
+
+    // 读取卡用户
+    handlerReadUserinfo(successfn, errorfn) {
+      if (!this.isConnect) {
+        this.msgWarning('未连接本地服务');
+        return;
+      }
+      action.readUserInfo().then((res) => {
+        if (res.success && res.code === '9000') {
+          this.cardInfoData = res;
+          successfn && successfn(res);
+        } else {
+          errorfn && errorfn(res);
+        }
+      });
+    },
+
+    // 选择的数据
+    onAllSeleced(lists) {
+      const arr = [];
+      lists.forEach((e) => {
+        e.childs.forEach((ee) => {
+          arr.push(ee);
+        });
+      });
+      // 判断是不是同一个调度者
+      const object = {};
+      arr.forEach((e) => {
+        const str = e['cardBatchNo'];
+        const array = object[str];
+        if (array) {
+          array.push(e);
+        } else {
+          const suibian = [e];
+          object[str] = suibian;
+        }
+      });
+      if (Object.keys(object).length > 1) {
+        if (this.multiple) {
+          // this.multiple = false;
+          this.msgWarning('只能选择同批次的进行写卡');
+        }
+        this.multiple = false;
+      } else {
+        this.selectedData = arr;
+      }
+    },
+
+    // 关闭
+    _close() {
+      if (CardReader.socket) {
+        CardReader.socket.onclose = function() {}; // disable onclose handler first
+        CardReader.socket.close();
+        CardReader.socket = null;
+        this.isConnect = false;
+      }
     },
 
     // 转时间戳
@@ -1253,6 +1083,231 @@ export default {
         date = data.getTime();
       }
       return date + '';
+    },
+
+    // 时间筛选
+    handleQuery(value, type) {
+      if (value) {
+        if (type === 'loadTime') {
+          this.queryParams.unloadTime = undefined;
+        } else {
+          this.queryParams.loadTime = undefined;
+        }
+
+        this.myDatafilter = this.myData.filter(e => {
+          return this.bjDate(value, e[type]) === '0';
+        });
+      } else {
+        this.myDatafilter = this.myData;
+      }
+    },
+
+    bjDate(date_0, date_1) {
+      const date = new Date(date_0);
+      const date1 = new Date(date_1);
+      if (date.getTime() - date1.getTime() < 0) {
+        return '0'; // 第二个时间大
+      } else {
+        return '1'; // 第一个时间大
+      }
+    },
+
+    // 表格选中
+    handleSelectionChange(selected) {
+      this.myDatafilter.forEach(file => {
+        // 默认为未选中
+        file.__isselected = false;
+
+        selected.forEach(ee => {
+          if (ee.waybillNo === file.waybillNo) {
+            file.__isselected = true;
+          }
+        });
+      });
+
+      this.myData.forEach(my => {
+        this.myDatafilter.forEach(file => {
+          if (my.waybillNo === file.waybillNo) {
+            my.__isselected = file.__isselected;
+          }
+        });
+      });
+    },
+
+    handleCheckedCitiesChange(value) {
+      const arr = [];
+      this.myDatafilter.forEach(e => {
+        if (e.__isselected) {
+          arr.push(true);
+        }
+      });
+      const checkedCount = arr.length;
+      this.checkAll = checkedCount !== 0 && (checkedCount === this.myDatafilter.length);
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.myDatafilter.length;
+    },
+
+    handleCheckAllChange(value) {
+      this.myDatafilter.forEach(e => {
+        this.$set(e, '__isselected', value);
+      });
+
+      this.isIndeterminate = false;
+    },
+
+    // 新旧数据同步
+    handlerUpDate() {
+      const selectArr = [];
+      const noSelectArr = [];
+
+      this.myData.forEach(e => {
+        this.myDatafilter.forEach(ee => {
+          if (ee.waybillNo === e.waybillNo) {
+            this.$set(e, '__isselected', ee.__isselected);
+          }
+        });
+
+        if (e.__isselected) {
+          selectArr.push(e);
+        } else {
+          noSelectArr.push(e);
+        }
+
+        this.selectedData = selectArr;
+        this.noSelectArr = noSelectArr;
+      });
+    },
+    // e==
+
+    // 废弃方法========================
+    // 写卡
+    handlerMakeUp() {
+      if (!this.isConnect) {
+        this.msgWarning('未连接本地服务');
+        return;
+      }
+      action.getCardInfo(undefined, false).then((res) => {
+        if (res.success) {
+          if (res.code === '9000' && this.selectedData[0]) {
+            const user = this.selectedData[0];
+            const cardData = {
+              card16no: user.card16no,
+              newCard16no: res.GetCardNo.data + '', // 获取当前卡的id
+              cardBatchNo: user.cardBatchNo
+            };
+
+            // 用户数据
+            const userInfo = {
+              icType: 'r',
+              issuing_name: user.orderClient || '-', // orderClient	下单客户
+              issuing_pc: user.cardBatchNo || '-', // cardBatchNo	卡批次
+              issuing_telno: user.sipperPhone || '-', // sipperPhone	货主手机号
+              issuing_time: this.setTimestamp(user.loadingTime) || '-', // loadingTime	装货时间
+              project_id: user.projectId || '-', // projectId	项目Id
+              team_name: user.teamName || '-', // teamName	车队名称
+              team_telno: user.dispatchNumber || '-', // dispatchNumber	调度者手机号
+              user_name: user.driverName || '-', // driverName	司机名字
+              user_telno: user.driverPhone || '-' // driverPhone	司机电话
+            };
+
+            // 数据
+            const data = this.selectedData.map((e) => {
+              return {
+                driverPhone: e.driverPhone || '-', // driverPhone	司机电话
+                fillTime: this.setTimestamp(e.receiveTime) || '-', // loadingTime	接单时间
+                licenseNumber: e.licenseNumber || '-', // '鄂ALF106',
+                orderId: e.mainOrderNumber || '-', // mainOrderNumber	货源编号
+                projectName: e.projectId || '-', // projectId	项目Id
+                serialNumber: e.shipmentMuckyardNo || '-', // shipmentMuckyardNo	渣土场编号
+                signTime: this.setTimestamp(e.loadingTime) || '-', // signTime	装货时间
+                waybillNo: e.waybillNo || '-' // waybillNo	运单号
+              };
+            });
+
+            // 提示, 需要白卡
+
+            this.$confirm(
+              '此操作将初始化本卡后,再写入数据, 是否继续?',
+              '提示',
+              {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+              }
+            )
+              .then(() => {
+                this.xexiaoCheck(
+                  userMark,
+                  userInfo,
+                  versionMark,
+                  data,
+                  cardData
+                );
+              })
+              .catch(() => {});
+          }
+        } else {
+          this.msgError(res.msg);
+        }
+      });
+    },
+    // 读卡
+    handlerReadData() {
+      if (!this.isConnect) {
+        this.msgWarning('未连接本地服务');
+        return;
+      }
+      // 读取卡数据
+      action.readUserInfoAndreadData().then((res) => {
+        if (res.success) {
+          if (res.code === '9000') {
+            this.cardInfoData = res;
+            this.cardinfoOpen = true;
+          } else {
+            this.msgWarning(res.msg);
+          }
+        } else {
+          this.msgError(res.msg);
+        }
+      });
+    },
+    // 写用户信息
+    async handlerWriteUser() {
+      const userInfo = {
+        icType: 'r',
+        //   issuing_name: user.orderClient || "-", // orderClient	下单客户
+        issuing_pc: 1627559938998505 || '-', // cardBatchNo	卡批次
+        issuing_telno: 15859109601 || '-', // sipperPhone	货主手机号
+        issuing_time: 1627559820000, // loadingTime	装货时间
+        project_id: 72276 || '-', // projectId	项目Id
+        //   team_name:  "-", // teamName	车队名称
+        team_telno: 15859102001 || '-', // dispatchNumber	调度者手机号
+        //   user_name:  "-", // driverName	司机名字
+        user_telno: 15859101001 || '-' // driverPhone	司机电话
+      };
+
+      const cancellation = await action.cancellation();
+      if (!cancellation.success || cancellation.code !== '9000') {
+        this.msgError(cancellation.msg || '核销失败');
+        return;
+      }
+      action.issuingCard(userInfo, userMark).then((res) => {});
+    },
+    // 写运单信息
+    async handlerData() {
+      const data = {
+        driverPhone: '15859101001' || '-', // driverPhone	司机电话
+        fillTime: '1627559820000' || '-', // loadingTime	接单时间
+        licenseNumber: '闽BQ7801' || '-', // '鄂ALF106',
+        orderId: '2107291757184088' || '-', // mainOrderNumber	货源编号
+        projectName: '72276' || '-', // projectId	项目Id
+        serialNumber: '74' || '-', // shipmentMuckyardNo	渣土场编号
+        signTime: '1627559820000' || '-', // signTime	装货时间
+        waybillNo: '2107291957141395' || '-' // waybillNo	运单号
+      };
+      //   console.log(fn.setData(versionMark, data)); // 1010|2|2107291757184088;2107291957141395;72276;闽BQ7801;15859101001;1627559820000;1627559820000;74
+      //   return;
+
+      action.writeData(fn.setData(versionMark, data)).then((res) => { });
     }
   }
 };
