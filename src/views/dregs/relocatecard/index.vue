@@ -549,6 +549,9 @@ export default {
                     }, 1000);
                   }, this.selectedData, []);
                 }
+              }).catch(err => {
+                console.log(err);
+                this.msgError(err.msg);
               });
             }
           }, this.selectedData);
@@ -801,7 +804,7 @@ export default {
 
       const arrtime = []; // 定时器标识
 
-      const indexc = [3, 30]; // 定义多少条写满数据
+      const indexc = [9, 20]; // 定义多少条写满数据
 
       const alreadyWriteData = []; // 写入成功的订单集合
 
