@@ -644,7 +644,7 @@ export default {
                       this.percentage1 = false; // 关闭提示
                       this.cardinfoOpen = true; // 打开下一步窗口
                     }, 1000);
-                  });
+                  }, true);
                 }
               });
             }
@@ -654,13 +654,13 @@ export default {
     },
 
     // 保存卡日志
-    handlerCpuCardSaveCardLog(arr, stepNo, successfn) {
+    handlerCpuCardSaveCardLog(arr, stepNo, successfn, type) {
       if (Array.isArray(arr) && arr.length > 0) {
         const { data, cardData } = this.xiekaData(arr);
         const que = {
           'batchCode': cardData.card16no,
           'cardBatchNo': cardData.cardBatchNo,
-          'cardData': stepNo === 2 ? [] : JSON.stringify(data),
+          'cardData': type ? [] : JSON.stringify(data),
           'stepNo': stepNo
         };
         cpuCardSaveCardLog(que).then(res => {
