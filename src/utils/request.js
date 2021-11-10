@@ -197,16 +197,16 @@ export function download(url, params, filename, headers, type = '.xlsx') {
     console.error(r);
   });
 }
-function getDownloadConfig(headers){
-  if(headers!=null&&headers.indexOf("json")>0){
+function getDownloadConfig(headers) {
+  if (headers != null && headers.indexOf('json') > 0) {
     return {
       headers: {
         'Content-Type': headers || 'application/x-www-form-urlencoded'
       },
       responseType: 'blob',
       timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
-    }
-  }else{
+    };
+  } else {
     return {
       transformRequest: [(params) => {
         return tansParams(params);
@@ -216,8 +216,7 @@ function getDownloadConfig(headers){
       },
       responseType: 'blob',
       timeout: 10 * 60 * 1000 // 有些表导出数据量太大, 超时时间设为10分钟
-    }
+    };
   }
-
 }
 export default service;

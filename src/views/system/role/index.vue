@@ -696,7 +696,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(function() {
-        return changeRoleStatus(row.roleId, row.status);
+        return changeRoleStatus(row.roleCode, row.status);
       }).then(() => {
         this.msgSuccess(text + '成功');
       }).catch(function() {

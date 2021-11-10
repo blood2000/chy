@@ -154,85 +154,179 @@
 
         <template #edit="{row}">
           <div>
-            <el-button
-              v-if="status===0"
-              size="mini"
-              type="text"
-              :loading="loading"
-              @click="handlerPilianHeyang(row)"
-            >核验</el-button>
 
-            <el-button
-              v-if="status===1"
-              size="mini"
-              type="text"
-              :loading="loading"
-              @click="handleAskfor(row)"
-            >索票</el-button>
+            <template v-if="status===0">
+              <el-button
+                v-if="row.status === 0"
+                size="mini"
+                type="text"
+                :loading="loading"
+                @click="handlerPilianHeyang(row)"
+              >核验</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleVerification(row)"
+              >结算单</el-button>
+              <el-button
+                v-if="row.status === 0"
+                size="mini"
+                type="text"
+                @click="handleBohui(row)"
+              >驳回</el-button>
+
+              <el-button
+                v-show="row.status!== 0"
+                v-hasPermi="['transportation:batch:settlementSummaryList']"
+                size="mini"
+                type="text"
+                @click="handleAccountingStatistics(row)"
+              >结算汇总单</el-button>
+            </template>
+
+            <template v-if="status===1">
+              <el-button
+                size="mini"
+                type="text"
+                :loading="loading"
+                @click="handleAskfor(row)"
+              >索票</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleVerification(row)"
+              >结算单</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleBohui(row)"
+              >驳回</el-button>
+            </template>
 
             <!-- v-show="!isShipment " -->
-            <el-button
-              v-if="row.status === 2 && !isShipment"
-              size="mini"
-              type="text"
-              :loading="loading"
-              @click="handleVerify(row)"
-            >开票</el-button>
+            <template v-if="status===2">
+              <el-button
+                v-if="row.status === 2 && !isShipment"
+                size="mini"
+                type="text"
+                :loading="loading"
+                @click="handleVerify(row)"
+              >开票</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleVerification(row)"
+              >结算单</el-button>
+              <el-button
+                v-if="row.status===2"
+                size="mini"
+                type="text"
+                @click="handleBohui(row)"
+              >驳回</el-button>
+            </template>
 
-            <el-button
-              v-if="status===3"
-              size="mini"
-              type="text"
-              :loading="loading"
-              @click="handlerPassPayment(row)"
-            >打款</el-button>
+            <template v-if="status===3">
+              <el-button
+                size="mini"
+                type="text"
+                :loading="loading"
+                @click="handlerPassPayment(row)"
+              >打款</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleVerification(row)"
+              >结算单</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleBohui(row)"
+              >驳回</el-button>
+            </template>
 
-            <el-button
-              v-if="status===4 && row.isSuccess"
-              size="mini"
-              type="text"
-              :loading="loading"
-              @click="handlerReceipt(row)"
-            >回单</el-button>
+            <template v-if="status===4">
+              <el-button
+                v-if="row.isSuccess"
+                size="mini"
+                type="text"
+                :loading="loading"
+                @click="handlerReceipt(row)"
+              >回单</el-button>
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleVerification(row)"
+              >结算单</el-button>
+            </template>
 
-            <el-button
-              v-if="status===-1"
-              size="mini"
-              type="text"
-              :loading="loading"
-              @click="handleHesuan(row)"
-            >再复核</el-button>
+            <template v-if="status===-1">
+              <el-button
+                v-if="row.status===-1"
+                size="mini"
+                type="text"
+                :loading="loading"
+                @click="handleHesuan(row)"
+              >再复核</el-button>
+
+              <el-button
+                v-show="row.status!==-1"
+                v-hasPermi="['transportation:batch:settlementSummaryList']"
+                size="mini"
+                type="text"
+                @click="handleAccountingStatistics(row)"
+              >结算汇总单</el-button>
+
+              <el-button
+                size="mini"
+                type="text"
+                @click="handleVerification(row)"
+              >结算单</el-button>
+
+              <el-button
+                v-show="row.status===-1"
+                v-hasPermi="['transportation:batch:batchCancel']"
+                size="mini"
+                type="text"
+                @click="handleNullify(row)"
+              >批次作废</el-button>
+            </template>
+
 
             <!-- 公共有 -->
+            <!-- <template v-if="status!==-1"> -->
+
+            <!-- <el-button
+                size="mini"
+                type="text"
+                @click="handleVerification(row)"
+              >结算单</el-button> -->
+            <!-- <el-button
+                v-if="row.status===2"
+                size="mini"
+                type="text"
+                @click="handleBohui(row)"
+              >驳回</el-button> -->
+            <!-- <el-button
+                v-if="row.status!==4 && row.status!==-1 && status!==2"
+                size="mini"
+                type="text"
+                @click="handleBohui(row)"
+              >驳回</el-button> -->
+            <!-- <el-button
+                v-if="row.status===-1"
+                v-hasPermi="['transportation:batch:batchCancel']"
+                size="mini"
+                type="text"
+                @click="handleNullify(row)"
+              >批次作废</el-button> -->
+            <!-- </template> -->
+
             <el-button
               size="mini"
               type="text"
               @click="handleInfo(row)"
             >详情</el-button>
-            <el-button
-              size="mini"
-              type="text"
-              @click="handleVerification(row)"
-            >结算单</el-button>
-            <el-button
-              v-if="row.status===2"
-              size="mini"
-              type="text"
-              @click="handleBohui(row)"
-            >驳回</el-button>
-            <el-button
-              v-if="row.status!==4 && row.status!==-1 && status!==2"
-              size="mini"
-              type="text"
-              @click="handleBohui(row)"
-            >驳回</el-button>
-            <el-button
-              v-if="row.status===-1"
-              v-hasPermi="['transportation:batch:batchCancel']"
-              size="mini"
-              type="text"
-              @click="handleNullify(row)"
-            >批次作废</el-button>
+
           </div>
         </template>
       </RefactorTable>
@@ -284,6 +378,13 @@
     <el-dialog class="i-adjust" title="结算单" :visible.sync="settlementOpen" width="1200px" :close-on-click-modal="false" append-to-body>
       <div v-if="settlementOpen">
         <SettlementPrint :print-data="printData" />
+      </div>
+    </el-dialog>
+
+    <!-- 结算单 -->
+    <el-dialog class="i-adjust" title="结算单" :visible.sync="settlementPrintAccountingOpen" width="1200px" :close-on-click-modal="false" append-to-body>
+      <div v-if="settlementPrintAccountingOpen">
+        <SettlementPrintAccounting :print-data="settlementPrintAccountingData" />
       </div>
     </el-dialog>
 
@@ -357,6 +458,7 @@ import { getFile } from '@/api/system/image.js';
 import QueryForm from './components/QueryForm.vue';
 import StatementsInfo from './components/StatementsInfo';
 import SettlementPrint from './components/SettlementPrint';
+import SettlementPrintAccounting from './components/SettlementPrintAccounting';
 import RejectDialog from './components/rejectDialog';
 import BillPage from '@/views/enterprise/company/billing';
 import DismissedTrack from './components/DismissedTrack';
@@ -374,7 +476,7 @@ import { sha1 } from '@/utils/sha1';
 
 export default {
   'name': 'AskforDregs',
-  components: { QueryForm, StatementsInfo, SettlementPrint, BillPage, RejectDialog, BillingDialog, AdjustDialog, DismissedTrack, ReceiptDialog }, // 筛选条件
+  components: { QueryForm, StatementsInfo, SettlementPrint, SettlementPrintAccounting, BillPage, RejectDialog, BillingDialog, AdjustDialog, DismissedTrack, ReceiptDialog }, // 筛选条件
 
   props: {
     status: {
@@ -402,7 +504,9 @@ export default {
         teamCode: undefined, //	调度者名称	query	false
         ztcCode: undefined, //	渣土场	query	false
         projectCode: undefined, // 项目
-        receiveTime: []
+        receiveTime: [],
+        accountingStatus: 2,
+        checkStatus: 2 // 核验(默认2 未核验)
       },
       isShipment: false,
       // 显示搜索条件
@@ -465,7 +569,10 @@ export default {
       shipmentCode: undefined,
 
       errList: [],
-      sucList: []
+      sucList: [],
+
+      settlementPrintAccountingData: null,
+      settlementPrintAccountingOpen: false
 
     };
   },
@@ -699,14 +806,18 @@ export default {
       return this.selections.filter(e => e.isSuccess);
     },
 
+    // 导出使用
     que() {
-      return {
+      const que = {
         ...this.queryParams,
         beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
         receiveTime: undefined,
         status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
       };
+      delete que.accountingStatus;
+      delete que.checkStatus;
+      return que;
     }
 
   },
@@ -764,7 +875,17 @@ export default {
         receiveTime: undefined,
         status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
       };
-      this.loading = false;
+      if (this.queryParams.status !== -1) {
+        delete que.accountingStatus;
+      }
+      if (this.queryParams.status !== 0) {
+        delete que.checkStatus;
+      }
+      // 核算驳回页面,就不传status
+      if (this.queryParams.status === -1 || this.queryParams.status === 0) {
+        delete que.status;
+      }
+
       let res = null;
       if (this.status === -1) {
         res = await rejectionList(que);
@@ -994,6 +1115,12 @@ export default {
 
       this.adjustdialog = true;
       this.$refs.AdjustDialog.setForm(this.selections);
+    },
+    // 已核算统计
+    handleAccountingStatistics(row) {
+      this.settlementPrintAccountingData = row;
+      console.log(this.settlementPrintAccountingData);
+      this.settlementPrintAccountingOpen = true;
     },
     /* e= */
     // 批次作废

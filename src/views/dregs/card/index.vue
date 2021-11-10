@@ -135,6 +135,7 @@ import QueryForm from './components/QueryForm';
 import AccountingTable from './components/AccountingTable';
 import CarInfo from './components/CarInfo';
 import { cardHistoryList, cardReplacement } from '@/api/dregs/card';
+import { getUserInfo } from '@/utils/auth';
 
 import CardReader, { versionMark, userMark } from '@/libs/ICCard/CardReader';
 const { action, fn } = CardReader;
@@ -459,6 +460,14 @@ const com = [
     'width': 120
   },
   {
+    'prop': 'ztCreateTime',
+    'isShow': true,
+    'tooltip': false,
+    'sortNum': 100,
+    'label': '写卡时间',
+    'width': 120
+  },
+  {
     'prop': 'edit',
     'isShow': false,
     'tooltip': false,
@@ -490,10 +499,14 @@ export default {
         'driverNameOrPhone': undefined,
         'licenseNumber': undefined,
         'card16no': undefined,
-        'receiveTime': []
+        'receiveTime': [],
+        'ztCreateTime': [],
+        companyCode: undefined,
+        ztcCode: undefined,
+        projectCode: undefined
       },
 
-      isShipment: true,
+      isShipment: false,
       tableColumnsConfig: com,
 
       myData: [],
@@ -514,12 +527,22 @@ export default {
     },
 
     que() {
-      return {
+      const que = {
         ...this.queryParams,
         beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
         endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
-        receiveTime: undefined
+        receiveTime: undefined,
+        // 写卡筛选
+        writeCardBeginTime: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[0] : undefined,
+        writeCardEndTime: this.queryParams.ztCreateTime ? this.queryParams.ztCreateTime[1] : undefined,
+        ztCreateTime: undefined,
+        companyCode: undefined
       };
+
+
+
+
+      return que;
     },
 
     testProcess() {
@@ -528,6 +551,8 @@ export default {
   },
 
   created() {
+    const { isShipment = false } = getUserInfo() || {};
+    this.isShipment = isShipment;
     this.getList();
   },
 
