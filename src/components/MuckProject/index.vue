@@ -815,8 +815,19 @@ export default {
         receiveTime: undefined,
         status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
       };
-      delete que.accountingStatus;
-      delete que.checkStatus;
+      if (this.queryParams.status !== -1) {
+        delete que.accountingStatus;
+      }
+      if (this.queryParams.status !== 0) {
+        delete que.checkStatus;
+      }
+      if (this.queryParams.status !== 2) {
+        delete que.pcStatus;
+      }
+      // 核算驳回页面,就不传status
+      if (this.queryParams.status === -1 || this.queryParams.status === 0) {
+        delete que.status;
+      }
       return que;
     }
 
@@ -868,29 +879,29 @@ export default {
     async getList() {
       this.loading = true;
 
-      const que = {
-        ...this.queryParams,
-        beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
-        endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
-        receiveTime: undefined,
-        status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
-      };
-      if (this.queryParams.status !== -1) {
-        delete que.accountingStatus;
-      }
-      if (this.queryParams.status !== 0) {
-        delete que.checkStatus;
-      }
-      // 核算驳回页面,就不传status
-      if (this.queryParams.status === -1 || this.queryParams.status === 0) {
-        delete que.status;
-      }
+      // const que = {
+      //   ...this.queryParams,
+      //   beginTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined,
+      //   endTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined,
+      //   receiveTime: undefined,
+      //   status: this.queryParams.status === 2 ? this.queryParams.pcStatus : this.queryParams.status
+      // };
+      // if (this.queryParams.status !== -1) {
+      //   delete que.accountingStatus;
+      // }
+      // if (this.queryParams.status !== 0) {
+      //   delete que.checkStatus;
+      // }
+      // // 核算驳回页面,就不传status
+      // if (this.queryParams.status === -1 || this.queryParams.status === 0) {
+      //   delete que.status;
+      // }
 
       let res = null;
       if (this.status === -1) {
-        res = await rejectionList(que);
+        res = await rejectionList(this.que);
       } else {
-        res = await adjustDregsList(que);
+        res = await adjustDregsList(this.que);
       }
 
       this.billlist = res.data.list;
