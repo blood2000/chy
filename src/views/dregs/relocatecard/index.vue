@@ -606,8 +606,6 @@ export default {
                       __data.data,
                       __data.versionMark,
                       (success) => {
-                        this.handlerEndres(success); // 写卡成功
-
                         // 更新数据库(??)
                         this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
 
@@ -620,6 +618,8 @@ export default {
                           }
                         };
                         this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 3, () => {}, this.selectedData, [], target);
+
+                        this.handlerEndres(success); // 写卡成功
                       },
                       () => { this.percentage2 = true; }, // 失败(刷新吧!~)
                       (data, alreadyWriteData) => { // 卡满
@@ -677,9 +677,6 @@ export default {
                 __data.data,
                 __data.cardData,
                 (success) => {
-                  // 成功
-                  this.handlerEndres(success);
-
                   // 同上
                   this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
 
@@ -693,6 +690,9 @@ export default {
                   };
 
                   this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 3, () => {}, this.selectedData, [], target);
+
+                  // 成功
+                  this.handlerEndres(success);
                 },
                 () => { this.percentage2 = true; }, // 失败
                 (data, alreadyWriteData) => { // 卡满(迁到新卡不存在写满的问题吧?)
@@ -746,8 +746,8 @@ export default {
       }
       this.loading = false;
       this.percentage2 = false;
-      this.myData = this.myData.filter(e => !e.__isselected);
-      this.myDatafilter = this.myData;
+      this.myData = [];
+      this.myDatafilter = [];
       this.dispatcher = undefined;
     },
 
@@ -885,7 +885,7 @@ export default {
     // s= 更新运单关联信息
     cpuCardUpdateCardWaybillRel(card16no, cardBatchNo, waybillNos) {
       const que = {
-        card16no, //	string	 必须  卡原始编号
+        card16no: this.ccarNo.card16no, //	string	 必须  卡原始编号
         cardBatchNo, //	string	 必须  批次编号
         waybillNos //	string []	 必须  运单编号集合
       };
