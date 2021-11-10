@@ -128,7 +128,7 @@
     </el-row>
 
     <!-- 添加或修改菜单对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="700px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <!-- <el-col :span="24">
             <el-form-item label="产品版本">
@@ -216,7 +216,7 @@
             </el-form-item>
           </el-col>
         </el-row>
-        <el-row>
+        <el-row :gutter="12">
           <el-col :span="24">
             <el-form-item label="菜单类型" prop="menuType">
               <el-radio-group v-model="form.menuType">
@@ -230,7 +230,7 @@
             <el-form-item label="菜单图标" prop="icon">
               <el-popover
                 placement="bottom-start"
-                width="460"
+                width="580"
                 trigger="click"
                 @show="$refs['iconSelect'].reset()"
               >
@@ -255,7 +255,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="显示排序" prop="orderNum">
-              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" />
+              <el-input-number v-model="form.orderNum" controls-position="right" :min="0" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col v-if="form.menuType != 'F'" :span="12">

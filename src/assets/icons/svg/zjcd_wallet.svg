@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: none;
+      }
+
+      .cls-2 {
+        fill: #6a6f81;
+      }
+    </style>
+  </defs>
+  <g id="组_23205" data-name="组 23205" transform="translate(-17 -109)">
+    <rect id="矩形_295" data-name="矩形 295" class="cls-1" width="28" height="28" transform="translate(17 109)"/>
+    <g id="组_23944" data-name="组 23944" transform="translate(-963.315 -188.591)">
+      <path id="路径_19357" data-name="路径 19357" class="cls-2" d="M1000.3,306.24v10.7H988.332v-10.7H1000.3m.845-2H987.487a1.155,1.155,0,0,0-1.155,1.155v12.391a1.155,1.155,0,0,0,1.155,1.155h13.657a1.155,1.155,0,0,0,1.155-1.155V305.395a1.155,1.155,0,0,0-1.155-1.155Z"/>
+      <path id="路径_19358" data-name="路径 19358" class="cls-2" d="M993.073,310.87v1.441h-4.741V310.87h4.741m1.268-2h-8.009v5.441h8.009a.732.732,0,0,0,.732-.732V309.6a.732.732,0,0,0-.732-.732Z"/>
+    </g>
+  </g>
+</svg>
