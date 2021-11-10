@@ -1508,6 +1508,7 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     } else {
       index[1] += 1;
     }
+
     // 通过索引去找要写的数据目录，若目录不存在就进行创建
     // 选择数据目录
     // 回到主目录
