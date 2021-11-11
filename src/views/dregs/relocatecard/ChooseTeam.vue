@@ -6,6 +6,7 @@
         ref="groupIndex"
         :shipment-code="shipmentInfo.code"
         :iscomponent="true"
+        :copy-data="copyData"
         @handlerIndexCopy="handlerIndexCopy"
       />
 
@@ -23,7 +24,11 @@ import { getUserInfo } from '@/utils/auth';
 export default {
   components: { GroupIndex },
   props: {
-    open: Boolean
+    open: Boolean,
+    copyData: {
+      type: Object,
+      default: () => { return {}; }
+    }
   },
 
   data() {
@@ -44,6 +49,9 @@ export default {
     shipmentInfo() {
       const { isShipment = false, shipment = {}} = getUserInfo() || {};
 
+      //   console.log(isShipment);
+      //   console.log(shipment);
+
       //   let shipmentInfo = {};
       //   if (this.ztshipmentinfo) {
       //     shipmentInfo = this.ztshipmentinfo;
@@ -51,7 +59,7 @@ export default {
       //     shipmentInfo = !isShipment ? (shipment.info || {}) : {};
       //   }
 
-      //   console.log(shipmentInfo);
+      // console.log(shipmentInfo);
 
       return shipment.info;
     }

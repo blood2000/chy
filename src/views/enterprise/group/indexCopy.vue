@@ -111,7 +111,11 @@ export default {
       type: Array,
       default: () => []
     },
-    iscomponent: [Boolean] // 其他地方引用这个组件了
+    iscomponent: [Boolean], // 其他地方引用这个组件了
+    copyData: {
+      type: Object,
+      default: null
+    }
   },
 
   data() {
@@ -164,6 +168,13 @@ export default {
 
       radio: undefined
     };
+  },
+  watch: {
+    copyData(val) {
+      if (val) {
+        this.radio = val;
+      }
+    }
   },
 
   watch: {

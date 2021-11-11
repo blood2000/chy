@@ -79,7 +79,7 @@
             type="success"
             icon="el-icon-mouse"
             size="mini"
-            :disabled="!(isConnect && selectedData.length>0)"
+            :disabled="!(isConnect && selectedData.length>0 && isShipment)"
             @click="handlerqianka"
           >迁卡</el-button>
         </el-col>
@@ -242,7 +242,7 @@
     </div>
 
 
-    <ChooseTeam :open.sync="open" @handlerScheduling="(_dieobj)=> schedSelect = _dieobj" />
+    <ChooseTeam :open.sync="open" :copy-data="schedSelect" @handlerScheduling="(_dieobj)=> schedSelect = _dieobj" />
 
   </div>
 </template>
@@ -259,6 +259,8 @@ import CardReader, { versionMark, userMark, USERINFO } from '@/libs/ICCard/CardR
 const { action, fn } = CardReader;
 
 import ChooseTeam from './ChooseTeam.vue';
+
+import { getUserInfo } from '@/utils/auth';
 
 
 export default {
@@ -323,6 +325,25 @@ export default {
   },
 
   computed: {
+    isShipment() {
+      const { isShipment = false, shipment = {}} = getUserInfo() || {};
+
+      //   console.log(isShipment);
+      //   console.log(shipment);
+
+      //   let shipmentInfo = {};
+      //   if (this.ztshipmentinfo) {
+      //     shipmentInfo = this.ztshipmentinfo;
+      //   } else {
+      //     shipmentInfo = !isShipment ? (shipment.info || {}) : {};
+      //   }
+
+      // console.log(shipmentInfo);
+
+      return isShipment;
+    },
+
+
     percentage() {
       // console.log('读取中...,' + this.$store.state.icCard.percentage);
       return this.$store.state.icCard.percentage;
