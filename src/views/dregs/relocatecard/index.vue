@@ -31,7 +31,7 @@
 
             <el-date-picker
               v-model.trim="queryParams.loadTime"
-              type="datetime"
+              type="date"
               style="width: 228px"
               value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择日期时间"
@@ -42,7 +42,7 @@
 
             <el-date-picker
               v-model.trim="queryParams.unloadTime"
-              type="datetime"
+              type="date"
               style="width: 228px"
               value-format="yyyy-MM-dd HH:mm:ss"
               placeholder="选择日期时间"
@@ -79,7 +79,7 @@
             type="success"
             icon="el-icon-mouse"
             size="mini"
-            :disabled="!(isConnect && selectedData.length>0 && dispatcherOptions.length>0)"
+            :disabled="!(isConnect && selectedData.length>0)"
             @click="handlerqianka"
           >迁卡</el-button>
         </el-col>
@@ -134,11 +134,16 @@
           </template>
         </el-table-column>
 
+        <el-table-column
+          type="index"
+          width="50"
+        />
+
         <!-- <el-table-column type="selection" width="55" /> -->
         <el-table-column prop="userInfo.issuing_pc" label="卡批号" />
         <el-table-column prop="projectName" label="项目" />
 
-        <el-table-column prop="waybillNo" label="订单号" />
+        <el-table-column prop="waybillNo" label="运单号" />
 
         <el-table-column prop="loadUnloadTypeStr" label="装卸类型" />
 
@@ -166,7 +171,7 @@
       <div style="paddingTop:10px">选中数据: {{ selectedData.length }} 条 / 卡:{{ myData.length }}</div>
 
       <!-- 已打款的回单 -->
-      <el-dialog v-loading="loading" class="i-adjust" title="迁卡操作中, 请勿刷新页面或切换页面" :visible.sync="cardinfoOpen" width="500px" :close-on-click-modal="false" append-to-body :show-close="false">
+      <el-dialog v-loading="loading" class="i-adjust" title="迁卡操作中, 请勿刷新页面或切换页面" :visible.sync="cardinfoOpen" width="500px" :close-on-click-modal="false" append-to-body :show-close="true">
         <div v-if="cardinfoOpen">
           <el-descriptions v-if="carUserInfo" title="当前卡信息" :column="2">
             <el-descriptions-item label="卡批号">{{ carUserInfo.cardBatchNo }}</el-descriptions-item>
@@ -184,7 +189,7 @@
 
           <div>
             请选择要迁往的调度者:
-            <el-select v-model="dispatcher" size="mini" filterable placeholder="请选择要迁往的调度者">
+            <el-select v-if="false" v-model="dispatcher" size="mini" filterable placeholder="请选择要迁往的调度者">
               <el-option
                 v-for="(item, index) in dispatcherOptions"
                 :key="index"
@@ -192,35 +197,28 @@
                 :value="item.code"
               />
             </el-select>
+            <el-button type="primary" @click="open = true">选择调度者</el-button>
           </div>
 
           <el-divider />
           <!--
-
-              companyName: "深圳市凯意达建设工程有限公司"
-            createCode: "280bc125660f4c39bccf91519f122880"
-            createTime: "2021-08-05 16:00:00"
-            disName: "辽宁合伟膨润土有限公司"
-            disUserCode: "eec6a9ff7abb4753b10ba5eeb4ba3767"
-            disUserName: "测试打款调度一"
-            disUserPhone: "158****2001"
-            id: 279
-            isDel: 0
-            isNotInvoice: 0
-            isOften: 1
-            tel: "15859102001"
-            wayCount: 3025
+              disName: "测试打款调度二组"
+              disUserCode: "e9a1c08f51d7431bb1046b33dabc91ee"
+              disUserName: "测试打款调度二"
+              disUserPhone: "15859102002"
+              tel: null
            -->
 
-          <el-descriptions v-if="dispat" title="调度者信息" :column="2">
-            <el-descriptions-item label="调度者">{{ dispat.disUserName }}</el-descriptions-item>
-            <el-descriptions-item label="调度者电话">{{ dispat.tel }}</el-descriptions-item>
-            <el-descriptions-item label="调度组">{{ dispat.disName }}</el-descriptions-item>
+          <el-descriptions v-if="schedSelect" title="调度者信息" :column="2">
+            <el-descriptions-item label="调度者">{{ schedSelect.disUserName }}</el-descriptions-item>
+            <el-descriptions-item label="调度者电话">{{ schedSelect.disUserPhone }}</el-descriptions-item>
+            <el-descriptions-item label="调度组">{{ schedSelect.disName }}</el-descriptions-item>
+            <!-- <el-descriptions-item label="调度组">{{ dispat.disName }}</el-descriptions-item> -->
           </el-descriptions>
         </div>
 
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" :disabled="!dispatcher" @click="handlerRelocateCard()">确 定</el-button>
+          <el-button type="primary" :disabled="!carUserInfo" @click="handlerRelocateCard()">确 定</el-button>
         </span>
       </el-dialog>
     </div>
@@ -231,9 +229,9 @@
       </el-alert>
     </div>
 
-    <div v-if="percentage1" class="progress-box">
+    <div v-if="noSelectArr.length && percentage1" class="progress-box">
       <el-alert show-icon type="success" :closable="false">
-        <div style="font-size: 20px">数据抽取中, 请勿移动卡片 {{ selectedData.length }} / {{ myDatafilter.length - writeCont }}</div>
+        <div style="font-size: 20px">数据抽取中, 请勿移动卡片 {{ writeCont }} / {{ noSelectArr.length }}</div>
       </el-alert>
     </div>
 
@@ -242,6 +240,10 @@
         <div style="font-size: 20px">迁卡中, 请勿移动卡片. {{ writeCont }} / {{ selectedData.length }}</div>
       </el-alert>
     </div>
+
+
+    <ChooseTeam :open.sync="open" @handlerScheduling="(_dieobj)=> schedSelect = _dieobj" />
+
   </div>
 </template>
 <script>
@@ -250,12 +252,19 @@ import { deepClone } from '@/utils';
 
 import { cpuCardListCardData, getShipmentTeamList, cpuCardGetCardUserInfo, cpuCardSaveCardLog, cpuCardUpdateCardWaybillRel } from '@/api/dregs/card';
 
+import { listInfoApi } from '@/api/enterprise/group';
+
 import CardReader, { versionMark, userMark, USERINFO } from '@/libs/ICCard/CardReader';
 
 const { action, fn } = CardReader;
 
+import ChooseTeam from './ChooseTeam.vue';
+
 
 export default {
+
+  components: { ChooseTeam },
+
   data() {
     return {
       loading: false,
@@ -305,7 +314,11 @@ export default {
       user_info: '', // 字符串信息
       creatCardBatchNo: 0,
       this_sourceData: null,
-      ccarNo: null
+      ccarNo: null,
+      newTeamInfo: null, // 新选的调度者
+
+      open: false,
+      'schedSelect': null // 选中的调度
     };
   },
 
@@ -346,7 +359,8 @@ export default {
   },
 
   created() {
-    this.getShipmentTeamList();
+    // this.getShipmentTeamList();
+    // this.listInfoApi();
   },
 
   beforeDestroy() {
@@ -354,6 +368,14 @@ export default {
   },
 
   methods: {
+    groupSelected(data) {
+      console.log(data);
+    },
+    oneSelected(data) {
+      console.log(data);
+    },
+
+
     // s= 一初始读取卡基本数据
     getCardInfo() {
       if (this.isConnect) {
@@ -565,7 +587,11 @@ export default {
     handlerRelocateCard(handlerAlreadyWriteData__data) {
       this.writeCont = 0; // 重新开始计算
       // 获取新的调度者(找不到的情况? 问APP接口)
-      const newTem = this.dispatcherOptions.find(e => e.code === this.dispatcher);
+      const newTem = this.schedSelect; // this.dispatcherOptions.find(e => e.code === this.dispatcher);
+
+      console.log(newTem);
+
+      this.newTeamInfo = newTem;
 
       // 先读下卡用户信息
       this.handlerReadUserinfo((res) => {
@@ -865,6 +891,22 @@ export default {
     // e=
 
     // s= 获取常用调度者
+    // listInfoApi() {
+    //   const que = {
+    //     pageNum: 1,
+    //     pageSize: 10,
+    //     disName: null,
+    //     disUserName: null,
+    //     disUserPhone: null
+    //   };
+
+
+    //   listInfoApi(que).then(res => {
+    //     console.log(res);
+    //   });
+    // },
+
+
     getShipmentTeamList() {
       const que = {
         'pageNum': 1,
@@ -886,10 +928,14 @@ export default {
     // s= 更新运单关联信息
     cpuCardUpdateCardWaybillRel(card16no, cardBatchNo, waybillNos) {
       const que = {
-        card16no: this.ccarNo.card16no, //	string	 必须  卡原始编号
-        cardBatchNo, //	string	 必须  批次编号
-        waybillNos //	string []	 必须  运单编号集合
+        card16no: card16no, //	string	 必须  卡原始编号
+        cardBatchNo, //	string	 必须  批次编号(新卡,创建,旧卡继续使用)
+        waybillNos, //	string []	 必须  运单编号集合
+        dispatcherCode: this.newTeamInfo.disUserCode, // 新调度者code
+        teanPhone: this.newTeamInfo.tel // 新调度者电话
       };
+
+      console.log(que);
 
       cpuCardUpdateCardWaybillRel(que).then(res => {});
     },
@@ -973,6 +1019,8 @@ export default {
         if (newUser) {
           userInfo.team_telno = newUser.tel;
           userInfo.issuing_time = Date.now() + '';
+          cardData.cardBatchNo = Date.now() + '999';
+          userInfo.issuing_pc = cardData.cardBatchNo;
         }
 
         // 数据
@@ -1113,8 +1161,13 @@ export default {
           this.queryParams.loadTime = undefined;
         }
 
+        // 加一天
+        var date = new Date(value);
+        const newvalue = date.setDate(date.getDate() + 1);
+
+
         this.myDatafilter = this.myData.filter(e => {
-          return this.bjDate(value, e[type]) === '0';
+          return this.bjDate(value, e[type]) === '0' && this.bjDate(newvalue, e[type]) === '1';
         });
       } else {
         this.myDatafilter = this.myData;
