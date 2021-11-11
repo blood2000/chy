@@ -50,7 +50,7 @@
                 <el-form-item
                   prop="weight"
                   style="display: inline-block"
-                  :rules="[
+                  :rules="formData.totalType === '1'? null: [
                     {
                       required: formData.totalType === '2',
                       message: `请输入货物重量(${goodsUnitName})`,
@@ -61,6 +61,7 @@
                 >
                   <span class="pr-5">共</span>
                   <el-input-number
+                    v-if="formData.totalType === '2'"
                     v-model="formData.weight"
                     :disabled="formData.totalType === '1'"
                     :controls="false"
@@ -69,6 +70,13 @@
                     :min="0"
                     :precision="3"
                     controls-position="right"
+                    :style="{ width: '150px' }"
+                  />
+                  <el-input
+                    v-else
+                    v-model="formData.weight"
+                    disabled
+                    :placeholder="`请输入重量(${goodsUnitName})`"
                     :style="{ width: '150px' }"
                   />
                   <span class="pl-5">{{ goodsUnitName }}</span>
@@ -319,6 +327,7 @@ export default {
     },
     'formData.totalType': {
       handler(value) {
+        // console.log(value === '1');
         if (value === '1') {
           this.formData.weight = undefined;
           // this.$refs['formData'].resetFields(); // 移除表单并初始化表单，-般用于添加
