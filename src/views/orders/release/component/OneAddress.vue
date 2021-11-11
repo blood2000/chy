@@ -168,7 +168,7 @@ export default {
         contact: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
         contactPhone: [
           { required: true, message: '请输入联系电话', trigger: 'blue' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
+          { validator: this.formValidate.telphone1, trigger: 'blur' }
         ]
       },
 

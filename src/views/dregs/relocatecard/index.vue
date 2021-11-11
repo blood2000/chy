@@ -229,7 +229,7 @@
       </el-alert>
     </div>
 
-    <div v-if="noSelectArr.length && percentage1" class="progress-box">
+    <div v-if="false" class="progress-box">
       <el-alert show-icon type="success" :closable="false">
         <div style="font-size: 20px">数据抽取中, 请勿移动卡片 {{ writeCont }} / {{ noSelectArr.length }}</div>
       </el-alert>

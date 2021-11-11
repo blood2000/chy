@@ -12,6 +12,7 @@ const nameReg = /^[\da-zA-Z\u4E00-\u9FA5]{1,10}$/;
 const emailReg = /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/;
 // 手机号
 const phoneReg = /^[1][3,4,5,6,7,8,9][0-9]{9}$/;
+const phoneReg1 = /^[1][0-9]{10}$/; // 1开头 + 10位数字
 // 手机号&&座机号
 const phoneReg01 = /^(0|86|17951)?(13[0-9]|15[012356789]|17[01678]|18[0-9]|19[0-9]|14[57])[0-9]{8}$/;
 const phoneReg02 = /^(0[0-9]{2,3}\-)([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/;
@@ -98,6 +99,20 @@ export const formValidate = {
       callback();
     }
   },
+  // 手机验证
+  telphone1: function(rule, value, callback) {
+    if (value === undefined || value === null || value === '') {
+      callback();
+    }
+    if (!phoneReg1.test(value)) {
+      callback(new Error('请输入正确的手机号码'));
+    } else {
+      callback();
+    }
+  },
+
+
+
   // 手机 || 座机验证
   phone: function(rule, value, callback) {
     if (value === undefined || value === null || value === '') {
