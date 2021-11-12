@@ -313,6 +313,7 @@ export default {
 
       // 当前卡信息
       carUserInfo: null,
+      oldCarData: null, // 迁卡前的卡数据
       user_info: '', // 字符串信息
       creatCardBatchNo: 0,
       this_sourceData: null,
@@ -407,6 +408,7 @@ export default {
           if (res.success && res.code === '9000') {
             // 成功处理
             const { dataList, userInfo, userMark } = res;
+            this.oldCarData = res; // 保存一下迁卡前的东西
 
             // 存当前用户信息(记录的时候使用)
             this.user_info = userMark + (USERINFO.map(e => userInfo[e])).join(';');
@@ -620,8 +622,6 @@ export default {
       // 获取新的调度者(找不到的情况? 问APP接口)
       const newTem = this.schedSelect; // this.dispatcherOptions.find(e => e.code === this.dispatcher);
 
-      console.log(newTem);
-
       this.newTeamInfo = newTem;
 
       // 先读下卡用户信息
@@ -631,106 +631,126 @@ export default {
         const new_team_telno = newTem.tel;
 
         // 判断是否同一个调度者才能进行下一步操作
-        console.log(res.userInfo.icType);
+        console.log(res, '新卡的数据'); 'project_id';
+        console.log(this.oldCarData, '旧卡的数据'); 'project_id';
 
-        if (team_telno === new_team_telno) {
-          if (res.userInfo.icType === 'r') {
-            this.$confirm('当前卡不是核销卡, 请换一张卡?', '提示', {
-              confirmButtonText: '确定',
-              type: 'warning'
-            }).then(() => {
-              this.handlerRelocateCard();
-            });
-            return;
-          }
-
-          this.$confirm('确定继续写入本卡?', '当前卡中已存在数据了', {
-            confirmButtonText: '确定',
-            cancelButtonText: '取消',
-            type: 'warning'
-          }).then(() => {
-            this.percentage2 = true; // 提示框(第二阶段)
-            this.cardinfoOpen = false; // 关闭对话框(没的返回了)
-            // 开始读卡用户
-            action.getCardInfo(undefined, false).then((res) => {
-              if (res.success && res.code === '9000') {
-                // 开始读卡数据(如果是空数据呢???)
-                action.readUserInfoAndreadData().then((readDataRes) => {
-                  if (readDataRes.success && readDataRes.code === '9000') {
-                    // 写死判断
-                    if (readDataRes.dataList.length >= 200) {
-                      this.$confirm('请换新卡?', '提示', {
-                        confirmButtonText: '确定',
-                        type: 'warning'
-                      }).then(() => {
-                        this.handlerRelocateCard();
-                      });
-                      return;
-                    }
-
-                    // 整理数据 handlerAlreadyWriteData__data存在说明满卡操作
-                    const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
-
-                    console.log(
-                      __data.userMark,
-                      __data.userInfo,
-                      __data.versionMark,
-                      __data.data,
-                      __data.cardData,
-                      '迁入已有卡的数据'
-                    );
-
-                    // s= 调用写卡函数
-                    this.handlerWriteData(
-                      __data.data,
-                      __data.versionMark,
-                      (success) => {
-                        // 更新数据库(??)
-                        this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
-
-                        // 保存步骤3
-                        const target = {
-                          'user': __data.userMark + (USERINFO.map(e => __data.userInfo[e])).join(';'),
-                          'data': {
-                            'all': readDataRes.dataList.map(data => fn.setData(readDataRes.meter.join('|') + '|', data)),
-                            'write': success.writeData
-                          }
-                        };
-                        this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 3, () => {}, this.selectedData, [], target);
-
-                        this.handlerEndres(success); // 写卡成功
-                      },
-                      () => { this.percentage2 = true; }, // 失败(刷新吧!~)
-                      (data, alreadyWriteData) => { // 卡满
-                        // 更新数据库(??)
-                        this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, alreadyWriteData);
-                        // 处理数据
-                        this.handlerAlreadyWriteData(data, alreadyWriteData, __data);
-                      }
-                    );
-
-                    // e= 调用写卡函数
-                  } else {
-                    this.msgError(readDataRes.msg);
-                  }
-                });
-              } else {
-                this.msgError(res.msg);
-              }
-            }).catch(() => {});
-          });
-        } else {
-          this.msgError('请选择 相同的调度者~!' + '当前卡调度者电话是:' + team_telno); // 提示一下
+        if (res.userInfo.icType === 'r') {
+          this.msgError('卡类型不匹配'); // 提示一下
           // 卡满的情况提示换新卡
           if (handlerAlreadyWriteData__data) {
-            this.$confirm('请换新卡?', '提示', {
+            this.$confirm('卡类型不匹配, 请换一张卡?', '提示', {
               confirmButtonText: '确定',
               type: 'warning'
             }).then(() => {
               this.handlerRelocateCard(handlerAlreadyWriteData__data);
             });
           }
+          return;
         }
+
+        if (team_telno !== new_team_telno) {
+          this.msgError('调度者不匹配'); // 提示一下
+          // 卡满的情况提示换新卡
+          if (handlerAlreadyWriteData__data) {
+            this.$confirm('调度者不匹配, 请换一张卡?', '提示', {
+              confirmButtonText: '确定',
+              type: 'warning'
+            }).then(() => {
+              this.handlerRelocateCard(handlerAlreadyWriteData__data);
+            });
+          }
+          return;
+        }
+
+        if (res.userInfo.project_id !== this.oldCarData.userInfo.project_id) {
+          this.msgError('项目不匹配'); // 提示一下
+          // 卡满的情况提示换新卡
+          if (handlerAlreadyWriteData__data) {
+            this.$confirm('项目不匹配, 请换一张卡?', '提示', {
+              confirmButtonText: '确定',
+              type: 'warning'
+            }).then(() => {
+              this.handlerRelocateCard(handlerAlreadyWriteData__data);
+            });
+          }
+          return;
+        }
+
+        this.$confirm('确定继续写入本卡?', '当前卡中已存在数据了', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.percentage2 = true; // 提示框(第二阶段)
+          this.cardinfoOpen = false; // 关闭对话框(没的返回了)
+          // 开始读卡用户
+          action.getCardInfo(undefined, false).then((res) => {
+            if (res.success && res.code === '9000') {
+              // 开始读卡数据(如果是空数据呢???)
+              action.readUserInfoAndreadData().then((readDataRes) => {
+                if (readDataRes.success && readDataRes.code === '9000') {
+                  // 写死判断
+                  if (readDataRes.dataList.length >= 200) {
+                    this.$confirm('请换新卡?', '提示', {
+                      confirmButtonText: '确定',
+                      type: 'warning'
+                    }).then(() => {
+                      this.handlerRelocateCard();
+                    });
+                    return;
+                  }
+
+                  // 整理数据 handlerAlreadyWriteData__data存在说明满卡操作
+                  const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
+
+                  console.log(
+                    __data.userMark,
+                    __data.userInfo,
+                    __data.versionMark,
+                    __data.data,
+                    __data.cardData,
+                    '迁入已有卡的数据'
+                  );
+
+                  // s= 调用写卡函数
+                  this.handlerWriteData(
+                    __data.data,
+                    __data.versionMark,
+                    (success) => {
+                      // 更新数据库(??)
+                      this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, __data.data.map(e => e.waybillNo));
+
+                      // 保存步骤3
+                      const target = {
+                        'user': __data.userMark + (USERINFO.map(e => __data.userInfo[e])).join(';'),
+                        'data': {
+                          'all': readDataRes.dataList.map(data => fn.setData(readDataRes.meter.join('|') + '|', data)),
+                          'write': success.writeData
+                        }
+                      };
+                      this.handlerCpuCardSaveCardLog(this.creatCardBatchNo, 3, () => {}, this.selectedData, [], target);
+
+                      this.handlerEndres(success); // 写卡成功
+                    },
+                    () => { this.percentage2 = true; }, // 失败(刷新吧!~)
+                    (data, alreadyWriteData) => { // 卡满
+                      // 更新数据库(??)
+                      this.cpuCardUpdateCardWaybillRel(res.GetCardNo.data, __data.cardData.cardBatchNo, alreadyWriteData);
+                      // 处理数据
+                      this.handlerAlreadyWriteData(data, alreadyWriteData, __data);
+                    }
+                  );
+
+                  // e= 调用写卡函数
+                } else {
+                  this.msgError(readDataRes.msg);
+                }
+              });
+            } else {
+              this.msgError(res.msg);
+            }
+          }).catch(() => {});
+        });
       }, () => {
         // 白卡处理
         this.$confirm('确定换了要迁移的新卡了吗？', '当前是一张空白卡，', {

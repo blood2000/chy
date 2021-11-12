@@ -210,15 +210,14 @@ export default {
       }
       listInfo(this.queryParams).then(response => {
         // 其他组件调用
-        // if (this.iscomponent) {
-        //   this.infoList = response.data.list.map(e => {
-        //     e.tel = e.disUserPhone.substr(0, 3) + '****' + e.disUserPhone.substr(7, 11);
-        //     return e;
-        //   });
-        //   this.mycbDataByKeyword = this.cbDataByKeyword; // 这里触发一下赋值, 不然回填不了
-        // } else {
-        //   }
-        this.infoList = response.data.list;
+        if (this.iscomponent) {
+          this.infoList = response.data.list.map(e => {
+            e.tel = e.disUserPhone.substr(0, 3) + '****' + e.disUserPhone.substr(7, 11);
+            return e;
+          });
+          // this.mycbDataByKeyword = this.cbDataByKeyword; // 这里触发一下赋值, 不然回填不了
+        }
+        // this.infoList = response.data.list;
         this.total = response.data.total;
         this.loading = false;
       });
