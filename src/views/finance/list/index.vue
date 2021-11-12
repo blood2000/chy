@@ -219,7 +219,7 @@
           >审核</el-button>
           <el-button
             v-show="row.invoiceStatus == '4'"
-            v-hasPermi="['list:invoiceApply:passCheck']"
+            v-hasPermi="['list:invoice:openInvoice']"
             size="mini"
             type="text"
             @click="handleTableBtn(row, 2)"
@@ -259,7 +259,7 @@
 </template>
 
 <script>
-import { billList, billListApi, getApplyWaybill,listExportALL } from '@/api/finance/list';
+import { billList, billListApi, getApplyWaybill, listExportALL } from '@/api/finance/list';
 // 审核弹窗
 import VerifyDialog from './verifyDialog';
 // 开票弹窗
@@ -533,7 +533,7 @@ export default {
       params.pageSize = undefined;
       params.pageNum = undefined;
       console.log(params);
-      this.download('/transportation/invoiceApply/listExport', params, `运费明细`,'application/json;charset=utf-8').then(res => {
+      this.download('/transportation/invoiceApply/listExport', params, `运费明细`, 'application/json;charset=utf-8').then(res => {
         this.exportlistLoading = false;
       });
     },

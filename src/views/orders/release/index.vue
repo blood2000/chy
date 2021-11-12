@@ -1169,6 +1169,7 @@ export default {
       // 处理商品信息和地址相关的规则
       const { orderGoodsList, orderAddressPublishBoList, orderFreightInfoBoList } = await this.handlerAddress();
 
+      console.log(this.basicInfor, '提交数据');
       const orderInfoBo = {
         code: InfoCode || undefined,
         publishMode,
@@ -1182,6 +1183,7 @@ export default {
         uploadUnloadVoucher: this.basicInfor.uploadUnloadVoucher ? 1 : 0,
 
         // 11/12 追加
+
         reviewIsNeedLoadingCertificate: this.basicInfor.reviewIsNeedLoadingCertificate ? 1 : 0,
         reviewNoNeedUnloadImg: this.basicInfor.reviewNoNeedUnloadImg ? 1 : 0,
         openScanQuickLoadOrder: this.basicInfor.openScanQuickLoadOrder ? 1 : 0,
@@ -1412,6 +1414,8 @@ export default {
 
       this.formData.tin1 = pubilshCode;
       this.formData.tin7 = loadType ? loadType + '' : '1';
+
+      console.log(data, '返回结果');
 
       this.cbOrderBasic = {
 

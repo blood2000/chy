@@ -459,11 +459,11 @@ export default {
             singleSourceMultiCommodity
           } = info;
 
-          console.log(info);
+          console.log(info, '初始当前货主信息');
 
-          this.formData.reviewIsNeedLoadingCertificate = info.reviewIsNeedLoadingCertificate === 0;
-          this.formData.reviewNoNeedUnloadImg = info.reviewNoNeedUnloadImg === 0;
-          this.formData.openScanQuickLoadOrder = info.openScanQuickLoadOrder === 0;
+          this.formData.reviewIsNeedLoadingCertificate = info.reviewIsNeedLoadingCertificate === 1;
+          this.formData.reviewNoNeedUnloadImg = info.reviewNoNeedUnloadImg === 1;
+          this.formData.openScanQuickLoadOrder = info.openScanQuickLoadOrder === 1;
 
 
           this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
