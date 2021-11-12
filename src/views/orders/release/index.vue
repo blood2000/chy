@@ -1180,6 +1180,12 @@ export default {
         pubilshCode,
         uploadLoadVoucher: this.basicInfor.uploadLoadVoucher ? 1 : 0,
         uploadUnloadVoucher: this.basicInfor.uploadUnloadVoucher ? 1 : 0,
+
+        // 11/12 追加
+        reviewIsNeedLoadingCertificate: this.basicInfor.reviewIsNeedLoadingCertificate ? 1 : 0,
+        reviewNoNeedUnloadImg: this.basicInfor.reviewNoNeedUnloadImg ? 1 : 0,
+        openScanQuickLoadOrder: this.basicInfor.openScanQuickLoadOrder ? 1 : 0,
+
         remark,
         prepayStatus: this.basicInfor.prepayStatus,
         prepayType: this.basicInfor.prepayType,
@@ -1426,6 +1432,12 @@ export default {
 
         uploadLoadVoucher: data.uploadLoadVoucher,
         uploadUnloadVoucher: data.uploadUnloadVoucher,
+
+        // 11/12 追加
+        reviewIsNeedLoadingCertificate: data.reviewIsNeedLoadingCertificate,
+        reviewNoNeedUnloadImg: data.reviewNoNeedUnloadImg,
+        openScanQuickLoadOrder: data.openScanQuickLoadOrder,
+
 
         orderSpecifiedList: redisOrderSpecifiedVoList,
         classList: redisOrderClassGoodsVoList.map(e => {
