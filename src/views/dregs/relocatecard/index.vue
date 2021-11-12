@@ -436,7 +436,7 @@ export default {
       cpuCardListCardData({ waybillNos: mdataList.map(e => e.waybillNo) }).then(async res => {
         const { GetCardNo, userInfo, meter, userMark } = CarData;
 
-        // console.log(CarData);
+        console.log(CarData, '当前卡数据');
 
         this.ccarNo = {
           cardBatchNo: userInfo.issuing_pc,
@@ -566,6 +566,16 @@ export default {
               // 整理数据
               const { userMark, userInfo, versionMark, data, cardData } = this.xiekaData(this.noSelectArr);
               // 写卡操作(这里只要处理成功回调, 不存在写满状态)
+
+              console.log(
+                userMark,
+                userInfo,
+                versionMark,
+                data,
+                cardData,
+                '写回卡里的数据'
+              );
+
               this.xexiaoCheck(
                 userMark,
                 userInfo,
@@ -621,7 +631,19 @@ export default {
         const new_team_telno = newTem.tel;
 
         // 判断是否同一个调度者才能进行下一步操作
+        console.log(res.userInfo.icType);
+
         if (team_telno === new_team_telno) {
+          if (res.userInfo.icType === 'r') {
+            this.$confirm('当前卡不是核销卡, 请换一张卡?', '提示', {
+              confirmButtonText: '确定',
+              type: 'warning'
+            }).then(() => {
+              this.handlerRelocateCard();
+            });
+            return;
+          }
+
           this.$confirm('确定继续写入本卡?', '当前卡中已存在数据了', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
@@ -648,6 +670,15 @@ export default {
 
                     // 整理数据 handlerAlreadyWriteData__data存在说明满卡操作
                     const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
+
+                    console.log(
+                      __data.userMark,
+                      __data.userInfo,
+                      __data.versionMark,
+                      __data.data,
+                      __data.cardData,
+                      '迁入已有卡的数据'
+                    );
 
                     // s= 调用写卡函数
                     this.handlerWriteData(
@@ -716,6 +747,17 @@ export default {
             if (res.success && res.code === '9000') {
               // 整理数据
               const __data = handlerAlreadyWriteData__data || this.xiekaData(this.selectedData, newTem, res.GetCardNo.data);
+
+              __data.userInfo.icType = 'v';
+
+              console.log(
+                __data.userMark,
+                __data.userInfo,
+                __data.versionMark,
+                __data.data,
+                __data.cardData,
+                '迁入新卡的数据'
+              );
 
               // s= 调用写卡函数
               this.xexiaoCheck(
