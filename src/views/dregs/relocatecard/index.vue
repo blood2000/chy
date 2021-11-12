@@ -858,6 +858,7 @@ export default {
       this.percentage2 = false;
       this.myData = [];
       this.myDatafilter = [];
+      this.selectedData = [];
       this.dispatcher = undefined;
     },
 
