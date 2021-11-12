@@ -169,13 +169,6 @@ export default {
       radio: undefined
     };
   },
-  watch: {
-    copyData(val) {
-      if (val) {
-        this.radio = val;
-      }
-    }
-  },
 
   watch: {
     '$route.query.project': {
@@ -187,6 +180,11 @@ export default {
         }
       },
       immediate: true
+    },
+    copyData(val) {
+      if (val) {
+        this.radio = val;
+      }
     }
   },
   created() {
