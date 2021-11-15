@@ -270,16 +270,15 @@
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
-        <template #trackSituation="{row}">
+        <!-- <template #trackSituation="{row}">
           <span>{{ selectDictLabel(trackOptions, row.trackSituation) }}</span>
-        </template>
-        <template #receiptSituation="{row}">
+        </template> -->
+        <!-- <template #receiptSituation="{row}">
           <span v-if="row.receiptSituation">{{ row.receiptSituation.split(',').map(res => { return selectDictLabel(receiptSituationOptions, res)}).join('，') }}</span>
-        </template>
-        <template #loadUnloadSituation="{row}">
+        </template> -->
+        <!-- <template #loadUnloadSituation="{row}">
           <span v-if="row.loadUnloadSituation">{{ row.loadUnloadSituation.split(',').map(res => { return selectDictLabel(loadUnloadSituationOptions, res)}).join('，') }}</span>
-          <!-- <span>{{ selectDictLabel(loadUnloadSituationOptions, row.loadUnloadSituation) }}</span> -->
-        </template>
+        </template> -->
         <template #beforeStatus="{row}">
           <span>{{ selectDictLabel(statusOptions, row.beforeStatus) }}</span>
         </template>
@@ -425,7 +424,7 @@ import { getUserInfo } from '@/utils/auth';
 import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
-  name: 'Manages',
+  name: 'Audit',
   components: {
     AuditDetail
   },
@@ -583,6 +582,7 @@ export default {
     };
   },
   created() {
+    console.log(1111111);
     const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
     this.isShipment = isShipment;

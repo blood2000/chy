@@ -1,21 +1,21 @@
 <template>
   <div>
     <Tabs class="frame" :tablist="tablist" @getActiveName="getActiveName" />
-    <Audit v-if="activeName === '明细列表'" />
+    <Audits v-if="activeName === '明细列表'" />
     <MultimodeTrans v-if="activeName === '汇总表'" />
   </div>
 </template>
 
 <script>
-import Audit from './components/Audit';
+import Audits from './components/Audit';
 import MultimodeTrans from './components/Summary';
 import Tabs from '@/components/Tabs/index';
 
 export default {
-  name: 'Manages',
+  name: 'Audit',
   components: {
     Tabs,
-    Audit,
+    Audits,
     MultimodeTrans
   },
   data() {

@@ -12,16 +12,16 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-          <el-form-item label="所属业务团队" prop="clientName">
-            <el-input
-              v-model.trim="queryParams.teamName"
-              placeholder="请输入团队名称"
-              clearable
-              size="small"
-              style="width: 228px"
-              @keyup.enter.native="handleQuery"
-            />
-          </el-form-item>
+        <el-form-item label="所属业务团队" prop="clientName">
+          <el-input
+            v-model.trim="queryParams.teamName"
+            placeholder="请输入团队名称"
+            clearable
+            size="small"
+            style="width: 228px"
+            @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
 
         <el-form-item label="客户等级" prop="userGradeDictValue">
           <el-select
@@ -149,7 +149,9 @@
       </el-table> -->
       <!-- @selection-change="handleSelectionChange" -->
       <RefactorTable :loading="loading" :data="managesList" :is-show-expand="true" :table-columns-config="tableColumnsConfig">
-
+        <template #status="{row}">
+          <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
+        </template>
       </RefactorTable>
 
       <pagination
@@ -165,12 +167,12 @@
 </template>
 
 <script>
-import { inspectStatisticsListApi,getInspectStatisticsList } from '@/api/waybill/audit';
+import { inspectStatisticsListApi, getInspectStatisticsList } from '@/api/waybill/audit';
 import { getUserInfo } from '@/utils/auth';
 import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
-  name: 'Manages',
+  name: 'Audit',
   components: {
     // MultimodeDetail
   },
@@ -181,7 +183,7 @@ export default {
       receiveTime: [],
       tableColumnsConfig: [],
       api: inspectStatisticsListApi,
-      userGrade:[],
+      userGrade: [],
       // 遮罩层
       'loading': true,
       // 选中数组
@@ -291,7 +293,7 @@ export default {
     getList() {
       this.loading = true;
       const params = { ...this.queryParams };
-      getInspectStatisticsList(params.clientName,params.endTime,params.startTime,params.teamName,params.userGradeDictValue,params.pageNum,params.pageSize).then(response => {
+      getInspectStatisticsList(params.clientName, params.endTime, params.startTime, params.teamName, params.userGradeDictValue, params.pageNum, params.pageSize).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.loading = false;
