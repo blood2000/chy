@@ -306,9 +306,9 @@ export default {
       this.title = '添加字典数据';
       this.form.dictType = this.queryParams.dictType;
       if (row.dictCode !== undefined && row.dictCode !== null && row.dictCode !== '') {
-        this.form.dicPid = row.dictCode;
+        this.form.dictPid = row.dictCode;
       } else {
-        this.form.dicPid = 0;
+        this.form.dictPid = 0;
       }
     },
     // 多选框选中数据
