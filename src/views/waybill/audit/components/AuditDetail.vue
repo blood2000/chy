@@ -371,11 +371,17 @@ export default {
       this.loadUnloadSituationForm[0].waybillCode = this.currentId;
       // 稽核情况
       findInspect(this.currentId).then(res => {
-        this.trackSituationForm[0].situation = res.data.find(item => item.userGradeKpiId === 1).situation;
-        this.receiptSituationForm[0].situation = res.data.find(item => item.userGradeKpiId === 2).situation;
-        this.loadUnloadSituationForm[0].situation = res.data.find(item => item.userGradeKpiId === 3).situation;
-        this.receiptSituation = res.data.find(item => item.userGradeKpiId === 2).situation.split(',');
-        this.loadUnloadSituation = res.data.find(item => item.userGradeKpiId === 3).situation.split(',');
+        const trackIndex = res.data.findIndex(item => item.userGradeKpiId === 1);
+        const receiptIndex = res.data.findIndex(item => item.userGradeKpiId === 2);
+        const loadUnloadIndex = res.data.findIndex(item => item.userGradeKpiId === 3);
+        // console.log(trackIndex, receiptIndex, loadUnloadIndex);
+        this.trackSituationForm[0].situation = trackIndex === -1 ? '' : res.data[trackIndex].situation;
+        this.receiptSituationForm[0].situation = receiptIndex === -1 ? '' : res.data[receiptIndex].situation;
+        this.loadUnloadSituationForm[0].situation = loadUnloadIndex === -1 ? '' : res.data[loadUnloadIndex].situation;
+        // console.log(res.data);
+        this.receiptSituation = receiptIndex === -1 ? [] : res.data[receiptIndex].situation.split(',');
+        this.loadUnloadSituation = loadUnloadIndex === -1 ? [] : res.data[loadUnloadIndex].situation.split(',');
+        // console.log(this.receiptSituation, this.loadUnloadSituation);
       });
       // 运单
       getWayBill(this.currentId).then(response => {
