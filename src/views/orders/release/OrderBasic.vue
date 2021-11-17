@@ -199,16 +199,38 @@
 
         <el-row v-if="!isShipment">
           <el-col :span="6">
-            <el-form-item label="装货时是否必须上传凭证" label-width="200px">
+            <el-form-item label="装货时是否必须上传凭证" label-width="170px">
               <el-switch
                 v-model="formData.uploadLoadVoucher"
               />
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="卸货时是否必须上传凭证" label-width="200px">
+            <el-form-item label="卸货时是否必须上传凭证" label-width="170px">
               <el-switch
                 v-model="formData.uploadUnloadVoucher"
+              />
+            </el-form-item>
+          </el-col>
+          <!-- 11/12 追加 -->
+          <el-col :span="6">
+            <el-form-item label="复核时是否需要装货凭证" label-width="170px">
+              <el-switch
+                v-model="formData.reviewIsNeedLoadingCertificate"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="复核时是否需要卸货凭证" label-width="170px">
+              <el-switch
+                v-model="formData.reviewNoNeedUnloadImg"
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :span="6">
+            <el-form-item label="是否开启扫码快捷接单装货" label-width="180px">
+              <el-switch
+                v-model="formData.openScanQuickLoadOrder"
               />
             </el-form-item>
           </el-col>
@@ -337,6 +359,10 @@ export default {
         uploadLoadVoucher: true, // 装货时是否必须上传凭证 7/8追加字段
         uploadUnloadVoucher: true, // 卸货时是否必须上传凭证 7/8追加字段
 
+        reviewIsNeedLoadingCertificate: true, // 复核时是否需要装货凭证 11/12追加字段
+        reviewNoNeedUnloadImg: true, // 复核时是否需要卸货凭证 11/12追加字段
+        openScanQuickLoadOrder: true, // 是否开启扫描快捷接单装货 11/12追加字段
+
         remark: '',
 
         prepayStatus: 0, // "预付状态 0:关闭 1:开启预付")
@@ -433,6 +459,12 @@ export default {
             singleSourceMultiCommodity
           } = info;
 
+          console.log(info, '初始当前货主信息');
+
+          this.formData.reviewIsNeedLoadingCertificate = info.reviewIsNeedLoadingCertificate === 0;
+          this.formData.reviewNoNeedUnloadImg = info.reviewNoNeedUnloadImg === 0;
+          this.formData.openScanQuickLoadOrder = info.openScanQuickLoadOrder === 1;
+
 
           this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
           this.formData.uploadUnloadVoucher = noNeedUnloadImg === 0;
@@ -487,6 +519,11 @@ export default {
 
         this.formData.uploadLoadVoucher = this.cbData.uploadLoadVoucher + '' === '1';
         this.formData.uploadUnloadVoucher = this.cbData.uploadUnloadVoucher + '' === '1';
+
+        // 11/12 追加的字段
+        this.formData.reviewIsNeedLoadingCertificate = this.cbData.reviewIsNeedLoadingCertificate + '' === '1';
+        this.formData.reviewNoNeedUnloadImg = this.cbData.reviewNoNeedUnloadImg + '' === '1';
+        this.formData.openScanQuickLoadOrder = this.cbData.openScanQuickLoadOrder + '' === '1';
 
         this.formData.publishMode = publishMode + '';
         this.formData.tin4 = isPublic + '';
@@ -900,7 +937,13 @@ export default {
               remark: this.formData.remark,
 
               uploadLoadVoucher: this.formData.uploadLoadVoucher,
-              uploadUnloadVoucher: this.formData.uploadUnloadVoucher
+              uploadUnloadVoucher: this.formData.uploadUnloadVoucher,
+
+              // 11/12 追加
+              reviewIsNeedLoadingCertificate: this.formData.reviewIsNeedLoadingCertificate,
+              reviewNoNeedUnloadImg: this.formData.reviewNoNeedUnloadImg,
+              openScanQuickLoadOrder: this.formData.openScanQuickLoadOrder
+
             });
           } else {
             return false;
