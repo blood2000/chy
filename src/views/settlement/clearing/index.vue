@@ -40,13 +40,15 @@
         >
           <el-date-picker
             v-model="transferTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
+            value-format="yyyy-MM-dd HH:mm:ss"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            :default-time="defaultTime"
             @change="datechoose"
           />
         </el-form-item>
@@ -56,13 +58,15 @@
         >
           <el-date-picker
             v-model="loadTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="defaultTime"
             @change="loadDateChoose"
           />
         </el-form-item>
@@ -72,13 +76,15 @@
         >
           <el-date-picker
             v-model="unloadTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             style="width: 228px"
+            value-format="yyyy-MM-dd HH:mm:ss"
+            :default-time="defaultTime"
             @change="unloadDateChoose"
           />
         </el-form-item>
@@ -326,14 +332,15 @@ import DetailDialog from '@/views/waybill/components/detailDialog';
 
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
-import { pickerOptions } from '@/utils/dateRange';
+import { pickerTimeOptions } from '@/utils/dateRange';
 
 export default {
   'name': 'Clearing',
   components: { DetailDialog, TotalBar },
   data() {
     return {
-      pickerOptions,
+      defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
+      pickerTimeOptions,
       tableColumnsConfig: [],
       transferTime: [],
       loadTime: [],
@@ -469,8 +476,8 @@ export default {
     },
     datechoose(date) {
       if (date) {
-        this.queryParams.startTeamTransferTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endTeamTransferTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startTeamTransferTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endTeamTransferTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startTeamTransferTime = null;
         this.queryParams.endTeamTransferTime = null;
@@ -478,8 +485,8 @@ export default {
     },
     loadDateChoose(date) {
       if (date) {
-        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startLoadTime = null;
         this.queryParams.endLoadTime = null;
@@ -487,8 +494,8 @@ export default {
     },
     unloadDateChoose(date) {
       if (date) {
-        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d}');
-        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d}');
+        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startUnLoadTime = null;
         this.queryParams.endUnLoadTime = null;

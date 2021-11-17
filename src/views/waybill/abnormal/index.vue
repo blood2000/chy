@@ -57,13 +57,22 @@
     </div>
     <div class="app-container">
       <el-row :gutter="10" class="mb8">
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybillAbnormal:handle']"
+            type="primary"
+            icon="el-icon-edit-outline"
+            size="mini"
+            @click="handleAbnormal"
+          >批量处理异常</el-button>
+        </el-col>
         <el-col :span="1.5" style="float: right;">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="abnormalList" :table-columns-config="tableColumnsConfig"><!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="abnormalList" :table-columns-config="tableColumnsConfig" :selectable="checkboxT" @selection-change="handleSelectionChange">
         <template #isWarning="{row}">
           <span>{{ selectDictLabel(isWarningOptions, row.isWarning) }}</span>
         </template>
@@ -215,11 +224,19 @@ export default {
     },
     /** 处理异常按钮操作 */
     handleAbnormal(row) {
+      const id = row.wayBillCode ? [row.waybillCode] : this.ids;
       this.$refs.HandleDialog.reset();
       this.openHandle = true;
       this.title = '处理异常';
       this.formDisable = false;
-      this.$refs.HandleDialog.setForm(row);
+      this.$refs.HandleDialog.setForm(id);
+    },
+    checkboxT(row) {
+      if (row.isWarning === '1') {
+			  return true;
+      } else {
+			  return false;
+      }
     },
     /** 查看运单按钮操作 */
     handleWaybill(row) {

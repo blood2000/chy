@@ -1,6 +1,6 @@
 <template>
   <el-dialog title="货主/企业认证" :visible="visible" width="800px" append-to-body :close-on-click-modal="false" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" label-width="140px">
+    <el-form ref="form" :model="form" :disabled="disabled" :rules="rules" label-width="140px">
       <el-form-item label="姓名" prop="adminName">
         <el-input v-model="form.adminName" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
@@ -81,7 +81,7 @@
     </el-form>
 
     <div slot="footer" class="dialog-footer">
-      <el-button v-hasPermi="['assets:shipment:enterprise:save']" type="primary" @click="submitForm">确 定</el-button>
+      <el-button v-if="!disabled" v-hasPermi="['assets:shipment:enterprise:save']" type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>
@@ -100,6 +100,7 @@ export default {
   },
   props: {
     open: Boolean,
+    disabled: Boolean,
     info: {
       type: Object,
       default: function() {

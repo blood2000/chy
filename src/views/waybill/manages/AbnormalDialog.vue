@@ -1,11 +1,10 @@
 <template>
-  <!-- 处理运输异常对话框 -->
-  <el-dialog :title="title" :visible="visible" width="800px" append-to-body @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="80px">
-      <el-form-item label="处理原因" prop="reson">
+  <el-dialog :title="title" :visible="visible" width="500px" append-to-body :modal-append-to-body="false" @close="cancel">
+    <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form-item label="异常原因" prop="reson">
         <el-select
           v-model="form.reson"
-          placeholder="请选择处理原因"
+          placeholder="请选择异常原因"
           clearable
           filterable
           size="small"
@@ -20,46 +19,44 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item v-if="form.reson === '4'" label="处理说明" prop="description">
-        <el-input v-model="form.description" style="width: 90%" type="textarea" placeholder="请输入处理说明" />
+      <el-form-item v-if="form.reson === '6'" label="原因描述" prop="description">
+        <el-input v-model="form.description" style="width: 90%" type="textarea" placeholder="请输入原因描述" />
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="submitForm">立即提交</el-button>
-      <el-button @click="cancel">取消</el-button>
+      <el-button v-has-permi="['transportation:waybillAbnormal:add']" type="primary" @click="submitForm">确 定</el-button>
+      <el-button @click="cancel">取 消</el-button>
     </div>
-
   </el-dialog>
 </template>
 
 <script>
-import { batchHandle } from '@/api/waybill/abnormal';
-
+import { batchAbnormalAdd } from '@/api/waybill/manages';
 export default {
-  components: {
-  },
   props: {
     title: {
       type: String,
       default: ''
     },
     open: Boolean,
-    disable: Boolean
+    currentId: {
+      type: String,
+      default: null
+    }
   },
   data() {
     return {
       // 表单参数
-      form: {
-      },
+      form: {},
       reson: undefined,
       resonOptions: [],
       // 表单校验
       rules: {
         description: [
-          { required: true, message: '处理说明不能为空', trigger: 'blur' }
+          { required: true, message: '原因描述不能为空', trigger: 'blur' }
         ],
         reson: [
-          { required: true, message: '请选择处理原因', trigger: 'blur' }
+          { required: true, message: '请选择异常原因', trigger: 'blur' }
         ]
       }
     };
@@ -75,17 +72,17 @@ export default {
     }
   },
   created() {
-    this.getDicts('waybill_abnormal_handle').then(response => {
+    this.getDicts('waybill_abnormal_remark').then(response => {
       this.resonOptions = response.data;
     });
   },
   methods: {
-    /** 提交按钮 */
-    submitForm() {
+    // 提交按钮
+    submitForm: function() {
       this.$refs['form'].validate(valid => {
         if (valid) {
-          batchHandle(this.form).then(response => {
-            this.msgSuccess('处理成功');
+          batchAbnormalAdd(this.form).then(response => {
+            this.msgSuccess('标记成功');
             this.close();
             this.$emit('refresh');
           });
@@ -97,27 +94,26 @@ export default {
       this.close();
       this.reset();
     },
+    // 关闭弹窗
+    close() {
+      this.$emit('update:open', false);
+    },
     // 表单重置
     reset() {
       this.form = {
-        codeList: null,
+        waybillCode: [],
         isWarning: null,
-        description: null,
-        reson: null
+        description: null
       };
       this.resetForm('form');
     },
-    // 关闭弹窗
-    close() {
-	  this.$emit('update:open', false);
-    },
     // 表单赋值
     setForm(data) {
-	    this.form.codeList = data;
-      this.form.isWarning = 0;
+      this.form.waybillCode = data;
+      this.form.isWarning = 1;
     },
     handleChange(e) {
-      if (e && e !== '4') {
+      if (e && e !== '6') {
         const dict = this.resonOptions.find(res => res.dictValue === e);
         this.form.description = dict.dictLabel;
       } else {
@@ -127,24 +123,3 @@ export default {
   }
 };
 </script>
-
-<style scoped>
-	.mr3{
-	  margin-right: 3%;
-	}
-	.width90{
-	  width: 90% !important;
-	}
-	.width28{
-	  width: 28%;
-	}
-	.el-input-number ::v-deep.el-input__inner{
-	  text-align: left;
-	}
-  .el-radio{
-    line-height: 36px !important;
-  }
-  .display{
-    display: none;
-  }
-</style>

@@ -277,6 +277,9 @@
             {{ selectDictLabel(isReturnOptions, row.isReturn) }}
           </span>
         </template>
+        <template #sourceType="{row}">
+          <span>{{ selectDictLabel(sourceTypeOptions, row.sourceType) }}</span>
+        </template>
         <template #shipperCopeFee="{row}">
           <span>{{ floor(row.shipperCopeFee) }}</span>
         </template>
@@ -496,6 +499,14 @@ export default {
       isReturnOptions: [
         { 'dictLabel': '未回单', 'dictValue': '0' },
         { 'dictLabel': '已回单', 'dictValue': '1' }
+      ],
+      // 来源字典
+      sourceTypeOptions: [
+        { 'dictLabel': 'HZZD', 'dictValue': '1' },
+        { 'dictLabel': 'FM', 'dictValue': '2' },
+        { 'dictLabel': 'ZZJD', 'dictValue': '3' },
+        { 'dictLabel': 'HTZP', 'dictValue': '4' },
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
       ],
       // 是否子单字典
       isChildOptions: [

@@ -148,11 +148,11 @@
             v-model="queryParams.tranTime"
             type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 282px"
+            style="width: 228px"
             :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
@@ -162,11 +162,11 @@
             v-model="queryParams.loadTime"
             type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 282px"
+            style="width: 228px"
             :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
@@ -176,11 +176,11 @@
             v-model="queryParams.unLoadTime"
             type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 282px"
+            style="width: 228px"
             :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
@@ -190,11 +190,11 @@
             v-model="queryParams.createTime"
             type="datetimerange"
             unlink-panels
-            :picker-options="pickerOptions"
+            :picker-options="pickerTimeOptions"
             range-separator="-"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            style="width: 282px"
+            style="width: 228px"
             :default-time="defaultTime"
             value-format="yyyy-MM-dd HH:mm:ss"
           />
@@ -433,7 +433,7 @@
 </template>
 
 <script>
-import { pickerOptions } from '@/utils/dateRange';
+import { pickerTimeOptions } from '@/utils/dateRange';
 import { payRecordlistApi, payRecordlist } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
@@ -448,7 +448,7 @@ export default {
   data() {
     return {
       defaultTime: ['00:00:00', '23:59:59'], // '00:00:00', '23:59:59'
-      pickerOptions,
+      pickerTimeOptions,
       tableColumnsConfig: [],
       api: payRecordlistApi,
       // 遮罩层
@@ -776,6 +776,6 @@ export default {
 
 <style scoped>
 .input-width{
-  width: 282px;
+  width: 228px;
 }
 </style>

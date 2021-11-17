@@ -106,7 +106,7 @@
     </div>
 
     <!-- 货主/企业认证 对话框 -->
-    <certification-dialog ref="detailDialog" :open.sync="open" :info="form" :shipment-code="shipmentCode" @refresh="getCompanyInfo" />
+    <certification-dialog ref="detailDialog" :disabled="formDisabled" :open.sync="open" :info="form" :shipment-code="shipmentCode" @refresh="getCompanyInfo" />
   </div>
 </template>
 
@@ -132,6 +132,7 @@ export default {
     return {
       open: false,
       form: {},
+      formDisabled: false,
       rules: {
         // organizationCodeNo: [
         //   { required: true, trigger: 'blur', message: '统一社会信用代码不能为空' }
@@ -187,6 +188,12 @@ export default {
     },
     // 企业认证
     handleCertification() {
+      console.log(this.form.authStatus);
+      if (this.form.authStatus === 1 || this.form.authStatus === 3) {
+        this.formDisabled = true;
+      } else {
+        this.formDisabled = false;
+      }
       this.$refs.detailDialog.reset();
       this.$refs.detailDialog.setForm();
       this.open = true;
