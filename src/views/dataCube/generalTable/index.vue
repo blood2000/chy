@@ -2,124 +2,126 @@
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
       <el-form ref="queryForm" :inline="true" label-width="auto" @submit.native.prevent>
-        <el-form-item v-for="(item, index) in dataModelDto.queryFields" :key="index" :label="item.dataItemInfo.itemCn">
-          <!-- string -->
-          <el-input
-            v-if="item.dataItemInfo.itemType === 'string'"
-            v-model="item.value"
-            :placeholder="`请输入${item.dataItemInfo.itemCn}`"
-            clearable
-            style="width: 200px"
-            size="small"
-          />
-          <!-- 整数类型|浮点类型 -->
-          <template v-else-if="item.dataItemInfo.itemType === 'number' || item.dataItemInfo.itemType === 'float' || item.dataItemInfo.itemType === 'float4'">
+        <template v-for="(item, index) in dataModelDto.queryFields">
+          <el-form-item v-if="!item.dynamic" :key="index" :label="item.dataItemInfo.itemCn">
+            <!-- string -->
             <el-input
-              v-model="item.start"
-              :placeholder="`请输入${item.dataItemInfo.itemCn}开始值`"
+              v-if="item.dataItemInfo.itemType === 'string'"
+              v-model="item.value"
+              :placeholder="`请输入${item.dataItemInfo.itemCn}`"
               clearable
               style="width: 200px"
               size="small"
             />
-            至
+            <!-- 整数类型|浮点类型 -->
+            <template v-else-if="item.dataItemInfo.itemType === 'number' || item.dataItemInfo.itemType === 'float' || item.dataItemInfo.itemType === 'float4'">
+              <el-input
+                v-model="item.start"
+                :placeholder="`请输入${item.dataItemInfo.itemCn}开始值`"
+                clearable
+                style="width: 200px"
+                size="small"
+              />
+              至
+              <el-input
+                v-model="item.end"
+                :placeholder="`请输入${item.dataItemInfo.itemCn}结束值`"
+                clearable
+                style="width: 200px"
+                size="small"
+              />
+            </template>
+            <!-- 时间类型 -->
+            <template v-else-if="item.dataItemInfo.itemType === 'date'">
+              <el-date-picker
+                v-model="item.startTime"
+                clearable
+                size="small"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="开始时间"
+                style="width: 200px"
+              />
+              至
+              <el-date-picker
+                v-model="item.endTime"
+                clearable
+                size="small"
+                type="date"
+                value-format="yyyy-MM-dd"
+                placeholder="结束时间"
+                style="width: 200px"
+              />
+            </template>
+            <!-- 时间戳类型 -->
+            <template v-else-if="item.dataItemInfo.itemType === 'timestamp'">
+              <el-date-picker
+                v-model="item.startTime"
+                clearable
+                size="small"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="开始时间"
+                style="width: 200px"
+                default-time="00:00:00"
+              />
+              至
+              <el-date-picker
+                v-model="item.endTime"
+                clearable
+                size="small"
+                type="datetime"
+                value-format="yyyy-MM-dd HH:mm:ss"
+                placeholder="结束时间"
+                style="width: 200px"
+                default-time="23:59:59"
+              />
+            </template>
+            <!-- 枚举类型 -->
+            <el-select
+              v-else-if="item.dataItemInfo.itemType === 'enum'"
+              v-model="item.multiple"
+              :placeholder="`请选择${item.dataItemInfo.itemCn}`"
+              clearable
+              multiple
+              style="width: 200px"
+              size="small"
+            >
+              <el-option
+                v-for="dict in item.itemOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+            <!-- 自定义枚举类型 -->
+            <el-select
+              v-else-if="item.dataItemInfo.itemType === 'custom'"
+              v-model="item.multiple"
+              :placeholder="`请选择${item.dataItemInfo.itemCn}`"
+              clearable
+              multiple
+              style="width: 200px"
+              size="small"
+            >
+              <el-option
+                v-for="dict in item.itemOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+            <!-- 输入框 -->
             <el-input
-              v-model="item.end"
-              :placeholder="`请输入${item.dataItemInfo.itemCn}结束值`"
+              v-else
+              v-model="item.value"
+              :placeholder="`请输入${item.dataItemInfo.itemCn}`"
               clearable
               style="width: 200px"
               size="small"
             />
-          </template>
-          <!-- 时间类型 -->
-          <template v-else-if="item.dataItemInfo.itemType === 'date'">
-            <el-date-picker
-              v-model="item.startTime"
-              clearable
-              size="small"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="开始时间"
-              style="width: 200px"
-            />
-            至
-            <el-date-picker
-              v-model="item.endTime"
-              clearable
-              size="small"
-              type="date"
-              value-format="yyyy-MM-dd"
-              placeholder="结束时间"
-              style="width: 200px"
-            />
-          </template>
-          <!-- 时间戳类型 -->
-          <template v-else-if="item.dataItemInfo.itemType === 'timestamp'">
-            <el-date-picker
-              v-model="item.startTime"
-              clearable
-              size="small"
-              type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              placeholder="开始时间"
-              style="width: 200px"
-              default-time="00:00:00"
-            />
-            至
-            <el-date-picker
-              v-model="item.endTime"
-              clearable
-              size="small"
-              type="datetime"
-              value-format="yyyy-MM-dd HH:mm:ss"
-              placeholder="结束时间"
-              style="width: 200px"
-              default-time="23:59:59"
-            />
-          </template>
-          <!-- 枚举类型 -->
-          <el-select
-            v-else-if="item.dataItemInfo.itemType === 'enum'"
-            v-model="item.multiple"
-            :placeholder="`请选择${item.dataItemInfo.itemCn}`"
-            clearable
-            multiple
-            style="width: 200px"
-            size="small"
-          >
-            <el-option
-              v-for="dict in item.itemOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-          <!-- 自定义枚举类型 -->
-          <el-select
-            v-else-if="item.dataItemInfo.itemType === 'custom'"
-            v-model="item.multiple"
-            :placeholder="`请选择${item.dataItemInfo.itemCn}`"
-            clearable
-            multiple
-            style="width: 200px"
-            size="small"
-          >
-            <el-option
-              v-for="dict in item.itemOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-          <!-- 输入框 -->
-          <el-input
-            v-else
-            v-model="item.value"
-            :placeholder="`请输入${item.dataItemInfo.itemCn}`"
-            clearable
-            style="width: 200px"
-            size="small"
-          />
-        </el-form-item>
+          </el-form-item>
+        </template>
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -127,7 +129,12 @@
       </el-form>
     </div>
 
-    <div class="app-container">
+    <div v-if="chartAlias && chartAlias !== 'table'" class="app-container">
+      <div v-if="dataList.length > 0" ref="chartBoxRef" style="width: 600px; height: 360px" />
+      <DataNull v-else style="margin: 50px 0" />
+    </div>
+
+    <div v-else class="app-container">
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
@@ -165,9 +172,16 @@
 
 <script>
 import { getDataModel, searchDataModel, getCustomEnumById } from '@/api/dataCenter/dataCenter.js';
+import { getChartSetting } from '@/api/dataCenter/chartSetting.js';
 import { deepClone } from '@/utils/index';
+import DataNull from '@/components/DataNull/index';
+import chartViewMixins from '../mixins/chartViewMixins';
 export default {
   name: '',
+  components: {
+    DataNull
+  },
+  mixins: [chartViewMixins],
   data() {
     return {
       modelId: null,
@@ -182,8 +196,6 @@ export default {
       exportLoading: false,
       // 列表数据
       dataList: [],
-      // 函数字典值
-      functionList: [],
       dataModelDto: {
         queryFields: [],
         tableFields: [],
@@ -191,7 +203,15 @@ export default {
           pageNum: 1,
           pageSize: 10
         }
-      }
+      },
+      // 图表类型
+      chartAlias: '',
+      chartId: null,
+      chartConfigValueJson: null,
+      // 配置树
+      chartSetting: [],
+      // 扁平化配置树
+      chartSettingArr: []
     };
   },
   mounted() {
@@ -199,20 +219,19 @@ export default {
     const pathArr = path.split('/');
     this.modelId = pathArr[pathArr.length - 1];
     this.getDataModelData();
-    this.getFunctionList();
   },
   methods: {
-    /** 获取函数字典值 */
-    getFunctionList() {
-      this.getDicts('agg_function').then(response => {
-        this.functionList = response.data;
-      });
-    },
     /** 获取模型数据 */
     getDataModelData() {
       getDataModel(this.modelId).then(res => {
         if (res.data && res.data.dataModelDto) {
+          this.chartAlias = res.data.chartAlias;
           const dataModelDto = res.data.dataModelDto;
+          // 图表
+          if (this.chartAlias !== 'table') {
+            this.chartId = res.data.chartId;
+            this.chartConfigValueJson = res.data.dataModelDto.chartConfigValueJson;
+          }
           // 如果是枚举类型，要请求字典
           if (dataModelDto.queryFields) {
             dataModelDto.queryFields.forEach((el, i) => {
@@ -267,6 +286,10 @@ export default {
           this.total = 0;
           this.dataList = [];
         }
+        // 图表
+        if (this.chartAlias && this.chartAlias !== 'table' && this.dataList.length > 0) {
+          this.getChartSetting();
+        }
       });
     },
     /** 导出 */
@@ -274,7 +297,40 @@ export default {
       this.exportLoading = true;
       await this.download('/analysis/dataModelInfos/export', Object.assign({}, this.dataModelDto, { dataModelId: this.modelId }), '导出文件', 'application/json');
       this.exportLoading = false;
+    },
+    // 读取图表配置树
+    getChartSetting() {
+      getChartSetting(this.chartId).then(res => {
+        if (res.data && res.data.length > 0) {
+          this.chartSetting = res.data[0].children;
+        } else {
+          this.chartSetting = [];
+        }
+        // 编辑回填值
+        if (this.chartConfigValueJson) {
+          this.$nextTick(() => {
+            this.fillBackConfigValue();
+          });
+        }
+        // 扁平化数组
+        this.getChartSettingArr(true);
+        // 渲染图表
+        setTimeout(() => {
+          this.handleGenerate();
+        }, 0);
+      });
+    },
+    // 获取扁平化的配置树
+    getChartSettingArr(isFirst) {
+      this.chartSettingArr = [];
+      this.handleDeepSettingTree(this.chartSetting, null, isFirst);
+    },
+    // 刷新图表
+    handleGenerate() {
+      this.getJson(this.dataList);
+      this.initChart();
     }
+
   }
 };
 </script>
