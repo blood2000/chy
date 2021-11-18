@@ -1170,6 +1170,7 @@ export default {
       const { orderGoodsList, orderAddressPublishBoList, orderFreightInfoBoList } = await this.handlerAddress();
 
       console.log(this.basicInfor, '提交数据');
+
       const orderInfoBo = {
         code: InfoCode || undefined,
         publishMode,

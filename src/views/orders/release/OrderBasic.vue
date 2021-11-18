@@ -914,6 +914,14 @@ export default {
 
             console.log(this.formData, '要获取的数据');
 
+            if (!this.formData.reviewIsNeedLoadingCertificate && !this.formData.reviewNoNeedUnloadImg) {
+              this.msgWarning('复核时是否需要装货凭证 和 复核时是否需要卸货凭证 至少启用一个');
+
+              return false;
+            }
+
+            console.log('进来了');
+
             resolve({
               InfoCode: this.InfoCode,
               classList: [
