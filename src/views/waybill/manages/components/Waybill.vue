@@ -241,6 +241,15 @@
             @click="handleExport"
           >导出</el-button>
         </el-col>
+        <el-col :span="1.5">
+          <el-button
+            v-hasPermi="['transportation:waybillAbnormal:add']"
+            type="primary"
+            icon="el-icon-edit-outline"
+            size="mini"
+            @click="handleMark"
+          >批量标记异常</el-button>
+        </el-col>
         <el-col :span="1.5" class="fr">
           <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
         </el-col>
@@ -248,7 +257,7 @@
       </el-row>
 
       <!-- table -->
-      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" :height="height">  <!-- @selection-change="handleSelectionChange" -->
+      <RefactorTable :loading="loading" :data="managesList" :table-columns-config="tableColumnsConfig" :height="height" @selection-change="handleSelectionChange">
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, row.status) }}</span>
         </template>
@@ -424,10 +433,18 @@
       @refresh="getList"
     />
     <!-- 标记异常对话框 -->
-    <mark-abnormal-dialog
-      ref="MarkAbnormalDialog"
+    <abnormal-dialog
+      ref="AbnormalDialog"
       :title="title"
       :open.sync="openMarkAbanormal"
+      :current-id="currentId"
+      @refresh="getList"
+    />
+    <!-- 作废对话框 -->
+    <nullify-dialog
+      ref="NullifyDialog"
+      :title="title"
+      :open.sync="openNullify"
       :current-id="currentId"
       @refresh="getList"
     />
@@ -450,9 +467,10 @@
 </template>
 
 <script>
-import { listManagesApi, listManages, waybillInvalid, waybillCancel } from '@/api/waybill/manages';
+import { listManagesApi, listManages, waybillCancel } from '@/api/waybill/manages';
 import DetailDialog from '../../components/detailDialog';
-import MarkAbnormalDialog from '../markAbnormalDialog';
+import AbnormalDialog from '../AbnormalDialog';
+import NullifyDialog from '../NullifyDialog';
 import SeperateListDialog from '../seperateListDialog';
 import RemarkDialog from '../remarkDialog';
 import { getUserInfo } from '@/utils/auth';
@@ -462,7 +480,8 @@ export default {
   name: 'Manages',
   components: {
     DetailDialog,
-    MarkAbnormalDialog,
+    AbnormalDialog,
+    NullifyDialog,
     SeperateListDialog,
     RemarkDialog
   },
@@ -492,6 +511,7 @@ export default {
       'open': false,
       'openMarkAbanormal': false,
       'openSeperateList': false,
+      openNullify: false,
       'openRemark': false,
       // 是否字典
       'isOptions': [
@@ -703,9 +723,7 @@ export default {
     },
     // 多选框选中数据
     handleSelectionChange(selection) {
-      this.ids = selection.map(item => item.code);
-      this.single = selection.length !== 1;
-      this.multiple = !selection.length;
+      this.ids = selection.map(item => item.wayBillCode);
     },
     // 导出
     handleExport() {
@@ -724,11 +742,11 @@ export default {
     },
     /** 标记异常按钮操作 */
     handleMark(row) {
-      this.$refs.MarkAbnormalDialog.reset();
-      // this.currentId = row.wayBillCode;
+      const id = row.wayBillCode ? [row.wayBillCode] : this.ids;
+      this.$refs.AbnormalDialog.reset();
       this.openMarkAbanormal = true;
       this.title = '标记异常';
-      this.$refs.MarkAbnormalDialog.setForm(row);
+      this.$refs.AbnormalDialog.setForm(id);
     },
     /** 分单列表按钮操作 */
     handleSeperate(row) {
@@ -738,22 +756,39 @@ export default {
     },
     /** 作废运单按钮操作 */
     handleDelete(row) {
-      const code = row.wayBillCode;
-      const title = row.status === '1' ? '取消' : '作废';
-      this.$confirm('是否确认' + title + '单号为"' + row.waybillNo + '"的运单?', '警告', {
-        'confirmButtonText': '确定',
-        'cancelButtonText': '取消',
-        'type': 'warning'
-      }).then(function() {
-        if (row.status === '1') {
-          return waybillCancel(code);
-        } else {
-          return waybillInvalid(code);
-        }
-      }).then(() => {
-        this.getList();
-        this.msgSuccess('操作成功');
-      });
+      if (row.status === '1') {
+        this.$confirm('是否确认取消单号为"' + row.waybillNo + '"的运单?', '警告', {
+          'confirmButtonText': '确定',
+          'cancelButtonText': '取消',
+          'type': 'warning'
+        }).then(function() {
+          return waybillCancel(row.wayBillCode);
+        }).then(() => {
+          this.getList();
+          this.msgSuccess('操作成功');
+        });
+      } else {
+        this.$refs.NullifyDialog.reset();
+        this.openNullify = true;
+        this.title = '作废运单';
+        this.$refs.NullifyDialog.setForm(row.wayBillCode);
+      }
+      // const code = row.wayBillCode;
+      // const title = row.status === '1' ? '取消' : '作废';
+      // this.$confirm('是否确认' + title + '单号为"' + row.waybillNo + '"的运单?', '警告', {
+      //   'confirmButtonText': '确定',
+      //   'cancelButtonText': '取消',
+      //   'type': 'warning'
+      // }).then(function() {
+      //   if (row.status === '1') {
+      //     return waybillCancel(code);
+      //   } else {
+      //     return waybillInvalid(code);
+      //   }
+      // }).then(() => {
+      //   this.getList();
+      //   this.msgSuccess('操作成功');
+      // });
     },
     /** 备注按钮操作 */
     handleRemarks(row) {

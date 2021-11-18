@@ -34,3 +34,12 @@ export function handleAbnormal(data) {
     data: data
   });
 }
+
+// 批量处理运输异常
+export function batchHandle(data) {
+  return request({
+    url: '/transportation/waybillAbnormal/batchHandle',
+    method: 'post',
+    data: data
+  });
+}

@@ -29,10 +29,19 @@ export function waybillAbnormal(data) {
   });
 }
 
-// 运单作废
-export function waybillInvalid(code) {
+// 批量标记异常
+export function batchAbnormalAdd(data) {
   return request({
-    url: `/transportation/waybillOper/invalid?wayBillInCode=${code}`,
+    url: '/transportation/waybillAbnormal/batchAbnormalAdd',
+    method: 'post',
+    data: data
+  });
+}
+
+// 运单作废
+export function waybillInvalid(code, reson) {
+  return request({
+    url: `/transportation/waybillOper/invalid?wayBillInCode=${code}&cancelReason=${reson}`,
     method: 'get'
   });
 }

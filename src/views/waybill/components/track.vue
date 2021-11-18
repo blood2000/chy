@@ -1000,7 +1000,7 @@ export default {
     },
     // 获取车辆设备信息
     getDeviceInfo() {
-      getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimilot' }).then(response => {
+      getDevice({ vehicleCode: this.wayBillInfo.vehicleCode, vendorCode: 'jimiIot' }).then(response => {
         if (response.data.length > 0) {
           this.deviceInfo = response.data[0];
           this.jimiQueryParams.imeis = response.data[0].factoryOnlyCode;
