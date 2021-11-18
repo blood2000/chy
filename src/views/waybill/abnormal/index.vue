@@ -59,7 +59,7 @@
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybillAbnormal:handle']"
+            v-hasPermi="['transportation:waybillAbnormal:batchHandle']"
             type="primary"
             icon="el-icon-edit-outline"
             size="mini"
@@ -85,7 +85,7 @@
         <template #edit="{row}">
           <el-button
             v-if="row.isWarning === '1'"
-            v-hasPermi="['transportation:waybillAbnormal:handle']"
+            v-hasPermi="['transportation:waybillAbnormal:batchHandle']"
             size="mini"
             type="text"
             @click="handleAbnormal(row)"
@@ -224,7 +224,7 @@ export default {
     },
     /** 处理异常按钮操作 */
     handleAbnormal(row) {
-      const id = row.wayBillCode ? [row.waybillCode] : this.ids;
+      const id = row.waybillCode ? [row.waybillCode] : this.ids;
       this.$refs.HandleDialog.reset();
       this.openHandle = true;
       this.title = '处理异常';
