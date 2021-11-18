@@ -2,7 +2,7 @@
   <el-dialog
     class="page-agreement-dialog"
     :visible="visible"
-    width="1000px"
+    width="1060px"
     title="协议"
     append-to-body
     :close-on-click-modal="false"
