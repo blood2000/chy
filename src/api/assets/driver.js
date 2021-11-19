@@ -139,3 +139,12 @@ export function createWallet(driverCode) {
     method: 'post'
   });
 }
+
+// 收款委托函签署电子签章
+export function entrustElectron(query) {
+  return request({
+    url: '/iot/zjtdBusiness/collectionAuthorizationLetter',
+    method: 'get',
+    params: query
+  });
+}
