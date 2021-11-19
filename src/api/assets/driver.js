@@ -148,3 +148,14 @@ export function entrustElectron(query) {
     params: query
   });
 }
+
+// 获取合同电子签章信息
+export function getElectron(agreementNo) {
+  return request({
+    url: '/assets/driver/agreement/selectDriverAgreement',
+    method: 'get',
+    params: {
+      agreementNo: agreementNo
+    }
+  });
+}
