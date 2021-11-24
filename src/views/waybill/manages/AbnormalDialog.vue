@@ -24,7 +24,7 @@
       </el-form-item>
     </el-form>
     <div slot="footer" class="dialog-footer">
-      <el-button v-has-permi="['transportation:waybillAbnormal:add']" type="primary" @click="submitForm">确 定</el-button>
+      <el-button v-has-permi="['transportation:waybillAbnormal:batchAbnormalAdd']" type="primary" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
   </el-dialog>

@@ -243,7 +243,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
-            v-hasPermi="['transportation:waybillAbnormal:add']"
+            v-hasPermi="['transportation:waybillAbnormal:batchAbnormalAdd']"
             type="primary"
             icon="el-icon-edit-outline"
             size="mini"
@@ -364,7 +364,7 @@
             详情
           </el-button>
           <el-button
-            v-has-permi="['transportation:waybillAbnormal:add']"
+            v-has-permi="['transportation:waybillAbnormal:batchAbnormalAdd']"
             size="mini"
             type="text"
             @click="handleMark(row)"
