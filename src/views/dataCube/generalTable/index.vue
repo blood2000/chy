@@ -223,7 +223,7 @@ export default {
   methods: {
     /** 获取模型数据 */
     getDataModelData() {
-      getDataModel(this.modelId).then(res => {
+      getDataModel(this.modelId).then(async res => {
         if (res.data && res.data.dataModelDto) {
           this.chartAlias = res.data.chartAlias;
           const dataModelDto = res.data.dataModelDto;
@@ -234,20 +234,21 @@ export default {
           }
           // 如果是枚举类型，要请求字典
           if (dataModelDto.queryFields) {
-            dataModelDto.queryFields.forEach((el, i) => {
+            for (let i = 0; i < dataModelDto.queryFields.length; i++) {
+              const el = dataModelDto.queryFields[i];
               if (el.dataItemInfo.itemKey && el.dataItemInfo.itemKey !== '') {
                 if (el.dataItemInfo.itemType === 'enum') {
-                  this.getDicts(el.dataItemInfo.itemKey).then(value => {
+                  await this.getDicts(el.dataItemInfo.itemKey).then(value => {
                     dataModelDto.queryFields[i].itemOptions = value.data;
                   });
                 }
                 if (el.dataItemInfo.itemType === 'custom') {
-                  getCustomEnumById(el.dataItemInfo.id).then(value => {
+                  await getCustomEnumById(el.dataItemInfo.id).then(value => {
                     dataModelDto.queryFields[i].itemOptions = value.data;
                   });
                 }
               }
-            });
+            }
           }
           // 缓存数据
           this.$nextTick(() => {
@@ -255,10 +256,8 @@ export default {
             this.queryFields = queryFields || [];
             this.tableFields = tableFields || [];
             this.dataModelDto = deepClone(dataModelDto);
-          });
-          setTimeout(() => {
             this.resetQuery();
-          }, 300);
+          });
         }
       });
     },
