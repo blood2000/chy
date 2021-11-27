@@ -139,3 +139,23 @@ export function createWallet(driverCode) {
     method: 'post'
   });
 }
+
+// 收款委托函签署电子签章
+export function entrustElectron(query) {
+  return request({
+    url: '/iot/zjtdBusiness/collectionAuthorizationLetter',
+    method: 'get',
+    params: query
+  });
+}
+
+// 获取合同电子签章信息
+export function getElectron(agreementNo) {
+  return request({
+    url: '/assets/driver/agreement/selectDriverAgreement',
+    method: 'get',
+    params: {
+      agreementNo: agreementNo
+    }
+  });
+}

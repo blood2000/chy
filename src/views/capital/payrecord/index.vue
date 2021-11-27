@@ -659,6 +659,7 @@ export default {
       width: 100,
       fixed: 'left'
     });
+    this.queryParams.createTime = [this.parseTime(new Date().getTime() - 7 * 3600 * 1000 * 24), this.parseTime(new Date())];
     this.getList();
   },
 

@@ -458,7 +458,7 @@
       <!-- 管理车辆 对话框 -->
       <manage-dialog ref="ManageDialog" :open.sync="manageDialogOpen" :driver-code="driverCode" />
       <!-- 协议 对话框 -->
-      <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" />
+      <agreement-dialog ref="agreementDialog" :open.sync="agreementDialogOpen" :agreement-html="agreementHtml" @refresh="getList" />
       <!-- 加入调度 对话框 -->
       <add-team-dialog :open.sync="addTeamDialogOpen" :driver-code="driverCode" />
       <!-- 处理邀请 对话框 -->
@@ -801,6 +801,7 @@ export default {
         driverCode: row.code,
         teamCode: this.teamCode
       }).then(response => {
+        this.$refs.agreementDialog.setForm(row, this.teamCode);
         this.agreementHtml = response.data;
         this.agreementDialogOpen = true;
       });
