@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-loading="loading">
     <!-- 核算页面 -->
     <div v-show="showSearch">
       <QueryForm
@@ -104,7 +104,7 @@
 
       <AccountingTable
         ref="accountingRef"
-        :loading="loading"
+
         :my-data="myData"
         :columns="tableColumnsConfig"
         @ismultiple="(bool)=> multiple = bool"
@@ -120,6 +120,12 @@
         :page-sizes="[10, 50, 100, 200, 300]"
         @pagination="getList"
       />
+
+      <div v-if="percentage1" class="progress-box">
+        <el-alert show-icon type="success" :closable="false">
+          <div style="font-size: 20px">写卡中 {{ writeCont }} / {{ selectedData.length }}</div>
+        </el-alert>
+      </div>
 
       <!-- 已打款的回单 -->
       <el-dialog class="i-adjust" title="卡信息" :visible.sync="cardinfoOpen" width="1200px" :close-on-click-modal="false" append-to-body>
@@ -516,7 +522,11 @@ export default {
       // 卡
       isConnect: false,
       cardinfoOpen: false,
-      cardInfoData: null
+      cardInfoData: null,
+
+      // 提示控件
+      percentage1: false,
+      writeCont: 0
 
     };
   },
@@ -547,6 +557,23 @@ export default {
 
     testProcess() {
       return process.env.NODE_ENV === 'development';
+    },
+
+    isOver() {
+      return this.$store.state.icCard.isover;
+    }
+  },
+
+  watch: {
+    isOver(val) {
+      if (val) {
+        this.$alert('迁卡超时, 请手动退出应用程序,并重新操作', '迁卡错误', {
+          confirmButtonText: '确定',
+          callback: action => {
+            location.reload();
+          }
+        });
+      }
     }
   },
 
@@ -840,8 +867,14 @@ export default {
       }
     },
 
+
+
     // 写回卡的操作
     async xexiaoCheck(userMark = userMark, userInfo, meter = versionMark, data, cardData) {
+      this.percentage1 = true;
+      this.writeCont = 0;
+      // writeCont
+
       // 走发卡-写卡
       if (!userInfo) return;
       try {
@@ -849,6 +882,9 @@ export default {
 
         const cancellation = await action.cancellation();
         if (!cancellation.success || cancellation.code !== '9000') {
+          console.log('清卡失败');
+          this.loading = false;
+          this.percentage1 = false;
           this.msgError(cancellation.msg || '清卡失败');
           return;
         }
@@ -856,21 +892,27 @@ export default {
         const res = await action.issuingCard(userInfo, userMark);
 
         if (!res.success) {
+          console.log('发卡失败~~~~');
           this.loading = false;
-          this.msgError(res.code ? res.msg : '发卡失败!');
+          this.percentage1 = false;
+          this.msgError(res.code ? res.msg : '发卡失败~~~~!');
           return;
         }
 
         if (res.success && res.code !== '9000') {
           this.loading = false;
+          this.percentage1 = false;
+          console.log('啥失败???');
           this.msgError(res.msg);
           return;
         }
 
         // console.log(res, '发卡成功');
       } catch (error) {
-        this.msgError('写卡失败, 请不要移动IC卡!');
+        console.log(error, '目标位置的错误');
+        // this.msgError('写卡失败, 请不要移动IC卡!');
         this.loading = false;
+        this.percentage1 = false;
         return;
       }
 
@@ -881,16 +923,16 @@ export default {
 
       // 通过时间来
       const arr = [];
+      const laster = data.length;
       data.forEach(async(e, index) => {
         this['time' + index] = setTimeout(() => {
-          action.writeData(fn.setData(meter, e)).then(res => {
-            console.log(res);
-
+          action.writeData(fn.setData(meter, e), index === laster - 1).then(res => {
             clearTimeout(this['time' + index]);
             if (res.success) {
               if (res.code === '9000') {
                 arr.push(true);
                 // 执行到最后一步走这里
+                this.writeCont++;
               } else {
                 arr.push(false);
                 this.msgError(res.msg);
@@ -910,15 +952,17 @@ export default {
                   cardBatchNo: cardData.cardBatchNo
                 }).then(res => {
                   this.loading = false;
+                  this.percentage1 = false;
                   this.msgSuccess(res.msg || '补卡成功');
                   this.getList();
                 }).catch(() => { this.loading = false; });
               } else {
                 this.loading = false;
+                this.percentage1 = false;
                 this.msgError('写入失败');
               }
             }
-          });
+          }).catch(err => { console.log(err, '写卡失败的问题'); });
         }, (index + 1) * 500);
       });
     },
@@ -937,6 +981,15 @@ export default {
 };
 </script>
 
-<style>
-
+<style scoped>
+.progress-box{
+    width: 50vw;
+    position: fixed;
+    top: 30%;
+    left: 0;
+    right: 0;
+    z-index: 20212021;
+    transform: translate(50%);
+    padding: 50px;
+}
 </style>

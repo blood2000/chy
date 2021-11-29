@@ -229,9 +229,9 @@
       </el-alert>
     </div>
 
-    <div v-if="false" class="progress-box">
+    <div v-if="percentage1" class="progress-box">
       <el-alert show-icon type="success" :closable="false">
-        <div style="font-size: 20px">数据抽取中, 请勿移动卡片 {{ writeCont }} / {{ noSelectArr.length }}</div>
+        <div style="font-size: 20px">写卡中 {{ writeCont }} / {{ noSelectArr.length }}</div>
       </el-alert>
     </div>
 
@@ -326,6 +326,10 @@ export default {
   },
 
   computed: {
+    isOver() {
+      return this.$store.state.icCard.isover;
+    },
+
     isShipment() {
       const { isShipment = false, shipment = {}} = getUserInfo() || {};
 
@@ -377,6 +381,18 @@ export default {
         }
       },
       deep: true
+    },
+
+    isOver(val) {
+      console.log('打卡失败, 挂掉了');
+      if (val) {
+        this.$alert('迁卡超时, 请补卡后重新迁卡', '迁卡错误', {
+          confirmButtonText: '确定',
+          callback: action => {
+            location.reload();
+          }
+        });
+      }
     }
   },
 
@@ -428,6 +444,8 @@ export default {
             this.myData = [];
             this.myDatafilter = [];
           }
+        }).catch(error => {
+          console.log(error, '打卡失败~~~~~~~~~');
         });
       }
     },
@@ -513,10 +531,11 @@ export default {
         cancelButtonText: '取消'
       }).then(() => {
         this.loading = true; // 显示遮罩层(一直到迁卡结束为止)
-        this.percentage1 = true; // 显示显示提示框(第一阶段)
+
         this.writeCont = 0; // 初始写卡的数据
         // 迁卡读取 清空/回填
         if (this.isConnect) {
+          this.percentage1 = true; // 显示显示提示框(第一阶段)
           // if (this.selectedData.length > 0) {
           //   const qiankaData = this.xiekaData(this.selectedData);
           //   this.setLocalStorage('t_' + qiankaData.cardData.card16no, qiankaData); // 保存当前写卡的信息(如果写卡失败, 可以找回)
@@ -606,7 +625,7 @@ export default {
                   }, this.selectedData, []);
                 }
               }).catch(err => {
-                console.log(err);
+                console.log(err, '清卡失败~~~~');
                 this.msgError(err.msg);
               });
             }
@@ -745,11 +764,11 @@ export default {
                 } else {
                   this.msgError(readDataRes.msg);
                 }
-              });
+              }).catch(error => { console.log(error, '开始读卡数据~~~~'); });
             } else {
               this.msgError(res.msg);
             }
-          }).catch(() => {});
+          }).catch((error) => { console.log(error, '读卡用户失败~~~!'); });
         });
       }, () => {
         // 白卡处理
@@ -925,12 +944,14 @@ export default {
 
       let isok = false;
 
+      const laster = data.length;
+
       data.forEach(async(e, index) => {
         arrtime[index] = setTimeout(() => {
           if (stop) return;
           if (isok) return;
           isok = true;
-          action.writeData(fn.setData(meter, e)).then((res) => {
+          action.writeData(fn.setData(meter, e), index === laster - 1).then((res) => {
             isok = false;
             if (res.success) {
               if (res.code === '9000') {
@@ -968,7 +989,7 @@ export default {
                 errorfn && errorfn();
               }
             }
-          });
+          }).catch(error => { console.log(error, '写卡失败~~~~'); });
         }, (index + 1) * 500);
       });
     },

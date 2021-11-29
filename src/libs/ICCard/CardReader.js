@@ -61,10 +61,13 @@ const CardReader = {
         CardReader.socket = new WebSocket(this.getWsUrl());
         CardReader.socket.onopen = function() {
           CardReader.log.info('# [Socket] 连接本地服务成功');
+
+
           success && success('连接服务成功');
         };
         CardReader.socket.onclose = function(event) {
           Message.error('# [Socket] 本地服务链接已断开 : ', event.wasClean);
+
           CardReader.log.warn('# [Socket] 本地服务链接已断开 : ', event.wasClean);
           error && error();
         };
@@ -117,12 +120,14 @@ const CardReader = {
                 msg: '读卡错误信息：' + (CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : ret.code)
               });
             } else {
-              reject({
-                ...ret,
-                success: false,
-                code: '',
-                msg: '请将【数据IC卡】放至有效位置或重启本地应用'
-              });
+              // reject({
+              //   ...ret,
+              //   success: false,
+              //   code: ''
+              // });
+              store1.commit('icCard/EMITOVER', true);
+
+              Message.error('请求超时,请重启应用, 并重新连接');
             }
           }
         };
@@ -219,13 +224,13 @@ const CardReader = {
       let errordata = {};
       if (typeof error.success === 'undefined') {
         // Object
-        console.log('语法报错');
+        // console.log('语法报错');
         CardReader.action.error();
         errordata.msg = error.message;
       } else {
         errordata = {
           ...error,
-          msg: error.code ? CardReader.codes[error.code].message : '请将【数据IC卡】放至有效位置 或者是 本地连接应用报错, 请重启本地连接应用'
+          msg: error.code ? CardReader.codes[error.code].message : ''
         };
       }
 
@@ -464,6 +469,9 @@ const CardReader = {
           ResetCpuCardNoGetCardNo
         };
       } catch (error) {
+        console.log(error, '获取卡片失败~');
+
+        // Message.error('获取卡片失败');
         return {
           code: '',
           ...CardReader.fn.catchError(error),
@@ -499,7 +507,7 @@ const CardReader = {
               ...ret,
               codeMsg: CardReader.codes[ret.code] ? CardReader.codes[ret.code].message : '',
               success: false,
-              msg: '验证失败，请勿多次尝试，否则易造成锁卡（废卡）'
+              msg: '验证失败，请勿多次尝试，否则易造成锁卡（废卡）, 请马上清空卡片'
             };
           }
         } else {
@@ -548,6 +556,7 @@ const CardReader = {
           success: true
         };
       } catch (error) {
+        console.log(error, 'verifyencrypt 验证卡片失败~');
         return {
           code: '',
           ...CardReader.fn.catchError(error),
@@ -607,6 +616,7 @@ const CardReader = {
           data: null
         };
       } catch (error) {
+        console.log(error, 'cancellation 注销卡片失败~');
         return {
           code: '',
           ...CardReader.fn.catchError(error),
@@ -1170,6 +1180,7 @@ CardReader.action['readUserInfo'] = async function(key, resEnd) {
       meter: versionMark
     };
   } catch (error) {
+    console.log(error, 'readUserInfo 读取数据失败~');
     return {
       code: '',
       ...CardReader.fn.catchError(error),
@@ -1265,6 +1276,7 @@ CardReader.action['readData'] = async function(key = CardReader._attr.key, resEn
       meter
     };
   } catch (error) {
+    console.log(error, 'readData 读取数据失败2~');
     return {
       code: '',
       ...CardReader.fn.catchError(error),
@@ -1434,6 +1446,7 @@ CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._
       userMark
     };
   } catch (error) {
+    console.log(error, 'readUserInfoAndreadData 读取数据失败3~');
     return {
       code: '',
       ...CardReader.fn.catchError(error),
@@ -1447,7 +1460,7 @@ CardReader.action['readUserInfoAndreadData'] = async function(key = CardReader._
  * *************************** 写数据 运单信息到卡里（判断是否因为目录的创建影响了记录的创建） ***************************
  * @returns {Promise<void>}
  */
-CardReader.action['writeData'] = async function(data, key = CardReader._attr.key) {
+CardReader.action['writeData'] = async function(data, cbfn = false, key = CardReader._attr.key) {
   if (!data) return;
   const odata = data;
   console.log('【写数据】');
@@ -1656,7 +1669,10 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
     }
     // 取消选择卡片
     await CardReader.fn.exec(CardReader.command.deselect);
-    await CardReader.fn.exec(CardReader.command.beep);
+    // await CardReader.fn.exec(CardReader.command.beep);
+
+    console.log(cbfn);
+    cbfn && await CardReader.fn.exec(CardReader.command.beep);
 
     return {
       code: '9000',
@@ -1670,6 +1686,7 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
       }
     };
   } catch (error) {
+    console.log(error, 'writeData 写卡数据失败');
     return {
       code: '',
       ...CardReader.fn.catchError(error),
@@ -1684,13 +1701,13 @@ CardReader.action['writeData'] = async function(data, key = CardReader._attr.key
 CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key = CardReader._attr.key) {
   if (data) {
     console.log('【发卡流程】');
-    let ret = await this.getCard(false, key, false, true);
-
-    if (!ret.success) { // 获取卡片失败
-      return ret;
-    }
 
     try {
+      let ret = await this.getCard(false, key, false, true);
+
+      if (!ret.success) { // 获取卡片失败
+        return ret;
+      }
       // 构造用户数据
 
       let str;
@@ -1808,6 +1825,8 @@ CardReader.action['issuingCard'] = async function(data, umeter, resEnd, key = Ca
         data: data
       };
     } catch (error) {
+      console.log(error, 'issuingCard 发卡数据失败');
+
       return {
         code: '',
         ...CardReader.fn.catchError(error),
