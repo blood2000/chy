@@ -960,7 +960,7 @@ export default {
                 writeData.push({ data: fn.setData(meter, e), status: 1 });
                 alreadyWriteData.push(e.waybillNo);
 
-                if (res.data.indexNow[0] >= indexc[0] && res.data.indexNow[1] >= indexc[1]) {
+                if (res.data.indexNow[0] >= indexc[0] && res.data.indexNow[1] > indexc[1]) {
                   stop = true;
                   for (let i = 0; i < arrtime.length; i++) {
                     clearTimeout(arrtime[i]);

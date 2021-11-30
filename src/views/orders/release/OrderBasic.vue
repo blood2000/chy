@@ -571,12 +571,13 @@ export default {
             e.disName = e.teamName;
             e.disName = e.teamName + '的调度组';
             // e.disUserName = e.nickName;
-            e.disUserPhone = e.phonenumber.substr(0, 3) + '****' + e.phonenumber.substr(7, 11);
+            e.disUserPhone = e.phonenumber ? e.phonenumber.substr(0, 3) + '****' + e.phonenumber.substr(7, 11) : '';
 
             bool = !e.isCommonly;
           }
           return bool;
         });
+        console.log(this.oneTselected, 'this.oneTselected');
 
 
         // 2.去根据大类去请求下数据
