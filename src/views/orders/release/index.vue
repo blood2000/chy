@@ -914,10 +914,6 @@ export default {
 
           // 判断地址必填
 
-
-
-
-
           const array = this.address_add.concat(this.address_xie);
           for (let index = 0; index < array.length; index++) {
             const refName = array[index].refName;
@@ -925,6 +921,7 @@ export default {
           }
           // 判断其他
           this.lastData = await this.submAllData();
+          console.log(this.lastData);
           // console.log('到这里说明过了------------------还有几个未判断');
           this.onPubilsh();
         } else {
@@ -1169,8 +1166,6 @@ export default {
       // 处理商品信息和地址相关的规则
       const { orderGoodsList, orderAddressPublishBoList, orderFreightInfoBoList } = await this.handlerAddress();
 
-      console.log(this.basicInfor, '提交数据');
-
       const orderInfoBo = {
         code: InfoCode || undefined,
         publishMode,
@@ -1300,6 +1295,7 @@ export default {
             e.radius = ee.switchRadius ? ee.radius : null;
             e.enclosureRadius = ee.switchRadius ? ee.radius : null;
             e.switchRadius = ee.switchRadius;
+            e.centerLocation = ee.centerLocation;
           }
         });
         e.identification = e.identification || 0;
@@ -1313,6 +1309,8 @@ export default {
 
 
       // 电子围栏 this.address_xie, '最后处理卸' 存着最准确的值
+
+
       addr_xie = addr_xie.map(e => {
         // 单独处理电子围栏的问题
         this.address_xie.forEach(ee => {
@@ -1320,6 +1318,7 @@ export default {
             e.radius = ee.switchRadius ? ee.radius : null;
             e.enclosureRadius = ee.switchRadius ? ee.radius : null;
             e.switchRadius = ee.switchRadius;
+            e.centerLocation = ee.centerLocation;
           }
         });
 
@@ -1627,9 +1626,12 @@ export default {
     // 关闭电子围栏
     changeElect(val) {
       // this.addressChange 是编辑电子围栏选中的当前地址对象指针
+
       this.addressChange.radius = val.radius;
       this.addressChange.enclosureRadius = val.radius;
       this.addressChange.centerLocation = val.lnglat.map(e => e - 0);
+      // console.log(this.address_xie);
+      // console.log(this.address_add);
     },
 
     /** e=电子围栏相关 */
