@@ -201,6 +201,19 @@
                 @addSetOK="(valid)=>nextSe(valid, 0)"
               />
               <div class="ly-t-right">
+
+                <div style="display: inline-block;">
+                  <label v-if="!!address.switchRadius" style="margin-left: 50px;">
+                    仅在电子围栏内装卸货
+                    <el-switch
+                      v-model="address.onElcEnclosure"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+                      class="ml10 mr10"
+                    />
+                  </label>
+                </div>
+
                 <div style="display: inline-block;">
                   <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
                     设置电子围栏
@@ -283,6 +296,22 @@
               <!-- address.centerLocation = lnglat -->
 
               <div class="ly-t-right">
+
+
+                <div style="display: inline-block;">
+                  <label v-if="!!address.switchRadius" style="margin-left: 50px;">
+                    仅在电子围栏内装卸货
+                    <el-switch
+                      v-model="address.onElcEnclosure"
+                      active-color="#13ce66"
+                      inactive-color="#ff4949"
+
+                      class="ml10 mr10"
+                    />
+                  </label>
+                </div>
+
+
                 <div style="display: inline-block;">
                   <label v-if="isOpenTheElectronicFence" style="margin-left: 50px;">
                     设置电子围栏
@@ -296,6 +325,9 @@
                   </label>
                   <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!!idCode" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
                 </div>
+
+
+
                 <el-button
                   v-if="address.switchRadius"
                   type="primary"
@@ -489,8 +521,8 @@ export default {
       active: 1, // 步骤
       goods: [], // 商品-记入单商品还是多商品
       // 地址数组形式
-      address_add: [{ refName: 'address_add' + Date.now(), addressType: '1', radius: 200, switchRadius: false }], // 装-地址组件使用
-      address_xie: [{ refName: 'address_xie' + Date.now(), addressType: '2', radius: 200, switchRadius: false }], // 卸-地址组件使用
+      address_add: [{ refName: 'address_add' + Date.now(), addressType: '1', radius: 200, switchRadius: false, onElcEnclosure: false }], // 装-地址组件使用
+      address_xie: [{ refName: 'address_xie' + Date.now(), addressType: '2', radius: 200, switchRadius: false, onElcEnclosure: false }], // 卸-地址组件使用
       addr_add: [], // 装-传递数据使用
       addr_xie: [], // 卸-传递数据使用
 
@@ -922,6 +954,7 @@ export default {
           // 判断其他
           this.lastData = await this.submAllData();
           console.log(this.lastData);
+
           // console.log('到这里说明过了------------------还有几个未判断');
           this.onPubilsh();
         } else {
@@ -1288,6 +1321,9 @@ export default {
       let addr_xie = JSON.parse(JSON.stringify(this.addr_xie));
 
       // 电子围栏 this.address_add, '最后处理装' 存着最准确的值
+
+      console.log(this.address_add);
+      console.log(addr_add);
       addr_add = addr_add.map(e => {
         // 单独处理电子围栏的问题
         this.address_add.forEach(ee => {
@@ -1296,6 +1332,7 @@ export default {
             e.enclosureRadius = ee.switchRadius ? ee.radius : null;
             e.switchRadius = ee.switchRadius;
             e.centerLocation = ee.centerLocation;
+            e.onElcEnclosure = ee.onElcEnclosure ? 1 : 0;
           }
         });
         e.identification = e.identification || 0;
@@ -1319,6 +1356,7 @@ export default {
             e.enclosureRadius = ee.switchRadius ? ee.radius : null;
             e.switchRadius = ee.switchRadius;
             e.centerLocation = ee.centerLocation;
+            e.onElcEnclosure = ee.onElcEnclosure ? 1 : 0;
           }
         });
 
@@ -1488,6 +1526,7 @@ export default {
           this.address_add.push({
             ...dzWLobj,
             switchRadius: !!e.enclosureRadius,
+            onElcEnclosure: e.onElcEnclosure === 1,
             refName: 'address_add' + Date.now() + index,
             cbData: e // 主要是这个
           });
@@ -1496,6 +1535,7 @@ export default {
           this.address_xie.push({
             ...dzWLobj,
             switchRadius: !!e.enclosureRadius,
+            onElcEnclosure: e.onElcEnclosure === 1,
             refName: 'address_xie' + Date.now() + index,
             cbData: e
           });
