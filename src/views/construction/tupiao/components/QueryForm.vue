@@ -10,10 +10,12 @@
 
       <el-form-item
         label="选择项目"
+        prop="projectCode"
       >
         <el-select
           v-model="queryParams.projectCode"
           filterable
+          clearable
           style="width: 228px"
           placeholder="请选择项目"
           @change="
@@ -45,6 +47,7 @@
       </el-form-item> -->
 
       <el-form-item
+        v-if="queryParams.projectCode"
         label="土票名称"
         prop="ticketName"
       >
@@ -91,6 +94,7 @@
       </el-form-item> -->
 
       <el-form-item
+        v-if="queryParams.projectCode"
         label="接收工地"
         prop="receiveSite"
       >
