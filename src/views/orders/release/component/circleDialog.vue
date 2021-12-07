@@ -1,5 +1,6 @@
 <template>
-  <!-- 车辆定位对话框 -->
+
+  <!-- isDetail 为true是查看详情--禁止提交 -->
   <el-dialog :title="title" :visible="visible" width="1400px" append-to-body destroy-on-close :close-on-click-modal="false" @close="cancel">
     <div class="amap-wrapper">
 
@@ -47,7 +48,7 @@
 
       <div class="slider-box">
         <el-button
-          v-if="!idCode"
+          v-if="isDetail"
           type="primary"
           size="mini"
           style="margin-top: 12px"
@@ -70,6 +71,10 @@ export default {
     //   default: () => []
     // },
     idCode: Boolean,
+    isDetail: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       default: ''

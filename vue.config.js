@@ -38,7 +38,7 @@ module.exports = {
         target: process.env.VUE_PROTOCOL+process.env.VUE_APP_BASE_HOST, // 测试
         // target: `http://10.0.0.75:8080`, // test
         // target: `http://124.71.25.3:8080`, // prop
-        // target: `http://192.168.30.130:8080`, // 绍
+        // target: `http://192.168.30.72:8080`, // 绍
         // target: `http://192.168.30.30:8080`,  // 坤
         // target: `http://192.168.30.167:8080`, // 秀
         // target: `http://192.168.30.200:8080`, // 同
