@@ -1,5 +1,5 @@
 <template>
-  <!-- shwihfqjfsdksofks true 编辑状态 进行电子围栏编辑 -->
+  <!-- isDetail true 编辑状态 进行电子围栏编辑 -->
 
   <div v-loading="loading" class="m_app-container">
     <!-- isT==true 是货源详情 才展示的 -->
@@ -212,6 +212,7 @@
                       active-color="#13ce66"
                       inactive-color="#ff4949"
                       class="ml10 mr10"
+                      :disabled="!isDetail"
                     />
                   </label>
                 </div>
@@ -221,13 +222,13 @@
                     设置电子围栏
                     <el-switch
                       v-model="address.switchRadius"
-                      :disabled="!shwihfqjfsdksofks"
+                      :disabled="!isDetail"
                       active-color="#13ce66"
                       inactive-color="#ff4949"
                       class="ml10 mr10"
                     />
                   </label>
-                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!shwihfqjfsdksofks" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!isDetail" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
                 </div>
                 <el-button
                   v-if="address.switchRadius"
@@ -307,7 +308,7 @@
                       v-model="address.onElcEnclosure"
                       active-color="#13ce66"
                       inactive-color="#ff4949"
-
+                      :disabled="!isDetail"
                       class="ml10 mr10"
                     />
                   </label>
@@ -321,11 +322,11 @@
                       v-model="address.switchRadius"
                       active-color="#13ce66"
                       inactive-color="#ff4949"
-                      :disabled="!shwihfqjfsdksofks"
+                      :disabled="!isDetail"
                       class="ml10 mr10"
                     />
                   </label>
-                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!shwihfqjfsdksofks" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!isDetail" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
                 </div>
 
 
@@ -424,7 +425,7 @@
 
 
     <!-- 设置电子围栏弹窗 -->
-    <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :is-detail="shwihfqjfsdksofks" :id-code="!!idCode" :title="title" :lnglat="lnglat" @refresh="changeElect" />
+    <circle-dialog ref="CircleDialog" v-model="radius" :open.sync="circledialog" :is-detail="isDetail" :id-code="!!idCode" :title="title" :lnglat="lnglat" @refresh="changeElect" />
     <!-- 打开弹框 -->
     <el-dialog
       :close-on-click-modal="false"
@@ -552,7 +553,7 @@ export default {
       shipmentList: [], // 发布人下拉列表
       isMultiGoods: false, // 用来判断多商品还是单商品
 
-      shwihfqjfsdksofks: false, // 编辑
+      isDetail: false, // 编辑
       cloneLastData: null // 保存一份原始数据(方便电子围栏使用)
     };
   },
@@ -700,8 +701,8 @@ export default {
           this.isClone = true;
         }
 
-        this.shwihfqjfsdksofks = (value !== '0'); // 只要不是详情
-        console.log(this.shwihfqjfsdksofks);
+        this.isDetail = (value !== '0'); // 只要不是详情
+        console.log(this.isDetail);
       },
       immediate: true
     }
