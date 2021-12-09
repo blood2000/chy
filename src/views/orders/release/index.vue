@@ -1544,7 +1544,7 @@ export default {
         let dzWLobj = {};
         if (e.enclosureRadius) {
           dzWLobj = {
-            centerLocation: e.centerLocation?.map(e => e - 0) || [],
+            centerLocation: e.centerLocation?.map(e => e - 0),
             radius: e.enclosureRadius
           };
         }
