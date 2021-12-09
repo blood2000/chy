@@ -1537,12 +1537,14 @@ export default {
       this.address_add = [];
       this.address_xie = [];
 
+      console.log(addressList);
+
       addressList.forEach((e, index) => {
         // 电子围栏回填
         let dzWLobj = {};
         if (e.enclosureRadius) {
           dzWLobj = {
-            centerLocation: e.centerLocation.map(e => e - 0),
+            centerLocation: e.centerLocation?.map(e => e - 0) || [],
             radius: e.enclosureRadius
           };
         }
