@@ -157,13 +157,13 @@ export default {
     tableColumns() {
     //   const isAdmin = !this.getUserInfo.isShipment;
       return [
-        // {
-        //   'label': '项目名称',
-        //   'prop': 'projectName',
-        //   'isShow': false,
-        //   //   'width': '60',
-        //   'tooltip': true
-        // },
+        {
+          'label': '项目名称',
+          'prop': 'projectName',
+          'isShow': true,
+          //   'width': '60',
+          'tooltip': true
+        },
         {
           'label': '机主姓名',
           'prop': 'ownerName',
@@ -357,7 +357,7 @@ export default {
         endSubmitAuditTime: submitAuditTime ? submitAuditTime[1] : undefined,
         submitAuditTime: undefined,
 
-        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName,
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName || undefined,
         scheduleName: shift.dictLabel
 
       };
@@ -382,7 +382,7 @@ export default {
 
       const res = await webGetMachineProjectList();
       this.projectList = res.data;
-      this.queryParams.projectCode = this.projectList[0].code;
+      // this.queryParams.projectCode = this.projectList[0].code;
       this.getList();
     },
 

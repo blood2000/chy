@@ -134,7 +134,7 @@ export default {
         {
           'label': '项目名称',
           'prop': 'projectName',
-          'isShow': false,
+          'isShow': true,
           'sortNum': 10,
           //   'width': '60',
           'tooltip': true
@@ -256,7 +256,7 @@ export default {
         bigSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[0] : undefined, //	签收时间		false
         endSignTime: this.queryParams.receiveTime ? this.queryParams.receiveTime[1] : undefined, //	签收时间		false
         receiveTime: undefined,
-        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code').projectName
+        projectName: this._zhaovalue(this.projectList, this.queryParams.projectCode, 'code')?.projectName || undefined
       };
     }
   },
@@ -271,8 +271,8 @@ export default {
     async initData() {
       const res = await webGetMachineProjectList();
       this.projectList = res.data;
-      this.queryParams.projectCode = this.projectList[0].code;
-      this.queryParams.projectName = this.projectList[0].projectName;
+      // this.queryParams.projectCode = this.projectList[0].code;
+      // this.queryParams.projectName = this.projectList[0].projectName;
       this.getList();
     },
     // 初始表头

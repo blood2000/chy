@@ -14,6 +14,7 @@
         <el-select
           v-model="queryParams.projectCode"
           filterable
+          clearable
           style="width: 228px"
           placeholder="请选择选择项目"
           @change="$emit('handleQuery')"
