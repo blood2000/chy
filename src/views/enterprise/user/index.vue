@@ -410,6 +410,7 @@ export default {
       // 选中数组
       ids: [],
       userNames: [],
+      userCodes: [],
       // 非单个禁用
       single: true,
       // 非多个禁用
@@ -647,6 +648,7 @@ export default {
     handleSelectionChange(selection) {
       this.ids = selection.map(item => item.userId);
       this.userNames = selection.map(item => item.userName);
+      this.userCodes = selection.map(item => item.userCode);
       this.single = selection.length !== 1;
       this.multiple = !selection.length;
     },
@@ -738,16 +740,22 @@ export default {
     handleDelete(row) {
       const userIds = row.userId || this.ids;
       const userNames = row.userName || this.userNames;
-      this.$confirm('是否确认删除用户名为"' + userNames + '"的数据项?', '警告', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(function() {
-        return delUser(userIds);
-      }).then(() => {
-        this.getList();
-        this.msgSuccess('删除成功');
-      });
+      const userCodes = row.userCode || this.userCodes;
+      const cantDelete = this.userCode === (Array.isArray(userCodes) ? userCodes.find(res => res === this.userCode) : userCodes);
+      if (cantDelete) {
+        this.msgWarning('无法删除当前账号');
+      } else {
+        this.$confirm('是否确认删除用户名为"' + userNames + '"的数据项?', '警告', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(function() {
+          return delUser(userIds);
+        }).then(() => {
+          this.getList();
+          this.msgSuccess('删除成功');
+        });
+      }
     },
     /** 导出按钮操作 */
     handleExport() {

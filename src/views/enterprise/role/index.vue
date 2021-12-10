@@ -75,7 +75,7 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="产品" prop="produceCode">
+            <!-- <el-form-item label="产品" prop="produceCode">
               <el-select
                 v-model="queryParams.produceCode"
                 placeholder="所属产品"
@@ -92,7 +92,7 @@
                   :disabled="item.disabled"
                 />
               </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="创建时间" prop="dateRange">
               <el-date-picker
                 v-model="dateRange"
@@ -244,7 +244,7 @@
         <el-row :gutter="24">
           <el-col :span="12">
             <el-form-item label="所属产品" prop="produceCode">
-              <el-select v-model="form.produceCode" clearable filterable placeholder="请选择所属产品" style="width: 100%">
+              <el-select v-model="form.produceCode" disabled clearable filterable placeholder="请选择所属产品" style="width: 100%">
                 <el-option
                   v-for="item in produceList"
                   :key="item.produceCode"
@@ -494,7 +494,7 @@ export default {
         roleKey: undefined,
         status: undefined,
         orgCode: undefined,
-        produceCode: undefined
+        produceCode: '776ca8e240574192b6e0f69b417163df'
       },
       // 表单参数
       form: {
@@ -621,7 +621,7 @@ export default {
       );
     },
     /** 查询菜单树结构 */
-    getMenuTreeselect(data = {}) {
+    getMenuTreeselect(data = { produceCode: '776ca8e240574192b6e0f69b417163df' }) {
       menuTreeselect(data, this.userCode).then(response => {
         this.menuOptions = response.data;
         this.defaultExpandedKeys = response.expandKeys;
@@ -705,7 +705,7 @@ export default {
       this.form = {
         roleId: undefined,
         roleName: undefined,
-        produceCode: undefined,
+        produceCode: '776ca8e240574192b6e0f69b417163df',
         roleKey: undefined,
         roleSort: 0,
         status: '0',
@@ -793,7 +793,7 @@ export default {
       this.reset();
       // this.getVersionTreeselect();
       const roleId = row.roleId || this.ids;
-      const roleMenu = this.getRoleMenuTreeselect(roleId, null);
+      const roleMenu = this.getRoleMenuTreeselect(roleId, { produceCode: '776ca8e240574192b6e0f69b417163df' });
       this.getProduceList();
       getRole(roleId).then(response => {
         this.form = response.data;
@@ -915,24 +915,24 @@ export default {
       });
     },
     // 版本树节点单击事件
-    handleVersionNodeClick(data) {
-      const params = {};
-      if (data.type === 'produce') {
-        params.produceCode = data.code;
-      } else if (data.type === 'application') {
-        params.appCode = data.code;
-      } else if (data.type === 'version') {
-        params.versionCode = data.code;
-      }
-      if (this.form.roleId !== undefined) {
-        const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
-        roleMenu.then(res => {
-          this.$refs.menu.setCheckedKeys(res.checkedKeys);
-        });
-      } else {
-        this.getMenuTreeselect(params);
-      }
-    },
+    // handleVersionNodeClick(data) {
+    //   const params = {};
+    //   if (data.type === 'produce') {
+    //     params.produceCode = data.code;
+    //   } else if (data.type === 'application') {
+    //     params.appCode = data.code;
+    //   } else if (data.type === 'version') {
+    //     params.versionCode = data.code;
+    //   }
+    //   if (this.form.roleId !== undefined) {
+    //     const roleMenu = this.getRoleMenuTreeselect(this.form.roleId, params);
+    //     roleMenu.then(res => {
+    //       this.$refs.menu.setCheckedKeys(res.checkedKeys);
+    //     });
+    //   } else {
+    //     this.getMenuTreeselect(params);
+    //   }
+    // },
     // 判断操作是否禁用
     isOperate(row) {
       const some = this.defaultRoleCode.split(',').some(el => {
