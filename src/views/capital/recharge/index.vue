@@ -277,8 +277,8 @@ export default {
     // 时间选择
     updateTimeChoose(date) {
       if (date) {
-        this.queryParams.updateTimeBegin = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
-        this.queryParams.updateTimeEnd = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+        this.queryParams.updateTimeBegin = this.parseTime(date[0]);
+        this.queryParams.updateTimeEnd = this.parseTime(date[1]);
       } else {
         this.queryParams.updateTimeBegin = null;
         this.queryParams.updateTimeEnd = null;

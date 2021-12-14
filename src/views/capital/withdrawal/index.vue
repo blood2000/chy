@@ -374,8 +374,8 @@ export default {
     // 时间选择
     transferTimeChoose(date) {
       if (date) {
-        this.queryParams.transferTimeBegin = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
-        this.queryParams.transferTimeEnd = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+        this.queryParams.transferTimeBegin = this.parseTime(date[0]);
+        this.queryParams.transferTimeEnd = this.parseTime(date[1]);
       } else {
         this.queryParams.transferTimeBegin = null;
         this.queryParams.transferTimeEnd = null;
@@ -383,8 +383,8 @@ export default {
     },
     applyTimeChoose(date) {
       if (date) {
-        this.queryParams.applyTimeBegin = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
-        this.queryParams.applyTimeEnd = this.parseTime(date[0], '{y}-{m}-{d} {m}:{i}:{s}');
+        this.queryParams.applyTimeBegin = this.parseTime(date[0]);
+        this.queryParams.applyTimeEnd = this.parseTime(date[1]);
       } else {
         this.queryParams.applyTimeBegin = null;
         this.queryParams.applyTimeEnd = null;
