@@ -243,6 +243,7 @@ export default {
     };
   },
   created() {
+    this.dateRange = [this.parseTime(new Date(), '{y}-{m}-{d}') + ' 00:00:00', this.parseTime(new Date())];
     this.getList();
     this.getDicts('sys_oper_type').then(response => {
       this.typeOptions = response.data;
