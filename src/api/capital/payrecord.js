@@ -37,3 +37,13 @@ export function shipperlist(data) {
     data: Object.assign({}, { isAsc: 'desc', orderByColumn: 'id' }, data)
   });
 }
+
+// 统计
+export function getTotalMoney(data) {
+  return request({
+    url: `/payment/wallet/remit/statistical`,
+    method: 'post',
+    data: data
+  });
+}
+
