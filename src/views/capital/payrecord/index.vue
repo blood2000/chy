@@ -273,23 +273,7 @@
       </el-form>
     </div>
     <div class="app-container">
-      <el-row
-        :gutter="10"
-        class="total_bg"
-      >
-        <el-col :span="1">
-          <img src="~@/assets/images/icon/total.png">
-        </el-col>
-        <el-col :span="4">
-          <span style="line-height: 31px">运单数量：{{ statistical.orderCount ? statistical.orderCount : 0 }}</span>
-        </el-col>
-        <el-col :span="4">
-          <span style="line-height: 31px">打款金额：{{ statistical.deliveryCashFee ? statistical.deliveryCashFee : 0 }}</span>
-        </el-col>
-        <el-col :span="4">
-          <span style="line-height: 31px">留存运费：{{ statistical.totalFee ? statistical.totalFee : 0 }}</span>
-        </el-col>
-      </el-row>
+      <TotalBar :total-list="totalList" />
 
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
@@ -324,7 +308,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig">
+      <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <!-- 金额 -->
         <template #amount="{row}">
           <span>{{ floor(row.amount) }}</span>
@@ -454,11 +438,13 @@ import { pickerTimeOptions } from '@/utils/dateRange';
 import { payRecordlistApi, payRecordlist, getTotalMoney } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 import { compareBeginEndTime } from '@/utils/ddc';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   name: 'Payrecord',
   components: {
-    modifyBatchDialog
+    modifyBatchDialog,
+    TotalBar
   },
   data() {
     return {
@@ -601,6 +587,50 @@ export default {
   },
 
   computed: {
+    totalList() {
+      const arr = [
+        {
+          label: '运单数量',
+          value: this.commentlist.length,
+          key: 'waybillCount'
+        },
+        // {
+        //   label: '货主实付金额',
+        //   value: 0,
+        //   key: 'shipperRealPay'
+        // },
+        {
+          label: '打款金额',
+          value: 0,
+          key: 'deliveryCashFee'
+        },
+        // {
+        //   label: '留存运费',
+        //   value: 0,
+        //   key: 'taxPayment'
+        // },
+        {
+          label: '留存运费',
+          value: 0,
+          key: 'totalFee'
+        }
+      ];
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
+    },
     params() {
       return {
         ...this.queryParams,
@@ -634,7 +664,7 @@ export default {
     });
     this.queryParams.createTime = [this.parseTime(new Date().getTime() - 7 * 3600 * 1000 * 24), this.parseTime(new Date())];
     this.getList();
-    this.getTotalMoney();
+    // this.getTotalMoney();
   },
 
   methods: {
@@ -681,7 +711,7 @@ export default {
 
       this.queryParams.pageNum = 1;
       this.getList();
-      this.getTotalMoney();
+      // this.getTotalMoney();
     },
     /* 时间判断 */
 
