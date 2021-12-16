@@ -688,7 +688,10 @@ export default {
   methods: {
     /** 查询统计 */
     getTotalMoney() {
-      const params = Object.assign({}, this.queryParams);
+      const params = Object.assign({}, this.params);
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
       params.pageNum = undefined;
       params.pageSize = undefined;
       getTotalMoney(params).then(res => {
