@@ -273,7 +273,9 @@
       </el-form>
     </div>
     <div class="app-container">
+      <TotalBar v-if="!multiple" :total-list="totalList" />
       <el-row
+        v-else
         :gutter="10"
         class="total_bg"
       >
@@ -324,7 +326,7 @@
         <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
       </el-row>
 
-      <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig">
+      <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <!-- 金额 -->
         <template #amount="{row}">
           <span>{{ floor(row.amount) }}</span>
@@ -454,11 +456,13 @@ import { pickerTimeOptions } from '@/utils/dateRange';
 import { payRecordlistApi, payRecordlist, getTotalMoney } from '@/api/capital/payrecord';
 import modifyBatchDialog from './modifyBatchDialog';
 import { compareBeginEndTime } from '@/utils/ddc';
+import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
 export default {
   name: 'Payrecord',
   components: {
-    modifyBatchDialog
+    modifyBatchDialog,
+    TotalBar
   },
   data() {
     return {
@@ -601,6 +605,50 @@ export default {
   },
 
   computed: {
+    totalList() {
+      const arr = [
+        {
+          label: '运单数量',
+          value: this.commentlist.length,
+          key: 'waybillCount'
+        },
+        // {
+        //   label: '货主实付金额',
+        //   value: 0,
+        //   key: 'shipperRealPay'
+        // },
+        {
+          label: '打款金额',
+          value: 0,
+          key: 'deliveryCashFee'
+        },
+        // {
+        //   label: '留存运费',
+        //   value: 0,
+        //   key: 'taxPayment'
+        // },
+        {
+          label: '留存运费',
+          value: 0,
+          key: 'totalFee'
+        }
+      ];
+
+      this.commentlist.forEach(e => {
+        arr.forEach(ee => {
+          if (e[ee.key]) {
+            ee.value += (e[ee.key] - 0);
+          }
+        });
+      });
+
+      arr.map(e => {
+        e.value = this.floor(e.value);
+        return e;
+      });
+
+      return arr;
+    },
     params() {
       return {
         ...this.queryParams,
