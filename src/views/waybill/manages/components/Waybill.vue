@@ -211,6 +211,24 @@
             @change="markDateChoose"
           />
         </el-form-item>
+        <el-form-item label="异常状态" prop="">
+          <el-select
+            v-model="queryParams.invoiceStatus"
+            placeholder="请选择异常标记状态"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="dict in isWarningOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+
         <el-form-item>
           <el-button
             type="primary"
@@ -526,8 +544,7 @@ export default {
       // 异常标记状态字典
       'isWarningOptions': [
         { 'dictLabel': '正常', 'dictValue': 0 },
-        { 'dictLabel': '异常', 'dictValue': 1 },
-        { 'dictLabel': '取消', 'dictValue': 2 }
+        { 'dictLabel': '异常', 'dictValue': 1 }
       ],
       // 是否子单字典
       'isChildOptions': [
