@@ -235,7 +235,21 @@
         <template #serviceAmount="{row}">
           <span>{{ floor(row.serviceAmount) }}</span>
         </template>
+        <template #period="{row}">
+          <span class="detail" @click="popDetail( row)">详情</span>
+        </template>
       </RefactorTable>
+
+      <el-dialog title="欠款详情" :visible.sync="dialogTableVisible">
+        <el-table :data="detailData" show-summary :summary-method="gSummaries">
+          <el-table-column prop="monthStr" label="月份" width="auto" />
+          <el-table-column prop="arrears" label="欠款金额" width="auto">
+            <template slot-scope="scope">
+              {{ scope.row.arrears.toFixed(2) }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
 
       <pagination
         v-show="total > 0"
@@ -255,7 +269,8 @@ import {
   teamDetailReportList,
   teamDetailReportCount,
   market,
-  user
+  user,
+  getArrearsList
 } from '@/api/data/statistics';
 // import tableColumnsConfig from './config';
 import { pickerOptions } from '@/utils/dateRange';
@@ -267,6 +282,8 @@ export default {
     return {
       pickerOptions,
       tableColumnsConfig: [],
+      detailData: [],
+      dialogTableVisible: false,
       api: teamDetailReportListApi,
       // 遮罩层
       loading: true,
@@ -507,7 +524,36 @@ export default {
       ).then(res => {
         this.loadingExport = false;
       });
+    },
+    // 详情弹窗
+    popDetail(item) {
+      // el
+      this.dialogTableVisible = true;
+      const queryParams = { companyCode: item.companyCode, endTime: item.creditEndTime };
+      getArrearsList(queryParams).then((response) => {
+        console.log(response);
+        this.detailData = response.data;
+        // this.customerCount = response.data;
+        // let tempStr = '';
+        // Object.keys(this.customerCount).forEach((i) => {
+        //   const s = i.substr(0, i.length - 5);
+        //   const temp = `case '${s}':
+        //     sums[index] = this.customerCount.${i};
+        //   break;`;
+        //   tempStr += temp;
+        // });
+        // console.log(tempStr);
+      });
+    },
+    gSummaries(arrears) {
+      const sum = arrears.toFixed(2);
+      return sum;
     }
   }
 };
 </script>
+<style>
+.detail{
+  color:#409EFF !important
+}
+</style>

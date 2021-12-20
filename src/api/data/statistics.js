@@ -128,3 +128,11 @@ export function matching(data) {
     data: data
   });
 }
+
+export function getArrearsList(query) {
+  return request({
+    url: '/transportation/platformDataSummary/getArrearsList',
+    method: 'get',
+    params: query
+  });
+}
