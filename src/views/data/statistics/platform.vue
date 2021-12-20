@@ -241,7 +241,7 @@
       </RefactorTable>
 
       <el-dialog title="欠款详情" :visible.sync="dialogTableVisible">
-        <el-table :data="detailData" show-summary :summary-method="gSummaries">
+        <el-table :data="detailData" show-summary>
           <el-table-column prop="monthStr" label="月份" width="auto" />
           <el-table-column prop="arrears" label="欠款金额" width="auto">
             <template slot-scope="scope">
@@ -544,10 +544,6 @@ export default {
         // });
         // console.log(tempStr);
       });
-    },
-    gSummaries(arrears) {
-      const sum = arrears.toFixed(2);
-      return sum;
     }
   }
 };
