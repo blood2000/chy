@@ -358,6 +358,8 @@ export default {
     right: 0;
     .btn-arrow-container-item{
       min-width: 160px;
+      white-space: nowrap;
+      padding-right: 30px;
     }
     .btn-arrow-container-none{
       text-align: center;
