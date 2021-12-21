@@ -1,14 +1,18 @@
 <template>
   <!-- 查询网商余额 -->
-  <el-dialog :title="title" class="i-amount" :visible="visible" width="700px" append-to-body :close-on-click-modal="false" @close="cancel">
+  <el-dialog :title="title" class="i-amount" :visible="visible" width="900px" append-to-body :close-on-click-modal="false" @close="cancel">
     <div class="amount-content ly-flex-align-center ly-flex-pack-justify">
       <div>
         <p class="label mb10">总余额：</p>
         <p class="text">{{ (balanceCount || balanceCount === 0) ? floor(balanceCount) : '---' }}</p>
       </div>
       <div>
-        <p class="label mb10">网商余额：</p>
+        <p class="label mb10">福建网商余额：</p>
         <p class="text">{{ (WSBK || WSBK === 0) ? floor(WSBK) : '---' }}</p>
+      </div>
+      <div>
+        <p class="label mb10">山西网商余额：</p>
+        <p class="text">{{ (SXWSBK || SXWSBK === 0) ? floor(SXWSBK) : '---' }}</p>
       </div>
       <div>
         <p class="label mb10">民生余额：</p>
@@ -38,6 +42,7 @@ export default {
       // 表单参数
       balanceCount: null,
       WSBK: null,
+      SXWSBK: null,
       CMBC: null
     };
   },
@@ -70,6 +75,9 @@ export default {
               if (el.WSBK !== undefined && el.WSBK !== null) {
                 this.WSBK = el.WSBK;
               }
+              if (el.SXWSBK !== undefined && el.SXWSBK !== null) {
+                this.SXWSBK = el.SXWSBK;
+              }
               if (el.CMBC !== undefined && el.CMBC !== null) {
                 this.CMBC = el.CMBC;
               }
@@ -91,6 +99,7 @@ export default {
     reset() {
       this.balanceCount = null;
       this.WSBK = null;
+      this.SXWSBK = null;
       this.CMBC = null;
     }
   }
