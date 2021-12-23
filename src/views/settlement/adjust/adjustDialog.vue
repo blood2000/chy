@@ -15,7 +15,7 @@
       <div slot="title" class="m20 ly-flex-align-center">
         <div>
           <span class="mr10">批量修改(元)： </span>
-          <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10">
+          <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10" @change="handlerChangeSelectedValue">
             <el-option-group
               v-for="group in openShowList"
               :key="group.label"
@@ -300,6 +300,9 @@ import { adjustDetail, calculateFee, batchCalculate } from '@/api/settlement/adj
 import { batchCheck } from '@/api/settlement/toadjust';
 import { getRuleItemList } from '@/api/enterprise/rules';
 import { floor, objReduce } from '@/utils/ddc';
+
+import { deepClone } from '@/utils/index';
+
 
 
 export default {
@@ -718,7 +721,7 @@ export default {
     async setForm(data) {
       this.errList = [];
       this.selectedValue = '';
-      this.selectedNum = '';
+      this.selectedNum = 0;
       await this.getRuleLists();
       this.isEdit2 = true;
       this.isEdit = true;
@@ -776,7 +779,7 @@ export default {
             return e;
           });
 
-          e.subsidiesFreightList = this.subsidiesClone.concat(arrv);
+          e.subsidiesFreightList = deepClone(this.subsidiesClone.concat(arrv)); // this.subsidiesClone.concat(arrv);
         });
       } else {
         // 如果是减
@@ -786,11 +789,11 @@ export default {
             return e;
           });
 
-          e.deductionFreightList = this.deductionClone.concat(arrv);
+          e.deductionFreightList = deepClone(this.deductionClone.concat(arrv)); // this.deductionClone.concat(arrv);
         });
       }
 
-      // console.log(this.adjustlist);
+      this.handlerBatchCalculate();
     },
 
     /* 批量修改规定的值 */
@@ -898,6 +901,11 @@ export default {
       });
 
       return sums;
+    },
+
+    // 切换
+    handlerChangeSelectedValue() {
+      this.selectedNum = 0;
     }
   }
 };
