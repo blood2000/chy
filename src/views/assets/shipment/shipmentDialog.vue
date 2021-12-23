@@ -732,8 +732,9 @@ export default {
         { dictLabel: '申请打款后', dictValue: '6' }
       ],
       financialOptionList: [
-        { dictLabel: '网商', dictValue: 1 },
-        { dictLabel: '民生', dictValue: 2 }
+        { dictLabel: '福建网商', dictValue: 1 },
+        { dictLabel: '民生', dictValue: 2 },
+        { dictLabel: '山西网商', dictValue: 3 }
       ],
       // 核算方式字典
       accountTypeOptions: [],
@@ -1028,7 +1029,7 @@ export default {
           var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg,
             reviewNoNeedUnloadImg: reviewNoNeedUnloadImg, reviewIsNeedLoadingCertificate: reviewIsNeedLoadingCertificate, openProjectDesignView: openProjectDesignView,
             isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView,
-            openTheElectronicFence: openTheElectronicFence, openScanQuickLoadOrder: openScanQuickLoadOrder,isPayfirst:isPayfirst };
+            openTheElectronicFence: openTheElectronicFence, openScanQuickLoadOrder: openScanQuickLoadOrder, isPayfirst: isPayfirst };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
           if (this.form.id) {

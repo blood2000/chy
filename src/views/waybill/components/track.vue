@@ -22,7 +22,7 @@
             <el-checkbox v-model="zjzyChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#F56C6C;" />
-                <div style="margin: 0 10px;">至简轨迹</div>
+                <div class="legend-title" style="margin: 0 10px;">APP自有轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -35,7 +35,7 @@
             <el-checkbox v-model="lyChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#1990FF;" />
-                <div style="margin: 0 10px;">猎鹰轨迹</div>
+                <div class="legend-title" style="margin: 0 10px;">APP猎鹰轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -48,7 +48,7 @@
             <el-checkbox v-model="jmChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#08B8A7;" />
-                <div style="margin: 0 10px;">硬件轨迹</div>
+                <div class="legend-title" style="margin: 0 10px;">硬件轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -61,7 +61,7 @@
             <el-checkbox v-model="zjChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#67C23A;" />
-                <div style="margin: 0 10px;">北斗轨迹</div>
+                <div class="legend-title" style="margin: 0 10px;">北斗轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -74,7 +74,7 @@
             <el-checkbox v-model="checked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#FB8720;" />
-                <div style="margin: 0 10px;">规划轨迹</div>
+                <div class="legend-title" style="margin: 0 10px;">规划轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -392,7 +392,7 @@ export default {
             this.getLyRoutePlan();
           } else {
             this.loading = false;
-            this.msgInfo('暂无猎鹰轨迹！');
+            this.msgInfo('暂无APP猎鹰轨迹！');
           }
         }
       } else {
@@ -495,7 +495,7 @@ export default {
           this.drawZjzy();
         } else {
           this.loading = false;
-          this.msgInfo('暂无至简轨迹！');
+          this.msgInfo('暂无APP自有轨迹！');
         }
       }).catch(() => {
         this.loading = false;
@@ -558,14 +558,14 @@ export default {
             this.getLyRoutePlan();
           } else {
             this.loading = false;
-            this.msgInfo('暂无猎鹰轨迹！');
+            this.msgInfo('暂无APP猎鹰轨迹！');
           }
         }
       } else if (this.lyTimePoor !== 0 && this.lyTimePoor < 24 * 60 * 60 * 1000) {
         this.getLieying();
       } else {
         this.loading = false;
-        this.msgInfo('暂无猎鹰轨迹！');
+        this.msgInfo('暂无APP猎鹰轨迹！');
       }
     },
     // 猎鹰加载更多
@@ -595,7 +595,7 @@ export default {
           }
         } else {
           this.loading = false;
-          this.msgInfo('暂无猎鹰轨迹！');
+          this.msgInfo('暂无APP猎鹰轨迹！');
         }
       }).catch(() => { this.loading = false; });
     },
@@ -798,7 +798,7 @@ export default {
       // console.log(that.loadAddress[0] === '0.0' || that.unloadAddress[0] === '0.0');
       if (that.loadAddress[0] === '0.0' || that.unloadAddress[0] === '0.0') {
         that.loading = false;
-        this.msgInfo('暂无猎鹰轨迹！');
+        this.msgInfo('暂无APP猎鹰轨迹！');
       } else {
         driving.search(that.loadAddress, that.unloadAddress, function(status, result) {
           if (status === 'complete') {
@@ -832,7 +832,7 @@ export default {
             that.loading = false;
           } else {
             that.loading = false;
-            this.msgInfo('暂无猎鹰轨迹！');
+            this.msgInfo('暂无APP猎鹰轨迹！');
           }
         // 未出错时，result即是对应的路线规划方案
         });
@@ -1325,5 +1325,8 @@ export default {
   width: 50px;
   border-radius: 4px;
   opacity: 0.7;
+}
+.legend-title{
+  width: 85px;
 }
 </style>

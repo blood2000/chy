@@ -6,7 +6,7 @@
       <p class="g-text mb20">您好！这是贵司充值运费的账号，必须使用与超好运注册账户一致的企业对公户进行充值，充值成功后在超好运货主端APP的个人中心即可显示充值的金额。</p>
       <el-button class="mb20" type="primary" size="small" @click="copy">复制账号信息</el-button>
       <!-- 网商显示 -->
-      <template v-if="form.paymentChannels === 'WSBK'">
+      <template v-if="form.paymentChannels === 'WSBK' || form.paymentChannels === 'SXWSBK'">
         <table class="table-style mb20">
           <tr>
             <td class="label">银行账号</td>
@@ -15,7 +15,7 @@
           </tr>
           <tr>
             <td class="label">开户名称</td>
-            <td class="text">福建大道成物流科技有限公司</td>
+            <td class="text">{{ form.paymentChannels === 'WSBK' ? '福建大道成物流科技有限公司' : '山西道承信息技术有限公司' }}</td>
           </tr>
           <tr>
             <td class="label">开户行</td>
@@ -139,8 +139,8 @@ export default {
     ...mapGetters(['shipment']),
     inputValue() {
       let result = '';
-      if (this.form.paymentChannels === 'WSBK') {
-        result = `银行账号：${this.form.account ? this.form.account : ''}; 开户名称：福建大道成物流科技有限公司; 开户行：浙江网商银行; 省份：浙江省; 城市：杭州市; 联行号：323331000001`;
+      if (this.form.paymentChannels === 'WSBK' || this.form.paymentChannels === 'SXWSBK') {
+        result = `银行账号：${this.form.account ? this.form.account : ''}; 开户名称：${this.form.paymentChannels === 'WSBK' ? '福建大道成物流科技有限公司' : '山西道承信息技术有限公司'}; 开户行：浙江网商银行; 省份：浙江省; 城市：杭州市; 联行号：323331000001`;
       }
       if (this.form.paymentChannels === 'CMBC') {
         result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：民生银行; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;

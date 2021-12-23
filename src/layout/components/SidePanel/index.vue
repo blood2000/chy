@@ -277,6 +277,9 @@ export default {
             position: relative;
             padding: 0 20px 0 28px;
             transition: all 0.3s;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
             &::before{
               content: '';
               width: 2px;

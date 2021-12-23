@@ -273,7 +273,25 @@
       </el-form>
     </div>
     <div class="app-container">
-      <TotalBar :total-list="totalList" />
+      <TotalBar v-if="!multiple" :total-list="totalList" />
+      <el-row
+        v-else
+        :gutter="10"
+        class="total_bg"
+      >
+        <el-col :span="1">
+          <img src="~@/assets/images/icon/total.png">
+        </el-col>
+        <el-col :span="4">
+          <span style="line-height: 31px">运单数量：{{ statistical.orderCount ? statistical.orderCount : 0 }}</span>
+        </el-col>
+        <el-col :span="4">
+          <span style="line-height: 31px">打款金额：{{ statistical.deliveryCashFee ? statistical.deliveryCashFee : 0 }}</span>
+        </el-col>
+        <el-col :span="4">
+          <span style="line-height: 31px">留存运费：{{ statistical.totalFee ? statistical.totalFee : 0 }}</span>
+        </el-col>
+      </el-row>
 
       <el-row :gutter="10" class="mb8">
         <el-col :span="1.5">
@@ -664,13 +682,16 @@ export default {
     });
     this.queryParams.createTime = [this.parseTime(new Date().getTime() - 7 * 3600 * 1000 * 24), this.parseTime(new Date())];
     this.getList();
-    // this.getTotalMoney();
+    this.getTotalMoney();
   },
 
   methods: {
     /** 查询统计 */
     getTotalMoney() {
-      const params = Object.assign({}, this.queryParams);
+      const params = Object.assign({}, this.params);
+      if (params.licenseNumber) {
+        params.licenseNumber = params.licenseNumber.toUpperCase();
+      }
       params.pageNum = undefined;
       params.pageSize = undefined;
       getTotalMoney(params).then(res => {
@@ -711,7 +732,7 @@ export default {
 
       this.queryParams.pageNum = 1;
       this.getList();
-      // this.getTotalMoney();
+      this.getTotalMoney();
     },
     /* 时间判断 */
 
