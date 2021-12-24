@@ -11,7 +11,7 @@
     @selection-change="handleSelectionChange"
     @sort-change="handleSortChange"
   >
-    <el-table-column v-if="isShowExpand" align="center" type="expand">
+    <el-table-column v-if="isShowExpand" align="center" type="expand" fixed="left">
       <template slot-scope="props">
         <slot name="expand" :row="props.row" />
       </template>

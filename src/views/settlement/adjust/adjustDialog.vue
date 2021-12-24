@@ -12,7 +12,7 @@
       :before-close="cancel"
       class="page-shipment-manage-dialog"
     >
-      <div slot="title" class="m20 ly-flex-align-center">
+      <div slot="title" class="m20 ly-flex-align-center ly-flex-pack-justify">
         <div>
           <span class="mr10">批量修改(元)： </span>
           <el-select v-model="selectedValue" size="small" placeholder="请选择" class="mr10" @change="handlerChangeSelectedValue">
@@ -32,10 +32,298 @@
           <el-input-number v-model="selectedNum" style="width:200px;" size="small" controls-position="right" :min="0" :precision="2" placeholder="请输入批量修改的值" @keyup.enter.native="handleSelectedNumChange" />
           <el-button size="small" class="m20" type="primary" :disabled="!modify" :loading="plLoading" @click="handleSelectedNumChange">立即修改</el-button>
         </div>
+
+        <div class="ishfeiwhiefw">
+          <tablec-cascader v-model="tableColumnsConfig" :lcokey="api" />
+        </div>
       </div>
 
       <div class="cont-frame">
+
+        <RefactorTable
+          ref="refactorTable"
+          ref-name="adjustTable"
+          :loading="loading"
+          :data="adjustlist"
+          summary
+          :summary-method="getSummaries"
+          :table-columns-config="tableColumnsConfig"
+          :height="adjustTableHeight"
+          highlight-current-row
+          border
+          is-show-expand
+          :row-class-name="tableRowClassName"
+          @row-click="showImg"
+        >
+
+          <template #expand="{row}">
+            <el-descriptions class="margin-top" :column="3" size="mini" :title="'运输单号: ' + row.waybillNo" border style="width: calc(90vw-410px);">
+              <!-- <el-descriptions-item>
+                <template slot="label">
+                  运输单号
+                </template>
+                {{ row.waybillNo }}
+              </el-descriptions-item> -->
+              <el-descriptions-item>
+                <template slot="label">
+                  司机姓名
+                </template>
+                {{ row.driverName }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  司机电话
+                </template>
+                {{ row.driverPhone }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  车牌号
+                </template>
+                {{ row.licenseNumber }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  配载方式
+                </template>
+                {{ selectDictLabel(stowageStatusOP, row.stowageStatus) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  路耗(吨/方)
+                </template>
+                <span v-if="row.stowageStatus !== '2'">{{ floor((row.loss -0), 3) }}</span>
+                <span v-else>{{ row.loss || 0 }}</span>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  路耗允许范围(kg/m³/%)
+                </template>
+                <span>{{ _lossAllowScope(row.lossAllowScope) || '--' }}</span>
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  货物单价(元)
+                </template>
+                {{ floor(row.goodsPrice) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  运输单价(元)
+                </template>
+                {{ floor(row.freightPrice) }}
+              </el-descriptions-item>
+
+              <el-descriptions-item>
+                <template slot="label">
+                  亏涨扣费(元)
+                </template>
+                {{ floor(row.lossDeductionFee) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  抹零金额(元)
+                </template>
+                {{ floor(row.m0Fee) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  司机应收运费(元)
+                </template>
+                {{ floor(row.deliveryFeeDeserved) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  留存运费(元)
+                </template>
+                {{ floor(row.taxPayment) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  服务费(元)
+                </template>
+                {{ floor(row.serviceFee) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  司机实收金额(元)
+                </template>
+                {{ floor(row.deliveryCashFee) }}
+              </el-descriptions-item>
+              <el-descriptions-item>
+                <template slot="label">
+                  货主实付金额(元)
+                </template>
+                {{ floor(row.shipperRealPay) }}
+              </el-descriptions-item>
+
+
+            </el-descriptions>
+          </template>
+
+          <template #waybillNo="{row}">
+            <div>{{ row.waybillNo }}</div>
+            <div>{{ row.driverName }}</div>
+            <div>{{ row.driverPhone }}</div>
+            <div>{{ row.licenseNumber }}</div>
+          </template>
+
+          <template #loadWeight="{row}">
+            <span v-if="row.isDregs === 1">{{ floor(row.loadWeight, row.stowageStatus === '2'? 0: 3) }}</span>
+            <div v-else>
+              <el-input-number
+                v-if="row.stowageStatus !== '2'"
+                v-model="row.loadWeight"
+                :precision="3"
+                :controls="false"
+                placeholder="请输入装货数量"
+                style="width:100%;"
+                size="mini"
+                @change="handlerChangev(row)"
+                @keyup.enter.native="handlerChangev(row)"
+              />
+              <span v-else>{{ floor(row.loadWeight, row.stowageStatus === '2'? 0: 3) }}</span>
+            </div>
+          </template>
+
+          <template #unloadWeight="{row}">
+            <span v-if="row.isDregs === 1">{{ floor(row.unloadWeight, row.stowageStatus === '2'? 0: 3) }}</span>
+            <div v-else>
+              <el-input-number
+                v-if="row.stowageStatus !== '2'"
+                v-model="row.unloadWeight"
+                :precision="3"
+                :controls="false"
+                placeholder="请输入卸货数量"
+                style="width:100%;"
+                size="mini"
+                @change="handlerChangev(row)"
+                @keyup.enter.native="handlerChangev(row)"
+              />
+              <span v-else>{{ floor(row.unloadWeight, row.stowageStatus === '2'? 0: 3) }}</span>
+            </div>
+          </template>
+
+          <template #stowageStatus="{row}">
+            <span>{{ selectDictLabel(stowageStatusOP, row.stowageStatus) }}</span>
+          </template>
+
+          <template #loss="{row}">
+            <span v-if="row.stowageStatus !== '2'">{{ floor((row.loss -0), 3) }}</span>
+            <span v-else>{{ row.loss || 0 }}</span>
+          </template>
+
+          <template #lossAllowScope="{row}">
+            <span>{{ _lossAllowScope(row.lossAllowScope) || '--' }}</span>
+          </template>
+
+          <template #goodsPrice="{row}">
+            <div>货物单价</div>
+            <span>{{ floor(row.goodsPrice) }}</span>
+            <div>运输单价</div>
+            <span>{{ floor(row.freightPrice) }}</span>
+          </template>
+
+          <template #lossDeductionFee="{row}">
+            <span>{{ floor(row.lossDeductionFee) }}</span>
+          </template>
+
+          <template #m0Fee="{row}">
+            <span>{{ floor(row.m0Fee) }}</span>
+          </template>
+
+          <template #deliveryFeeDeserved="{row}">
+            <span>{{ floor(row.deliveryFeeDeserved) }}</span>
+          </template>
+
+          <template #header_subsidyProject>
+            <span>补贴项目
+              <el-button type="text" @click="isEdit2 = !isEdit2"><i class="el-icon-edit" /></el-button>
+              <el-button type="text" @click="handlerClick"><i class="el-icon-plus" /></el-button>
+            </span>
+          </template>
+          <template #header_deductionItem>
+            <span>扣费项目
+              <el-button type="text" @click="isEdit = !isEdit"><i class="el-icon-edit" /></el-button>
+              <el-button type="text" @click="handlerdeduc"><i class="el-icon-plus" /></el-button>
+            </span>
+          </template>
+
+          <!-- 具体补贴项目 -->
+          <template #subsidyProject="{row}">
+            <span v-if="row.isDregs == 1"> -- </span>
+
+            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
+              <div v-for="(freight, index) in row.subsidiesFreightList" :key="index">
+                <!-- 渣土 其他不能修改 -->
+                <el-form-item :label="freight.cnName + '(元)'">
+                  <span v-if="row.isDregs === 1">{{ freight.ruleValue }}</span>
+                  <div v-else>
+                    <span v-show="!isEdit2">{{ freight.ruleValue }}</span>
+                    <el-input-number
+                      v-show="isEdit2"
+                      v-model="freight.ruleValue"
+                      :controls="false"
+                      :precision="2"
+                      :min="0"
+                      :disabled="handlerDisabled(freight)"
+                      :placeholder="`${freight.cnName}`"
+                      style="width:100px;"
+                      @change="handlerChangev(row)"
+                      @keyup.enter.native="handlerChangev(row)"
+                    />
+                  </div>
+                </el-form-item>
+              </div>
+            </el-form>
+          </template>
+
+
+          <!-- 具体扣费项目 -->
+          <template #deductionItem="{row}">
+            <span v-if="row.isDregs === 1"> -- </span>
+            <el-form v-else :inline="true" label-position="right" size="mini" class="ly-flex" label-width="100px">
+              <div v-for="(freight, index) in row.deductionFreightList" :key="index">
+                <el-form-item :label="freight.cnName + '(元)'">
+                  <div>
+                    <span v-show="!isEdit">{{ freight.ruleValue }}</span>
+                    <el-input-number
+                      v-show="isEdit"
+                      v-model="freight.ruleValue"
+                      :controls="false"
+                      :precision="2"
+                      :min="0"
+                      :disabled="handlerDisabled(freight)"
+                      :placeholder="`${freight.cnName}`"
+                      style="width:100px;"
+                      @change="handlerChangev(row)"
+                      @keyup.enter.native="handlerChangev(row)"
+                    />
+                  </div>
+                </el-form-item>
+              </div>
+            </el-form>
+          </template>
+
+          <template #taxPayment="{row}">
+            <span> {{ floor(row.taxPayment) }} </span>
+          </template>
+
+          <template #serviceFee="{row}">
+            <span> {{ floor(row.serviceFee) }} </span>
+          </template>
+
+          <template #deliveryCashFee="{row}">
+            <span>{{ floor(row.deliveryCashFee) }}</span>
+          </template>
+
+          <template #shipperRealPay="{row}">
+            <span> {{ floor(row.shipperRealPay) }} </span>
+          </template>
+        </RefactorTable>
+
         <el-table
+          v-if="false"
           ref="adjustTable"
           v-loading="loading"
           :height="adjustTableHeight"
@@ -53,25 +341,8 @@
               <div>{{ scope.row.driverName }}</div>
               <div>{{ scope.row.driverPhone }}</div>
               <div>{{ scope.row.licenseNumber }}</div>
-              <!-- <div>
-                <span class="mr10">{{ scope.row.waybillNo }}</span>
-
-                <el-popover
-                  placement="right"
-                  :tabindex="scope.$index"
-                  trigger="click"
-                >
-                  <div v-if="visible">
-                    <ImgShow :rowdata="scope.row" />
-                  </div>
-                  <i slot="reference" class="el-icon-warning shou" />
-                </el-popover>
-              </div> -->
             </template>
           </el-table-column>
-          <!-- <el-table-column width="120" label="司机姓名" align="center" prop="driverName" /> -->
-          <!-- <el-table-column width="120" label="司机电话" align="center" prop="driverPhone" /> -->
-          <!-- <el-table-column width="120" label="车牌号" align="center" prop="licenseNumber" /> -->
           <el-table-column label="装货数量" align="center" prop="loadWeight">
             <template slot-scope="scope">
               <!-- <span v-if="scope.row.isDregs === 1">{{ scope.row.loadWeight }}</span> -->
@@ -140,12 +411,6 @@
               <span>{{ floor(scope.row.freightPrice) }}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="运输单价(元)" align="center" prop="freightPrice">
-            <template slot-scope="scope">
-              <span>{{ floor(scope.row.freightPrice) }}</span>
-            </template>
-          </el-table-column> -->
-          <!-- <el-table-column label="司机成交单价(元)" align="center" prop="freightPriceDriver" /> -->
           <el-table-column label="亏涨扣费(元)" align="center" prop="lossDeductionFee">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.lossDeductionFee) }}</span>
@@ -156,7 +421,6 @@
               <span>{{ floor(scope.row.m0Fee) }}</span>
             </template>
           </el-table-column>
-          <!-- <el-table-column label="司机应收运费(元)" align="center" prop="deliveryFeePractical" /> -->
           <el-table-column label="司机应收运费(元)" align="center" prop="deliveryFeeDeserved">
             <template slot-scope="scope">
               <span>{{ floor(scope.row.deliveryFeeDeserved) }}</span>
@@ -244,6 +508,7 @@
               </el-form>
             </template>
           </el-table-column>
+
           <el-table-column label="留存运费(元)" align="center" prop="taxPayment">
             <template slot-scope="scope">
               <span> {{ floor(scope.row.taxPayment) }} </span>
@@ -303,7 +568,7 @@ import { floor, objReduce } from '@/utils/ddc';
 
 import { deepClone } from '@/utils/index';
 
-
+import { setLocalStorage, getLocalStorage } from '@/utils/auth';
 
 export default {
   name: 'AdjustDialog',
@@ -363,10 +628,148 @@ export default {
         { 'dictLabel': '吨', 'dictValue': '0' },
         { 'dictLabel': '方', 'dictValue': '1' },
         { 'dictLabel': '车', 'dictValue': '2' }
-      ]
+      ],
+
+      tableColumnsConfig: [
+        {
+          prop: 'waybillNo',
+          isShow: false,
+          width: 100,
+          tooltip: true,
+          sortNum: 1,
+          label: '运输单号 / 司机姓名 / 司机电话 / 车牌号'
+        },
+        {
+          prop: 'loadWeight',
+          isShow: true,
+          width: 50,
+          tooltip: true,
+          sortNum: 2,
+          label: '装货数量'
+        },
+        {
+          prop: 'unloadWeight',
+          isShow: true,
+          width: 50,
+          tooltip: true,
+          sortNum: 3,
+          label: '卸货数量'
+        },
+        {
+          prop: 'stowageStatus',
+          isShow: false,
+          width: 50,
+          tooltip: true,
+          sortNum: 4,
+          label: '配载方式'
+        },
+        {
+          prop: 'loss',
+          isShow: false,
+          width: 50,
+          tooltip: true,
+          sortNum: 5,
+          label: '路耗(吨/方)'
+        },
+        {
+          prop: 'lossAllowScope',
+          isShow: false,
+          tooltip: true,
+          sortNum: 6,
+          label: '路耗允许范围(kg/m³/%)'
+        },
+        {
+          prop: 'goodsPrice',
+          isShow: false,
+          width: 100,
+          tooltip: true,
+          sortNum: 7,
+          label: '单价(元)'
+        },
+
+        {
+          prop: 'subsidyProject',
+          isShow: true,
+          width: 250,
+          tooltip: true,
+          sortNum: 8,
+          label: '补贴项目'
+        },
+        {
+          prop: 'deductionItem',
+          isShow: true,
+          width: 250,
+          tooltip: true,
+          sortNum: 9,
+          label: '扣费项目'
+        },
+
+
+        {
+          prop: 'lossDeductionFee',
+          isShow: false,
+          width: 100,
+          tooltip: true,
+          sortNum: 10,
+          label: '亏涨扣费(元)'
+        },
+        {
+          prop: 'm0Fee',
+          isShow: false,
+          width: 100,
+          tooltip: true,
+          sortNum: 11,
+          label: '抹零金额(元)'
+        },
+        {
+          prop: 'deliveryFeeDeserved',
+          isShow: false,
+          width: 100,
+          tooltip: true,
+          sortNum: 12,
+          label: '司机应收运费(元)'
+        },
+        {
+          prop: 'taxPayment',
+          isShow: false,
+          width: 100,
+          tooltip: true,
+          sortNum: 13,
+          label: '留存运费(元)'
+        },
+        {
+          prop: 'serviceFee',
+          isShow: true,
+          width: 60,
+          tooltip: true,
+          sortNum: 14,
+          label: '服务费(元)'
+        },
+        {
+          prop: 'deliveryCashFee',
+          isShow: true,
+          width: 80,
+          tooltip: true,
+          sortNum: 15,
+          label: '司机实收金额(元)'
+        },
+        {
+          prop: 'shipperRealPay',
+          isShow: true,
+          width: 80,
+          tooltip: true,
+          sortNum: 16,
+          label: '货主实付金额(元)'
+        }
+
+      ] // 表单
     };
   },
   computed: {
+    api() {
+      return 'sfeowofwow';
+    },
+
     visible: {
       get() {
         return this.open;
@@ -427,6 +830,11 @@ export default {
   },
 
   created() {
+    if (getLocalStorage(this.api)) {
+      console.log('走缓存的');
+      this.tableHeaderConfig = getLocalStorage(this.api);
+    }
+
     this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
   },
 
@@ -442,6 +850,7 @@ export default {
 
     showImg(row) {
       this.rowData = row;
+      this.$refs.refactorTable.$children[0].toggleRowExpansion(row);
     },
     // 数字change事件
     handlerChangev(row) {
@@ -688,7 +1097,9 @@ export default {
         //   this.handlerChangev(this.adjustlist[0]);
         // }
         // 默认选中第一行
-        this.$refs.adjustTable.setCurrentRow(this.adjustlist[0]);
+        this.$refs.refactorTable.$children[0].setCurrentRow(this.adjustlist[0]);
+
+        // this.$refs.adjustTable.setCurrentRow(this.adjustlist[0]);
         this.showImg(this.adjustlist[0]);
         this.loading = false;
         this.adjustTableHeight = 779;
@@ -958,5 +1369,8 @@ export default {
 .cont-frame{
   display: flex;
   margin: 0 20px;
+}
+.ishfeiwhiefw{
+  margin-right: 410px;
 }
 </style>
