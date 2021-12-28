@@ -92,7 +92,7 @@
                 size="mini"
                 :title="'运输单号: ' + row.waybillNo"
                 border
-                style="width: calc(90vw-410px); margin-left: 50px"
+                style="width: calc(90vw-460px); margin-left: 110px"
               >
                 <el-descriptions-item>
                   <template slot="label"> 司机姓名 </template>
@@ -801,7 +801,7 @@ export default {
       changeFee: null,
       rowData: {},
 
-      adjustTableHeight: 30, //
+      adjustTableHeight: 779, //
 
       selecedData: [], // 选中的数据
       hejiData: [],
@@ -1507,11 +1507,6 @@ export default {
         arr[0] = arr[0] - 0 === 0 ? 0 : -arr[0];
         arr[1] = arr[1] - 0;
 
-        // if (bool) {
-        //   arr[0] = this.floor(arr[0] / 1000, 6);
-        //   arr[1] = this.floor(arr[1] / 1000, 6);
-        // }
-
         return JSON.stringify(arr);
       }
     },
@@ -1577,7 +1572,7 @@ export default {
 
     // 重置表头了
     handlerInput() {
-      this.rendkey = Date.now();
+      this.$refs.refactorTable.$children[0].doLayout();
     }
   }
 };
@@ -1590,9 +1585,6 @@ export default {
 </style>
 
 <style scoped>
-/* .page-shipment-manage-dialog ::v-deep.el-table__fixed-footer-wrapper{
-  z-index: 0;
-} */
 
 .mr3 {
   margin-right: 3%;
@@ -1624,16 +1616,18 @@ export default {
 .drawer-footer {
   width: 100%;
   display: flex;
-  margin: 20px 20px 0;
+  padding: 20px 20px 0;
 }
 .cont-frame {
-  margin: 0 20px;
   display: flex;
 }
 .tongji{
-  width: calc(100% - 410px);
+  /* width: calc(100% - 450px); */
+  flex: 1;
   display: flex;
   flex-direction: column;
+  padding: 0 20px;
+
 }
 
 .ishfeiwhiefw {
