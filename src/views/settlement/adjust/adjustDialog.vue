@@ -47,7 +47,7 @@
           :summary-method="getSummaries"
           @row-click="showImg"
         >
-          <el-table-column label="运输单号 / 司机姓名 / 司机电话 / 车牌号" width="138" show-overflow-tooltip align="left" prop="waybillNo">
+          <el-table-column v-if="false" label="运输单号 / 司机姓名 / 司机电话 / 车牌号" width="138" show-overflow-tooltip align="left" prop="waybillNo">
             <template slot-scope="scope">
               <div>{{ scope.row.waybillNo }}</div>
               <div>{{ scope.row.driverName }}</div>
