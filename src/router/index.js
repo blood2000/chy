@@ -169,6 +169,11 @@ export const constantRoutes = [
     path: '/statisticThree',
     component: (resolve) => require(['@/views/statistic/indexThree'], resolve),
     hidden: true
+  },
+  {
+    path: '/DataGeneralScreen',
+    component: (resolve) => require(['@/views/dataCube/screenSetting/generalScreen'], resolve),
+    hidden: true
   }
 ];
 
