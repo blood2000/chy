@@ -747,6 +747,8 @@ import { deepClone } from '@/utils/index';
 
 import { getLocalStorage } from '@/utils/auth';
 
+
+
 export default {
   name: 'AdjustDialog',
   components: { PopoverCom, ImgShow, TotalBar },
@@ -1003,10 +1005,6 @@ export default {
           shipperRealPay.push(ee.shipperRealPay - 0);
         });
       }
-      console.log(serviceFee);
-      console.log(deliveryCashFee);
-      console.log(shipperRealPay);
-
 
       return [
         {
@@ -1062,7 +1060,6 @@ export default {
 
   created() {
     if (getLocalStorage(this.api)) {
-      console.log('走缓存的');
       this.tableHeaderConfig = getLocalStorage(this.api);
     }
 
@@ -1207,7 +1204,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.adjustLoading = true;
         // const boList = this.adjustlist.map((e) => {
         const boList = this.selecedData.map((e) => {
           const aa1 = (e.deductionFreightList || []).map((e) => {
@@ -1263,6 +1259,7 @@ export default {
 
         // console.log(boList);
         // return;
+        this.adjustLoading = true;
         return batchCheck({ boList })
           .then((res) => {
             this.adjustLoading = false;
@@ -1426,7 +1423,16 @@ export default {
             return e;
           });
 
-          e.subsidiesFreightList = deepClone(this.subsidiesClone.concat(arrv)); // this.subsidiesClone.concat(arrv);
+          e.subsidiesFreightList = deepClone(this.subsidiesClone.concat(arrv)).map(eee => {
+            for (let i = 0; i < e.subsidiesFreightList.length; i++) {
+              const sub = e.subsidiesFreightList[i];
+              if (sub.enName === eee.enName) {
+                eee.ruleValue = sub.ruleValue;
+                break;
+              }
+            }
+            return eee;
+          });
         });
       } else {
         // 如果是减
@@ -1436,7 +1442,16 @@ export default {
             return e;
           });
 
-          e.deductionFreightList = deepClone(this.deductionClone.concat(arrv)); // this.deductionClone.concat(arrv);
+          e.deductionFreightList = deepClone(this.deductionClone.concat(arrv)).map(eee => {
+            for (let i = 0; i < e.deductionFreightList.length; i++) {
+              const sub = e.deductionFreightList[i];
+              if (sub.enName === eee.enName) {
+                eee.ruleValue = sub.ruleValue;
+                break;
+              }
+            }
+            return eee;
+          });
         });
       }
 
@@ -1446,7 +1461,8 @@ export default {
     /* 批量修改规定的值 */
     handleSelectedNumChange() {
       let isZa = false;
-      this.adjustlist.forEach((e) => {
+      this.selecedData.forEach((e) => {
+      // this.adjustlist.forEach((e) => {
         e.deductionFreightList &&
           e.deductionFreightList.forEach((e) => {
             if (e.enName === this.selectedValue) {
@@ -1475,7 +1491,6 @@ export default {
     /* 计算价格 */
     _sum(arr = []) {
       let sum = 0;
-      // console.log(arr);
       if (arr) {
         arr.forEach((e) => {
           sum += e.ruleValue - 0;
@@ -1516,10 +1531,7 @@ export default {
       const { columns, data } = param;
       const sums = [];
 
-      // console.log(columns, '合计行列的数据');
-
       columns.forEach((column, index) => {
-        // console.log(column, '没一列');
         if (index === 0) {
           sums[index] = '合计';
           return;
@@ -1537,9 +1549,6 @@ export default {
           }
           return va;
         });
-
-        // console.log(values);
-        // console.log(this.selecedData);
 
         if (!values.every((value) => isNaN(value))) {
           sums[index] = values.reduce((prev, curr) => {
