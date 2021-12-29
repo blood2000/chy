@@ -45,7 +45,7 @@ export default {
   },
   watch: {
     rowdata(val) {
-      console.log(val);
+      // console.log(val);
       if (val) {
         this.loadVoucherAttrs = val.loadVoucherAttrs ? val.loadVoucherAttrs.split(',') : [];
         this.unloadVoucherAttrs = val.unloadVoucherAttrs ? val.unloadVoucherAttrs.split(',') : [];
@@ -64,14 +64,14 @@ export default {
   justify-content: space-between;
 }
 .img_box1{
-  width: 410px;
-  height: 360px;
+  width: 320px;
+  height: 320px;
   overflow-x: scroll;
   display: flex;
 }
 .img{
-  width: 400px;
-  height: 350px;
+  width: 310px;
+  height: 310px;
   object-fit: contain;
   border: 1px dashed #ddd;
   border-radius: 10px;

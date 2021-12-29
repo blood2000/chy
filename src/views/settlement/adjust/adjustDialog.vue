@@ -875,7 +875,7 @@ export default {
         {
           prop: 'subsidyProject',
           isShow: true,
-          width: 250,
+          width: 150,
           tooltip: true,
           sortNum: 8,
           label: '补贴项目'
@@ -883,7 +883,7 @@ export default {
         {
           prop: 'deductionItem',
           isShow: true,
-          width: 250,
+          width: 150,
           tooltip: true,
           sortNum: 9,
           label: '扣费项目'
@@ -1074,9 +1074,8 @@ export default {
 
   created() {
     if (getLocalStorage(this.api)) {
-      this.tableHeaderConfig = getLocalStorage(this.api);
+      this.tableColumnsConfig = getLocalStorage(this.api);
     }
-
     this.changeFee = this.newDebounceFun(this.setDeliveryCashFee, 1000);
   },
 
@@ -1635,10 +1634,10 @@ export default {
 .cont-frame {
   display: flex;
   width: 100%;
+  padding-right: 20px;
 }
 .tongji{
-  width: calc(100% - 410px);
-  /* flex: 1; */
+  width: calc(100% - 310px);
   display: flex;
   flex-direction: column;
   padding: 0 20px;
@@ -1646,6 +1645,6 @@ export default {
 }
 
 .ishfeiwhiefw {
-  margin-right: 410px;
+  margin-right: 310px;
 }
 </style>
