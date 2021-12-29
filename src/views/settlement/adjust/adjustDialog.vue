@@ -1301,8 +1301,14 @@ export default {
           return b1 + b2 - (a1 + a2);
         });
 
-        this.subsidiesClone = this.adjustlist[0].subsidiesFreightList || [];
-        this.deductionClone = this.adjustlist[0].deductionFreightList || [];
+        this.subsidiesClone = this.adjustlist[0].subsidiesFreightList?.map(e => {
+          e.ruleValue = 0;
+          return e;
+        }) || [];
+        this.deductionClone = this.adjustlist[0].deductionFreightList?.map(e => {
+          e.ruleValue = 0;
+          return e;
+        }) || [];
 
         const felexes = [...this.subsidiesClone, ...this.deductionClone];
 
