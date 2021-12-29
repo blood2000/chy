@@ -817,7 +817,7 @@ export default {
       tableColumnsConfig: [
         {
           prop: 'waybillNo',
-          isShow: false,
+          isShow: true,
           width: 150,
           tooltip: true,
           sortNum: 1,
@@ -915,7 +915,7 @@ export default {
         },
         {
           prop: 'taxPayment',
-          isShow: false,
+          isShow: true,
           width: 110,
           tooltip: true,
           sortNum: 13,
@@ -997,16 +997,30 @@ export default {
       const serviceFee = [];
       const deliveryCashFee = [];
       const shipperRealPay = [];
+      const taxPayment = [];
 
       if (this.selecedData.length > 0) {
         this.selecedData.forEach(ee => {
           serviceFee.push(ee.serviceFee - 0);
           deliveryCashFee.push(ee.deliveryCashFee - 0);
           shipperRealPay.push(ee.shipperRealPay - 0);
+          taxPayment.push(ee.taxPayment - 0);
         });
       }
 
       return [
+        {
+          label: '选中的运单',
+          value: this.selecedData.length,
+          key: 'waybillCount'
+        },
+        {
+          label: '留存运费',
+          value: this.floor(
+            taxPayment.length > 0 ? taxPayment.reduce((p, c) => (p + c)) : 0
+          ) + ' 元',
+          key: 'taxPayment'
+        },
         {
           label: '服务费',
           value: this.floor(
@@ -1301,14 +1315,8 @@ export default {
           return b1 + b2 - (a1 + a2);
         });
 
-        this.subsidiesClone = this.adjustlist[0].subsidiesFreightList?.map(e => {
-          e.ruleValue = 0;
-          return e;
-        }) || [];
-        this.deductionClone = this.adjustlist[0].deductionFreightList?.map(e => {
-          e.ruleValue = 0;
-          return e;
-        }) || [];
+        this.subsidiesClone = this.adjustlist[0].subsidiesFreightList || [];
+        this.deductionClone = this.adjustlist[0].deductionFreightList || [];
 
         const felexes = [...this.subsidiesClone, ...this.deductionClone];
 
