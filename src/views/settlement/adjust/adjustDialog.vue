@@ -1626,10 +1626,11 @@ export default {
 }
 .cont-frame {
   display: flex;
+  width: 100%;
 }
 .tongji{
-  /* width: calc(100% - 450px); */
-  flex: 1;
+  width: calc(100% - 410px);
+  /* flex: 1; */
   display: flex;
   flex-direction: column;
   padding: 0 20px;
