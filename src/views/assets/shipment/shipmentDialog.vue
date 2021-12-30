@@ -10,7 +10,7 @@
     :close="cancel"
     class="page-shipment-edit-dialog"
   > -->
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="170px" style="margin-right: 5px">
+    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="auto" style="margin-right: 5px">
       <el-row :gutter="80">
         <el-col :span="12" :lg="12" :md="24" :sm="24" :xs="24" style="border-right: 1px solid #F3F3F3; padding-top: 20px">
           <h5 class="g-card-title g-strong mb20 ml10">
