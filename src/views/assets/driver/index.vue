@@ -438,6 +438,15 @@
                   @click="handleDelete(row)"
                 >删除</el-button>
               </el-dropdown-item>
+              <el-dropdown-item>
+                <el-button
+                  v-if="row.authStatus === 3"
+                  v-hasPermi="['assets:driver:updateDriverExamine']"
+                  size="mini"
+                  type="text"
+                  @click="handleUpdate(row)"
+                >审核未通过</el-button>
+              </el-dropdown-item>
             </TableDropdown>
           </template>
         </template>
@@ -468,7 +477,7 @@
 </template>
 
 <script>
-import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered, createWallet } from '@/api/assets/driver';
+import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered, createWallet, getUpdateDriverExamine } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
 import { waybillReportDriverByCode } from '@/api/data/report';
 import { updateUserStatusByUserCode } from '@/api/system/user';
@@ -769,6 +778,22 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess('删除成功');
+      });
+    },
+    /** 更新审核状态按钮操作 */
+    handleUpdate(row) {
+      if (row.authStatus === '3') {
+        this.authStatus = '2';
+      }
+      this.$confirm('是否取消审核通过', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(function() {
+        return getUpdateDriverExamine(row.id, row.code, 2);
+      }).then(() => {
+        this.getList();
+        // this.msgSuccess(authStatus === '3' ? '审核未通过' : '审核通过');
       });
     },
     /** 导出按钮操作 */
