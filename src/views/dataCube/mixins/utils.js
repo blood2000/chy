@@ -22,11 +22,18 @@ export default {
   methods: {
     numberToPx(obj) {
       const style = Object.assign({}, obj);
+      const { isFitWidth, isFitHeight } = style;
       for (const key in style) {
-        if (this.numberToPxMap[key]) {
+        if (key === 'width' && isFitWidth) {
+          style[key] = style[key] + isFitWidth;
+        } else if (key === 'height' && isFitHeight) {
+          style[key] = style[key] + isFitHeight;
+        } else if (this.numberToPxMap[key]) {
           style[key] = style[key] + 'px';
         }
       }
+      if (isFitWidth) delete style[isFitWidth];
+      if (isFitHeight) delete style[isFitHeight];
       return style;
     },
     removePosition(obj) {
