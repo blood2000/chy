@@ -159,3 +159,17 @@ export function getElectron(agreementNo) {
     }
   });
 }
+
+// 司机审核功能
+export function getUpdateDriverExamine(id, code, authStatus) {
+  const data = {
+    id,
+    code,
+    authStatus
+  };
+  return request({
+    url: 'assets/driver/updateDriverExamine',
+    method: 'put',
+    data: data
+  });
+}
