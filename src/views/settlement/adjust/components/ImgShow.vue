@@ -65,13 +65,13 @@ export default {
 }
 .img_box1{
   width: 320px;
-  height: 320px;
+  height: 360px;
   overflow-x: scroll;
   display: flex;
 }
 .img{
   width: 310px;
-  height: 310px;
+  height: 350px;
   object-fit: contain;
   border: 1px dashed #ddd;
   border-radius: 10px;
