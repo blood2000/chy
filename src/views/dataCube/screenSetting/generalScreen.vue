@@ -8,7 +8,7 @@
     <template v-for="item in layerList">
       <Layer
         :key="item.layerId"
-        ref="LayerRef"
+        :ref="'LayerRef'+item.layerId"
         :layer-data="item"
         :is-general="true"
       />
@@ -20,6 +20,7 @@
 import utils from '../mixins/utils';
 import Layer from './components/layer.vue';
 import { getDataScreens } from '@/api/dataCenter/screenCenter.js';
+import { ThrottleFun } from '@/utils/index.js';
 export default {
   name: 'GeneralScreen',
   components: {
@@ -37,15 +38,32 @@ export default {
   },
   created() {
     if (this.$route.query.queryData) {
+      // 由预览进入
       const queryData = JSON.parse(this.$route.query.queryData);
       this.screenForm = queryData.screenForm;
       this.layerList = queryData.layerList;
-    } else if (this.$route.query.screenId) {
-      this.screenId = this.$route.query.screenId;
+    } else {
+      // 由菜单进入
+      const path = this.$route.path;
+      const pathArr = path.split('/');
+      this.screenId = pathArr[pathArr.length - 1];
       this.getData();
     }
   },
+  mounted() {
+    window.addEventListener('resize', ThrottleFun(this.initChartSize, 300));
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', ThrottleFun(this.initChartSize, 300));
+  },
   methods: {
+    initChartSize() {
+      this.layerList.forEach(el => {
+        if (el.id && el.chartAlias && el.chartAlias !== 'table') {
+          this.$refs['LayerRef' + el.layerId][0].initChart();
+        }
+      });
+    },
     getData() {
       getDataScreens(this.screenId).then(res => {
         // 获取大屏数据json...
