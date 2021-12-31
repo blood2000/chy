@@ -171,7 +171,7 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/DataGeneralScreen',
+    path: '/DataGeneralScreen/:id(\\d+)',
     component: (resolve) => require(['@/views/dataCube/screenSetting/generalScreen'], resolve),
     hidden: true
   }

@@ -38,11 +38,15 @@ export default {
   },
   created() {
     if (this.$route.query.queryData) {
+      // 由预览进入
       const queryData = JSON.parse(this.$route.query.queryData);
       this.screenForm = queryData.screenForm;
       this.layerList = queryData.layerList;
-    } else if (this.$route.query.screenId) {
-      this.screenId = this.$route.query.screenId;
+    } else {
+      // 由菜单进入
+      const path = this.$route.path;
+      const pathArr = path.split('/');
+      this.screenId = pathArr[pathArr.length - 1];
       this.getData();
     }
   },
