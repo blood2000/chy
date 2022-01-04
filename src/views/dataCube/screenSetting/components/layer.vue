@@ -5,10 +5,10 @@
     :class="layerData.type === 'img' ? 'fontSize0' : ''"
   >
     <!-- 模型图层 -->
-    <div v-if="layerData.id" class="content-box">
+    <div v-if="layerData.id" class="content-box ly-flex-v">
       <!-- 查询项 -->
       <QueryModel
-        v-if="false"
+        v-if="layerData.setting.showQuery"
         :show-search="showSearch"
         :data-model-dto="dataModelDto"
         @handleQuery="handleQuery"
@@ -17,13 +17,14 @@
 
       <!-- 图表 -->
       <template v-if="chartAlias && chartAlias !== 'table'">
-        <div v-if="dataList.length > 0" ref="chartBoxRef" class="content-box" />
+        <div v-if="dataList.length > 0" ref="chartBoxRef" class="content-box-chart ly-flex-1" />
         <DataNull v-else />
       </template>
 
       <!-- 列表 -->
       <template v-else>
         <ToolbarModel
+          v-if="layerData.setting.showToolbar"
           :export-loading="exportLoading"
           :show-search.sync="showSearch"
           @handleExport="handleExport"
@@ -33,8 +34,11 @@
           :loading="loading"
           :data-list="dataList"
           :data-model-dto="dataModelDto"
+          class="ly-flex-1"
+          style="overflow-y:auto"
         />
         <PaginationModel
+          v-if="layerData.setting.showPagination"
           :total="total"
           :data-model-dto="dataModelDto"
           @getList="getList"
@@ -86,18 +90,21 @@ export default {
     // chart 监听容器宽
     'layerData.style.width': {
       handler(val) {
-        if (this.layerData.id && this.chartAlias && this.chartAlias !== 'table') {
-          this.handleGenerate();
-        }
+        this.layerRefreshChart();
       },
       deep: true
     },
     // chart 监听容器高
     'layerData.style.height': {
       handler(val) {
-        if (this.layerData.id && this.chartAlias && this.chartAlias !== 'table') {
-          this.handleGenerate();
-        }
+        this.layerRefreshChart();
+      },
+      deep: true
+    },
+    // model 配置项
+    'layerData.setting': {
+      handler(val) {
+        this.layerRefreshChart();
       },
       deep: true
     }
@@ -106,6 +113,16 @@ export default {
     if (this.layerData.id) {
       this.modelId = this.layerData.id;
       this.getDataModelData();
+    }
+  },
+  methods: {
+    // 刷新echart图表
+    layerRefreshChart() {
+      if (this.layerData.id && this.chartAlias && this.chartAlias !== 'table') {
+        this.$nextTick(() => {
+          this.handleGenerate();
+        });
+      }
     }
   }
 };
@@ -121,6 +138,10 @@ export default {
     width: 100%;
     height: 100%;
     overflow-x: hidden;
+  }
+  .content-box-chart{
+    width: 100%;
+    overflow: hidden;
   }
 }
 </style>
