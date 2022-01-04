@@ -34,8 +34,6 @@
           :loading="loading"
           :data-list="dataList"
           :data-model-dto="dataModelDto"
-          class="ly-flex-1"
-          style="overflow-y:auto"
         />
         <PaginationModel
           v-if="layerData.setting.showPagination"
