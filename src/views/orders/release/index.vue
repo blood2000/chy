@@ -437,6 +437,32 @@
         <OpenDialog :shipment-code="formData.tin1" :opaddresstype="opaddresstype" @radioSelection="radioSelection" />
       </div>
     </el-dialog>
+
+    <!-- 新的设置电子围栏 -->
+
+    <el-dialog class="i-adjust" :title="'电子围栏'" :visible.sync="mapOpen" width="80vw" :close-on-click-modal="false" append-to-body>
+      <div v-if="mapOpen">
+        <div>
+          <!-- :value="mapForm.addressNamelnglat"
+            :circle-radius="mapForm.rad"
+            :circle-center="mapForm.electroniclnglat" -->
+          <AddressMap
+            ref="AddressMapRef"
+            iscustomize
+            :value="[116.478928, 39.997761]"
+            :cb-data="mapData"
+            vid="electronic"
+            :option="{
+              zoom: 16
+            }"
+            @getMapData="getMapData"
+          />
+        </div>
+      </div>
+    </el-dialog>
+
+    <button @click="mapOpen = true">打开</button>
+
   </div>
 </template>
 
@@ -447,6 +473,8 @@ import GoodsInfo from './GoodsInfo';
 import OpenDialog from './OpenDialog';
 import CircleDialog from './component/circleDialog';
 import WaybillInfo from './WaybillInfo';
+
+import AddressMap from '@/components/Ddc/Tin/AddressMap.vue';
 
 import { getUserInfo } from '@/utils/auth';
 import { listShipment, getShipmentByCode } from '@/api/assets/shipment.js';
@@ -469,7 +497,8 @@ export default {
     OpenDialog,
     WaybillInfo,
     ztRelease, // 渣土货主发布货源界面
-    CircleDialog
+    CircleDialog,
+    AddressMap
   },
   data() {
     return {
@@ -554,7 +583,20 @@ export default {
       isMultiGoods: false, // 用来判断多商品还是单商品
 
       isDetail: false, // 编辑
-      cloneLastData: null // 保存一份原始数据(方便电子围栏使用)
+      cloneLastData: null, // 保存一份原始数据(方便电子围栏使用)
+
+      // 电子围栏编辑
+      mapOpen: true,
+      // s= 表单
+      mapForm: {
+        name: undefined,
+        tenantAddressName: undefined, // 没用
+        status: '0',
+        addressNamelnglat: [] // 地址坐标
+      },
+
+      mapData: []
+
     };
   },
 
@@ -1858,6 +1900,11 @@ export default {
 
     async handlerPromise(refname, bool) {
       return await this.$refs[refname]._submitForm();
+    },
+
+    // 电子围栏相关
+    getMapData(datas) {
+      console.log(datas);
     }
 
   }
