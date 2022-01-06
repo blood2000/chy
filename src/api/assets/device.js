@@ -241,7 +241,7 @@ export function getAllMapping() {
 // 获取货源列表
 export function getSimpleOrderList(query) {
   return request({
-    url: '/transportation/orderInfoSearch/simpleOrderList',
+    url: '/transportation/orderInfoSearch/simpleOrderList2',
     method: 'get',
     params: query
   });
@@ -250,7 +250,7 @@ export function getSimpleOrderList(query) {
 // 电子围栏
 export function getFencePlatList(data) {
   return request({
-    url: '/iot/fenceBusiness/getFencePlatList',
+    url: '/transportation/chyElectricFence/getFencePlatList',
     method: 'post',
     data: data
   });
