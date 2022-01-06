@@ -156,7 +156,6 @@ export default {
           this.msgInfo('暂无电子围栏信息');
         }
         // 绘制电子围栏
-        this.$refs.mapRef.clearMap();
         this.$refs.mapRef.drawFencePlat(data);
       });
     }

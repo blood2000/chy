@@ -112,6 +112,7 @@
 <script>
 import TrackDetail from './trackDetail.vue';
 import { jimiTrackLocation } from '@/api/waybill/tracklist';
+import fence from '../mixins/fence';
 const geocoder = new AMap.Geocoder({
   radius: 1000,
   extensions: 'all'
@@ -121,6 +122,7 @@ export default {
   components: {
     TrackDetail
   },
+  mixins: [fence],
   props: {
     currentMap: {
       type: String,
@@ -647,11 +649,6 @@ export default {
     changeTrackTable() {
       this.isOpenTrackTable = true;
     }
-
-    // ====================================== 电子围栏start ======================================
-
-
-    // ======================================  电子围栏end  ======================================
   }
 };
 </script>
