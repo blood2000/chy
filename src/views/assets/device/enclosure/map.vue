@@ -92,7 +92,6 @@
             </div>
           </div>
           <div class="button-box">
-            <el-button class="mr10" type="text" style="mini" @click="changeFence">{{ `${isOpenFence ? '关闭' : '开启'}` }}电子围栏</el-button>
             <el-button class="mr10" type="text" style="mini" @click="changeTrackTable">轨迹明细</el-button>
           </div>
         </div>
@@ -174,13 +173,6 @@ export default {
       currentTrackTime: null,
       // 当前轨迹点速度
       currentTrackSpeed: null,
-      // 电子围栏集合
-      circleList: {},
-      fenceMarkerList: {},
-      // 电子围栏数据
-      fenceList: [],
-      // 是否开启电子围栏
-      isOpenFence: true,
       // 是否开启轨迹列表
       isOpenTrackTable: false
     };
@@ -443,10 +435,6 @@ export default {
       this.trackInfo = {};
       // 重置巡航轨迹
       this.clearPathSimplifierIns();
-      // 清空电子围栏
-      this.circleList = {};
-      this.fenceMarkerList = {};
-      this.fenceList = [];
     },
     /** 重置巡航轨迹 */
     clearPathSimplifierIns() {
@@ -655,116 +643,15 @@ export default {
       this.currentTrackTime = this.jmTrackInfolist[index].gpsTime;
       this.currentTrackSpeed = this.jmTrackInfolist[index].gpsSpeed;
     },
-    /** 保存电子围栏数据 */
-    saveFenceData(data) {
-      this.fenceList = data;
-      this.drawFencePlat();
-    },
-    /** 绘制电子围栏 */
-    drawFencePlat() {
-      if (!this.isOpenFence) {
-        return;
-      }
-      if (this.fenceList.length === 0) {
-        this.msgInfo('暂无电子围栏信息');
-      }
-      this.fenceList.forEach(el => {
-        if (el.lat && el.lng && el.lat !== '0' && el.lng !== '0') {
-          const id = el.orderCode + el.addressCode;
-          const addressType = el.addressType === '1' ? ' [装货]' : (el.addressType === '2' ? ' [卸货]' : '');
-          const text = el.mainOrderNumber + addressType;
-          this.drawCircle(id, [el.lng, el.lat], el.radius);
-          this.drawFenceMarker(id, [el.lng, el.lat], text);
-        }
-      });
-      this.$nextTick(() => {
-        this.map.setFitView();
-      });
-    },
-    /** 绘制电子围栏标记
-     * @param {string} id 唯一值必传
-     * @param {LngLat} position 经纬度必传
-     * @param {Object} text 文本内容
-    */
-    drawFenceMarker(id, position, text) {
-      const _this = this;
-      const marker = new AMap.Marker({
-        map: this.map,
-        position: position,
-        label: {
-          offset: new AMap.Pixel(0, -8),
-          content: '<div>' + text + '</div>',
-          direction: 'top'
-        },
-        icon: new AMap.Icon({
-          image: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
-          size: new AMap.Size(26, 34),
-          imageSize: new AMap.Size(26, 34)
-        }),
-        autoFitView: true,
-        autoRotation: true,
-        offset: new AMap.Pixel(-13, -34)
-      });
-      this.fenceMarkerList[id] = marker;
-      // 双击定位
-      marker.on('dblclick', function(e) {
-        _this.map.setFitView(_this.circleList[id]);
-      });
-      // 单击
-      marker.on('click', function(e) {
-        if (JSON.stringify(marker.getLabel()) === '{}') {
-          marker.setLabel({
-            offset: new AMap.Pixel(0, -8),
-            content: '<div>' + text + '</div>',
-            direction: 'top'
-          });
-        } else {
-          marker.setLabel({});
-        }
-      });
-    },
-    /**
-     * 绘制圆覆盖物
-     * @param {string} id 唯一值必传
-     * @param {LngLat} center 中心点
-     * @param {Number} radius 半径
-     */
-    drawCircle(id, center, radius) {
-      const circle = new AMap.Circle({
-        map: this.map,
-        center: center,
-        radius: radius,
-        strokeColor: '#ff4d4d', // 边框线颜色
-        strokeOpacity: 1, // 边框线透明度
-        strokeWeight: 3, // 边框线宽
-        fillColor: '#ff4d4d', // 填充色
-        fillOpacity: 0.3// 填充透明度
-      });
-      this.circleList[id] = circle;
-    },
-    /** 控制开启电子围栏开关 */
-    changeFence() {
-      this.isOpenFence = !this.isOpenFence;
-      this.clearFenceMarker();
-      this.drawFencePlat();
-    },
-    /** 清除电子围栏覆盖物 */
-    clearFenceMarker() {
-      for (const key in this.circleList) {
-        this.circleList[key].setMap(null);
-        this.circleList[key] = null;
-      }
-      for (const key in this.fenceMarkerList) {
-        this.fenceMarkerList[key].setMap(null);
-        this.fenceMarkerList[key] = null;
-      }
-      this.circleList = {};
-      this.fenceMarkerList = {};
-    },
     /** 查看轨迹列表 */
     changeTrackTable() {
       this.isOpenTrackTable = true;
     }
+
+    // ====================================== 电子围栏start ======================================
+
+
+    // ======================================  电子围栏end  ======================================
   }
 };
 </script>
