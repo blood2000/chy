@@ -226,9 +226,11 @@
                       active-color="#13ce66"
                       inactive-color="#ff4949"
                       class="ml10 mr10"
+                      @change="handlerDeleMap(address, address.switchRadius)"
                     />
                   </label>
-                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!isDetail" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
+                  <!-- v-if="address.switchRadius" 改成不展示 -->
+                  <el-input-number v-if="false" v-model="address.radius" :precision="0" :disabled="!isDetail" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS1', address.radius)" />
                 </div>
                 <el-button
                   v-if="address.switchRadius"
@@ -324,9 +326,11 @@
                       inactive-color="#ff4949"
                       :disabled="!isDetail"
                       class="ml10 mr10"
+                      @change="handlerDeleMap(address, address.switchRadius)"
                     />
                   </label>
-                  <el-input-number v-if="address.switchRadius" v-model="address.radius" :precision="0" :disabled="!isDetail" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
+                  <!-- v-if="address.switchRadius" 改成不展示 -->
+                  <el-input-number v-if="false" v-model="address.radius" :precision="0" :disabled="!isDetail" size="mini" :min="200" :max="999900" label="请输入围栏半径" @change="$store.commit('orders/SET_RADIUS2', address.radius)" />
                 </div>
 
 
@@ -421,7 +425,7 @@
       </el-row>
     </div>
 
-    <el-button v-show="false" @click="__show__">$$</el-button>
+    <!-- <el-button v-show="false" @click="__show__">$$</el-button> -->
 
 
     <!-- 设置电子围栏弹窗 -->
@@ -437,6 +441,33 @@
         <OpenDialog :shipment-code="formData.tin1" :opaddresstype="opaddresstype" @radioSelection="radioSelection" />
       </div>
     </el-dialog>
+
+    <!-- 新的设置电子围栏 -->
+
+    <el-dialog class="i-adjust" :title="'电子围栏'" :visible.sync="mapOpen" width="80vw" :close-on-click-modal="false" append-to-body>
+      <div v-if="mapOpen">
+        <div>
+          <!-- :value="mapForm.addressNamelnglat"
+            :circle-radius="mapForm.rad"
+            :circle-center="mapForm.electroniclnglat" -->
+          <AddressMap
+            ref="AddressMapRef"
+            iscustomize
+            :value="map_center"
+            :cb-data="mapDatacbData"
+            vid="electronic"
+            :option="{
+              zoom: 16
+            }"
+            @getMapData="getMapData"
+          />
+        </div>
+        <div style="marginTop:20px; text-align: right;">
+          <el-button type="primary" @click="electricSub(lastMapData, addressChange)">确定</el-button>
+        </div>
+      </div>
+    </el-dialog>
+
   </div>
 </template>
 
@@ -447,6 +478,8 @@ import GoodsInfo from './GoodsInfo';
 import OpenDialog from './OpenDialog';
 import CircleDialog from './component/circleDialog';
 import WaybillInfo from './WaybillInfo';
+
+import AddressMap from '@/components/Ddc/Tin/AddressMap.vue';
 
 import { getUserInfo } from '@/utils/auth';
 import { listShipment, getShipmentByCode } from '@/api/assets/shipment.js';
@@ -469,7 +502,8 @@ export default {
     OpenDialog,
     WaybillInfo,
     ztRelease, // 渣土货主发布货源界面
-    CircleDialog
+    CircleDialog,
+    AddressMap
   },
   data() {
     return {
@@ -554,7 +588,23 @@ export default {
       isMultiGoods: false, // 用来判断多商品还是单商品
 
       isDetail: false, // 编辑
-      cloneLastData: null // 保存一份原始数据(方便电子围栏使用)
+      cloneLastData: null, // 保存一份原始数据(方便电子围栏使用)
+
+      // 电子围栏编辑
+      mapOpen: false,
+      // s= 表单
+      mapForm: {
+        name: undefined,
+        tenantAddressName: undefined, // 没用
+        status: '0',
+        addressNamelnglat: [] // 地址坐标
+      },
+
+      mapDatacbData: null,
+      map_center: [],
+
+      lastMapData: null
+
     };
   },
 
@@ -705,6 +755,13 @@ export default {
         console.log(this.isDetail);
       },
       immediate: true
+    },
+
+    mapOpen(bool) {
+      if (!bool) {
+        this.map_center = [];
+        this.mapDatacbData = null;
+      }
     }
 
   },
@@ -770,6 +827,8 @@ export default {
 
   methods: {
     /** ================ s=基本获取数据 ================ */
+
+
 
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
@@ -960,9 +1019,20 @@ export default {
             const refName = array[index].refName;
             await this.$refs[refName][0]._submitForm();
           }
+
+          console.log(this.address_xie);
           // 判断其他
           this.lastData = await this.submAllData();
           console.log(this.lastData);
+
+          // 判断电子围栏必须双开或者双关
+
+          console.log(this.openedDouble(this.lastData));
+          if (!this.openedDouble(this.lastData)) {
+            this.msgError('电子围栏必须双开或者双关');
+            return;
+          }
+
 
           // console.log('到这里说明过了------------------还有几个未判断');
           this.onPubilsh();
@@ -970,6 +1040,19 @@ export default {
           return false;
         }
       });
+    },
+
+    openedDouble(_data) {
+      const arr = _data.orderAddressPublishBoList || _data.orderAddressInfoUpdateBoList;
+      const arr1 = [];
+      const arr2 = [];
+      arr.forEach(e => {
+        arr1.push(!!e.addressFenceInfo);
+        arr2.push(!e.addressFenceInfo);
+      });
+
+      if (arr1.every(e => e) || arr2.every(e => e)) return true;
+      return false;
     },
 
     /** e=步骤 */
@@ -1064,7 +1147,7 @@ export default {
           update(this.lastData).then(async res => {
             this.msgSuccess('修改成功');
             // s= 编辑重新发起创建电子围栏
-            await this.createdElectronic(this.$route.query.id);
+            // await this.createdElectronic(this.$route.query.id);
             // e=
 
             var time1 = setTimeout(() => {
@@ -1079,7 +1162,7 @@ export default {
         } else {
           orderPubilsh(this.lastData).then(async(response) => {
             // 处理电子围栏数据
-            await this.createdElectronic(response.data);
+            // await this.createdElectronic(response.data);
 
             this.msgSuccess('新增成功');
             setTimeout(() => {
@@ -1094,60 +1177,61 @@ export default {
       }
     },
 
-    // 创建电子围栏
+    // 去掉创建电子围栏
     async createdElectronic(orderCode) {
-      if (this.isOpenTheElectronicFence) {
-        let isPost = false;
-        const { orderAddressPublishBoList, orderSpecifiedList } = this.cloneLastData;
-        const addressInfo = orderAddressPublishBoList.map(e => {
-          let obj = null;
-          if (e.addressType === '1' && e.switchRadius) {
-            obj = {
-              addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
-              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
-              radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
-            };
-            isPost = true;
-          } else if (e.addressType === '2' && e.switchRadius) {
-            obj = {
-              addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
-              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
-              radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
-            };
-            isPost = true;
-          }
+
+      // if (this.isOpenTheElectronicFence) {
+      //   let isPost = false;
+      //   const { orderAddressPublishBoList, orderSpecifiedList } = this.cloneLastData;
+      //   const addressInfo = orderAddressPublishBoList.map(e => {
+      //     let obj = null;
+      //     if (e.addressType === '1' && e.switchRadius) {
+      //       obj = {
+      //         addressType: e.addressType,
+      //         lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
+      //         lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
+      //         radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+      //       };
+      //       isPost = true;
+      //     } else if (e.addressType === '2' && e.switchRadius) {
+      //       obj = {
+      //         addressType: e.addressType,
+      //         lng: e.centerLocation ? e.centerLocation[0] - 0 : e.longitude,
+      //         lat: e.centerLocation ? e.centerLocation[1] - 0 : e.latitude,
+      //         radius: e.enclosureRadius ? e.enclosureRadius + '' : e.radius
+      //       };
+      //       isPost = true;
+      //     }
 
 
-          return obj;
-        }).filter(e => e);
+      //     return obj;
+      //   }).filter(e => e);
 
-        const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
+      //   const dispatcherCodeList = orderSpecifiedList.map(e => e.teamInfoCode);
 
-        const que = {
-          addressInfo,
-          dispatcherCodeList,
-          orderCode: orderCode
-        };
+      //   const que = {
+      //     addressInfo,
+      //     dispatcherCodeList,
+      //     orderCode: orderCode
+      //   };
 
-        console.log(que);
+      //   console.log(que);
 
-        // 有可能不设置围栏了
-        if (isPost) {
-          try {
-            await fencePlatCreate(que);
-            this.msgSuccess('创建电子围栏成功');
-          } catch (error) {
-            this.$message({
-              showClose: true,
-              duration: 0,
-              message: '创建电子围栏失败, 请联系客服',
-              type: 'error'
-            });
-          }
-        }
-      }
+      //   // 有可能不设置围栏了
+      //   if (isPost) {
+      //     try {
+      //       await fencePlatCreate(que);
+      //       this.msgSuccess('创建电子围栏成功');
+      //     } catch (error) {
+      //       this.$message({
+      //         showClose: true,
+      //         duration: 0,
+      //         message: '创建电子围栏失败, 请联系客服',
+      //         type: 'error'
+      //       });
+      //     }
+      //   }
+      // }
     },
 
 
@@ -1355,8 +1439,8 @@ export default {
 
       // 电子围栏 this.address_add, '最后处理装' 存着最准确的值
 
-      console.log(this.address_add);
-      console.log(addr_add);
+      // console.log(this.address_add);
+      // console.log(addr_add);
       addr_add = addr_add.map(e => {
         // 单独处理电子围栏的问题
         this.address_add.forEach(ee => {
@@ -1366,6 +1450,11 @@ export default {
             e.switchRadius = ee.switchRadius;
             e.centerLocation = ee.centerLocation;
             e.onElcEnclosure = ee.onElcEnclosure ? 1 : 0;
+            	// 几何类型（1.圆形 2.矩形 3.多边形）
+            e.addressFenceInfo = ee.__lastMapData__;
+            e.isOpenEnclosure = e.addressFenceInfo ? 1 : 0;
+
+            delete e.__lastMapData__;
           }
         });
         e.identification = e.identification || 0;
@@ -1390,6 +1479,12 @@ export default {
             e.switchRadius = ee.switchRadius;
             e.centerLocation = ee.centerLocation;
             e.onElcEnclosure = ee.onElcEnclosure ? 1 : 0;
+
+
+            	// 几何类型（1.圆形 2.矩形 3.多边形）
+            e.addressFenceInfo = ee.__lastMapData__;
+            e.isOpenEnclosure = e.addressFenceInfo ? 1 : 0;
+            delete e.__lastMapData__;
           }
         });
 
@@ -1399,6 +1494,9 @@ export default {
         }
         return e;
       });
+
+      // console.log(isOk.every(e=> e));
+
 
 
       // console.log([...addr_add, ...addr_xie], '处理后的值');
@@ -1486,7 +1584,7 @@ export default {
       this.formData.tin1 = pubilshCode;
       this.formData.tin7 = loadType ? loadType + '' : '1';
 
-      console.log(data, '返回结果');
+      // console.log(data, '返回结果');
 
       this.cbOrderBasic = {
 
@@ -1537,17 +1635,17 @@ export default {
       this.address_add = [];
       this.address_xie = [];
 
-      console.log(addressList);
+      // console.log(addressList);
 
       addressList.forEach((e, index) => {
         // 电子围栏回填
-        let dzWLobj = {};
-        if (e.enclosureRadius) {
-          dzWLobj = {
-            centerLocation: e.centerLocation?.map(e => e - 0),
-            radius: e.enclosureRadius
-          };
-        }
+        // let dzWLobj = {};
+        // if (e.enclosureRadius) {
+        //   dzWLobj = {
+        //     centerLocation: e.centerLocation?.map(e => e - 0),
+        //     radius: e.enclosureRadius
+        //   };
+        // }
         // e电子围栏回填
 
         if ((e.addressType - 0) === 3) {
@@ -1559,8 +1657,9 @@ export default {
         if ((e.addressType - 0) === 1) {
           // 装
           this.address_add.push({
-            ...dzWLobj,
-            switchRadius: !!e.enclosureRadius,
+            // ...dzWLobj,
+            __lastMapData__: e.addressFenceInfo,
+            switchRadius: !!e.addressFenceInfo,
             onElcEnclosure: e.onElcEnclosure === 1,
             refName: 'address_add' + Date.now() + index,
             cbData: e // 主要是这个
@@ -1568,8 +1667,9 @@ export default {
         } else if ((e.addressType - 0) === 2) {
           // 卸
           this.address_xie.push({
-            ...dzWLobj,
-            switchRadius: !!e.enclosureRadius,
+            // ...dzWLobj,
+            __lastMapData__: e.addressFenceInfo,
+            switchRadius: !!e.addressFenceInfo,
             onElcEnclosure: e.onElcEnclosure === 1,
             refName: 'address_xie' + Date.now() + index,
             cbData: e
@@ -1579,17 +1679,23 @@ export default {
           this.address_add.push({
             refName: 'address_add' + Date.now() + index,
             addressType: e.addressType,
+            __lastMapData__: e.addressFenceInfo,
             cbData: e // 主要是这个
           });
         } else if ((e.addressType - 0) === 4) {
           e.addressName = '自卸';
           this.address_xie.push({
             refName: 'address_xie' + Date.now() + index,
+            __lastMapData__: e.addressFenceInfo,
             addressType: e.addressType,
             cbData: e
           });
         }
       });
+
+
+      // console.log(this.address_add);
+      // console.log(this.address_xie);
     },
 
     // 3. 处理回填的数据(1.是要获取地址中的规则 2.要获取装地址到卸地址)
@@ -1679,8 +1785,34 @@ export default {
 
     /** ================ s=电子围栏相关 ================*/
 
+    handlerDeleMap(addr, bool) {
+      console.log(addr, bool);
+      if (!bool) {
+        delete addr.__lastMapData__;
+      }
+    },
     // 编辑电子围栏
     handleElect(addr) {
+      // s=
+      console.log(addr, '电子围栏开始~~~');
+      this.mapDatacbData = null;
+
+
+
+      if (addr.cbData && addr.cbData.location) {
+        if (addr.__lastMapData__) {
+          this.mapDatacbData = this.handlerMapCbData(addr.__lastMapData__);
+        }
+        this.addressChange = addr;
+        this.map_center = addr.cbData.location;
+        this.mapOpen = true;
+      } else {
+        this.msgInfo('请先完善地址信息！');
+      }
+
+      return;
+      // e=
+
       if (addr.cbData) {
         this.addressChange = addr;
         this.title = '设置电子围栏';
@@ -1695,6 +1827,68 @@ export default {
         this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.loadLnglat, addr.loadLnglat);
       } else {
         this.msgInfo('请先完善地址信息！');
+      }
+    },
+    // 数据回填处理成组件想要的格式
+    handlerMapCbData(cbData) {
+      if (cbData.geomType === 1) {
+        const array = cbData.geomText.split(',');
+        return [
+          {
+            centerLng: Number(array[0]),
+            centerLat: Number(array[1]),
+            geomType: 1,
+            radius: Number(array[2])
+          }
+        ];
+      } else if (cbData.geomType === 2) {
+        const array = cbData.geomText.split(',');
+        return [
+          {
+            geomType: 2,
+            southWest: [Number(array[0]), Number(array[1])],
+            northEast: [Number(array[2]), Number(array[3])]
+          }
+        ];
+      } else if (cbData.geomType === 3) {
+        const array = cbData.geomText.split(',');
+        const arr = [];
+        for (let i = 0; i < array.length / 2; i++) {
+          arr.push([Number(array[i * 2]), Number(array[i * 2 + 1])]);
+        }
+
+        return [{
+          geomText: arr,
+          geomType: 3
+        }];
+      }
+    },
+    // 处理成后端要的格式
+    handlerMapApiData(_data) {
+      if (_data.geomType === 1) {
+        return {
+          centerLat: _data.centerLat, //	中心点-纬度		false               number
+          centerLng: _data.centerLng, //	中心点-经度		false               number
+          geomText: [_data.centerLng, _data.centerLat, Math.floor(_data.radius)].join(','), //	几何数据: 圆形[x,y,r] 矩形[x,y,x,y] 多边形[x,y,x,y,x,y]		false               string
+          geomType: 1 //	几何类型（1.圆形 2.矩形 3.多边形）		false               integer
+          // platFenceCode: _data.platFenceCode, //	平台围栏code
+        };
+      } else if (_data.geomType === 2) {
+        return {
+          centerLat: _data.centerLat, //	中心点-纬度		false               number
+          centerLng: _data.centerLng, //	中心点-经度		false               number
+          geomText: _data.geomText.join(','), //	几何数据: 圆形[x,y,r] 矩形[x,y,x,y] 多边形[x,y,x,y,x,y]		false               string
+          geomType: 2 //	几何类型（1.圆形 2.矩形 3.多边形）		false               integer
+          // platFenceCode: _data.platFenceCode, //	平台围栏code
+        };
+      } else if (_data.geomType === 3) {
+        return {
+          centerLat: _data.centerLat, //	中心点-纬度		false               number
+          centerLng: _data.centerLng, //	中心点-经度		false               number
+          geomText: _data.geomText.map(e => e.join(',')).join(','), //	几何数据: 圆形[x,y,r] 矩形[x,y,x,y] 多边形[x,y,x,y,x,y]		false               string
+          geomType: 3 //	几何类型（1.圆形 2.矩形 3.多边形）		false               integer
+          // platFenceCode: _data.platFenceCode, //	平台围栏code
+        };
       }
     },
 
@@ -1736,6 +1930,8 @@ export default {
               ...data,
               location: [this.floor(data.longitude, 6), this.floor(data.latitude, 6)]
             };
+            delete e.__lastMapData__;
+            console.log(e, '切换后,这里是否清空??');
           }
         });
       }
@@ -1858,6 +2054,23 @@ export default {
 
     async handlerPromise(refname, bool) {
       return await this.$refs[refname]._submitForm();
+    },
+
+    // 电子围栏相关
+    getMapData(datas) {
+      console.log(datas);
+      this.lastMapData = datas;
+    },
+
+
+    // 电子围栏确定
+    electricSub(lastMapData, address) {
+      console.log(lastMapData, address);
+      // address.__lastMapData__ = lastMapData;
+      // 几何类型（1.圆形 2.矩形 3.多边形）
+      address.__lastMapData__ = this.handlerMapApiData(lastMapData[0]);
+      this.mapOpen = false;
+      this.addressChange = null;
     }
 
   }
@@ -1869,6 +2082,7 @@ export default {
   padding-bottom: 10px;
   position: relative;
   font-weight: 700;
+
   &::before {
     content: "";
     position: absolute;

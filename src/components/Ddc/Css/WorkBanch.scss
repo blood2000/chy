@@ -398,6 +398,7 @@
   width:330px;
   height: 100%;
   margin-right: 15px;
+  flex-shrink: 0;
 }
 .minworkbanch .order-frame{
   min-width:260px;
@@ -407,7 +408,7 @@
 }
 .invoice-frame{
   width:33%;
-  min-width: 450px;
+  min-width: 300px;
   height: 100%;
   margin-right: 15px;
 }
@@ -418,9 +419,10 @@
   margin-right: 10px;
 }
 .way-frame{
-  width:calc(67% - 360px);
-  min-width:360px;
+  // width:calc(67% - 360px);
+  min-width:310px;
   height: 100%;
+  margin-right: 15px;
 }
 .minworkbanch .way-frame{
   width:calc(67% - 280px);
@@ -475,4 +477,25 @@
 //   width: 8px;
 //   height: 8px;
 // }
+
+.cap-frame {
+  width:calc(15%);
+  min-width: 210px;
+  height: 100%;
+  margin-left: 15px;
+}
+
+.apital-frame {
+  height: 140px;
+  background: #F6FAFE;
+  padding: 15px;
+  margin-top: 23px;
+}
+
+.font-style {
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+  margin-top: 24px;
+}
 
