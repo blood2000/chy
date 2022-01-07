@@ -502,7 +502,9 @@ export default {
     /** 巡航轨迹事件 */
     startPathSimplifier() {
       this.isPlay = 1;
-      this.map.setZoomAndCenter(12, this.jmTracklist[0]);
+      // const zoom = this.map.getZoom;
+      // this.map.setZoomAndCenter(zoom + 1, this.jmTracklist[0]);
+      this.map.setCenter(this.jmTracklist[0]);
       this.navgtr.start();
     },
     pausePathSimplifier() {
