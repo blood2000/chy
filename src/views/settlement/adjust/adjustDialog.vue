@@ -65,7 +65,7 @@
       </div>
 
       <div class="cont-frame">
-        <div class="tongji">
+        <div class="tongji" style="height:85vh">
           <TotalBar :total-list="totalList" />
 
           <RefactorTable
