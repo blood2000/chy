@@ -306,7 +306,7 @@ export default {
       consumeOptions: [
         { dictLabel: '充值', dictValue: 0 },
         // { dictLabel: '保证金', dictValue: 1 },
-        { dictLabel: '运费', dictValue: 2 },
+        { dictLabel: '尾款', dictValue: 2 },
         // { dictLabel: '保费', dictValue: 3 },
         // { dictLabel: '罚款', dictValue: 4 },
         { dictLabel: '提现', dictValue: 5 },
