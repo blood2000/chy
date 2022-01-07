@@ -405,6 +405,7 @@ export default {
       //   this.visible = true;
       // }
       this.title = '电子合同';
+      this.financialOption = row.financialOption - 0;
       this.driverOrShipment = row.driverOrShipment;
 
       const { data } = await getContractByCode(row.code);
@@ -412,6 +413,7 @@ export default {
       this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract, sealPath: row.sealPath };
       console.log(this.dialogData);
       console.log(this.driverOrShipment);
+      console.log(this.financialOption);
       this.visible = true;
     },
 
