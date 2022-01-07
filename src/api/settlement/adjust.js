@@ -110,3 +110,11 @@ export function batchAdd(data) {
   });
 }
 
+export function accountRejected(data) {
+  return request({
+    url: '/transportation/waybillBalanceInfo/accountRejected',
+    method: 'post',
+    data: data
+  });
+}
+
