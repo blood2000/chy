@@ -1799,12 +1799,12 @@ export default {
 
 
 
-      if (addr.cbData && addr.cbData.location) {
+      if ((addr.cbData && addr.cbData.location) || addr.centerLocation) {
         if (addr.__lastMapData__) {
           this.mapDatacbData = this.handlerMapCbData(addr.__lastMapData__);
         }
         this.addressChange = addr;
-        this.map_center = addr.cbData.location;
+        this.map_center = (addr.cbData && addr.cbData.location) || addr.centerLocation;
         this.mapOpen = true;
       } else {
         this.msgInfo('请先完善地址信息！');
