@@ -61,4 +61,12 @@ export function getUnreviewed(branchCode) {
   });
 }
 
+// 钱包统计
+export function walletStatistical(data) {
+  return request({
+    url: '/payment/wallet/userAmout/walletStatistical',
+    method: 'post',
+    data: data
+  });
+}
 
