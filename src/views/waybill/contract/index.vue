@@ -209,8 +209,14 @@
     <!-- 打印合同 -->
     <el-dialog :title="title" :visible.sync="visible" width="1200px" append-to-body>
       <div v-if="dialogData && visible">
-        <driver-contract v-if="driverOrShipment === 0" :obj="dialogData" />
-        <shipment-contract v-else :obj="dialogData" />
+        <template v-if="financialOption === 3">
+          <ShanxiDriverContract v-if="driverOrShipment === 0" :obj="dialogData" />
+          <ShanxiShipmentContract v-else :obj="dialogData" />
+        </template>
+        <template v-else>
+          <driver-contract v-if="driverOrShipment === 0" :obj="dialogData" />
+          <shipment-contract v-else :obj="dialogData" />
+        </template>
       </div>
     </el-dialog>
     <!-- 预览pdf -->
@@ -223,12 +229,15 @@ import { handleBatchDownload } from '../../../libs/batchCompression';
 // import tableColumnsConfig from './config';
 import DriverContract from './DriverContract';
 import ShipmentContract from './ShipmentContract';
+import ShanxiDriverContract from './ShanxiDriverContract';
+import ShanxiShipmentContract from './ShanxiShipmentContract';
+
 import { listContract, getContractByCode, listContractApi, getShipmentSign, getDriverSign, getContractSign } from '@/api/waybill/contract';
 import { pickerOptions } from '@/utils/dateRange';
 import PdfLook from '@/views/system/media/pdfLook.vue';
 export default {
   'name': 'Contract',
-  components: { DriverContract, ShipmentContract, PdfLook },
+  components: { DriverContract, ShipmentContract, PdfLook, ShanxiDriverContract, ShanxiShipmentContract },
   data() {
     return {
       pickerOptions,
@@ -236,6 +245,7 @@ export default {
       visible: false,
       title: '',
       dialogData: null, // 弹框数据
+      financialOption: 3, // 主体类型 （1：网商，2：民生 3.山西网商）3是山西，其他就是大道成的
       driverOrShipment: 0, // 合同类型 0 司机 1 货主
       pdfdialog: false,
       pdfsrc: '',
@@ -400,7 +410,8 @@ export default {
       const { data } = await getContractByCode(row.code);
 
       this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract, sealPath: row.sealPath };
-      console.log(data);
+      console.log(this.dialogData);
+      console.log(this.driverOrShipment);
       this.visible = true;
     },
 
@@ -408,6 +419,8 @@ export default {
     async handleElectron(row) {
       var that = this;
       that.waybill = (await getContractByCode(row.code)).data;
+      that.waybill.financialOption = row.financialOption;
+
       // that.waybill.createTime = new Date(that.waybill.createTime);
       // that.waybill.loadTime = new Date(that.waybill.loadTime);
       console.log(that.waybill);
@@ -467,7 +480,7 @@ export default {
         'cancelButtonText': '取消',
         'type': 'warning'
       }).then(() => {
-        getContractSign(this.ids).then(res => {
+        getContractSign(this.selectedList.map(e => (e.code + ';' + e.financialOption))).then(res => {
           this.getList();
         });
       }).catch(() => {});
