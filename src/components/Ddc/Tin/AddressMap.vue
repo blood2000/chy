@@ -14,7 +14,7 @@
 
       <el-button v-if="polyEditor || rectangleEditor || circleEditor" class="btn" type="primary" size="mini" plain round @click="cancelBack">返回</el-button>
     </div>
-    <div class="map-content" :style="{height:'60vh'}">
+    <div class="map-content" :style="{height:'58vh'}">
       <el-amap
         ref="amapref"
         :vid="vid"
@@ -83,6 +83,50 @@ const geocoder = new AMap.Geocoder({
   radius: 1,
   extensions: 'all'
 });
+
+// 1 圆形
+const circleStyle = {
+  strokeColor: '#FF33FF',
+  strokeWeight: 6,
+  strokeOpacity: 0.2,
+  fillColor: '#1791fc',
+  fillOpacity: 0.4,
+  // 线样式还支持 'dashed'
+  strokeStyle: 'solid'
+  // strokeStyle是dashed时有效
+  // strokeDasharray: [30,10],
+  // 线样式还支持 'dashed'
+  // strokeDasharray: [30,10],
+};
+
+// 2 矩形样式
+const rectangleStyle = {
+  strokeColor: '#FF33FF',
+  strokeWeight: 6,
+  strokeOpacity: 0.2,
+  fillColor: '#1791fc',
+  fillOpacity: 0.4,
+  // 线样式还支持 'dashed'
+  strokeStyle: 'solid'
+  // strokeStyle是dashed时有效
+  // strokeDasharray: [30,10],
+};
+
+// 3 多边行
+const polygonStyle = {
+  strokeColor: '#FF33FF',
+  strokeWeight: 6,
+  strokeOpacity: 0.2,
+  fillColor: '#1791fc',
+  fillOpacity: 0.4,
+  // 线样式还支持 'dashed'
+  strokeStyle: 'solid'
+  // strokeStyle是dashed时有效
+  // strokeDasharray: [30,10],
+};
+
+
+
 export default {
 
   props: {
@@ -154,7 +198,7 @@ export default {
           // _this.typeClick = true; // 点击才赋值
         },
         complete: () => {
-          // _this.setFitView();
+          _this.setFitView();
         }
       },
 
@@ -257,7 +301,6 @@ export default {
     center(val) {
       this.marker.position = val;
       this.showCircle && (this.circle.center = val);
-
       this._getAddress(val);
     },
 
@@ -266,7 +309,6 @@ export default {
     },
 
     circleCenter(arr) {
-      // console.log(this.typeClick);
       if (this.typeMove) return;
       this.$set(this.circle, 'center', arr);
     },
@@ -321,8 +363,8 @@ export default {
     this.handlerGetAddress = this.newDebounceFun(this._getAddress, 1000);
 
     // this.handlerDrawPolygon = this.newDebounceFun(this.handlerDrawPolygon, 1000);
-    this.setShapeRectangle = this.newDebounceFun(this.handlerDrawRectangle, 1000);
-    this.setShapeCircle = this.newDebounceFun(this.handlerDrawCircle, 1000);
+    this.setShapeRectangle = this.newDebounceFun(this.handlerDrawRectangle, 700);
+    this.setShapeCircle = this.newDebounceFun(this.handlerDrawCircle, 700);
   },
 
   mounted() {
@@ -339,15 +381,12 @@ export default {
     // this.$set(this.circle, 'center', this.circleCenter);
   },
 
-  updated() {
-    // this.setFitView();
-  },
-
-
   methods: {
 
     init() {
       this.map = this.$refs.amapref.$$getInstance();
+
+      // 数据回填(绘制图形)
       if (this.cbData && Array.isArray(this.cbData) && this.cbData.length > 0) {
         //
         this.cbData.forEach(e => {
@@ -416,6 +455,8 @@ export default {
           this.active = '';
         });
       });
+
+      // this.map.setFitView();
     },
 
     // 处理多边形
@@ -601,15 +642,7 @@ export default {
     drawPolygon() {
       if (this.active !== 'drawPolygon') return;
       this.mouseTool.polygon({
-        strokeColor: '#FF33FF',
-        strokeWeight: 6,
-        strokeOpacity: 0.2,
-        fillColor: '#1791fc',
-        fillOpacity: 0.4,
-        // 线样式还支持 'dashed'
-        strokeStyle: 'solid'
-        // strokeStyle是dashed时有效
-        // strokeDasharray: [30,10],
+        ...polygonStyle
       });
     },
 
@@ -617,15 +650,7 @@ export default {
     drawRectangle() {
       if (this.active !== 'drawRectangle') return;
       this.mouseTool.rectangle({
-        strokeColor: '#FF33FF',
-        strokeWeight: 6,
-        strokeOpacity: 0.2,
-        fillColor: '#1791fc',
-        fillOpacity: 0.4,
-        // 线样式还支持 'dashed'
-        strokeStyle: 'solid'
-        // strokeStyle是dashed时有效
-        // strokeDasharray: [30,10],
+        ...rectangleStyle
       });
     },
 
@@ -633,17 +658,7 @@ export default {
     drawCircle() {
       if (this.active !== 'drawCircle') return;
       this.mouseTool.circle({
-        strokeColor: '#FF33FF',
-        strokeWeight: 6,
-        strokeOpacity: 0.2,
-        fillColor: '#1791fc',
-        fillOpacity: 0.4,
-        // 线样式还支持 'dashed'
-        strokeStyle: 'solid'
-        // strokeStyle是dashed时有效
-        // strokeDasharray: [30,10],
-        // 线样式还支持 'dashed'
-        // strokeDasharray: [30,10],
+        ...circleStyle
       });
     },
 
@@ -721,21 +736,15 @@ export default {
      */
     hsuewojfwodds(_data) {
       var __e__ = new AMap.Circle({
+        ...circleStyle,
         center: [_data.centerLng, _data.centerLat],
-        radius: _data.radius, // 半径
-        borderWeight: 3,
-        strokeColor: '#FF33FF',
-        strokeOpacity: 0.5,
-        strokeWeight: 6,
-        fillOpacity: 0.4,
-        fillColor: '#1791fc',
-        strokeStyle: 'solid'
+        radius: _data.radius // 半径
       });
 
       this.handlerDrawCircle(__e__);
       this.drawCircles.push(__e__);
       this.map.add(this.drawCircles);
-      // this.openCircleEditor(__e__);
+      this.openCircleEditor(__e__);
     },
     /**
      * 矩形
@@ -751,21 +760,14 @@ export default {
       var bounds = new AMap.Bounds(southWest, northEast);
 
       var __e__ = new AMap.Rectangle({
-        bounds: bounds,
-        strokeColor: 'red',
-        strokeOpacity: 0.5,
-        strokeWeight: 6,
-        fillColor: 'blue',
-        fillOpacity: 0.5,
-        // strokeStyle还支持 solid
-        strokeStyle: 'solid'
-        // strokeDasharray: [30,10],
+        ...rectangleStyle,
+        bounds: bounds
       });
 
       this.handlerDrawRectangle(__e__);
       this.drawRectangles.push(__e__);
       this.map.add(this.drawRectangles);
-      // this.openRectangleEditor(__e__);
+      this.openRectangleEditor(__e__);
     },
     /**
      * 多边形
@@ -776,20 +778,15 @@ export default {
      */
     createdduobuew(_data) {
       var __e__ = new AMap.Polygon({
-        path: _data.geomText,
-        strokeColor: '#FF33FF',
-        strokeWeight: 6,
-        strokeOpacity: 0.2,
-        fillOpacity: 0.4,
-        fillColor: '#1791fc',
-        zIndex: 50
+        ...polygonStyle,
+        path: _data.geomText
       });
 
       //
       this.handlerDrawPolygon(__e__);
       this.drawPolygons.push(__e__);
       this.map.add(this.drawPolygons);
-      // this.openPolyEditor(__e__);
+      this.openPolyEditor(__e__);
     },
 
     cancelBack() {
