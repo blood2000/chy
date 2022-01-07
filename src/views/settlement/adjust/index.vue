@@ -344,6 +344,13 @@
           >核算</el-button>
           <el-button
             v-if="activeName == '5'"
+            v-hasPermi="['transportation:waybillBalanceInfo:accountRejected']"
+            size="mini"
+            type="text"
+            @click="getAccountRejected(row)"
+          >驳回</el-button>
+          <el-button
+            v-if="activeName == '5'"
             v-hasPermi="['transportation:waybillBalanceInfo:batchApply']"
             size="mini"
             type="text"
@@ -404,7 +411,7 @@
 </template>
 
 <script>
-import { adjustList, adjustListApi, batchApply } from '@/api/settlement/adjust';
+import { adjustList, adjustListApi, batchApply, accountRejected } from '@/api/settlement/adjust';
 import { getUserInfo } from '@/utils/auth';
 // 驳回弹窗
 import RejectDialog from '../components/rejectDialog';
@@ -519,7 +526,12 @@ export default {
       user: {},
       shipment: {},
 
-      addition: 45 // tin添加的(追加高度)
+      addition: 45, // tin添加的(追加高度)
+      wayBillCodereq: {
+        code: '',
+        msg: '',
+        data: ''
+      }
     };
   },
   computed: {
@@ -716,6 +728,26 @@ export default {
         });
       });
     },
+    getAccountRejected(row) {
+      this.$confirm('是否驳回该运单?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        accountRejected({
+          waybillCode: row.wayBillCode
+        }).then(
+          (res) => {
+            console.log(res);
+            this.$message({ type: 'success', message: res.msg });
+            this.getList();
+          }
+        ).catch(() => {
+          this.loading = false;
+        });
+      });
+    },
+
     // 批量评价
     handleAssess() {
       this.commentdialog = true;
@@ -729,9 +761,10 @@ export default {
         this.loadingExport = false;
       });
     },
+
     handleTableBtn(row, index) {
       // console.log(row, index);
-
+      console.log(this.queryParams);
       this.visible = true;
       switch (index) {
         case 1:
