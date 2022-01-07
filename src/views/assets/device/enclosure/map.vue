@@ -85,9 +85,6 @@
               />
             </div>
             <div class="form-item" style="text-align: right;">
-              <!-- <el-button v-if="jmTracklist.length > 0" type="primary" size="mini" @click="startAnimation">{{ trackStart === 0 ? '播 放' : '重新播放' }}</el-button>
-              <el-button v-if="jmTracklist.length > 0 && trackStatus === 1 && trackStart === 1" type="primary" size="mini" @click="resumeAnimation">继 续</el-button>
-              <el-button v-if="jmTracklist.length > 0 && trackStatus === 0 && trackStart === 1" type="primary" size="mini" @click="pauseAnimation">暂 停</el-button> -->
               <el-button type="primary" size="mini" :loading="buttonLoading" @click="getJimi">查 询</el-button>
             </div>
           </div>
@@ -135,11 +132,6 @@ export default {
       map: null,
       // 标记点集合
       markerList: {},
-      // 普通轨迹
-      polyline: null,
-      // 轨迹回放
-      passedPolyline: null,
-      moveMarker: null,
       startMarker: null,
       endMarker: null,
       // 窗体信息
@@ -259,6 +251,7 @@ export default {
     /** 关闭窗体 */
     closeInfoWindow() {
       this.map.clearInfoWindow();
+      this.infoWindow = null;
     },
     /**
      * 通过经纬度获取详细点位信息
@@ -277,21 +270,6 @@ export default {
         }
       });
     },
-    /** 绘制轨迹
-     * @param {Array} 组成轨迹的点数组必传
-    */
-    drawLine(path) {
-      this.polyline = new window.AMap.Polyline({
-        map: this.map,
-        path,
-        strokeColor: '#1990FF',
-        strokeWeight: 8,
-        lineJoin: 'round',
-        showDir: 'true' // 线内是否显示箭头
-      });
-      this.polyline.setMap(this.map);
-      this.map.setFitView(this.polyline);
-    },
     /** 轨迹回放 */
     onTrackPlayback(row) {
       this.clearMap();
@@ -304,83 +282,6 @@ export default {
     closeTrackPlayback() {
       this.clearMap();
       this.$emit('onCloseTrack');
-    },
-    /** 绘制回放轨迹 */
-    drawReplayLine() {
-      const _this = this;
-      // 绘制轨迹
-      this.polyline = new AMap.Polyline({
-        map: this.map,
-        path: this.jmTracklist,
-        showDir: true,
-        strokeColor: '#28F',
-        strokeWeight: 8
-      });
-      this.passedPolyline = new AMap.Polyline({
-        map: this.map,
-        strokeColor: '#AF5',
-        showDir: true,
-        strokeWeight: 8
-      });
-      // 绘制起点终点
-      this.startMarker = new AMap.Marker({
-        map: this.map,
-        position: this.jmTracklist[0],
-        content: '<div class="own-device-line-icon start">起</div>',
-        offset: new AMap.Pixel(-20, -20),
-        autoRotation: true,
-        zIndex: 100
-      });
-      this.endMarker = new AMap.Marker({
-        map: this.map,
-        position: this.jmTracklist[this.jmTracklist.length - 1],
-        content: '<div class="own-device-line-icon end">终</div>',
-        offset: new AMap.Pixel(-20, -20),
-        autoRotation: true,
-        zIndex: 100
-      });
-      // 绘制车
-      this.moveMarker = new AMap.Marker({
-        map: this.map,
-        position: this.jmTracklist[0],
-        // icon: 'https://webapi.amap.com/images/car.png',
-        content: '<div class="own-device-line-car"></div>',
-        offset: new AMap.Pixel(-29, -10),
-        autoRotation: true,
-        angle: -90,
-        zIndex: 101
-      });
-      // 绑定车辆移动事件
-      this.moveMarker.on('moving', function(e) {
-        _this.passedPolyline.setPath(e.passedPath);
-        // 车超出视野范围后重新定位
-        if (!_this.isPointInRing(e.target.getPosition())) {
-          _this.map.setCenter(e.target.getPosition());
-        }
-        // 播放结束
-        if (e.target.getPosition() === _this.jmTracklist[_this.jmTracklist.length - 1]) {
-          _this.trackStart = 2;
-        }
-      });
-      this.map.setFitView();
-    },
-    /** 轨迹回放 */
-    startAnimation() {
-      this.trackStart = 1;
-      this.trackStatus = 0;
-      this.map.setZoomAndCenter(13, this.jmTracklist[0]);
-      this.moveMarker.moveAlong(this.jmTracklist, 3000); // speed 千米/小时
-    },
-    pauseAnimation() {
-      this.trackStatus = 1;
-      this.moveMarker.pauseMove();
-    },
-    resumeAnimation() {
-      this.trackStatus = 0;
-      this.moveMarker.resumeMove();
-    },
-    stopAnimation() {
-      this.moveMarker.stopMove();
     },
     /** 清除指定标记 */
     removeMarker(id) {
@@ -397,39 +298,15 @@ export default {
       }
       this.markerList = {};
       this.addressMsg = null;
+      // 关闭对应的信息窗体
       this.closeInfoWindow();
-    },
-    /** 清除轨迹 */
-    removeLine() {
-      if (this.polyline) {
-        this.map.remove(this.polyline);
-        this.polyline = null;
-      }
-    },
-    /** 清除回放轨迹 */
-    removeReplayLine() {
-      this.polyline && this.map.remove(this.polyline);
-      this.passedPolyline && this.map.remove(this.passedPolyline);
-      this.moveMarker && this.moveMarker.setMap(null);
-      this.startMarker && this.startMarker.setMap(null);
-      this.endMarker && this.endMarker.setMap(null);
-      this.polyline = null;
-      this.passedPolyline = null;
-      this.moveMarker = null;
-      this.startMarker = null;
-      this.endMarker = null;
     },
     /** 清除所有覆盖物 */
     clearMap() {
-      this.map.clearMap();
-      this.markerList = {};
+      // 清除标记点
+      this.removeAllMarker();
+      // 清除数据
       this.addressMsg = null;
-      this.polyline = null;
-      this.passedPolyline = null;
-      this.moveMarker = null;
-      this.startMarker = null;
-      this.endMarker = null;
-      this.infoWindow = null;
       this.jmTracklist = [];
       this.jmTrackInfolist = [];
       this.currentTrackTime = null;
@@ -447,6 +324,8 @@ export default {
       if (this.pathSimplifierIns) {
         this.pathSimplifierIns.setData([]);
       }
+      this.startMarker = null;
+      this.endMarker = null;
     },
     /** 获取硬件轨迹 */
     getJimi() {
@@ -467,12 +346,10 @@ export default {
             item.push(dataItem.lat);
             _this.jmTracklist[i] = item;
           }
-          // this.removeReplayLine(); // 绘制前先清除
           this.clearPathSimplifierIns(); // 绘制前先清除
           if (this.jmTracklist.length > 0) {
             // 设置当前轨迹点时间、速度
             this.setCurrentTrackTimeAndSpeed(0);
-            // this.drawReplayLine();
             this.initPathSimplifier();
           } else {
             this.msgInfo('暂无轨迹信息');
