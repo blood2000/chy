@@ -245,7 +245,7 @@ export default {
       visible: false,
       title: '',
       dialogData: null, // 弹框数据
-      financialOption: 3, // 主体类型 （1：网商，2：民生 3.山西网商）3是山西，其他就是大道成的
+      financialOption: 1, // 主体类型 （1：网商，2：民生 3.山西网商）3是山西，其他就是大道成的
       driverOrShipment: 0, // 合同类型 0 司机 1 货主
       pdfdialog: false,
       pdfsrc: '',
