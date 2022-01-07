@@ -353,3 +353,20 @@ export function isPeriodFormate(date) {
     return '';
   }
 }
+
+/**
+ * 一纬数组转多维
+ * @param {Array} baseArray [x, y, x, y, ...]
+ * @param {Number} n 2
+ * @returns {Array} [[x, y], [x, y], ...]
+ */
+export function OneChangeMultiArray(baseArray, n) {
+  const len = baseArray.length;
+  const lineNum = len % n === 0 ? len / n : Math.floor((len / n) + 1);
+  const result = [];
+  for (let i = 0; i < lineNum; i++) {
+    const temp = baseArray.slice(i * n, i * n + n);
+    result.push(temp);
+  }
+  return result;
+}
