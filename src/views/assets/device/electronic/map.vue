@@ -29,29 +29,7 @@ export default {
     drawFencePlat(data) {
       // 绘制前先清除
       this.clearMap();
-      data.forEach(el => {
-        if (el.centerLat && el.centerLng && el.centerLat !== '0' && el.centerLng !== '0') {
-          // 围栏唯一标识
-          const id = el.platFenceCode;
-          // 围栏气泡窗文字
-          const addressType = el.addressType === '1' ? ' [装货]' : (el.addressType === '2' ? ' [卸货]' : '');
-          const text = el.mainOrderNumber + addressType;
-          // 绘制围栏
-          const geomArray = el.geomText.split(',');
-          if (el.geomType === 1) {
-            this.drawCircle(id, geomArray);
-          } else if (el.geomType === 2) {
-            this.drawRectangle(id, geomArray);
-          } else if (el.geomType === 3) {
-            this.drawPolygon(id, geomArray);
-          }
-          // 绘制围栏中心
-          this.drawFenceCenterMarker(id, [el.centerLng, el.centerLat], text);
-        }
-      });
-      this.$nextTick(() => {
-        this.map.setFitView();
-      });
+      this.drawFencePlatByOrderList(data);
     },
     /** 清除地图所有覆盖物 */
     clearMap() {

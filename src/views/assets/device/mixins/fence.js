@@ -121,6 +121,32 @@ export default {
       }
       this.fenceList = {};
       this.fenceCenterMarkerList = {};
+    },
+    /** 绘制电子围栏 */
+    drawFencePlatByOrderList(data) {
+      data.forEach(el => {
+        if (el.centerLat && el.centerLng && el.centerLat !== '0' && el.centerLng !== '0') {
+          // 围栏唯一标识
+          const id = el.platFenceCode;
+          // 围栏气泡窗文字
+          const addressType = el.addressType === '1' ? ' [装货]' : (el.addressType === '2' ? ' [卸货]' : '');
+          const text = el.mainOrderNumber + addressType;
+          // 绘制围栏
+          const geomArray = el.geomText.split(',');
+          if (el.geomType === 1) {
+            this.drawCircle(id, geomArray);
+          } else if (el.geomType === 2) {
+            this.drawRectangle(id, geomArray);
+          } else if (el.geomType === 3) {
+            this.drawPolygon(id, geomArray);
+          }
+          // 绘制围栏中心
+          this.drawFenceCenterMarker(id, [el.centerLng, el.centerLat], text);
+        }
+      });
+      this.$nextTick(() => {
+        this.map.setFitView();
+      });
     }
   }
 };

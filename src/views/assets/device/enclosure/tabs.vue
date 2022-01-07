@@ -1,16 +1,19 @@
 <template>
   <div class="tabs g-aligncenter" style="width: 364px">
-    <div v-for="(item, index) in tablist" :key="index" :class="activeName === item.code ? 'tabs-onbotton': 'tabs-botton'" @click="handleClick(item.code)">
-      <div v-if="activeName === item.code && index === 0" class="tabs-imgleft">
+    <div v-for="(item, index) in tablist" :key="index" :class="visible === item.code ? 'tabs-onbotton': 'tabs-botton'" @click="handleClick(item.code)">
+      <div v-if="visible === item.code && index === 0" class="tabs-imgleft">
         <img src="~@/assets/images/tabs/tabbg_left_g.png" alt="">
       </div>
-      <div v-if="activeName === item.code && index !== tablist.length-1 && index !== 0" class="tabs-imgright">
+      <div v-if="visible === item.code && index !== tablist.length-1 && index !== 0" class="tabs-imgright">
         <img src="~@/assets/images/tabs/tabbg_center_g.png" alt="">
       </div>
-      <div v-if="activeName === item.code && index === tablist.length-1" class="tabs-imgright">
+      <div v-if="visible === item.code && index === tablist.length-1" class="tabs-imgright">
         <img src="~@/assets/images/tabs/tabbg_right_g.png" alt="">
       </div>
-      <span class="tabs-title">{{ `${item.tabName} (${item.num ? item.num : 0})` }}</span>
+      <span class="tabs-title">
+        <template v-if="item.code === '0'">{{ `${item.tabName} (${item.num ? item.num : 0})` }}</template>
+        <template v-else>{{ item.tabName }}</template>
+      </span>
     </div>
   </div>
 </template>
@@ -18,6 +21,10 @@
 <script>
 export default {
   props: {
+    activeName: {
+      type: String,
+      default: ''
+    },
     tablist: {
       type: Array,
       default: function() {
@@ -25,17 +32,19 @@ export default {
       }
     }
   },
-  data() {
-    return {
-      activeName: '0'
-    };
-  },
   computed: {
+    visible: {
+      get() {
+        return this.activeName;
+      },
+      set(v) {
+        this.$emit('update:activeName', v);
+      }
+    }
   },
   methods: {
     handleClick(e) {
-      // this.activeName = e;
-      // this.$emit('getActiveName', e);
+      this.$emit('update:activeName', e);
     }
   }
 };

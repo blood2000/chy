@@ -648,6 +648,12 @@ export default {
     /** 查看轨迹列表 */
     changeTrackTable() {
       this.isOpenTrackTable = true;
+    },
+    /** 绘制电子围栏 */
+    drawFencePlat(data) {
+      // 绘制前先清除
+      this.clearAllFence();
+      this.drawFencePlatByOrderList(data);
     }
   }
 };
