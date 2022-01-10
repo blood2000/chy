@@ -460,10 +460,11 @@
               zoom: 16
             }"
             @getMapData="getMapData"
+            @editStatus="(_data)=> editStatus = _data"
           />
         </div>
         <div style="marginTop:20px; text-align: right;">
-          <el-button type="primary" @click="electricSub(lastMapData, addressChange)">确定</el-button>
+          <el-button :disabled="!editStatus" type="primary" @click="electricSub(lastMapData, addressChange)">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -507,6 +508,7 @@ export default {
   },
   data() {
     return {
+      editStatus: false,
       // 8/30 判断是否有运单(主要是判断能否修改装卸地址)
       isHaveWaybill: false,
       // 添加2个自动判断地址是否完成
