@@ -1020,26 +1020,46 @@ export default {
             await this.$refs[refName][0]._submitForm();
           }
 
-          console.log(this.address_xie);
+          // console.log(this.address_xie);
           // 判断其他
           this.lastData = await this.submAllData();
+
+          // 判断是否创建了电子围栏
+          if (!this.isOpends(array)) {
+            this.msgError('未创建电子围栏,请确认');
+            return;
+          }
           console.log(this.lastData);
-
           // 判断电子围栏必须双开或者双关
-
-          console.log(this.openedDouble(this.lastData));
           if (!this.openedDouble(this.lastData)) {
             this.msgError('电子围栏必须双开或者双关');
             return;
           }
 
-
+          // console.log();
+          return;
           // console.log('到这里说明过了------------------还有几个未判断');
           this.onPubilsh();
         } else {
           return false;
         }
       });
+    },
+    isOpends(array) {
+      console.log(array);
+      // arr.forEach(e => {
+      //   if (e.switchRadius && !e.__lastMapData__) {
+      //     return false;
+      //   }
+      // });
+      for (let i = 0; i < array.length; i++) {
+        const e = array[i];
+        if (e.switchRadius && !e.__lastMapData__) {
+          return false;
+        }
+      }
+
+      return true;
     },
 
     openedDouble(_data) {
