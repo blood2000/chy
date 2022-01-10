@@ -37,16 +37,17 @@ export default {
     };
   },
   created() {
-    if (this.$route.query.queryData) {
+    const path = this.$route.path;
+    const pathArr = path.split('/');
+    const id = pathArr[pathArr.length - 1];
+    if (id === '0') {
       // 由预览进入
-      const queryData = JSON.parse(this.$route.query.queryData);
+      const queryData = JSON.parse(window.localStorage.getItem('screenPagePreviewData'));
       this.screenForm = queryData.screenForm;
       this.layerList = queryData.layerList;
     } else {
       // 由菜单进入
-      const path = this.$route.path;
-      const pathArr = path.split('/');
-      this.screenId = pathArr[pathArr.length - 1];
+      this.screenId = id;
       this.getData();
     }
   },

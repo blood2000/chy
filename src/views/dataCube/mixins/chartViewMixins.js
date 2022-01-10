@@ -101,6 +101,18 @@ export default {
     getLevelByPath(all_path, value) {
       const pathArr = all_path.split('.');
       var lastItem = value;
+      // string转Boolean
+      if (value === 'true') {
+        lastItem = true;
+      }
+      if (value === 'false') {
+        lastItem = false;
+      }
+      // string转Array
+      if (value && typeof value === 'string' && value.substring(0, 1) === '[' && value.charAt(value.length - 1) === ']') {
+        console.log(value);
+        lastItem = JSON.parse(value);
+      }
       for (var i = pathArr.length - 1; i >= 0; i--) {
         var item = {};
         item[pathArr[i]] = lastItem;
