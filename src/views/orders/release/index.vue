@@ -1037,7 +1037,6 @@ export default {
           }
 
           // console.log();
-          return;
           // console.log('到这里说明过了------------------还有几个未判断');
           this.onPubilsh();
         } else {
