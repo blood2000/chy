@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-unused-vars */
 <template>
   <div>
     <div ref="searchBox">
@@ -239,6 +240,16 @@
           <span>{{ selectDictLabel(statusOptions, (row.status +'')) }}</span>
         </template>
 
+        <template #fenceStatus="{row}">
+          <router-link v-if="row.redisAddressList[0].wlInfo" :to="`/orders/fenceinfo?orderCode=${row.orderCode}`">
+            <el-button
+              size="mini"
+              type="text"
+            >查看</el-button>
+          </router-link>
+          <span v-else>无</span>
+        </template>
+
         <template #isClass="{row}">
           <span>{{ selectDictLabel(isClassOptions, row.isClass) }}</span>
         </template>
@@ -384,7 +395,7 @@
                 >{{ row.uploadLoadVoucher+''!=='1'?'开启上传凭证':'关闭上传凭证' }}</el-button>
               </el-dropdown-item>
 
-              <el-dropdown-item>
+              <!-- <el-dropdown-item>
                 <el-button
                   v-show="false"
                   v-hasPermi="['iot:iot:fencePlatCreate']"
@@ -401,7 +412,7 @@
                   type="text"
                   @click="myfencePlatDelete(row)"
                 >Delete</el-button>
-              </el-dropdown-item>
+              </el-dropdown-item> -->
             </TableDropdown>
           </template>
         </template>
@@ -568,6 +579,12 @@ export default {
         { dictLabel: '渣土', dictValue: 1200 }
       ],
 
+      // 围栏状态
+      fenceStatus_Options: [
+        { dictLabel: '无', dictValue: 0 },
+        { dictLabel: '查看', dictValue: 1 }
+      ],
+
 
 
       goodsTypeOption: [],
@@ -727,6 +744,14 @@ export default {
           tooltip: true,
           sortNum: 100,
           label: '货主名称'
+        },
+        {
+          prop: 'fenceStatus',
+          inShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '围栏状态'
         }
       ];
     },
@@ -1107,87 +1132,87 @@ export default {
 
         // 请求
         // row.status+''==='0'?'禁用':'启用'
-        if (row.status + '' === '0') {
-          this.myfencePlatDelete(row);
-        } else {
-          // 创建
-          this.myfencePlatCreate(row);
-        }
+        // if (row.status + '' === '0') {
+        //   this.myfencePlatDelete(row);
+        // } else {
+        //   // 创建
+        //   this.myfencePlatCreate(row);
+        // }
       });
     },
 
 
-    /* 创建电子围栏 */
-    myfencePlatCreate(row) {
-      const { redisAddressList, redisOrderSpecifiedVoList } = row;
-      const addressInfo = redisAddressList.map(e => {
-        let obj = null;
+    // /* 创建电子围栏 */
+    // myfencePlatCreate(row) {
+    //   const { redisAddressList, redisOrderSpecifiedVoList } = row;
+    //   const addressInfo = redisAddressList.map(e => {
+    //     let obj = null;
 
-        if (e.enclosureRadius) {
-          // const res = (/\((.*?)\)/g).exec(e.localtionOld);
-          // if (res) {
-          //   e.centerLocation = res[1].split(',');
-          // }
+    //     if (e.enclosureRadius) {
+    //       // const res = (/\((.*?)\)/g).exec(e.localtionOld);
+    //       // if (res) {
+    //       //   e.centerLocation = res[1].split(',');
+    //       // }
 
-          // console.log(e.centerLocation);
-          if (e.addressType === '1') {
-            obj = {
-              addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.location[0],
-              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.location[1],
-              radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius || 0
-            };
-          } else if (e.addressType === '2') {
-            obj = {
-              addressType: e.addressType,
-              lng: e.centerLocation ? e.centerLocation[0] - 0 : e.location[0],
-              lat: e.centerLocation ? e.centerLocation[1] - 0 : e.location[1],
-              radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius
-            };
-          }
-        }
+    //       // console.log(e.centerLocation);
+    //       if (e.addressType === '1') {
+    //         obj = {
+    //           addressType: e.addressType,
+    //           lng: e.centerLocation ? e.centerLocation[0] - 0 : e.location[0],
+    //           lat: e.centerLocation ? e.centerLocation[1] - 0 : e.location[1],
+    //           radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius || 0
+    //         };
+    //       } else if (e.addressType === '2') {
+    //         obj = {
+    //           addressType: e.addressType,
+    //           lng: e.centerLocation ? e.centerLocation[0] - 0 : e.location[0],
+    //           lat: e.centerLocation ? e.centerLocation[1] - 0 : e.location[1],
+    //           radius: e.enclosureRadius ? e.enclosureRadius - 0 : e.radius
+    //         };
+    //       }
+    //     }
 
-        return obj;
-      }).filter(e => e);
+    //     return obj;
+    //   }).filter(e => e);
 
-      if (addressInfo && addressInfo.length > 0) {
-        const dispatcherCodeList = redisOrderSpecifiedVoList?.map(e => e.teamInfoCode);
+    //   if (addressInfo && addressInfo.length > 0) {
+    //     const dispatcherCodeList = redisOrderSpecifiedVoList?.map(e => e.teamInfoCode);
 
-        const que = {
-          addressInfo,
-          dispatcherCodeList,
-          orderCode: row.orderCode
-        };
+    //     const que = {
+    //       addressInfo,
+    //       dispatcherCodeList,
+    //       orderCode: row.orderCode
+    //     };
 
-        fencePlatCreate(que).then(res => {
-          console.log(res.data);
-          this.msgSuccess('创建电子围栏成功');
-        }).catch(e => {
-          this.$message({
-            showClose: true,
-            duration: 0,
-            message: '创建电子围栏失败, 请联系客服',
-            type: 'error'
-          });
-        });
-      }
-    },
+    //     fencePlatCreate(que).then(res => {
+    //       console.log(res.data);
+    //       this.msgSuccess('创建电子围栏成功');
+    //     }).catch(e => {
+    //       this.$message({
+    //         showClose: true,
+    //         duration: 0,
+    //         message: '创建电子围栏失败, 请联系客服',
+    //         type: 'error'
+    //       });
+    //     });
+    //   }
+    // },
 
-    /* 删除电子围栏 */
+    // /* 删除电子围栏 */
 
-    myfencePlatDelete(row) {
-      fencePlatDelete(row.orderCode).then(res => {
-        console.log(res.data);
-      }).catch(error => {
-        console.log(error);
-        this.$message({
-          showClose: true,
-          duration: 0,
-          message: '删除电子围栏失败, 请联系客服',
-          type: 'error'
-        });
-      });
-    },
+    // myfencePlatDelete(row) {
+    //   fencePlatDelete(row.orderCode).then(res => {
+    //     console.log(res.data);
+    //   }).catch(error => {
+    //     console.log(error);
+    //     this.$message({
+    //       showClose: true,
+    //       duration: 0,
+    //       message: '删除电子围栏失败, 请联系客服',
+    //       type: 'error'
+    //     });
+    //   });
+    // },
 
     /** 调价操作 */
     async handleReadjustPrices(row) {

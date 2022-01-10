@@ -460,10 +460,11 @@
               zoom: 16
             }"
             @getMapData="getMapData"
+            @editStatus="(_data)=> editStatus = _data"
           />
         </div>
         <div style="marginTop:20px; text-align: right;">
-          <el-button type="primary" @click="electricSub(lastMapData, addressChange)">确定</el-button>
+          <el-button :disabled="!editStatus" type="primary" @click="electricSub(lastMapData, addressChange)">确定</el-button>
         </div>
       </div>
     </el-dialog>
@@ -507,6 +508,7 @@ export default {
   },
   data() {
     return {
+      editStatus: false,
       // 8/30 判断是否有运单(主要是判断能否修改装卸地址)
       isHaveWaybill: false,
       // 添加2个自动判断地址是否完成
@@ -1020,26 +1022,45 @@ export default {
             await this.$refs[refName][0]._submitForm();
           }
 
-          console.log(this.address_xie);
+          // console.log(this.address_xie);
           // 判断其他
           this.lastData = await this.submAllData();
+
+          // 判断是否创建了电子围栏
+          if (!this.isOpends(array)) {
+            this.msgError('未创建电子围栏,请确认');
+            return;
+          }
           console.log(this.lastData);
-
           // 判断电子围栏必须双开或者双关
-
-          console.log(this.openedDouble(this.lastData));
           if (!this.openedDouble(this.lastData)) {
             this.msgError('电子围栏必须双开或者双关');
             return;
           }
 
-
+          // console.log();
           // console.log('到这里说明过了------------------还有几个未判断');
           this.onPubilsh();
         } else {
           return false;
         }
       });
+    },
+    isOpends(array) {
+      console.log(array);
+      // arr.forEach(e => {
+      //   if (e.switchRadius && !e.__lastMapData__) {
+      //     return false;
+      //   }
+      // });
+      for (let i = 0; i < array.length; i++) {
+        const e = array[i];
+        if (e.switchRadius && !e.__lastMapData__) {
+          return false;
+        }
+      }
+
+      return true;
     },
 
     openedDouble(_data) {
@@ -1799,12 +1820,12 @@ export default {
 
 
 
-      if (addr.cbData && addr.cbData.location) {
+      if ((addr.cbData && addr.cbData.location) || addr.centerLocation) {
         if (addr.__lastMapData__) {
           this.mapDatacbData = this.handlerMapCbData(addr.__lastMapData__);
         }
         this.addressChange = addr;
-        this.map_center = addr.cbData.location;
+        this.map_center = (addr.cbData && addr.cbData.location) || addr.centerLocation;
         this.mapOpen = true;
       } else {
         this.msgInfo('请先完善地址信息！');
