@@ -293,10 +293,21 @@ export default {
       const circles = this.drawCircles.map(e => e.getExtData());
       const arr = [...polygons, ...rectangles, ...circles];
       return arr;
+    },
+
+    isEditStatus() {
+      return !!this.polyEditor || !!this.rectangleEditor || !!this.circleEditor;
     }
   },
 
   watch: {
+    isEditStatus: {
+      handler(val) {
+        console.log(val);
+        this.$emit('editStatus', val);
+      },
+      immediate: true
+    },
     // 赋值
     center(val) {
       this.marker.position = val;
