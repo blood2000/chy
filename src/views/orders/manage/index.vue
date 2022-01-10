@@ -1,3 +1,4 @@
+/* eslint-disable vue/no-unused-vars */
 <template>
   <div>
     <div ref="searchBox">
@@ -237,6 +238,16 @@
 
         <template #status="{row}">
           <span>{{ selectDictLabel(statusOptions, (row.status +'')) }}</span>
+        </template>
+
+        <template #fenceStatus="{row}">
+          <router-link v-if="row.redisAddressList[0].wlInfo" :to="`/orders/fenceinfo?orderCode=${row.orderCode}`">
+            <el-button
+              size="mini"
+              type="text"
+            >查看</el-button>
+          </router-link>
+          <span v-else>无</span>
         </template>
 
         <template #isClass="{row}">
@@ -568,6 +579,12 @@ export default {
         { dictLabel: '渣土', dictValue: 1200 }
       ],
 
+      // 围栏状态
+      fenceStatus_Options: [
+        { dictLabel: '无', dictValue: 0 },
+        { dictLabel: '查看', dictValue: 1 }
+      ],
+
 
 
       goodsTypeOption: [],
@@ -727,6 +744,14 @@ export default {
           tooltip: true,
           sortNum: 100,
           label: '货主名称'
+        },
+        {
+          prop: 'fenceStatus',
+          inShow: true,
+          width: 120,
+          tooltip: true,
+          sortNum: 100,
+          label: '围栏状态'
         }
       ];
     },
