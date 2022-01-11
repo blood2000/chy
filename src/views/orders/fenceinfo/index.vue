@@ -2,16 +2,16 @@
   <div>
     <div class="search-wrap app-container">
       <el-form :inline="true" label-width="90px">
+        <el-form-item label="设备号">
+          <el-input v-model="queryParams.imei" placeholder="搜索设备号" clearable />
+        </el-form-item>
         <el-form-item label="车牌号">
           <el-input v-model="queryParams.licenseNumber" placeholder="搜索车牌号" clearable />
-        </el-form-item>
-        <el-form-item label="运单号">
-          <el-input v-model="queryParams.waybillNo" placeholder="运单号" clearable />
         </el-form-item>
         <el-form-item label="司机姓名">
           <el-input v-model="queryParams.driverName" placeholder="司机姓名" clearable />
         </el-form-item>
-        <el-form-item label="截止时间" prop="tin10">
+        <el-form-item label="碰撞时间" prop="tin10">
           <el-date-picker
             v-model="tin10"
             size="small"
@@ -24,21 +24,24 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
-          <el-form-item label="设备号">
-            <el-input v-model="queryParams.imei" placeholder="搜索设备号" clearable />
-          </el-form-item>
+        </el-form-item>
+        <el-form-item label="运单号">
+          <el-input v-model="queryParams.waybillNo" placeholder="运单号" clearable />
         </el-form-item>
         <el-form-item label="地址类型">
-          <el-select v-model="queryParams.addressType" placeholder="----请选择----" clearable>
+          <el-select v-model="queryParams.addressType" placeholder="----请选择----" clearable style="width: 217px">
             <el-option label="装货地" value="load" />
             <el-option label="卸货地" value="unload" />
           </el-select>
         </el-form-item>
         <el-form-item label="订单类型">
-          <el-select v-model="queryParams.efficient" placeholder="----请选择----" clearable>
+          <el-select v-model="queryParams.efficient" placeholder="----请选择----" clearable style="width: 217px">
             <el-option label="有效订单" value="true" />
             <el-option label="无效订单" value="false" />
           </el-select>
+        </el-form-item>
+        <el-form-item label="异常原因">
+          <el-input v-model="queryParams.msg" placeholder="搜索原因" clearable />
         </el-form-item>
       </el-form>
       <div class="btn-group">
@@ -54,12 +57,6 @@
         border
       >
         <el-table-column
-          prop="driverName"
-          label="司机姓名"
-          width="200px"
-          align="center"
-        />
-        <el-table-column
           prop="imei"
           label="设备号"
           width="200px"
@@ -68,6 +65,12 @@
         <el-table-column
           prop="licenseNumber"
           label="车牌号"
+          width="200px"
+          align="center"
+        />
+        <el-table-column
+          prop="driverName"
+          label="司机姓名"
           width="200px"
           align="center"
         />
@@ -82,7 +85,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.addressType == 'load' ? '进装货地' : '出卸货地' }}</span>
+            <span>{{ addressTypeStr(scope.row) }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -135,7 +138,8 @@ export default {
         waybillNo: '',
         addressType: '',
         efficient: '',
-        imei: ''
+        imei: '',
+        msg: ''
 
       },
       pickerOptions,
@@ -177,10 +181,27 @@ export default {
         waybillNo: '',
         addressType: '',
         efficient: '',
-        imei: ''
+        imei: '',
+        msg: ''
       };
       this.tin10 = [];
       this.getList();
+    },
+    addressTypeStr(row) {
+      let str = '';
+      if (row.collisionType === 'in') {
+        str += '进入';
+      } else if (row.collisionType === 'out') {
+        str += '离开';
+      }
+
+      if (row.addressType === 'load') {
+        str += '装货地';
+      } else if (row.addressType === 'unload') {
+        str += '卸货地';
+      }
+
+      return str;
     }
   }
 };
