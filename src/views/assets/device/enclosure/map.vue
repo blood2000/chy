@@ -399,8 +399,14 @@ export default {
           getPath: (pathData, pathIndex) => {
             return pathData.path;
           },
-          getHoverTitle: function(pathData, pathIndex, pointIndex) {
-            return '';
+          getHoverTitle: (pathData, pathIndex, pointIndex) => {
+            if (pointIndex || pointIndex === 0) {
+              const row = this.jmTrackInfolist[pointIndex];
+              const str = '时间点：' + row.gpsTime + ' \n' + '经纬度：' + row.lng + ', ' + row.lat;
+              return str;
+            } else {
+              return '';
+            }
           },
           // 自定义样式，可设置巡航器样式，巡航轨迹样式，巡航轨迹点击、hover等不同状态下的样式，不设置则用默认样式，详情请参考api文档 renderOptions:{}
           // 绘制路线节点
@@ -869,5 +875,11 @@ export default {
       }
     }
   }
+}
+</style>
+
+<style>
+.amap-ui-pathsimplifier-container .overlay-title{
+  white-space: pre !important;
 }
 </style>
