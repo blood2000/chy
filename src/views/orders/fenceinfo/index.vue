@@ -1,15 +1,15 @@
 <template>
   <div>
     <div class="search-wrap app-container">
-      <el-form :inline="true">
-        <el-form-item label="搜索车牌号">
-          <el-input v-model="queryParams.licenseNumber" placeholder="搜索车牌号" />
+      <el-form :inline="true" label-width="90px">
+        <el-form-item label="车牌号">
+          <el-input v-model="queryParams.licenseNumber" placeholder="搜索车牌号" clearable />
         </el-form-item>
         <el-form-item label="运单号">
-          <el-input v-model="queryParams.waybillNo" placeholder="运单号" />
+          <el-input v-model="queryParams.waybillNo" placeholder="运单号" clearable />
         </el-form-item>
         <el-form-item label="司机姓名">
-          <el-input v-model="queryParams.driverName" placeholder="司机姓名" />
+          <el-input v-model="queryParams.driverName" placeholder="司机姓名" clearable />
         </el-form-item>
         <el-form-item label="截止时间" prop="tin10">
           <el-date-picker
@@ -24,15 +24,21 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
           />
+          <el-form-item label="设备号">
+            <el-input v-model="queryParams.imei" placeholder="搜索设备号" clearable />
+          </el-form-item>
         </el-form-item>
         <el-form-item label="地址类型">
-          <el-select v-model="queryParams.addressType" placeholder="----请选择----">
+          <el-select v-model="queryParams.addressType" placeholder="----请选择----" clearable>
             <el-option label="装货地" value="load" />
             <el-option label="卸货地" value="unload" />
           </el-select>
         </el-form-item>
-        <el-form-item label="">
-          <el-checkbox v-model="queryParams.efficient">有效订单</el-checkbox>
+        <el-form-item label="订单类型">
+          <el-select v-model="queryParams.efficient" placeholder="----请选择----" clearable>
+            <el-option label="有效订单" value="true" />
+            <el-option label="无效订单" value="false" />
+          </el-select>
         </el-form-item>
       </el-form>
       <div class="btn-group">
@@ -45,38 +51,53 @@
         v-loading="loading"
         :data="list"
         style="width: 100%"
+        border
       >
         <el-table-column
           prop="driverName"
           label="司机姓名"
+          width="200px"
+          align="center"
+        />
+        <el-table-column
+          prop="imei"
+          label="设备号"
+          width="200px"
+          align="center"
         />
         <el-table-column
           prop="licenseNumber"
           label="车牌号"
+          width="200px"
+          align="center"
         />
         <el-table-column
           prop="collisionTime"
           label="碰撞时间"
+          align="center"
         />
         <el-table-column
           prop="addressType"
-          label="碰撞类型"
+          label="围栏碰撞类型"
+          align="center"
         >
           <template slot-scope="scope">
-            <span>{{ scope.row.addressType == 'load' ? '进围栏装货地' : '出围栏卸货地' }}</span>
+            <span>{{ scope.row.addressType == 'load' ? '进装货地' : '出卸货地' }}</span>
           </template>
         </el-table-column>
         <el-table-column
           prop="waybillNo"
           label="运单号"
+          align="center"
         >
           <template slot-scope="scope">
-            <router-link :to="`/waybill/manages?waybillNo=${scope.row.waybillNo}`">{{ scope.row.waybillNo }}</router-link>
+            <router-link v-if="scope.row.waybillNo != 0" :to="`/waybill/manages?waybillNo=2201101803527554`">{{ scope.row.waybillNo }}</router-link>
           </template>
         </el-table-column>
         <el-table-column
           prop="msg"
           label="原因"
+          align="center"
         />
       </el-table>
       <pagination
@@ -113,7 +134,9 @@ export default {
         endTime: '',
         waybillNo: '',
         addressType: '',
-        efficient: false
+        efficient: '',
+        imei: ''
+
       },
       pickerOptions,
       loading: false
@@ -153,9 +176,11 @@ export default {
         endTime: '',
         waybillNo: '',
         addressType: '',
-        efficient: false
+        efficient: '',
+        imei: ''
       };
       this.tin10 = [];
+      this.getList();
     }
   }
 };
