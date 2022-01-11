@@ -95,6 +95,27 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item
+          label="金融体系"
+          prop="financialOption"
+        >
+          <el-select
+            v-model="queryParams.financialOption"
+            clearable
+            filterable
+            style="width: 230px"
+            size="small"
+            placeholder="选择地区"
+            @click="handleQuery"
+          >
+            <el-option
+              v-for="item in financialOption"
+              :key="item.dictValue"
+              :label="item.dictLabel"
+              :value="item.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
@@ -313,6 +334,7 @@ export default {
         order: null,
         prop: null,
         ticketType: null,
+        financialOption: 1,
         operateOrgCode: undefined
       },
       height: undefined,
@@ -345,7 +367,12 @@ export default {
 
       // 运营团队
       operateOrgCodes: [],
-      ticketType: []
+      ticketType: [],
+      financialOption: [
+        { 'dictLabel': '福建网商', 'dictValue': 1 },
+        { 'dictLabel': '民生银行', 'dictValue': 2 },
+        { 'dictLabel': '山西网商', 'dictValue': 3 }
+      ]
     };
   },
   computed: {

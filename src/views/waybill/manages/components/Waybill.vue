@@ -647,7 +647,7 @@ export default {
       isShipment: false
     };
   },
-  created() {
+  async created() {
     const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
     this.isShipment = isShipment;
@@ -703,13 +703,13 @@ export default {
       }
     },
     /** 查询列表 */
-    getList() {
+    async getList() {
       this.loading = true;
       const params = { ...this.queryParams };
       if (params.licenseNumber) {
         params.licenseNumber = params.licenseNumber.toUpperCase();
       }
-      listManages(params).then(response => {
+      await listManages(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.height = 560;
