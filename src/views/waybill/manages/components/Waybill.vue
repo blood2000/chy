@@ -663,6 +663,7 @@ export default {
     this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} 00:00:00');
     this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d} 23:59:59');
     this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
+    this.queryParams.waybillNo = this.$route.query.waybillNo;
     this.getList();
   },
   methods: {

@@ -250,6 +250,7 @@ export default {
 
 <style lang="scss">
 	.el-table__empty-block{
+    width: 60px !important;
 	  text-align: left !important;
     margin-left: 50% !important;
     justify-content: left !important;

@@ -1,87 +1,93 @@
 <template>
   <div class="device-info ly-flex">
     <div class="device-info-left">
-      <Tabs :tablist="bigTablist" @getActiveName="getBigActiveTab" />
-      <div class="device-search-box">
-        <el-input
-          v-model.trim="queryParams.imei"
-          class="device-search-input"
-          placeholder="请输入IMEI/车牌号"
-          clearable
-          size="small"
-          @keyup.enter.native="handleQuery"
-        />
-        <i class="device-search-button el-icon-search" @click="handleQuery" />
-      </div>
-      <ul class="btn-list-box">
-        <li v-for="item in tablist" :key="item.code" :class="{active: item.code === activeTab}" @click="getActiveTab(item.code)">{{ `${item.tabName}` }}</li>
-      </ul>
-      <div class="device-info-list-box">
-        <el-checkbox-group v-if="deviceList.length > 0" v-model="checkList" @change="changeChecked">
-          <ul v-infinite-scroll="loadMore" class="device-info-list infinite-list own-device-scroll-box">
-            <li
-              v-for="item in deviceList"
-              :key="item.code"
-              class="ly-flex-v ly-flex-pack-justify"
-              :class="{active: activeCard === item.typeCode+item.factoryOnlyCode}"
-              @click="handleCardClick(item)"
-            >
-              <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
-                <p class="label ly-flex ly-flex-align-center">
-                  <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.activationFlag !== 1" @click.native.stop="handleCheckActive(item.activationFlag, item.typeCode+item.factoryOnlyCode)" />
-                  <span class="ml10">{{ item.factoryOnlyCode }}</span>
-                </p>
-                <p class="status" :class="item.activationFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
-                  {{ item.activationFlag === 0 ? '未激活' : item.expireFlag === 0 ? '过期' : item.status === 1 ? '在线' : '离线' }}
-                </p>
-              </div>
-              <div class="info-groud ly-flex ly-flex-align-center">
-                <div v-if="item.vendorCode" class="info-groud-item">
-                  <p class="label">厂家</p>
-                  {{ selectDictLabel(deviceVendorOptions, item.vendorCode) }}
+      <Tabs :active-name.sync="activeName" :tablist="bigTablist" />
+      <!-- 设备列表 -->
+      <div v-show="activeName === '0'">
+        <div class="device-search-box">
+          <el-input
+            v-model.trim="queryParams.imei"
+            class="device-search-input"
+            placeholder="请输入IMEI/车牌号"
+            clearable
+            size="small"
+            @keyup.enter.native="handleQuery"
+          />
+          <i class="device-search-button el-icon-search" @click="handleQuery" />
+        </div>
+        <ul class="btn-list-box">
+          <li v-for="item in tablist" :key="item.code" :class="{active: item.code === activeTab}" @click="getActiveTab(item.code)">{{ `${item.tabName}` }}</li>
+        </ul>
+        <div class="device-info-list-box">
+          <el-checkbox-group v-if="deviceList.length > 0" v-model="checkList" @change="changeChecked">
+            <ul v-infinite-scroll="loadMore" class="device-info-list infinite-list own-device-scroll-box">
+              <li
+                v-for="item in deviceList"
+                :key="item.code"
+                class="ly-flex-v ly-flex-pack-justify"
+                :class="{active: activeCard === item.typeCode+item.factoryOnlyCode}"
+                @click="handleCardClick(item)"
+              >
+                <div class="title ly-flex ly-flex-pack-justify ly-flex-align-center">
+                  <p class="label ly-flex ly-flex-align-center">
+                    <el-checkbox :label="item.typeCode+','+item.factoryOnlyCode" :disabled="item.activationFlag !== 1" @click.native.stop="handleCheckActive(item.activationFlag, item.typeCode+item.factoryOnlyCode)" />
+                    <span class="ml10">{{ item.factoryOnlyCode }}</span>
+                  </p>
+                  <p class="status" :class="item.activationFlag === 0 ? '' : item.expireFlag === 0 ? 'red' : item.status === 1 ? 'green' : 'gray'">·
+                    {{ item.activationFlag === 0 ? '未激活' : item.expireFlag === 0 ? '过期' : item.status === 1 ? '在线' : '离线' }}
+                  </p>
                 </div>
-                <div v-if="item.name" class="info-groud-item">
-                  <p class="label">设备名称</p>
-                  {{ item.name }}
-                </div>
-              </div>
-              <div class="info-groud ly-flex ly-flex-align-center">
-                <div v-if="item.data && item.data.electQuantity" class="info-groud-item">
-                  <p class="label">设备电量</p>
-                  <div class="ly-flex ly-flex-align-center">
-                    <img v-if="item.data.electQuantity > 90" class="mr5" :src="require('@/assets/images/device/dl3'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                    <img v-else-if="item.data.electQuantity > 60" class="mr5" :src="require('@/assets/images/device/dl2'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                    <img v-else-if="item.data.electQuantity > 10" class="mr5" :src="require('@/assets/images/device/dl1'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
-                    <img v-else class="mr5" src="@/assets/images/device/dl1.png">
-                    电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
+                <div class="info-groud ly-flex ly-flex-align-center">
+                  <div v-if="item.vendorCode" class="info-groud-item">
+                    <p class="label">厂家</p>
+                    {{ selectDictLabel(deviceVendorOptions, item.vendorCode) }}
+                  </div>
+                  <div v-if="item.name" class="info-groud-item">
+                    <p class="label">设备名称</p>
+                    {{ item.name }}
                   </div>
                 </div>
-                <div v-if="item.licenseNumber" class="info-groud-item">
-                  <p class="label">绑定车辆</p>
-                  {{ item.licenseNumber }}
+                <div class="info-groud ly-flex ly-flex-align-center">
+                  <div v-if="item.data && item.data.electQuantity" class="info-groud-item">
+                    <p class="label">设备电量</p>
+                    <div class="ly-flex ly-flex-align-center">
+                      <img v-if="item.data.electQuantity > 90" class="mr5" :src="require('@/assets/images/device/dl3'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                      <img v-else-if="item.data.electQuantity > 60" class="mr5" :src="require('@/assets/images/device/dl2'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                      <img v-else-if="item.data.electQuantity > 10" class="mr5" :src="require('@/assets/images/device/dl1'+ (activeCard === item.typeCode+item.factoryOnlyCode ? '_hov' : '') +'.png')">
+                      <img v-else class="mr5" src="@/assets/images/device/dl1.png">
+                      电量{{ item.data.electQuantity ? item.data.electQuantity + '%' : '-' }}
+                    </div>
+                  </div>
+                  <div v-if="item.licenseNumber" class="info-groud-item">
+                    <p class="label">绑定车辆</p>
+                    {{ item.licenseNumber }}
+                  </div>
                 </div>
-              </div>
-              <div class="ly-flex button-groud">
-                <p @click.stop="handleInfo()">关注</p>
-                <p @click.stop="handleTrackPlayback(item)">轨迹回放</p>
-                <p @click.stop="handleInfo()">实时跟踪</p>
-                <p @click.stop="handleInfo()">更多</p>
+                <div class="ly-flex button-groud">
+                  <p @click.stop="handleInfo()">关注</p>
+                  <p @click.stop="handleTrackPlayback(item)">轨迹回放</p>
+                  <p @click.stop="handleInfo()">实时跟踪</p>
+                  <p @click.stop="handleInfo()">更多</p>
                 <!-- <el-dropdown trigger="click" size="small">
-                  <span class="el-dropdown-link">
-                    更多
-                  </span>
-                  <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item>
-                      <span @click="handleInfo()">电子围栏</span>
-                    </el-dropdown-item>
-                  </el-dropdown-menu>
-                </el-dropdown> -->
-              </div>
-            </li>
-          </ul>
-        </el-checkbox-group>
-        <div v-if="!loading && deviceList.length === 0" class="device-info-list-none">暂无数据</div>
+                    <span class="el-dropdown-link">
+                      更多
+                    </span>
+                    <el-dropdown-menu slot="dropdown">
+                      <el-dropdown-item>
+                        <span @click="handleInfo()">电子围栏</span>
+                      </el-dropdown-item>
+                    </el-dropdown-menu>
+                  </el-dropdown> -->
+                </div>
+              </li>
+            </ul>
+          </el-checkbox-group>
+          <div v-if="!loading && deviceList.length === 0" class="device-info-list-none">暂无数据</div>
+        </div>
       </div>
+
+      <!-- 电子围栏 -->
+      <OrderList v-show="activeName === '1'" style="height: calc(100% - 34px)" @clearMap="clearAllFence" @drawFencePlat="drawFencePlat" />
     </div>
     <div class="device-info-right">
       <div class="device-info-map-info ly-flex ly-flex-pack-justify">
@@ -123,25 +129,27 @@
 
 <script>
 import { getConsoleDeviceList, getConsoleDeviceLocation, getConsoleDeviceStatistics, getAllMapping } from '@/api/assets/device.js';
-import { getFencePlatList } from '@/api/assets/device';
 import Tabs from './tabs.vue';
 import MapBox from './map.vue';
+import OrderList from '../components/orderList.vue';
 
 export default {
   name: 'Enclosure',
   components: {
     Tabs,
-    MapBox
+    MapBox,
+    OrderList
   },
   data() {
     return {
+      activeName: '0',
       bigTablist: [{
         code: '0',
-        tabName: '全部',
+        tabName: '设备列表',
         num: null
       }, {
         code: '1',
-        tabName: '关注',
+        tabName: '电子围栏',
         num: null
       }],
       // tab
@@ -221,9 +229,6 @@ export default {
       this.getDicts('device_vendors').then(response => {
         this.deviceVendorOptions = response.data;
       });
-    },
-    getBigActiveTab(val) {
-
     },
     // 切换tab
     getActiveTab(val) {
@@ -447,8 +452,6 @@ export default {
       });
       row.labelArr = labelArr;
       this.$refs.mapRef.onTrackPlayback(row);
-      // 获取电子围栏
-      this.getFencePlatList(row.factoryOnlyCode);
     },
     /** 退出轨迹回放 */
     onCloseTrack() {
@@ -474,13 +477,13 @@ export default {
     handleInfo() {
       this.msgInfo('功能未开发');
     },
-    /** 获取平台围栏 */
-    getFencePlatList(imei) {
-      getFencePlatList({ imeiList: [imei] }).then(response => {
-        const { data = [] } = response;
-        // 保存电子围栏数据
-        this.$refs.mapRef.saveFenceData(data);
-      });
+    /** 清除电子围栏 */
+    clearAllFence() {
+      this.$refs.mapRef.clearAllFence();
+    },
+    /** 画电子围栏 */
+    drawFencePlat(data) {
+      this.$refs.mapRef.drawFencePlat(data);
     }
   }
 };

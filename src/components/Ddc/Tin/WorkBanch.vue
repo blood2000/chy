@@ -136,7 +136,7 @@
             </div>
           </div>
           <!-- 运单 -->
-          <div class="index-frame way-frame g-directionbetween">
+          <div class="index-frame way-frame g-directionbetween" style="flex:1; margin-right: 0">
             <div>
               <div class="g-aligncenter">
                 <img class="statistic-img" src="~@/assets/images/workbench/icon_waybillnum.png" alt="">
@@ -182,6 +182,45 @@
                 </div>
                 <div style="width: 100px;text-align:end;">
                   <img class="waybill-img" src="~@/assets/images/workbench/icon_waybilling.png" alt="">
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- 资金 -->
+          <div v-if="roles[1] == 'capital_statistics_role'" class="index-frame cap-frame g-directionbetween">
+            <div class="g-aligncenter">
+              <img class="statistic-img" src="~@/assets/images/workbench/icon_waybillnum.png" alt="">
+              <div class="g-color-blue g-strong">资金统计</div>
+            </div>
+            <div>
+              <div class="font-style g-flex g-justifybetween">
+                <div class="cap-table">钱包余额总计</div>
+                <div class="cap-value"><count-to :end-val="walletInfo.balance" :decimal-places="0" />元</div>
+              </div>
+              <div class="font-style  g-flex g-justifybetween">
+                <div class="cap-table">授信额度总计</div>
+                <div class="cap-value"><count-to :end-val="walletInfo.crediAmount" :decimal-places="0" />元</div>
+              </div>
+            </div>
+            <div class="apital-frame g-title-smaller">
+              <div>
+                <div class="g-flex g-justifybetween">
+                  <div>
+                    <div>货主余额</div>
+                    <div class="g-color-tag">
+                      <span class="g-color-title g-strong g-title-large"><count-to :end-val="walletInfo.shipmentBalance" :decimal-places="0" /></span>
+                      元
+                    </div>
+                  </div>
+                </div>
+                <div class="g-flex g-justifybetween">
+                  <div>
+                    <div>司机余额</div>
+                    <div class="g-color-tag">
+                      <span class="g-color-title g-strong g-title-large"><count-to :end-val="walletInfo.driverBalance" :decimal-places="0" /></span>
+                      元
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -393,8 +432,9 @@
 <script>
 import { getUserInfo } from '@/utils/auth';
 import { listNoticeAll } from '@/api/system/notice';
-import { statisticInfo, waybillList, orderList, billList } from '@/api/workBanch';
+import { statisticInfo, waybillList, orderList, billList, walletStatistical } from '@/api/workBanch';
 import CountTo from '@/components/CountTo';
+import { mapGetters } from 'vuex';
 // 运单详情弹窗
 import DetailDialog from '@/views/waybill/components/detailDialog';
 // 运单详情弹窗
@@ -479,7 +519,9 @@ export default {
       }, {
         label: '运单投诉',
         name: 'Complaint'
-      }]
+      }],
+      // 钱包统计
+      walletInfo: {}
     };
   },
   watch: {
@@ -512,6 +554,7 @@ export default {
       this.getStatisticInfo();
       this.getNoticeList2();
       this.getWaybillList();
+      this.getWalletStatistical();
     },
     // 查询统计数据
     getStatisticInfo() {
@@ -530,6 +573,11 @@ export default {
         if (response.data.user.teamCount !== 0) {
           this.teamPersent = Math.round((response.data.user.activeTeam * 100) / response.data.user.teamCount);
         }
+      });
+    },
+    getWalletStatistical() {
+      walletStatistical().then(res => {
+        this.walletInfo = res.data;
       });
     },
     /** 查询通知列表 */
@@ -687,6 +735,12 @@ export default {
     handleNav(e) {
       this.$router.push({ name: e });
     }
+  },
+  // eslint-disable-next-line vue/order-in-components
+  computed: {
+    ...mapGetters({
+      roles: 'roles'
+    })
   }
 };
 </script>
