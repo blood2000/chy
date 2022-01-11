@@ -149,7 +149,7 @@
         >
           <el-date-picker
             v-model="receiveTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
             :picker-options="pickerTimeOptions"
             range-separator="-"
@@ -166,7 +166,7 @@
         >
           <el-date-picker
             v-model="loadTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
             :picker-options="pickerTimeOptions"
             range-separator="-"
@@ -183,7 +183,7 @@
         >
           <el-date-picker
             v-model="unloadTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
             :picker-options="pickerTimeOptions"
             range-separator="-"
@@ -200,7 +200,7 @@
         >
           <el-date-picker
             v-model="markTime"
-            type="daterange"
+            type="datetimerange"
             unlink-panels
             :picker-options="pickerTimeOptions"
             range-separator="-"
@@ -662,15 +662,14 @@ export default {
     });
     this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} 00:00:00');
     this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d} 23:59:59');
-    this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
-    this.queryParams.waybillNo = this.$route.query.waybillNo;
+    this.receiveTime = [new Date(this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} 00:00:00')), new Date(this.parseTime(new Date(), '{y}-{m}-{d} 23:59:59'))];
     this.getList();
   },
   methods: {
     datechoose(date) {
       if (date) {
-        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d} 00:00:00');
-        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d} 23:59:59');
+        this.queryParams.startReceiveTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endReceiveTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startReceiveTime = null;
         this.queryParams.endReceiveTime = null;
@@ -678,8 +677,8 @@ export default {
     },
     loadDateChoose(date) {
       if (date) {
-        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d} 00:00:00');
-        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d} 23:59:59');
+        this.queryParams.startLoadTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endLoadTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startLoadTime = null;
         this.queryParams.endLoadTime = null;
@@ -687,8 +686,8 @@ export default {
     },
     unloadDateChoose(date) {
       if (date) {
-        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d} 00:00:00');
-        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d} 23:59:59');
+        this.queryParams.startUnLoadTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endUnLoadTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startUnLoadTime = null;
         this.queryParams.endUnLoadTime = null;
@@ -696,8 +695,8 @@ export default {
     },
     markDateChoose(date) {
       if (date) {
-        this.queryParams.startMarkTime = this.parseTime(date[0], '{y}-{m}-{d} 00:00:00');
-        this.queryParams.endMarkTime = this.parseTime(date[1], '{y}-{m}-{d} 23:59:59');
+        this.queryParams.startMarkTime = this.parseTime(date[0], '{y}-{m}-{d} {h}:{i}:{s}');
+        this.queryParams.endMarkTime = this.parseTime(date[1], '{y}-{m}-{d} {h}:{i}:{s}');
       } else {
         this.queryParams.startMarkTime = null;
         this.queryParams.endMarkTime = null;
