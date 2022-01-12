@@ -96,26 +96,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="装货上报" prop="loadSendStatus">
-          <el-select v-model="queryParams.loadSendStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
-            <el-option
-              v-for="(dict,index) in dicts['loadSendStatus_option'] || []"
-              :key="index"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="卸货上报" prop="unloadSendStatus">
-          <el-select v-model="queryParams.unloadSendStatus" placeholder="----请选择----" clearable filterable style="width: 228px">
-            <el-option
-              v-for="(dict,index) in dicts['unloadSendStatus_option'] || []"
-              :key="index"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-        </el-form-item>
         <el-form-item label="车辆上报" prop="vehicleReport">
           <el-select v-model="queryParams.vehicleReport" placeholder="----请选择----" clearable filterable style="width: 228px">
             <el-option
@@ -481,16 +461,16 @@ import tableColumnsConfig from './data-index';
 
 import { listApi,
   waybillReport,
-  waybillReportDriver,
-  waybillReportVehicle,
-  waybillReportWaybill,
-  waybillReportLoad,
-  waybillReportUnload,
-  waybillReportBill,
   batch,
   reportMark,
   getReportStatus
 } from '@/api/data/report';
+
+import { waybillReportDriverReport,
+  waybillReportVehicleReport,
+  waybillReportWaybillReport,
+  waybillReportFinancialReport
+} from '@/api/data/shanXiReport';
 
 
 import CheckResult from './components/CheckResult';
@@ -531,12 +511,12 @@ export default {
         pageNum: 1,
         pageSize: 10,
         // status: '0',
-        financialOption: 1,
+        financialOption: 3,
 
         billSendStatus: undefined, //	流水上报 1是 0否
         driverReport: undefined, //	司机是否上报 1是 0否
-        loadSendStatus: undefined, //	装货位置上报 1是 0否
-        unloadSendStatus: undefined, //	卸货位置上报 1是 0否
+        // loadSendStatus: undefined, //	装货位置上报 1是 0否
+        // unloadSendStatus: undefined, //	卸货位置上报 1是 0否
         vehicleReport: undefined, //	车辆是否上报 1是 0否
         waybillSendStatus: undefined, //	运单是否上报 1是 0否
 
@@ -835,18 +815,18 @@ export default {
     /* 上报接口 */
     async _waybillReport(row) {
       this.loading = true;
-      const { driverReport, vehicleReport, waybillSendStatus, loadSendStatus, unloadSendStatus, billSendStatus } = row;
+      const { driverReport, vehicleReport, waybillSendStatus, billSendStatus } = row;
 
       let res_driver;
       let res_vehicle;
       let res_waybill;
-      let res_load;
-      let res_unload;
       let res_bill;
       let msg;
       try {
         if (driverReport !== 1) {
-          res_driver = await waybillReportDriver(row.waybillReportCode);
+          res_driver = await waybillReportDriverReport({
+            waybillCode: row.waybillCode
+          });
           row.driverReport = 3;
           msg = res_driver.msg;
         } else {
@@ -857,7 +837,9 @@ export default {
       }
       try {
         if (vehicleReport !== 1) {
-          res_vehicle = await waybillReportVehicle(row.waybillReportCode);
+          res_vehicle = await waybillReportVehicleReport({
+            waybillCode: row.waybillCode
+          });
           row.vehicleReport = 3;
           msg = res_vehicle.msg;
         } else {
@@ -868,7 +850,9 @@ export default {
       }
       try {
         if (waybillSendStatus !== 1) {
-          res_waybill = await waybillReportWaybill(row.waybillReportCode);
+          res_waybill = await waybillReportWaybillReport({
+            waybillCode: row.waybillCode
+          });
           row.waybillSendStatus = 3;
           msg = res_waybill.msg;
         } else {
@@ -878,30 +862,10 @@ export default {
         row.waybillSendStatus = 2;
       }
       try {
-        if (loadSendStatus !== 1) {
-          res_load = await waybillReportLoad(row.waybillReportCode);
-          row.loadSendStatus = 3;
-          msg = res_load.msg;
-        } else {
-          res_load = true;
-        }
-      } catch (error) {
-        row.loadSendStatus = 2;
-      }
-      try {
-        if (unloadSendStatus !== 1) {
-          res_unload = await waybillReportUnload(row.waybillReportCode);
-          row.unloadSendStatus = 3;
-          msg = res_unload.msg;
-        } else {
-          res_unload = true;
-        }
-      } catch (error) {
-        row.unloadSendStatus = 2;
-      }
-      try {
         if (billSendStatus !== 1) {
-          res_bill = await waybillReportBill(row.waybillReportCode);
+          res_bill = await waybillReportFinancialReport({
+            waybillCode: row.waybillCode
+          });
           row.billSendStatus = 3;
           msg = res_bill.msg;
         } else {
@@ -912,7 +876,7 @@ export default {
       }
 
       if (
-        [res_driver, res_vehicle, res_waybill, res_load, res_unload, res_bill].every(e => e)
+        [res_driver, res_vehicle, res_waybill, res_bill].every(e => e)
       ) {
         this.msgSuccess(msg);
       }
@@ -927,7 +891,9 @@ export default {
       switch (key) {
         case 'driverReport':
           if (row[key] !== 1) {
-            waybillReportDriver(row.waybillReportCode).then(res => {
+            waybillReportDriverReport({
+              waybillCode: row.waybillCode
+            }).then(res => {
               this.msgSuccess(res.msg);
               // row[key] = 3;
               // this.loading = false;
@@ -941,7 +907,9 @@ export default {
           break;
         case 'vehicleReport':
           if (row[key] !== 1) {
-            waybillReportVehicle(row.waybillReportCode).then(res => {
+            waybillReportVehicleReport({
+              waybillCode: row.waybillCode
+            }).then(res => {
               this.msgSuccess(res.msg);
               // row[key] = 3;
               // this.loading = false;
@@ -955,35 +923,9 @@ export default {
           break;
         case 'waybillSendStatus':
           if (row[key] !== 1) {
-            waybillReportWaybill(row.waybillReportCode).then(res => {
-              this.msgSuccess(res.msg);
-              // row[key] = 3;
-              // this.loading = false;
-              this.getList();
-            }).catch(() => {
-              // this.msgError('上报失败');
-              // row[key] = 2;
-              this.loading = false;
-            });
-          }
-          break;
-        case 'loadSendStatus':
-          if (row[key] !== 1) {
-            waybillReportLoad(row.waybillReportCode).then(res => {
-              this.msgSuccess(res.msg);
-              // row[key] = 3;
-              // this.loading = false;
-              this.getList();
-            }).catch(() => {
-              // this.msgError('上报失败');
-              // row[key] = 2;
-              this.loading = false;
-            });
-          }
-          break;
-        case 'unloadSendStatus':
-          if (row[key] !== 1) {
-            waybillReportUnload(row.waybillReportCode).then(res => {
+            waybillReportWaybillReport({
+              waybillCode: row.waybillCode
+            }).then(res => {
               this.msgSuccess(res.msg);
               // row[key] = 3;
               // this.loading = false;
@@ -997,7 +939,7 @@ export default {
           break;
         case 'billSendStatus':
           if (row[key] !== 1) {
-            waybillReportBill(row.waybillReportCode).then(res => {
+            waybillReportFinancialReport(row.waybillReportCode).then(res => {
               this.msgSuccess(res.msg);
               // row[key] = 3;
               // this.loading = false;
