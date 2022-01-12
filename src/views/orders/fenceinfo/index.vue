@@ -94,7 +94,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <router-link v-if="scope.row.waybillNo != 0" :to="`/waybill/manages?waybillNo=2201101803527554`">{{ scope.row.waybillNo }}</router-link>
+            <router-link v-if="scope.row.waybillNo != 0" :to="`/waybill/manages?waybillNo=${scope.row.waybillNo}`">{{ scope.row.waybillNo }}</router-link>
           </template>
         </el-table-column>
         <el-table-column
