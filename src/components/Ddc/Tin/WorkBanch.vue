@@ -187,7 +187,7 @@
             </div>
           </div>
           <!-- 资金  -->
-          <div v-if="roles[1] == 'capital_statistics_role'" class="index-frame cap-frame g-directionbetween">
+          <div v-if="roles.indexOf('capital_statistics_role') !== -1" class="index-frame cap-frame g-directionbetween">
             <div class="g-aligncenter">
               <img class="statistic-img" src="~@/assets/images/workbench/icon_waybillnum.png" alt="">
               <div class="g-color-blue g-strong">资金统计</div>
