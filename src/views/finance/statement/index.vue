@@ -45,8 +45,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="8">
-            <el-form-item label="承运方：" prop="invoiceTitle" style="margin-bottom: 0">
-              <span>福建大道成物流科技有限公司</span>
+            <el-form-item label="承运方：" prop="companyName" style="margin-bottom: 0">
+              <span>{{ companyName }}</span>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -168,7 +168,7 @@
 </template>
 
 <script>
-import { getDetail } from '@/api/finance/list';
+import { getDetail, countByShipmentCode } from '@/api/finance/list';
 // 运单详情弹窗
 import WaybillDialog from './waybillDialog';
 
@@ -208,7 +208,8 @@ export default {
         { dictLabel: '服务费发票', dictValue: '2' }
       ],
       hasFreightInvoice: true,
-      hasServiceInvoice: true
+      hasServiceInvoice: true,
+      companyName: ''
     };
   },
   computed: {
@@ -264,6 +265,11 @@ export default {
         } else {
           that.hasServiceInvoice = true;
         }
+        console.log(this.form.shipmentCode);
+        countByShipmentCode({ shipmentCode: this.form.shipmentCode }).then(res => {
+          that.companyName = res.data;
+          // console.log(companyName);
+        });
         // console.log(that.hasFreightInvoice);
         // console.log(that.hasServiceInvoice);
         // console.log(that.invoicelist);

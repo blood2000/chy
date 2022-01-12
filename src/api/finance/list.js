@@ -78,3 +78,12 @@ export function listExportALL(data) {
     data: data
   });
 }
+
+// 承运方
+export function countByShipmentCode(query) {
+  return request({
+    url: '/transportation/waybill/getCountByShipmentCode',
+    method: 'get',
+    params: query
+  });
+}
