@@ -186,7 +186,7 @@
               </div>
             </div>
           </div>
-          <!-- 资金 -->
+          <!-- 资金  -->
           <div v-if="roles[1] == 'capital_statistics_role'" class="index-frame cap-frame g-directionbetween">
             <div class="g-aligncenter">
               <img class="statistic-img" src="~@/assets/images/workbench/icon_waybillnum.png" alt="">
