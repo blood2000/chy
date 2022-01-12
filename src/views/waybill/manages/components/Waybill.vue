@@ -647,7 +647,7 @@ export default {
       isShipment: false
     };
   },
-  created() {
+  async created() {
     const { isAdmin = false, isShipment = false, user = {}, shipment = {}} = getUserInfo() || {};
     this.isAdmin = isAdmin;
     this.isShipment = isShipment;
@@ -660,10 +660,9 @@ export default {
       width: 180,
       fixed: 'left'
     });
-    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} {h}:{i}:{s}');
-    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d} {h}:{i}:{s}');
-    this.receiveTime = [new Date(new Date().getTime() - 24 * 60 * 60 * 1000 * 2), new Date()];
-    this.queryParams.waybillNo = this.$route.query.waybillNo;
+    this.queryParams.startReceiveTime = this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} 00:00:00');
+    this.queryParams.endReceiveTime = this.parseTime(new Date(), '{y}-{m}-{d} 23:59:59');
+    this.receiveTime = [new Date(this.parseTime(new Date().getTime() - 24 * 60 * 60 * 1000 * 2, '{y}-{m}-{d} 00:00:00')), new Date(this.parseTime(new Date(), '{y}-{m}-{d} 23:59:59'))];
     this.getList();
   },
   methods: {
@@ -704,13 +703,13 @@ export default {
       }
     },
     /** 查询列表 */
-    getList() {
+    async getList() {
       this.loading = true;
       const params = { ...this.queryParams };
       if (params.licenseNumber) {
         params.licenseNumber = params.licenseNumber.toUpperCase();
       }
-      listManages(params).then(response => {
+      await listManages(params).then(response => {
         this.managesList = response.rows;
         this.total = response.total;
         this.height = 560;
