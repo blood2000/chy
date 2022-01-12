@@ -156,11 +156,14 @@
 
 <script>
 import { jimiTrackLocation, zjxlTrackLocation, getWebDetail, getWaybillTrace, addZjxl, queryZjxl, getDevice, queryZjzy, pointSearchZjzy, getDriverByCode } from '@/api/waybill/tracklist';
+import { getFencePlatList } from '@/api/assets/device';
 import axios from 'axios';
 import { getUserInfo } from '@/utils/auth';
+import fence from '@/views/waybill/components/mixins/fence';
 
 export default {
   name: 'Track',
+  mixins: [fence],
   props: {
     waybill: {
       type: Object,
@@ -1055,10 +1058,11 @@ export default {
     },
     // 表单赋值
     setForm(data) {
-      // console.log(data);
+      console.log(data);
       // 获取运单信息，并标记装卸货地
       getWebDetail(data.code).then(response => {
         this.wayBillInfo = response.data;
+        this.getFencePlatList(response.data.orderCode);
         if (response.data.status !== 0) {
           this.getDeviceInfo();
           // 获取司机信息
@@ -1130,6 +1134,17 @@ export default {
             }
           });
         });
+      });
+    },
+    /** 获取平台围栏 */
+    getFencePlatList(orderCode) {
+      getFencePlatList({ orderCodeList: [orderCode] }).then(response => {
+        const { data = [] } = response;
+        if (data.length === 0) {
+          this.msgInfo('暂无电子围栏信息');
+        }
+        /** 绘制电子围栏 */
+        this.drawFencePlatByOrderList(data);
       });
     },
     // 根据时间控件查北斗
