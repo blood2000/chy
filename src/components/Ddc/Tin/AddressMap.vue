@@ -12,7 +12,7 @@
       <el-button v-if="rectangleEditor" class="btn" type="primary" size="mini" plain round @click="closeRectangleEditor">矩形编辑保存</el-button>
       <el-button v-if="circleEditor" class="btn" type="primary" size="mini" plain round @click="closeCircleEditor">圆形编辑保存</el-button> -->
 
-      <el-button v-if="polyEditor || rectangleEditor || circleEditor" class="btn" type="primary" size="mini" plain round @click="cancelBack">返回</el-button>
+      <el-button v-if="polyEditor || rectangleEditor || circleEditor" class="btn" type="primary" size="mini" plain round @click="cancelBack">重新绘制</el-button>
     </div>
     <div class="map-content" :style="{height:'58vh'}">
       <el-amap
