@@ -1831,24 +1831,24 @@ export default {
         this.msgInfo('请先完善地址信息！');
       }
 
-      return;
-      // e=
+      // return;
+      // // e=
 
-      if (addr.cbData) {
-        this.addressChange = addr;
-        this.title = '设置电子围栏';
-        this.circledialog = true;
-        this.radius = addr.radius;
-        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.cbData.location, addr.cbData.location);
-      } else if (addr.loadLnglat && addr.loadLnglat.length) {
-        this.addressChange = addr;
-        this.title = '设置电子围栏';
-        this.circledialog = true;
-        this.radius = addr.radius;
-        this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.loadLnglat, addr.loadLnglat);
-      } else {
-        this.msgInfo('请先完善地址信息！');
-      }
+      // if (addr.cbData) {
+      //   this.addressChange = addr;
+      //   this.title = '设置电子围栏';
+      //   this.circledialog = true;
+      //   this.radius = addr.radius;
+      //   this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.cbData.location, addr.cbData.location);
+      // } else if (addr.loadLnglat && addr.loadLnglat.length) {
+      //   this.addressChange = addr;
+      //   this.title = '设置电子围栏';
+      //   this.circledialog = true;
+      //   this.radius = addr.radius;
+      //   this.$refs.CircleDialog.circleEdit(addr.centerLocation && addr.centerLocation.length ? addr.centerLocation : addr.loadLnglat, addr.loadLnglat);
+      // } else {
+      //   this.msgInfo('请先完善地址信息！');
+      // }
     },
     // 数据回填处理成组件想要的格式
     handlerMapCbData(cbData) {
@@ -2086,8 +2086,19 @@ export default {
 
     // 电子围栏确定
     electricSub(lastMapData, address) {
-      console.log(lastMapData, address);
-      // address.__lastMapData__ = lastMapData;
+      console.log(lastMapData, address, '提交的电子围栏信息');
+
+      if (lastMapData && lastMapData[0]) {
+        const __data = lastMapData[0];
+        if (__data.geomType === 1 && __data.radius < 200) {
+          this.msgWarning('电子围栏最小半径为200, 请重新编辑');
+          return;
+        } else if (__data.geomType === 3 && __data.geomText.length > 20) {
+          this.msgWarning('多边形最多为20个标点, 请重新编辑');
+          return;
+        }
+      }
+
       // 几何类型（1.圆形 2.矩形 3.多边形）
       address.__lastMapData__ = this.handlerMapApiData(lastMapData[0]);
       this.mapOpen = false;
