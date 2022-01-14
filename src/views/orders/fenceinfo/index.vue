@@ -148,18 +148,21 @@ export default {
   },
   computed: {
   },
-  watch: {
-  },
   created() {
     this.orderCode = this.$route.query.orderCode;
+    this.$route.query.p && this.$set(this.queryParams, 'pageNum', parseInt(this.$route.query.p));
     this.getList();
-    this.$route.query.p && (this.queryParams.pageNum = parseInt(this.$route.query.p));
   },
   methods: {
     getList(type) {
       this.queryParams.startTime = this.tin10 && this.tin10[0] && `${this.tin10[0]} 00:00:00` || '';
       this.queryParams.endTime = this.tin10 && this.tin10[1] && `${this.tin10[1]} 00:00:00` || '';
       this.loading = true;
+      if (type === 'pagination') {
+        // 分页，拼接p参数到地址栏
+        this.$route.query.p = this.queryParams.pageNum;
+        this.$router.replace(this.$route.fullPath);
+      }
       getList({
         ...this.queryParams,
         orderCode: this.orderCode
@@ -170,21 +173,6 @@ export default {
       }).catch(() => {
         this.loading = false;
       });
-      if (type === 'pagination') {
-        // 分页，拼接p参数到地址栏
-        let paramsStr = '';
-        const routeQuery = this.$route.query;
-        routeQuery.p = this.queryParams.pageNum;
-        for (const key in routeQuery) {
-          if (Object.hasOwnProperty.call(routeQuery, key)) {
-            paramsStr += `&${key}=${routeQuery[key]}`;
-          }
-        }
-        paramsStr = paramsStr.substr(1);
-        this.$router.push({
-          path: `${this.$route.path}?${paramsStr}`
-        });
-      }
     },
     doSearch() {
       this.getList();
