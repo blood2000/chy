@@ -22,7 +22,7 @@
             <el-checkbox v-model="zjzyChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#F56C6C;" />
-                <div class="legend-title" style="margin: 0 10px;">APP自有轨迹</div>
+                <div class="legend-title" style="margin: 0 5px;">APP自有轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -35,7 +35,7 @@
             <el-checkbox v-model="lyChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#1990FF;" />
-                <div class="legend-title" style="margin: 0 10px;">APP猎鹰轨迹</div>
+                <div class="legend-title" style="margin: 0 5px;">APP猎鹰轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -48,7 +48,7 @@
             <el-checkbox v-model="jmChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#08B8A7;" />
-                <div class="legend-title" style="margin: 0 10px;">硬件轨迹</div>
+                <div class="legend-title" style="margin: 0 5px;">硬件轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -61,7 +61,7 @@
             <el-checkbox v-model="zjChecked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#67C23A;" />
-                <div class="legend-title" style="margin: 0 10px;">北斗轨迹</div>
+                <div class="legend-title" style="margin: 0 5px;">北斗轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -74,7 +74,7 @@
             <el-checkbox v-model="checked" style="margin-bottom:5px;width:100%;text-align:end;">
               <div class="g-aligncenter">
                 <div class="legend-color" style="background:#FB8720;" />
-                <div class="legend-title" style="margin: 0 10px;">规划轨迹</div>
+                <div class="legend-title" style="margin: 0 5px;">规划轨迹</div>
               </div>
             </el-checkbox>
           </div>
@@ -1326,7 +1326,7 @@ export default {
   left: 10px;
   top: 10px;
   z-index: 10;
-  width: 215px;
+  width: 223px;
   // height: 130px;
   background: rgba(255, 255, 255, 0.9);
   padding: 15px 15px 10px;
@@ -1335,7 +1335,7 @@ export default {
   text-align: end;
 }
 .legend-color{
-  margin-left: 10px;
+  // margin-left: 10px;
   height: 8px;
   width: 50px;
   border-radius: 4px;
