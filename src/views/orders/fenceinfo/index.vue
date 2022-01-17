@@ -94,7 +94,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <router-link v-if="scope.row.waybillNo != 0" :to="`/waybill/manages?waybillNo=${scope.row.waybillNo}`">{{ scope.row.waybillNo }}</router-link>
+            <span v-if="scope.row.waybillNo != 0" @click="getDetail(scope.row)">{{ scope.row.waybillNo }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -108,18 +108,38 @@
         :total="total"
         :page.sync="queryParams.pageNum"
         :limit.sync="queryParams.pageSize"
-        @pagination="getList"
+        @pagination="getList('pagination')"
       />
     </div>
+    <!-- 详情对话框 -->
+    <detail-dialog
+      :title="title"
+      :open.sync="open"
+      :current-id="currentId"
+      :disable="formDisable"
+      :current-row="currentRow"
+      @refresh="getList"
+    />
   </div>
 </template>
 
 <script>
 import { getList } from '@/api/order/fenceinfo';
+import DetailDialog from '@/views/waybill/components/detailDialog';
 import { pickerOptions } from '@/utils/dateRange';
 export default {
+  components: {
+    DetailDialog
+  },
   data() {
     return {
+      'title': '',
+      // 是否显示弹出层
+      'open': false,
+      'formDisable': false,
+      // 当前选中的运单id
+      'currentId': null,
+      'currentRow': null,
       list: [],
       formInline: {
         user: '',
@@ -150,14 +170,19 @@ export default {
   },
   created() {
     this.orderCode = this.$route.query.orderCode;
-
+    this.$route.query.p && this.$set(this.queryParams, 'pageNum', parseInt(this.$route.query.p));
     this.getList();
   },
   methods: {
-    getList() {
+    getList(type) {
       this.queryParams.startTime = this.tin10 && this.tin10[0] && `${this.tin10[0]} 00:00:00` || '';
       this.queryParams.endTime = this.tin10 && this.tin10[1] && `${this.tin10[1]} 00:00:00` || '';
       this.loading = true;
+      if (type === 'pagination') {
+        // 分页，拼接p参数到地址栏
+        this.$route.query.p = this.queryParams.pageNum;
+        this.$router.replace(this.$route.fullPath);
+      }
       getList({
         ...this.queryParams,
         orderCode: this.orderCode
@@ -186,6 +211,13 @@ export default {
       };
       this.tin10 = [];
       this.getList();
+    },
+    getDetail(row) {
+      this.currentId = row.waybillCode;
+      this.currentRow = row;
+      this.open = true;
+      this.title = '运输单信息';
+      this.formDisable = true;
     },
     addressTypeStr(row) {
       let str = '';

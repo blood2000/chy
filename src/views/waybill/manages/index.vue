@@ -1,7 +1,7 @@
 <template>
   <div>
     <Tabs class="frame" :tablist="tablist" @getActiveName="getActiveName" />
-    <Waybill v-if="activeName === '运输单'" />
+    <Waybill v-if="activeName === '运输单' && isShow" />
     <MultimodeTrans v-if="activeName === '多式联运'" />
   </div>
 </template>
@@ -22,10 +22,17 @@ export default {
     return {
       // Tabs参数
       tablist: [{ tabName: '运输单' }, { tabName: '多式联运' }],
-      activeName: '运输单'
+      activeName: '运输单',
+      isShow: true
     };
   },
-  created() {
+  watch: {
+    '$route.query.waybillNo'() {
+      this.isShow = false;
+      setTimeout(() => {
+        this.isShow = true;
+      }, 0);
+    }
   },
   methods: {
     getActiveName(val) {
