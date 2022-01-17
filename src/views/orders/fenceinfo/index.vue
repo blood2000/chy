@@ -94,7 +94,7 @@
           align="center"
         >
           <template slot-scope="scope">
-            <router-link v-if="scope.row.waybillNo != 0" :to="`/waybill/manages?waybillNo=${scope.row.waybillNo}`">{{ scope.row.waybillNo }}</router-link>
+            <span v-if="scope.row.waybillNo != 0" @click="getDetail(scope.row)">{{ scope.row.waybillNo }}</span>
           </template>
         </el-table-column>
         <el-table-column
@@ -111,15 +111,35 @@
         @pagination="getList('pagination')"
       />
     </div>
+    <!-- 详情对话框 -->
+    <detail-dialog
+      :title="title"
+      :open.sync="open"
+      :current-id="currentId"
+      :disable="formDisable"
+      :current-row="currentRow"
+      @refresh="getList"
+    />
   </div>
 </template>
 
 <script>
 import { getList } from '@/api/order/fenceinfo';
+import DetailDialog from '@/views/waybill/components/detailDialog';
 import { pickerOptions } from '@/utils/dateRange';
 export default {
+  components: {
+    DetailDialog
+  },
   data() {
     return {
+      'title': '',
+      // 是否显示弹出层
+      'open': false,
+      'formDisable': false,
+      // 当前选中的运单id
+      'currentId': null,
+      'currentRow': null,
       list: [],
       formInline: {
         user: '',
@@ -191,6 +211,13 @@ export default {
       };
       this.tin10 = [];
       this.getList();
+    },
+    getDetail(row) {
+      this.currentId = row.waybillCode;
+      this.currentRow = row;
+      this.open = true;
+      this.title = '运输单信息';
+      this.formDisable = true;
     },
     addressTypeStr(row) {
       let str = '';
