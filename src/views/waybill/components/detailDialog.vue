@@ -12,7 +12,7 @@
     <el-row>
       <el-col :span="18">
         <div v-if="form.code" style="height:880px;width:100%;padding: 0 30px;overflow: hidden;">
-          <Track :waybill="form" />
+          <Track :waybill="form" :source="form.sourceType" />
           <div class="waybill-detail-frame">
             <div class="waybill-detail-card">
               <div class="waybill-title" style="justify-content: space-between; border-bottom: 1px solid #F5F5F5;">

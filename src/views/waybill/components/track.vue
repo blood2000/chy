@@ -168,6 +168,10 @@ export default {
     waybill: {
       type: Object,
       default: null
+    },
+    source: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -1032,14 +1036,24 @@ export default {
           // 标记装卸货地址
           this.getMark();
           // 获取路线
-          this.lyChecked = true;
+          console.log(this.source);
+          if (this.source === 5) {
+            this.jmChecked = true;
+          } else {
+            this.lyChecked = true;
+          }
         }
       }).catch(() => {
         if (this.loadAddress.length !== 0 && this.unloadAddress.length !== 0) {
           // 标记装卸货地址
           this.getMark();
           // 获取路线
-          this.lyChecked = true;
+          console.log(this.source);
+          if (this.source === 5) {
+            this.jmChecked = true;
+          } else {
+            this.lyChecked = true;
+          }
         }
       });
     },
