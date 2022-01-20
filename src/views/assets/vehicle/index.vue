@@ -212,6 +212,30 @@
         <!--<template #classificationCode="{row}">
           <span>{{ selectDictLabel( licensePlateTypeOptions, row.classificationCode ) }}</span>
         </template>-->
+        <template #name="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.name }}</span>
+        </template>
+        <template #address="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.address }}</span>
+        </template>
+        <template #model="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.model }}</span>
+        </template>
+        <template #issue_date="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.issue_date }}</span>
+        </template>
+        <template #use_date="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.use_date && '已使用' + row.drivingPermit.use_date }}</span>
+        </template>
+        <template #register_date="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.register_date }}</span>
+        </template>
+        <template #vin="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.vin }}</span>
+        </template>
+        <template #use_character="{row}">
+          <span>{{ row.drivingPermit && row.drivingPermit.use_character }}</span>
+        </template>
         <template #isReport="{row}">
           <span>{{ selectDictLabel(isOption, row.isReport) }}</span>
         </template>
@@ -375,6 +399,7 @@
 <script>
 import { listVehicleApi, listInfo, getInfo, delInfo, delDriverCar, delTeamCar, changeDataByLicenseNumber } from '@/api/assets/vehicle';
 import { waybillReportVehicleByCode } from '@/api/data/report';
+import { getDifference } from '@/utils/ddc';
 import VehicleDialog from './vehicleDialog';
 import ManageDialog from './manageDialog';
 
@@ -572,7 +597,13 @@ export default {
         params.licenseNumber = params.licenseNumber.toUpperCase();
       }
       listInfo(params).then((response) => {
-        this.vehicleList = response.rows;
+        const vehicleList = response.rows.map(item => {
+          item.drivingPermit = item.drivingPermit && JSON.parse(item.drivingPermit) || {};
+          const useDateStamp = item.drivingPermit.issue_date ? (+new Date() - +new Date(item.drivingPermit.issue_date)) : '';
+          item.drivingPermit.use_date = getDifference(useDateStamp);
+          return item;
+        });
+        this.vehicleList = vehicleList;
         this.total = response.total;
         this.height = 560;
         this.loading = false;

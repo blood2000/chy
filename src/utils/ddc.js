@@ -370,3 +370,36 @@ export function OneChangeMultiArray(baseArray, n) {
   }
   return result;
 }
+
+/**
+ * 计算时间差，转化年、月、天
+ * @param {*Number} period 需要计算的时间戳 毫秒
+ * @returns eg:1年6月8天
+ */
+export function getDifference(period) {
+  if (period <= 0) return period;
+  const yearLevelValue = 365 * 24 * 60 * 60 * 1000;
+  const monthLevelValue = 30 * 24 * 60 * 60 * 1000;
+  const dayLevelValue = 24 * 60 * 60 * 1000;
+  /* const hourLevelValue = 60 * 60 * 1000;
+  const minuteLevelValue = 60 * 1000;
+  const secondLevelValue = 1000; */
+
+  const year = parseInt(getYear(period));
+  const month = parseInt(getMonth(period - year * yearLevelValue));
+  const day = parseInt(getDay(period - year * yearLevelValue - month * monthLevelValue));
+  let result = '';
+  if (year !== 0) result = result + year + '年';
+  if (month !== 0) result = result + month + '月';
+  if (day !== 0) result = result + day + '天';
+  function getYear(period) {
+    return Math.floor(parseInt(period) / yearLevelValue);
+  }
+  function getMonth(period) {
+    return Math.floor(parseInt(period) / monthLevelValue);
+  }
+  function getDay(period) {
+    return Math.floor(parseInt(period) / dayLevelValue);
+  }
+  return result;
+}
