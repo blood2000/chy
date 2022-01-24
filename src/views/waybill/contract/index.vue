@@ -411,9 +411,9 @@ export default {
       const { data } = await getContractByCode(row.code);
 
       this.dialogData = { ...data, contractPath: row.contractPath, isDzqzContract: row.isDzqzContract, sealPath: row.sealPath };
-      console.log(this.dialogData);
-      console.log(this.driverOrShipment);
-      console.log(this.financialOption);
+      // console.log(this.dialogData);
+      // console.log(this.driverOrShipment);
+      // console.log(this.financialOption);
       this.visible = true;
     },
 

@@ -327,6 +327,14 @@
       </el-row>
 
       <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
+        <!-- 支付订单号 -->
+        <template #tradOrderNumber="{row}">
+          <el-button
+            size="mini"
+            type="text"
+            @click="handlerReceipt(row)"
+          >{{ row.tradOrderNumber }}</el-button>
+        </template>
         <!-- 金额 -->
         <template #amount="{row}">
           <span>{{ floor(row.amount) }}</span>
@@ -448,6 +456,14 @@
       <!-- 编辑支付批次号 -->
       <modify-batch-dialog ref="modifyBatchRef" :open.sync="modifyBatchOpen" :title="title" @refresh="getList" />
     </div>
+
+
+    <!-- 已打款的回单 -->
+    <el-dialog class="i-receipt" title="" :visible.sync="receiptOpen" width="1200px" :close-on-click-modal="false" append-to-body>
+      <div v-if="receiptOpen">
+        <ReceiptDialog :receipt-data="receiptData" />
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -458,11 +474,15 @@ import modifyBatchDialog from './modifyBatchDialog';
 import { compareBeginEndTime } from '@/utils/ddc';
 import TotalBar from '@/components/Ddc/Tin/TotalBar';
 
+// 回单
+import ReceiptDialog from '@/components/MuckProject/components/OrdinaryDialog';
+
 export default {
   name: 'Payrecord',
   components: {
     modifyBatchDialog,
-    TotalBar
+    TotalBar,
+    ReceiptDialog
   },
   data() {
     return {
@@ -600,7 +620,12 @@ export default {
       },
       exportLoading: false,
       // 统计值
-      statistical: {}
+      statistical: {},
+
+      // 回单
+      receiptOpen: false,
+      receiptData: null
+
     };
   },
 
@@ -686,6 +711,13 @@ export default {
   },
 
   methods: {
+    // 支付订单号
+    handlerReceipt(row) {
+      this.receiptData = row;
+      this.receiptOpen = true;
+    },
+
+
     /** 查询统计 */
     getTotalMoney() {
       const params = Object.assign({}, this.params);
