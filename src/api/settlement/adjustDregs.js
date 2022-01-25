@@ -162,6 +162,15 @@ export function receiptInfo(query) {
   });
 }
 
+// 普通货源的已回单详情
+export function waybillPrintInfo(query) {
+  return request({
+    url: '/transportation/waybill/printInfo',
+    method: 'post',
+    data: query
+  });
+}
+
 // 核验批次作废
 export function batchCancel(data) {
   return request({

@@ -37,6 +37,11 @@
 
           <RefactorTable :border="false" :is-show-index="true" :data="list" :table-columns-config="tableColumnsConfig">
 
+            <!-- 通道类型 -->
+            <template #paymentChannels="{row}">
+              <span>{{ selectDictLabel(paymentChannelsOptions, row.paymentChannels) }}</span>
+            </template>
+
             <template #amount="{row}">
               <span class="g-color-require">
                 <!-- <count-to :end-val="row.amount - 0" :decimal-places="2" :duration="0" /> -->
@@ -59,31 +64,24 @@
             </div> -->
 
             <div>
-              <div class="receipt-row-i">付款方：{{ recData.companyName || '--' }}</div>
+              <div class="receipt-row-i">付款方：{{ recData.orgName || '--' }}</div>
+              <div class="receipt-row-i">电话号码：{{ recData.payPhone || '--' }}</div>
               <div class="receipt-row-i">付款账号：{{ recData.payAccount || '--' }}</div>
-              <div class="receipt-row-i">&nbsp;</div>
             </div>
           </div>
           <div class="receipt-row">
-            <!-- <div class="ly-flex">
-              <div class="word-break">
-                收款方信息：
-              </div>
-              <div class="ly-flex-1">
-                {{ recData.teamLeaderName || '--' }}
-              </div>
-            </div> -->
+
             <div>
-              <div class="receipt-row-i">收款方：{{ recData.teamLeaderName || '--' }}</div>
+              <div class="receipt-row-i">收款方：{{ recData.payeeName || '--' }}</div>
+              <div class="receipt-row-i">电话号码：{{ recData.payeeMobile || '--' }}</div>
               <div class="receipt-row-i">收款账号：{{ recData.payeeAccount || '--' }}</div>
-              <div class="receipt-row-i">&nbsp;</div>
             </div>
           </div>
           <div class="receipt-row">
             <div>
-              <div class="receipt-row-i">创建时间：{{ recData.applyTime || '--' }}</div>
-              <div class="receipt-row-i">付款时间：{{ recData.updateTime || '--' }}</div>
-              <div class="receipt-row-i">结束时间：{{ recData.finishTime || '--' }}</div>
+              <div class="receipt-row-i">接单时间：{{ recData.receiveTime || '--' }}</div>
+              <div class="receipt-row-i">打款时间：{{ recData.payTime || '--' }}</div>
+              <div class="receipt-row-i">到账时间：{{ recData.finishDate || '--' }}</div>
             </div>
           </div>
         </div>
@@ -95,7 +93,7 @@
 </template>
 
 <script>
-import { receiptInfo } from '@/api/settlement/adjustDregs';
+import { waybillPrintInfo } from '@/api/settlement/adjustDregs';
 export default {
   name: 'ReceiptDialog',
   props: {
@@ -119,24 +117,22 @@ export default {
           isShow: true,
           tooltip: false,
           sortNum: 0,
+          width: 40,
           align: 'left',
-          width: 120,
           label: '交易类型'
         },
         {
-          prop: 'projectNames',
+          prop: 'bizNo',
           isShow: true,
           tooltip: false,
           sortNum: 1,
           align: 'left',
-          width: 150,
-          label: '项目名称'
+          label: '支付批次号'
         },
         {
           prop: 'tradOrderNumber',
           isShow: true,
           tooltip: false,
-          width: 150,
           sortNum: 2,
           align: 'left',
           label: '支付订单号'
@@ -146,8 +142,8 @@ export default {
           isShow: true,
           tooltip: false,
           sortNum: 3,
+          width: 40,
           align: 'left',
-          width: 150,
           label: '通道类型'
         },
         {
@@ -155,10 +151,15 @@ export default {
           isShow: true,
           tooltip: false,
           sortNum: 4,
+          width: 50,
           align: 'left',
-          width: 120,
           label: '交易金额'
         }
+      ],
+
+      paymentChannelsOptions: [
+        { dictLabel: '网商', dictValue: 'WSBK' },
+        { dictLabel: '民生', dictValue: 'CMBC' }
       ]
     };
   },
@@ -169,23 +170,38 @@ export default {
 
   methods: {
     async getList() {
+      console.log(this.receiptData);
+
       this.loading = true;
       try {
-        const res = await receiptInfo({ batchNo: this.receiptData.batchNo });
+        const res = await waybillPrintInfo({ buyerUserCode: this.receiptData.buyerUserCode, sellerUserCode: this.receiptData.sellerUserCode });
+
         this.list = [
           {
+            ...this.receiptData,
             transactionType: '支付',
             ...res.data
           }];
-        this.recData = res.data || {};
+        this.recData = {
+          ...res.data,
+          payTime: this.parseTime(this.receiptData.payTime),
+          receiveTime: this.parseTime(this.receiptData.receiveTime),
+          finishDate: this.parseTime(this.receiptData.finishDate),
+          payeeName: this.receiptData.payeeName,
+          payeeMobile: this.receiptData.payeeMobile,
+          orgName: this.receiptData.orgName
+          // driverName: this.receiptData.driverName,
+          // goodsBigTypeStr: this.receiptData.goodsBigTypeStr,
+          // goodsTypeStr: this.receiptData.goodsTypeStr
+        } || {};
 
         this.loading = false;
-        this.$nextTick(() => {
-          this.$emit('onsuccess', 200, this.receiptData.batchNo);
-        });
+        // this.$nextTick(() => {
+        //   this.$emit('onsuccess', 200, this.receiptData.batchNo);
+        // });
       } catch (error) {
-        console.log(error);
-        this.$emit('onerror', 500);
+        // console.log(error);
+        // this.$emit('onerror', 500);
         this.loading = false;
       }
     }
