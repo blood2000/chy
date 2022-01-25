@@ -329,11 +329,16 @@
       <RefactorTable :loading="loading" :data="recordList" :table-columns-config="tableColumnsConfig" @selection-change="handleSelectionChange">
         <!-- 支付订单号 -->
         <template #tradOrderNumber="{row}">
+
           <el-button
+            v-if="row.responseStatus === 1"
             size="mini"
             type="text"
             @click="handlerReceipt(row)"
           >{{ row.tradOrderNumber }}</el-button>
+
+          <span v-else>{{ row.tradOrderNumber }}</span>
+
         </template>
         <!-- 金额 -->
         <template #amount="{row}">
@@ -713,6 +718,7 @@ export default {
   methods: {
     // 支付订单号
     handlerReceipt(row) {
+      console.log(row);
       this.receiptData = row;
       this.receiptOpen = true;
     },
