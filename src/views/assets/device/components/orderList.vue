@@ -34,8 +34,17 @@
     </div>
     <!-- 货源列表 -->
     <div class="device-info-list-box">
-      <el-table v-loading="loading" height="calc(100% - 94px)" class="own-device-electronic-table" :data="simpleOrderList" @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" />
+      <el-button class="clear-fence-button" type="text" icon="" size="mini" @click="handleCleatSelection">清除围栏</el-button>
+      <el-table
+        ref="OrderTableRef"
+        v-loading="loading"
+        height="calc(100% - 94px)"
+        class="own-device-electronic-table"
+        :data="simpleOrderList"
+        row-key="code"
+        @selection-change="handleSelectionChange"
+      >
+        <el-table-column type="selection" width="50" align="center" :reserve-selection="true" />
         <el-table-column label="货源单号" align="center" prop="mainOrderNumber" />
       </el-table>
       <pagination
@@ -127,6 +136,10 @@ export default {
         this.$emit('clearMap');
       }
     },
+    /** 多选框取消勾选 */
+    handleCleatSelection() {
+      this.$refs.OrderTableRef.clearSelection();
+    },
     /** 获取货源列表 */
     getList() {
       this.loading = true;
@@ -169,6 +182,13 @@ export default {
   height: calc(100% - 64px);
   padding: 0 4px;
   overflow: hidden;
+  position: relative;
+  .clear-fence-button{
+    position: absolute;
+    top: 8px;
+    right: 12px;
+    z-index: 1;
+  }
 }
 </style>
 

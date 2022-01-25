@@ -744,15 +744,15 @@ export default {
           tooltip: true,
           sortNum: 100,
           label: '货主名称'
-        },
-        {
-          prop: 'fenceStatus',
-          inShow: true,
-          width: 120,
-          tooltip: true,
-          sortNum: 100,
-          label: '围栏状态'
         }
+        // {
+        //   prop: 'fenceStatus',
+        //   isShow: isShipment,
+        //   width: 120,
+        //   tooltip: true,
+        //   sortNum: 100,
+        //   label: '围栏状态'
+        // }
       ];
     },
 
