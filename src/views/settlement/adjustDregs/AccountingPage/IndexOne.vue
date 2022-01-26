@@ -195,7 +195,9 @@ export default {
         'orderEndTime': this.alreadyPaid_queryParams.receiveTime ? this.alreadyPaid_queryParams.receiveTime[1] : undefined,
         receiveTime: undefined,
         scenario: '1200',
-        waybillType: 1
+        waybillType: 1,
+        isInvalid: 0,
+        isAbnormal: 0
       };
       ztApiList(que).then(response => {
         this.myData = response.data;
