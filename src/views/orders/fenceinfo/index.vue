@@ -89,6 +89,15 @@
           </template>
         </el-table-column>
         <el-table-column
+          prop="inCollisionTime"
+          label="停留时间"
+          align="center"
+        >
+          <template slot-scope="scope">
+            <span>{{ scope.row.stopTime }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
           prop="waybillNo"
           label="运单号"
           align="center"
@@ -127,6 +136,7 @@
 import { getList } from '@/api/order/fenceinfo';
 import DetailDialog from '@/views/waybill/components/detailDialog';
 import { pickerOptions } from '@/utils/dateRange';
+import { getDifference } from '@/utils/ddc';
 export default {
   components: {
     DetailDialog
@@ -190,6 +200,15 @@ export default {
         this.list = res.data.list;
         this.total = res.data.total;
         this.loading = false;
+        this.list.forEach((item) => {
+          if (item.inCollisionTime) {
+            const leftTime = new Date(item.collisionTime).getTime() - new Date(item.inCollisionTime).getTime();
+            console.log(getDifference(leftTime));
+            item.stopTime = getDifference(leftTime, true);
+          } else {
+            item.stopTime = '';
+          }
+        });
       }).catch(() => {
         this.loading = false;
       });

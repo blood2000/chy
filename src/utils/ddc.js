@@ -376,22 +376,30 @@ export function OneChangeMultiArray(baseArray, n) {
  * @param {*Number} period 需要计算的时间戳 毫秒
  * @returns eg:1年6月8天
  */
-export function getDifference(period) {
+export function getDifference(period, showFullTime = false) {
   if (period <= 0) return period;
   const yearLevelValue = 365 * 24 * 60 * 60 * 1000;
   const monthLevelValue = 30 * 24 * 60 * 60 * 1000;
   const dayLevelValue = 24 * 60 * 60 * 1000;
-  /* const hourLevelValue = 60 * 60 * 1000;
+  const hourLevelValue = 60 * 60 * 1000;
   const minuteLevelValue = 60 * 1000;
-  const secondLevelValue = 1000; */
+  const secondLevelValue = 1000;
 
   const year = parseInt(getYear(period));
   const month = parseInt(getMonth(period - year * yearLevelValue));
   const day = parseInt(getDay(period - year * yearLevelValue - month * monthLevelValue));
+  const hours = parseInt(getHours(period - year * yearLevelValue - month * monthLevelValue - day * dayLevelValue));
+  const minute = parseInt(getMinute(period - year * yearLevelValue - month * monthLevelValue - day * dayLevelValue - hours * hourLevelValue));
+  const second = parseInt(getSecond(period - year * yearLevelValue - month * monthLevelValue - day * dayLevelValue - hours * hourLevelValue - minute * minuteLevelValue));
   let result = '';
   if (year !== 0) result = result + year + '年';
   if (month !== 0) result = result + month + '月';
   if (day !== 0) result = result + day + '天';
+  if (showFullTime) {
+    if (hours !== 0) result = result + hours + '小时';
+    if (minute !== 0) result = result + minute + '分';
+    if (second !== 0) result = result + second + '秒';
+  }
   function getYear(period) {
     return Math.floor(parseInt(period) / yearLevelValue);
   }
@@ -400,6 +408,15 @@ export function getDifference(period) {
   }
   function getDay(period) {
     return Math.floor(parseInt(period) / dayLevelValue);
+  }
+  function getHours(period) {
+    return Math.floor(parseInt(period) / hourLevelValue);
+  }
+  function getMinute(period) {
+    return Math.floor(parseInt(period) / minuteLevelValue);
+  }
+  function getSecond(period) {
+    return Math.floor(parseInt(period) / secondLevelValue);
   }
   return result;
 }
