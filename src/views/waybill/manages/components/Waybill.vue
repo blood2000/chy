@@ -594,7 +594,8 @@ export default {
         { 'dictLabel': 'FM', 'dictValue': '2' },
         { 'dictLabel': 'ZZJD', 'dictValue': '3' },
         { 'dictLabel': 'HTZP', 'dictValue': '4' },
-        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' },
+        { 'dictLabel': 'JYZ', 'dictValue': '6' }
       ],
       // 司机取消订单字典
       'cancelStatusOptions': [

@@ -374,7 +374,8 @@ export default {
         { 'dictLabel': 'FM', 'dictValue': '2' },
         { 'dictLabel': 'ZZJD', 'dictValue': '3' },
         { 'dictLabel': 'HTZP', 'dictValue': '4' },
-        { 'dictLabel': 'WLPZ', 'dictValue': '5' }
+        { 'dictLabel': 'WLPZ', 'dictValue': '5' },
+        { 'dictLabel': 'JYZ', 'dictValue': '6' }
       ],
       // 回单确认状态 0未标记回单，1-已标记回单字典
       isWarningOptions: [
