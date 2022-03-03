@@ -40,8 +40,8 @@
           style="width: 100px;"
         >
       </template>
-      <!-- 民生显示 -->
-      <template v-if="form.paymentChannels === 'CMBC'">
+      <!-- 民生显示/浦发银行 -->
+      <template v-if="form.paymentChannels === 'CMBC' || form.paymentChannels === 'SPDB'">
         <table class="table-style mb20">
           <tr>
             <td class="label">银行账号</td>
@@ -53,7 +53,8 @@
           </tr>
           <tr>
             <td class="label">开户行</td>
-            <td class="text">民生银行</td>
+            <td v-if="form.paymentChannels === 'CMBC'" class="text">民生银行</td>
+            <td v-if="form.paymentChannels === 'SPDB'" class="text">浦发银行</td>
           </tr>
           <tr>
             <td class="label">当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）</td>
@@ -142,8 +143,8 @@ export default {
       if (this.form.paymentChannels === 'WSBK' || this.form.paymentChannels === 'SXWSBK') {
         result = `银行账号：${this.form.account ? this.form.account : ''}; 开户名称：${this.form.paymentChannels === 'WSBK' ? '福建大道成物流科技有限公司' : '山西道承信息技术有限公司'}; 开户行：浙江网商银行; 省份：浙江省; 城市：杭州市; 联行号：323331000001`;
       }
-      if (this.form.paymentChannels === 'CMBC') {
-        result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：民生银行; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;
+      if (this.form.paymentChannels === 'CMBC' || this.form.paymentChannels === 'SPDB') {
+        result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：${this.form.paymentChannels === 'CMBC' ? '民生银行' : '浦发银行'}; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;
       }
       return result;
     }

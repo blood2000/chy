@@ -734,7 +734,8 @@ export default {
       financialOptionList: [
         { dictLabel: '福建网商', dictValue: 1 },
         { dictLabel: '民生', dictValue: 2 },
-        { dictLabel: '山西网商', dictValue: 3 }
+        { dictLabel: '山西网商', dictValue: 3 },
+        { dictLabel: '浦发', dictValue: 4 }
       ],
       // 核算方式字典
       accountTypeOptions: [],
