@@ -17,7 +17,7 @@
         class="wholecont-print"
       >打印</el-button>
     </div>
-    <div id="receipt-printer" class="receipt" :loading="loading">
+    <div id="receipt-printer" v-loading="loading" class="receipt">
 
       <!-- <div class="receipt-heater">
         <div class="receipt-heater-content">
@@ -31,7 +31,7 @@
         <div class="receipt-res">交易成功</div>
 
         <div class="receipt-list">
-          <div class="receipt_sain">
+          <div v-if="false" class="receipt_sain">
             <img class="receipt_img" src="~@/assets/images/icon/icon_seal.png" alt="福建大道成物流科技有限公司">
           </div>
 
@@ -43,10 +43,11 @@
             </template>
 
             <template #amount="{row}">
-              <span class="g-color-require">
-                <!-- <count-to :end-val="row.amount - 0" :decimal-places="2" :duration="0" /> -->
-                {{ row.amount - 0 }}
-                元
+              <!-- <span class="g-color-require"> -->
+              <span v-if="row.deliveryFeePractical + ''">
+                RMB<count-to :end-val="row.deliveryFeePractical - 0" :decimal-places="2" :duration="0" />
+                <!-- {{ row.deliveryFeePractical - 0 }}
+                元 -->
               </span>
             </template>
           </RefactorTable>
@@ -93,9 +94,17 @@
 </template>
 
 <script>
+import CountTo from '@/components/CountTo';
+import { listShipment } from '@/api/assets/shipment';
+
+import { listDriver } from '@/api/assets/driver';
+
 import { waybillPrintInfo } from '@/api/settlement/adjustDregs';
+
+
 export default {
   name: 'ReceiptDialog',
+  components: { CountTo },
   props: {
     receiptData: {
       type: Object,
@@ -158,8 +167,8 @@ export default {
       ],
 
       paymentChannelsOptions: [
-        { dictLabel: '网商', dictValue: 'WSBK' },
-        { dictLabel: '民生', dictValue: 'CMBC' }
+        { dictLabel: '网商银行', dictValue: 'WSBK' },
+        { dictLabel: '民生银行', dictValue: 'CMBC' }
       ]
     };
   },
@@ -170,11 +179,46 @@ export default {
 
   methods: {
     async getList() {
-      console.log(this.receiptData);
+      // console.log(this.receiptData);
+
+
 
       this.loading = true;
       try {
         const res = await waybillPrintInfo({ buyerUserCode: this.receiptData.buyerUserCode, sellerUserCode: this.receiptData.sellerUserCode });
+
+        let shipmentInfo = null;
+        let driverInfo = null;
+        let payeeAccount = '';
+
+        // 付款方 == 货主
+        if (res.data.payPhone) {
+          const shipment = await listShipment({
+            searchValue: res.data.payPhone
+          });
+          if (shipment.rows && shipment.rows.length > 0) {
+            shipmentInfo = shipment.rows[0];
+          }
+        }
+
+        // 收款方 == 司机
+        if (res.data.payeePhone) {
+          const driver = await listDriver({
+            keywords: res.data.payeePhone
+          });
+          if (driver.rows && driver.rows.length > 0) {
+            driverInfo = driver.rows[0];
+            if (driverInfo) {
+              payeeAccount = this.receiptData.paymentChannels === 'WSBK' ? driverInfo.wsAccount : driverInfo.cmbcAccount;
+            }
+          }
+        }
+        //          payPhone
+        // payeeMobile?
+
+        // console.log(shipmentInfo, driverInfo);
+
+        // console.log(this.receiptData.paymentChannels);
 
         this.list = [
           {
@@ -184,6 +228,8 @@ export default {
           }];
         this.recData = {
           ...res.data,
+          payAccount: shipmentInfo ? shipmentInfo.account : '',
+          payeeAccount: payeeAccount,
           payTime: this.parseTime(this.receiptData.payTime),
           receiveTime: this.parseTime(this.receiptData.receiveTime),
           finishDate: this.parseTime(this.receiptData.finishDate),
@@ -195,15 +241,14 @@ export default {
           // goodsTypeStr: this.receiptData.goodsTypeStr
         } || {};
 
-        this.loading = false;
         // this.$nextTick(() => {
         //   this.$emit('onsuccess', 200, this.receiptData.batchNo);
         // });
       } catch (error) {
         // console.log(error);
         // this.$emit('onerror', 500);
-        this.loading = false;
       }
+      this.loading = false;
     }
   }
 
