@@ -36,6 +36,26 @@ export default {
       this.map.clearMap();
       this.clearAllFence();
     }
+    // drawTestMarker(lng, lat) {
+    //   const _this = this;
+    //   const marker = new AMap.Marker({
+    //     map: this.map,
+    //     position: [lng, lat],
+    //     label: {
+    //       offset: new AMap.Pixel(0, -8),
+    //       content: '<div>' + lng + ',' + lat + '</div>',
+    //       direction: 'top'
+    //     },
+    //     icon: new AMap.Icon({
+    //       image: '//a.amap.com/jsapi_demos/static/demo-center/icons/poi-marker-default.png',
+    //       size: new AMap.Size(26, 34),
+    //       imageSize: new AMap.Size(26, 34)
+    //     }),
+    //     autoFitView: true,
+    //     autoRotation: true,
+    //     offset: new AMap.Pixel(-13, -30)
+    //   });
+    // }
   }
 };
 </script>

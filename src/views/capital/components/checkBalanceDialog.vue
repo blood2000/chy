@@ -1,6 +1,6 @@
 <template>
   <!-- 查询网商余额 -->
-  <el-dialog :title="title" class="i-amount" :visible="visible" width="900px" append-to-body :close-on-click-modal="false" @close="cancel">
+  <el-dialog :title="title" class="i-amount" :visible="visible" width="1000px" append-to-body :close-on-click-modal="false" @close="cancel">
     <div class="amount-content ly-flex-align-center ly-flex-pack-justify">
       <div>
         <p class="label mb10">总余额：</p>
@@ -17,6 +17,10 @@
       <div>
         <p class="label mb10">民生余额：</p>
         <p class="text">{{ (CMBC || CMBC === 0) ? floor(CMBC) : '---' }}</p>
+      </div>
+      <div>
+        <p class="label mb10">浦发余额：</p>
+        <p class="text">{{ (SPDB || SPDB === 0) ? floor(SPDB) : '---' }}</p>
       </div>
     </div>
   </el-dialog>
@@ -43,7 +47,8 @@ export default {
       balanceCount: null,
       WSBK: null,
       SXWSBK: null,
-      CMBC: null
+      CMBC: null,
+      SPDB: null
     };
   },
   computed: {
@@ -81,6 +86,9 @@ export default {
               if (el.CMBC !== undefined && el.CMBC !== null) {
                 this.CMBC = el.CMBC;
               }
+              if (el.SPDB !== undefined && el.SPDB !== null) {
+                this.SPDB = el.SPDB;
+              }
             });
           }
         }
@@ -101,6 +109,7 @@ export default {
       this.WSBK = null;
       this.SXWSBK = null;
       this.CMBC = null;
+      this.SPDB = null;
     }
   }
 };

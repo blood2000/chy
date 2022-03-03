@@ -7,6 +7,12 @@
     <div class="device-info-right">
       <!-- 地图 -->
       <MapBox ref="mapRef" class="device-info-map-box" />
+      <!-- 测试点 -->
+      <!-- <div style="position: absolute; top: 0; right: 0">
+        <el-input v-model="testlng" placeholder="lng" style="width: 200px" />
+        <el-input v-model="testlat" placeholder="lat" style="width: 200px" />
+        <el-button type="primary" @click="handleTest">生成</el-button>
+      </div> -->
     </div>
   </div>
 </template>
@@ -22,7 +28,8 @@ export default {
   },
   data() {
     return {
-
+      // testlng: null,
+      // testlat: null
     };
   },
   methods: {
@@ -32,6 +39,9 @@ export default {
     drawFencePlat(data) {
       this.$refs.mapRef.drawFencePlat(data);
     }
+    // handleTest() {
+    //   this.$refs.mapRef.drawTestMarker(this.testlng, this.testlat);
+    // }
   }
 };
 </script>
