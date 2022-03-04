@@ -600,6 +600,7 @@ export default {
     },
     /** 修改/详情/审核按钮操作 */
     handleDetail(row, flag) {
+      
       this.$refs.ShipmentDialog.reset();
       const id = row.id;
       getShipment(id).then(response => {

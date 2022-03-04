@@ -1,5 +1,14 @@
 <template>
-  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" class="page-shipment-edit-dialog" :title="title" :visible="visible" width="96%" append-to-body :close-on-click-modal="disable" @close="cancel">
+  <el-dialog
+    :class="[{ 'i-add': title === '新增' }, { 'i-check': title === '审核' }]"
+    class="page-shipment-edit-dialog"
+    :title="title"
+    :visible="visible"
+    width="96%"
+    append-to-body
+    :close-on-click-modal="disable"
+    @close="cancel"
+  >
     <!-- <el-drawer
     size="96%"
     :title="title"
@@ -10,9 +19,23 @@
     :close="cancel"
     class="page-shipment-edit-dialog"
   > -->
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="auto" style="margin-right: 5px">
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      :disabled="disable"
+      label-width="auto"
+      style="margin-right: 5px"
+    >
       <el-row :gutter="80">
-        <el-col :span="12" :lg="12" :md="24" :sm="24" :xs="24" style="border-right: 1px solid #F3F3F3; padding-top: 20px">
+        <el-col
+          :span="12"
+          :lg="12"
+          :md="24"
+          :sm="24"
+          :xs="24"
+          style="border-right: 1px solid #f3f3f3; padding-top: 20px"
+        >
           <h5 class="g-card-title g-strong mb20 ml10">
             基础信息
             <div class="h5-divider" style="width: 90%" />
@@ -33,10 +56,23 @@
           </el-form-item>-->
           <!-- :disabled="form.id?true:false" -->
           <el-form-item label="手机号/账号" prop="telphone">
-            <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号/账号" class="width100" clearable @blur="getUserAlreadyExist" />
+            <el-input
+              ref="telphone"
+              v-model="form.telphone"
+              placeholder="请输入手机号/账号"
+              class="width100"
+              clearable
+              @blur="getUserAlreadyExist"
+            />
           </el-form-item>
           <el-form-item label="密码" prop="password">
-            <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
+            <el-input
+              v-model="form.password"
+              type="password"
+              :placeholder="form.id ? '密码未修改可不填写' : '请输入密码'"
+              class="width60 mr3"
+              clearable
+            />
             <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
           </el-form-item>
           <el-form-item v-if="disable">
@@ -45,15 +81,35 @@
               <!-- 客服建议去掉合并管理员和法人信息 -->
               <el-col :span="8">
                 <p class="upload-image-label">身份证(人像面)</p>
-                <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
+                <upload-image
+                  v-model="form.identificationImg"
+                  :disabled="disable"
+                  image-type="id-card"
+                  side="front"
+                  icon-type="idcard"
+                  @fillForm="fillForm"
+                />
               </el-col>
               <el-col :span="8">
                 <p class="upload-image-label">身份证(国徽面)</p>
-                <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
+                <upload-image
+                  v-model="form.identificationBackImg"
+                  :disabled="disable"
+                  image-type="id-card"
+                  side="back"
+                  icon-type="idcard_back"
+                  @fillForm="fillForm"
+                />
               </el-col>
               <el-col v-show="form.shipperType === 1" :span="8">
                 <p class="upload-image-label">营业执照</p>
-                <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
+                <upload-image
+                  v-model="form.businessLicenseImg"
+                  :disabled="disable"
+                  icon-type="organization"
+                  image-type="business-license"
+                  @fillForm="fillForm"
+                />
               </el-col>
             </el-row>
           </el-form-item>
@@ -62,26 +118,58 @@
               <!-- 客服建议去掉合并管理员和法人信息 -->
               <el-col :span="8">
                 <p class="upload-image-label">身份证(人像面)</p>
-                <upload-image v-model="form.identificationImg" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
+                <upload-image
+                  v-model="form.identificationImg"
+                  :disabled="disable"
+                  image-type="id-card"
+                  side="front"
+                  icon-type="idcard"
+                  @fillForm="fillForm"
+                />
               </el-col>
               <el-col :span="8">
                 <p class="upload-image-label">身份证(国徽面)</p>
-                <upload-image v-model="form.identificationBackImg" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
+                <upload-image
+                  v-model="form.identificationBackImg"
+                  :disabled="disable"
+                  image-type="id-card"
+                  side="back"
+                  icon-type="idcard_back"
+                  @fillForm="fillForm"
+                />
               </el-col>
               <el-col v-show="form.shipperType === 1" :span="8">
                 <p class="upload-image-label">营业执照</p>
-                <upload-image v-model="form.businessLicenseImg" :disabled="disable" icon-type="organization" image-type="business-license" @fillForm="fillForm" />
+                <upload-image
+                  v-model="form.businessLicenseImg"
+                  :disabled="disable"
+                  icon-type="organization"
+                  image-type="business-license"
+                  @fillForm="fillForm"
+                />
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item label="姓名" prop="adminName">
-            <el-input v-model="form.adminName" placeholder="支持自动识别" class="width100" clearable />
+            <el-input
+              v-model="form.adminName"
+              placeholder="支持自动识别"
+              class="width100"
+              clearable
+            />
           </el-form-item>
           <el-form-item label="身份证号" prop="identificationNumber">
-            <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width100" clearable />
+            <el-input
+              v-model="form.identificationNumber"
+              placeholder="支持自动识别"
+              class="width100"
+              clearable
+            />
           </el-form-item>
           <el-form-item prop="identificationEndTime">
-            <label slot="label"><span style="color: #ff4949">* </span>身份证有效期</label>
+            <label slot="label"
+              ><span style="color: #ff4949">* </span>身份证有效期</label
+            >
             <el-date-picker
               v-model="form.identificationBeginTime"
               clearable
@@ -100,7 +188,9 @@
               placeholder="支持自动识别"
               :disabled="!!form.identificationEffective"
             />
-            <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+            <el-checkbox v-model="form.identificationEffective"
+              >长期有效</el-checkbox
+            >
           </el-form-item>
           <!-- 选择省/市/区 -->
           <!-- <province-city-county
@@ -117,7 +207,12 @@
             }"
           />-->
           <el-form-item label="详细地址" prop="area">
-            <el-input v-model="form.area" clearable placeholder="支持自动识别" class="width100" />
+            <el-input
+              v-model="form.area"
+              clearable
+              placeholder="支持自动识别"
+              class="width100"
+            />
           </el-form-item>
           <!-- <el-form-item label="网点" prop="branchCode">
             <el-select
@@ -139,8 +234,23 @@
             </el-select>
           </el-form-item> -->
           <template v-if="form.shipperType === 1">
-            <el-form-item label="企业名称" prop="companyName" :rules="[{ required: true, message: '企业名称不能为空', trigger: 'blur' }]">
-              <el-input v-model="form.companyName" placeholder="支持自动识别" class="width100" clearable />
+            <el-form-item
+              label="企业名称"
+              prop="companyName"
+              :rules="[
+                {
+                  required: true,
+                  message: '企业名称不能为空',
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <el-input
+                v-model="form.companyName"
+                placeholder="支持自动识别"
+                class="width100"
+                clearable
+              />
               <!-- <el-select
                 v-model="form.companyName"
                 style="width: 90%"
@@ -158,8 +268,23 @@
                 />
               </el-select>-->
             </el-form-item>
-            <el-form-item label="统一社会信用代码" prop="organizationCodeNo" :rules="[{ required: true, message: '统一社会信用代码不能为空', trigger: 'blur' }]">
-              <el-input v-model="form.organizationCodeNo" placeholder="请输入统一社会信用代码" class="width100" clearable />
+            <el-form-item
+              label="统一社会信用代码"
+              prop="organizationCodeNo"
+              :rules="[
+                {
+                  required: true,
+                  message: '统一社会信用代码不能为空',
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <el-input
+                v-model="form.organizationCodeNo"
+                placeholder="请输入统一社会信用代码"
+                class="width100"
+                clearable
+              />
             </el-form-item>
             <!--  去掉营业执照-->
             <!-- <el-form-item label="营业执照号" prop="businessLicenseNo">
@@ -211,7 +336,7 @@
                   <el-option
                     v-for="dict in operateUserList"
                     :key="dict.userCode"
-                    :label="dict.userName + ' ('+dict.phonenumber+')'"
+                    :label="dict.userName + ' (' + dict.phonenumber + ')'"
                     :value="dict.userCode"
                   />
                 </el-select>
@@ -241,17 +366,24 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="留存运费比例(%)" prop="texPoint">
-                <el-input-number v-model="form.texPoint" class="width100" controls-position="right" :precision="2" placeholder="请输入留存运费比例" :step="1" :min="0" :max="99.99" clearable @input="changeTextPoint" />
+                <el-input-number
+                  v-model="form.texPoint"
+                  class="width100"
+                  controls-position="right"
+                  :precision="2"
+                  placeholder="请输入留存运费比例"
+                  :step="1"
+                  :min="0"
+                  :max="99.99"
+                  clearable
+                  @input="changeTextPoint"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="dispatchPoints">
                 <label slot="label">
-                  <el-tooltip
-                    class="item"
-                    effect="light"
-                    placement="right"
-                  >
+                  <el-tooltip class="item" effect="light" placement="right">
                     <i class="el-icon-question" />
                     <ul slot="content">
                       <li class="g-text">平台服务费比例 = 平台服务费率</li>
@@ -262,13 +394,39 @@
                   </el-tooltip>
                   平台服务费比例(%)
                 </label>
-                <el-input v-model="form.dispatchPoints" class="width100" disabled placeholder="请输入平台服务费比例" clearable />
+                <el-input
+                  v-model="form.dispatchPoints"
+                  class="width100"
+                  disabled
+                  placeholder="请输入平台服务费比例"
+                  clearable
+                />
               </el-form-item>
             </el-col>
           </el-row>
           <template v-if="form.ticketType == '2'">
-            <el-form-item label="服务费税率(%)" prop="serviceRate" :rules="[{ required: true, message: '服务费税率不能为空', trigger: 'blur' }]">
-              <el-input-number v-model="form.serviceRate" controls-position="right" :precision="2" placeholder="请输入服务费税率" :step="1" :min="0" :max="100" class="width100" clearable />
+            <el-form-item
+              label="服务费税率(%)"
+              prop="serviceRate"
+              :rules="[
+                {
+                  required: true,
+                  message: '服务费税率不能为空',
+                  trigger: 'blur',
+                },
+              ]"
+            >
+              <el-input-number
+                v-model="form.serviceRate"
+                controls-position="right"
+                :precision="2"
+                placeholder="请输入服务费税率"
+                :step="1"
+                :min="0"
+                :max="100"
+                class="width100"
+                clearable
+              />
             </el-form-item>
             <!-- <el-form-item label="服务费比例(%)" prop="serviceRatio"  :rules="[{ required: true, message: '服务费比例不能为空', trigger: 'blur' }]" >
               <el-input-number v-model="form.serviceRatio" controls-position="right" :precision="2" placeholder="请输入服务费比例" :step="1" :min="0" :max="100" class="width100" clearable />
@@ -406,7 +564,14 @@
             <el-input-number v-model="form.consumptionMax" :controls="false" placeholder="最大值" class="width12" />
           </el-form-item>-->
         </el-col>
-        <el-col :span="12" :lg="12" :md="24" :sm="24" :xs="24" style="padding-top: 20px">
+        <el-col
+          :span="12"
+          :lg="12"
+          :md="24"
+          :sm="24"
+          :xs="24"
+          style="padding-top: 20px"
+        >
           <h5 class="g-card-title g-strong mb20 ml10">
             支付金融
             <div class="h5-divider" style="width: 90%" />
@@ -432,15 +597,15 @@
                 <el-date-picker
                   v-model="form.creditStartTime"
                   clearable
-                  style="width:40%"
+                  style="width: 40%"
                   type="datetime"
                   placeholder="授信开始日期"
                 />
-                <span style="margin: 0 1.5%;">至</span>
+                <span style="margin: 0 1.5%">至</span>
                 <el-date-picker
                   v-model="form.creditEndTime"
                   clearable
-                  style="width:40%"
+                  style="width: 40%"
                   type="datetime"
                   placeholder="授信结束日期"
                   default-time="23:59:59"
@@ -452,7 +617,15 @@
             <!--<el-col v-if="form.isMonthly" :span="12">-->
             <el-col :span="12">
               <el-form-item label="授信金额(元)" prop="creditAmount">
-                <el-input-number v-model="form.creditAmount" class="width100" :precision="2" :min="0" :max="1000000000" :controls="false" placeholder="保留两位小数" />
+                <el-input-number
+                  v-model="form.creditAmount"
+                  class="width100"
+                  :precision="2"
+                  :min="0"
+                  :max="1000000000"
+                  :controls="false"
+                  placeholder="保留两位小数"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -516,58 +689,97 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item prop="noNeedUnloadImg" class="no-label">
-                <el-checkbox v-model="form.noNeedUnloadImg">扫码卸货时是否必须上传凭证</el-checkbox>
+                <el-checkbox v-model="form.noNeedUnloadImg"
+                  >扫码卸货时是否必须上传凭证</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="isNeedLoadingCertificate" class="no-label">
-                <el-checkbox v-model="form.isNeedLoadingCertificate">扫码装货时是否必须上传凭证</el-checkbox>
+                <el-checkbox v-model="form.isNeedLoadingCertificate"
+                  >扫码装货时是否必须上传凭证</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="reviewNoNeedUnloadImg" class="no-label">
-                <el-checkbox v-model="form.reviewNoNeedUnloadImg">复核时是否需要卸货凭证</el-checkbox>
+                <el-checkbox v-model="form.reviewNoNeedUnloadImg"
+                  >复核时是否需要卸货凭证</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item prop="reviewIsNeedLoadingCertificate" class="no-label">
-                <el-checkbox v-model="form.reviewIsNeedLoadingCertificate">复核时是否需要装货凭证</el-checkbox>
+              <el-form-item
+                prop="reviewIsNeedLoadingCertificate"
+                class="no-label"
+              >
+                <el-checkbox v-model="form.reviewIsNeedLoadingCertificate"
+                  >复核时是否需要装货凭证</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openAppPermissionControl" class="no-label">
-                <el-checkbox v-model="form.openAppPermissionControl">是否开启货主APP权限控制</el-checkbox>
+                <el-checkbox v-model="form.openAppPermissionControl"
+                  >是否开启货主APP权限控制</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openProjectMemberView" class="no-label">
-                <el-checkbox v-model="form.openProjectMemberView">是否开启项目成员视图</el-checkbox>
+                <el-checkbox v-model="form.openProjectMemberView"
+                  >是否开启项目成员视图</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openTheElectronicFence" class="no-label">
-                <el-checkbox v-model="form.openTheElectronicFence">是否开启电子围栏</el-checkbox>
+                <el-checkbox v-model="form.openTheElectronicFence"
+                  >是否开启电子围栏</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openScanQuickLoadOrder" class="no-label">
-                <el-checkbox v-model="form.openScanQuickLoadOrder">是否开启扫码快捷接单装货</el-checkbox>
+                <el-checkbox v-model="form.openScanQuickLoadOrder"
+                  >是否开启扫码快捷接单装货</el-checkbox
+                >
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="isInterval" class="no-label">
+                <el-checkbox v-model="form.isInterval">
+                  是否设置装卸货时间间隔
+                </el-checkbox>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item prop="isRemain" class="no-label">
+                <el-checkbox v-model="form.isRemain">
+                  是否设置装卸货停留时间
+                </el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="24">
-              <el-form-item label="允许未审核司机/车辆接单" prop="allowNoAuditDriverToReceive">
+              <el-form-item
+                label="允许未审核司机/车辆接单"
+                prop="allowNoAuditDriverToReceive"
+              >
                 <el-radio-group v-model="form.allowNoAuditDriverToReceive">
                   <el-radio
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                  >{{ dict.dictLabel }}</el-radio>
+                    >{{ dict.dictLabel }}</el-radio
+                  >
                 </el-radio-group>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="isPayfirst" class="no-label">
-                <el-checkbox v-model="form.isPayfirst">是否预付钱给司机</el-checkbox>
+                <el-checkbox v-model="form.isPayfirst"
+                  >是否预付钱给司机</el-checkbox
+                >
               </el-form-item>
             </el-col>
           </el-row>
@@ -577,46 +789,66 @@
           </h5>
           <el-row :gutter="20">
             <el-col :span="12">
-              <el-form-item label="单货源多商品" prop="singleSourceMultiCommodity">
+              <el-form-item
+                label="单货源多商品"
+                prop="singleSourceMultiCommodity"
+              >
                 <el-radio-group v-model="form.singleSourceMultiCommodity">
                   <el-radio
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                  >{{ dict.dictLabel }}</el-radio>
+                    >{{ dict.dictLabel }}</el-radio
+                  >
                 </el-radio-group>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="单货源多装货地" prop="singleSourceMultiLoadingLocations">
-                <el-radio-group v-model="form.singleSourceMultiLoadingLocations">
+              <el-form-item
+                label="单货源多装货地"
+                prop="singleSourceMultiLoadingLocations"
+              >
+                <el-radio-group
+                  v-model="form.singleSourceMultiLoadingLocations"
+                >
                   <el-radio
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                  >{{ dict.dictLabel }}</el-radio>
+                    >{{ dict.dictLabel }}</el-radio
+                  >
                 </el-radio-group>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="单货源多卸货地" prop="singleSourceMultiUnloadingLocations">
-                <el-radio-group v-model="form.singleSourceMultiUnloadingLocations">
+              <el-form-item
+                label="单货源多卸货地"
+                prop="singleSourceMultiUnloadingLocations"
+              >
+                <el-radio-group
+                  v-model="form.singleSourceMultiUnloadingLocations"
+                >
                   <el-radio
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                  >{{ dict.dictLabel }}</el-radio>
+                    >{{ dict.dictLabel }}</el-radio
+                  >
                 </el-radio-group>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="是否需要申请打款环节" prop="isNeedApplicationForPayment">
+              <el-form-item
+                label="是否需要申请打款环节"
+                prop="isNeedApplicationForPayment"
+              >
                 <el-radio-group v-model="form.isNeedApplicationForPayment">
                   <el-radio
                     v-for="dict in needOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                  >{{ dict.dictLabel }}</el-radio>
+                    >{{ dict.dictLabel }}</el-radio
+                  >
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -637,104 +869,133 @@
                 </el-radio-group>
               </el-form-item>-->
               <el-form-item prop="editDriverActualAmount" class="no-label">
-                <el-checkbox v-model="form.editDriverActualAmount">是否允许修改司机实收金额</el-checkbox>
+                <el-checkbox v-model="form.editDriverActualAmount"
+                  >是否允许修改司机实收金额</el-checkbox
+                >
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openProjectDesignView" class="no-label">
-                <el-checkbox v-model="form.openProjectDesignView">开启&nbsp;项目版统计视图</el-checkbox>
+                <el-checkbox v-model="form.openProjectDesignView"
+                  >开启&nbsp;项目版统计视图</el-checkbox
+                >
               </el-form-item>
             </el-col>
           </el-row>
         </el-col>
       </el-row>
     </el-form>
-    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
+    <div
+      v-if="title === '新增' || title === '编辑'"
+      slot="footer"
+      class="dialog-footer"
+    >
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm"
+        >确 定</el-button
+      >
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
-      <el-button type="primary" :loading="authButtonLoading" @click="reviewForm(3)">审核通过</el-button>
-      <el-button type="danger" :loading="authButtonLoading" @click="reviewForm(2)">审核不通过</el-button>
+      <el-button
+        type="primary"
+        :loading="authButtonLoading"
+        @click="reviewForm(3)"
+        >审核通过</el-button
+      >
+      <el-button
+        type="danger"
+        :loading="authButtonLoading"
+        @click="reviewForm(2)"
+        >审核不通过</el-button
+      >
     </div>
     <div v-if="title === '详情'" slot="footer" class="dialog-footer">
       <el-button @click="cancel">关 闭</el-button>
     </div>
-  <!-- </el-drawer> -->
+    <!-- </el-drawer> -->
   </el-dialog>
 </template>
 
 <script>
-import { addShipment, updateShipment, authRead, examine, getShipmentEnterprise, getMarket, getOperateOrg, getOperateUser } from '@/api/assets/shipment';
-import { getUserAlreadyExist } from '@/api/system/user';
+import {
+  addShipment,
+  updateShipment,
+  authRead,
+  examine,
+  getShipmentEnterprise,
+  getMarket,
+  getOperateOrg,
+  getOperateUser,
+} from "@/api/assets/shipment";
+import { getUserAlreadyExist } from "@/api/system/user";
 // import { getWaybillStatus } from '@/api/assets/shipment';
-import { listDeptAll } from '@/api/system/dept';
-import { getBranchList } from '@/api/system/branch';
-import UploadImage from '@/components/UploadImage/index';
+import { listDeptAll } from "@/api/system/dept";
+import { getBranchList } from "@/api/system/branch";
+import UploadImage from "@/components/UploadImage/index";
 // import ProvinceCityCounty from '@/components/ProvinceCityCounty';
-import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean } from "@/utils/ddc";
 // import Treeselect from '@riophae/vue-treeselect';
 
 export default {
   components: {
-    UploadImage
+    UploadImage,
     // ProvinceCityCounty
     // Treeselect
   },
   props: {
     title: {
       type: String,
-      default: ''
+      default: "",
     },
     open: Boolean,
-    disable: Boolean
+    disable: Boolean,
   },
   data() {
     return {
       buttonLoading: false,
       authButtonLoading: false,
       // 初始密码
-      initialPassword: 'abcd1234@',
+      initialPassword: "abcd1234@",
       // 货主类型数据字典
       typeOptions: [
-        { dictLabel: '发货人', dictValue: 0 },
-        { dictLabel: '发货企业', dictValue: 1 }
+        { dictLabel: "发货人", dictValue: 0 },
+        { dictLabel: "发货企业", dictValue: 1 },
       ],
       // 是否冻结字典
       isFreezoneOptions: [
-        { dictLabel: '正常', dictValue: 0 },
-        { dictLabel: '冻结', dictValue: 1 }
+        { dictLabel: "正常", dictValue: 0 },
+        { dictLabel: "冻结", dictValue: 1 },
       ],
       // 票制类别字典
       ticketTypeOptions: [],
       // 是否字典
       isOptions: [
-        { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是', dictValue: 1 }
+        { dictLabel: "否", dictValue: 0 },
+        { dictLabel: "是", dictValue: 1 },
       ],
       // 预付运费
       // 1757bug 货主审核，新建/修改货主，预付运费类型选项将“接单前”文字改为“接单时”，“卸货前”文字改为“卸货时”
       repaidTypeOptions: [
-        { dictLabel: '接单时', dictValue: 0 },
-        { dictLabel: '卸货时', dictValue: 1 }
+        { dictLabel: "接单时", dictValue: 0 },
+        { dictLabel: "卸货时", dictValue: 1 },
       ],
       // 是否允许
       allowOptions: [
-        { dictLabel: '允许', dictValue: 0 },
-        { dictLabel: '不允许', dictValue: 1 }
+        { dictLabel: "允许", dictValue: 0 },
+        { dictLabel: "不允许", dictValue: 1 },
       ],
       needOptions: [
-        { dictLabel: '需要', dictValue: 0 },
-        { dictLabel: '不需要', dictValue: 1 }
+        { dictLabel: "需要", dictValue: 0 },
+        { dictLabel: "不需要", dictValue: 1 },
       ],
       payInvoiceTypeOptions: [
-        { dictLabel: '打款成功后', dictValue: '7' },
-        { dictLabel: '申请打款后', dictValue: '6' }
+        { dictLabel: "打款成功后", dictValue: "7" },
+        { dictLabel: "申请打款后", dictValue: "6" },
       ],
       financialOptionList: [
-        { dictLabel: '福建网商', dictValue: 1 },
-        { dictLabel: '民生', dictValue: 2 },
-        { dictLabel: '山西网商', dictValue: 3 }
+        { dictLabel: "福建网商", dictValue: 1 },
+        { dictLabel: "民生", dictValue: 2 },
+        { dictLabel: "山西网商", dictValue: 3 },
       ],
       // 核算方式字典
       accountTypeOptions: [],
@@ -747,53 +1008,106 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
+          { required: true, message: "手机号/账号不能为空", trigger: "blur" },
+          { validator: this.formValidate.telphone, trigger: "blur" },
         ],
         adminName: [
-          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] },
-          { validator: this.formValidate.name, trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: "姓名不能为空",
+            trigger: ["blur", "change"],
+          },
+          { validator: this.formValidate.name, trigger: ["blur", "change"] },
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
-          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: "身份证号不能为空",
+            trigger: ["blur", "change"],
+          },
+          { validator: this.formValidate.idCard, trigger: ["blur", "change"] },
         ],
         identificationEndTime: [
-          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
-          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: ['change', 'blur'] }
+          {
+            validator: (rules, value, callback) =>
+              this.formValidate.idCardValidate(
+                rules,
+                value,
+                callback,
+                this.form.identificationBeginTime,
+                this.form.identificationEffective
+              ),
+            trigger: ["change", "blur"],
+          },
+          {
+            validator: (rules, value, callback) =>
+              this.formValidate.isExpired(
+                rules,
+                value,
+                callback,
+                this.form.identificationEffective
+              ),
+            trigger: ["change", "blur"],
+          },
         ],
         artificialIdentificationNumber: [
-          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
+          { validator: this.formValidate.idCard, trigger: ["blur", "change"] },
         ],
         creditAmount: [
-          { validator: this.formValidate.number, trigger: 'blur' }
+          { validator: this.formValidate.number, trigger: "blur" },
         ],
         ticketType: [
-          { required: true, message: '票制类别不能为空', trigger: 'blur' }
+          { required: true, message: "票制类别不能为空", trigger: "blur" },
         ],
         texPoint: [
-          { required: true, message: '平台服务费率不能为空', trigger: ['change', 'blur'] }
+          {
+            required: true,
+            message: "平台服务费率不能为空",
+            trigger: ["change", "blur"],
+          },
         ],
-        password: [
-          { validator: this.formValidate.passWord, trigger: 'blur' }
-        ],
+        password: [{ validator: this.formValidate.passWord, trigger: "blur" }],
         payInvoiceType: [
-          { required: true, message: '票务规则不能为空', trigger: ['change', 'blur'] }
+          {
+            required: true,
+            message: "票务规则不能为空",
+            trigger: ["change", "blur"],
+          },
         ],
         creditEndTime: [
-          { validator: (rules, value, callback) => this.formValidate.idCardTimeValidate(rules, value, callback, this.form.creditStartTime, '授信保护期'), trigger: ['change', 'blur'] },
+          {
+            validator: (rules, value, callback) =>
+              this.formValidate.idCardTimeValidate(
+                rules,
+                value,
+                callback,
+                this.form.creditStartTime,
+                "授信保护期"
+              ),
+            trigger: ["change", "blur"],
+          },
           // 填写授信金额后，保护期必填
-          { validator: (rules, value, callback) => {
-            if (this.form.creditAmount > 0 && (!this.form.creditStartTime || !value)) {
-              return callback(new Error(`授信保护期不能为空`));
-            } else {
-              return callback();
-            }
-          }, trigger: ['change', 'blur'] }
+          {
+            validator: (rules, value, callback) => {
+              if (
+                this.form.creditAmount > 0 &&
+                (!this.form.creditStartTime || !value)
+              ) {
+                return callback(new Error(`授信保护期不能为空`));
+              } else {
+                return callback();
+              }
+            },
+            trigger: ["change", "blur"],
+          },
         ],
         financialOption: [
-          { required: true, message: '金融体系配置不能为空', trigger: ['change', 'blur'] }
-        ]
+          {
+            required: true,
+            message: "金融体系配置不能为空",
+            trigger: ["change", "blur"],
+          },
+        ],
       },
       // 网点查询
       loading: false,
@@ -809,10 +1123,10 @@ export default {
         return {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
           label: node.label,
-          children: node.children
+          children: node.children,
         };
       },
-      phoneUniq: true
+      phoneUniq: true,
     };
   },
   computed: {
@@ -821,9 +1135,9 @@ export default {
         return this.open;
       },
       set(v) {
-        this.$emit('update:open', v);
-      }
-    }
+        this.$emit("update:open", v);
+      },
+    },
   },
   created() {
     this.getDictsOptions();
@@ -837,7 +1151,7 @@ export default {
     getMarketList() {
       getMarket().then((response) => {
         this.marketList = response.data;
-        response.data.forEach(e => {
+        response.data.forEach((e) => {
           this.marketList[e.orgCode] = e.id;
         });
       });
@@ -853,7 +1167,7 @@ export default {
         this.form.marketId = this.marketList[data];
         this.getOperateUserList(data);
       }
-      this.$set(this.form, 'operateUserCode', undefined);
+      this.$set(this.form, "operateUserCode", undefined);
       /* this.$nextTick(() => {
         this.$refs.form.validateField('operateOrgCode');
         if (this.form.operateOrgCode) {
@@ -868,32 +1182,50 @@ export default {
       });
     },
     changeTextPoint(value) {
-      if (this.form.ticketType === '1') { // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
-        this.$set(this.form, 'dispatchPoints', value);
-        this.$set(this.form, 'serviceRate', '');// 服务费税率
-      } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
-        this.$set(this.form, 'dispatchPoints', value);
-      } else if (this.form.ticketType === '3') { // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
-        this.$set(this.form, 'serviceRate', '');// 服务费税率
-        if (value === '' || value === undefined || value === null) {
-          this.$set(this.form, 'dispatchPoints', undefined);
+      if (this.form.ticketType === "1") {
+        // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
+        this.$set(this.form, "dispatchPoints", value);
+        this.$set(this.form, "serviceRate", ""); // 服务费税率
+      } else if (this.form.ticketType === "2") {
+        // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
+        this.$set(this.form, "dispatchPoints", value);
+      } else if (this.form.ticketType === "3") {
+        // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
+        this.$set(this.form, "serviceRate", ""); // 服务费税率
+        if (value === "" || value === undefined || value === null) {
+          this.$set(this.form, "dispatchPoints", undefined);
         } else {
-          this.$set(this.form, 'dispatchPoints', ((value / (100 - value)) * 100).toFixed(2));
+          this.$set(
+            this.form,
+            "dispatchPoints",
+            ((value / (100 - value)) * 100).toFixed(2)
+          );
         }
       }
     },
     changeTicketType(value) {
-      if (value === '1') { // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
-        this.$set(this.form, 'dispatchPoints', this.form.texPoint);
-        this.$set(this.form, 'serviceRate', '');// 服务费税率
-      } else if (value === '2') { // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
-        this.$set(this.form, 'dispatchPoints', this.form.texPoint);
-      } else if (value === '3') { // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
-        this.$set(this.form, 'serviceRate', '');// 服务费税率
-        if (this.form.texPoint === '' || this.form.texPoint === undefined || this.form.texPoint === null) {
-          this.$set(this.form, 'dispatchPoints', undefined);
+      if (value === "1") {
+        // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
+        this.$set(this.form, "dispatchPoints", this.form.texPoint);
+        this.$set(this.form, "serviceRate", ""); // 服务费税率
+      } else if (value === "2") {
+        // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
+        this.$set(this.form, "dispatchPoints", this.form.texPoint);
+      } else if (value === "3") {
+        // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
+        this.$set(this.form, "serviceRate", ""); // 服务费税率
+        if (
+          this.form.texPoint === "" ||
+          this.form.texPoint === undefined ||
+          this.form.texPoint === null
+        ) {
+          this.$set(this.form, "dispatchPoints", undefined);
         } else {
-          this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
+          this.$set(
+            this.form,
+            "dispatchPoints",
+            ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2)
+          );
         }
       }
     },
@@ -925,7 +1257,7 @@ export default {
         this.accountTypeOptions = response.data;
       }); */
       // 票制类别
-      this.getDicts('assets_ticket_type').then((response) => {
+      this.getDicts("assets_ticket_type").then((response) => {
         this.ticketTypeOptions = response.data;
       });
       // 票制规则
@@ -947,11 +1279,13 @@ export default {
     submitForm() {
       // const flag = this.$refs.ChooseArea.submit();
       // 手机号判断
+      
+      // return;
       if (!this.phoneUniq) {
         return;
       }
       const flag = true;
-      this.$refs['form'].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid && flag) {
           this.buttonLoading = true;
           // 类型为发货人的时候，企业相关字段不能传
@@ -969,15 +1303,26 @@ export default {
           /*  if (!this.form.isMonthly) {
             this.form.creditAmount = null;
           }*/
-          this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-          if (this.form.ticketType === '1') { // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
-            this.$set(this.form, 'dispatchPoints', this.form.texPoint);
-            this.$set(this.form, 'serviceRate', '');// 服务费税率
-          } else if (this.form.ticketType === '2') { // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
-            this.$set(this.form, 'dispatchPoints', this.form.texPoint);
-          } else if (this.form.ticketType === '3') { // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
-            this.$set(this.form, 'serviceRate', '');// 服务费税率
-            this.$set(this.form, 'dispatchPoints', ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2));
+          this.form.identificationEffective = praseBooleanToNum(
+            this.form.identificationEffective
+          );
+          if (this.form.ticketType === "1") {
+            // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
+            this.$set(this.form, "dispatchPoints", this.form.texPoint);
+            this.$set(this.form, "serviceRate", ""); // 服务费税率
+          } else if (this.form.ticketType === "2") {
+            // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
+            this.$set(this.form, "dispatchPoints", this.form.texPoint);
+          } else if (this.form.ticketType === "3") {
+            // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
+            this.$set(this.form, "serviceRate", ""); // 服务费税率
+            this.$set(
+              this.form,
+              "dispatchPoints",
+              ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(
+                2
+              )
+            );
           }
           var noNeedUnloadImg = 0;
           if (this.form.noNeedUnloadImg === false) {
@@ -1019,43 +1364,69 @@ export default {
           if (this.form.openScanQuickLoadOrder === true) {
             openScanQuickLoadOrder = 1;
           }
+          var isInterval = 0;
+          if (this.form.isInterval === true) {
+            isInterval = 1;
+          }
+          var isRemain = 0;
+          if (this.form.isRemain === true) {
+            isRemain = 1;
+          }
           var isPayfirst = 0;
           if (this.form.isPayfirst === true) {
             isPayfirst = 1;
           }
           // 复制管理员图片至法人
           this.form.artificialIdentificationImg = this.form.identificationImg;
-          this.form.artificialIdentificationBackImg = this.form.identificationBackImg;
-          var extendForm = { editDriverActualAmount: editDriverActualAmount, noNeedUnloadImg: noNeedUnloadImg,
-            reviewNoNeedUnloadImg: reviewNoNeedUnloadImg, reviewIsNeedLoadingCertificate: reviewIsNeedLoadingCertificate, openProjectDesignView: openProjectDesignView,
-            isNeedLoadingCertificate: isNeedLoadingCertificate, openAppPermissionControl: openAppPermissionControl, openProjectMemberView: openProjectMemberView,
-            openTheElectronicFence: openTheElectronicFence, openScanQuickLoadOrder: openScanQuickLoadOrder, isPayfirst: isPayfirst };
+          this.form.artificialIdentificationBackImg =
+            this.form.identificationBackImg;
+          var extendForm = {
+            editDriverActualAmount: editDriverActualAmount,
+            noNeedUnloadImg: noNeedUnloadImg,
+            reviewNoNeedUnloadImg: reviewNoNeedUnloadImg,
+            reviewIsNeedLoadingCertificate: reviewIsNeedLoadingCertificate,
+            openProjectDesignView: openProjectDesignView,
+            isNeedLoadingCertificate: isNeedLoadingCertificate,
+            openAppPermissionControl: openAppPermissionControl,
+            openProjectMemberView: openProjectMemberView,
+            openTheElectronicFence: openTheElectronicFence,
+            openScanQuickLoadOrder: openScanQuickLoadOrder,
+            isInterval: isInterval,
+            isRemain: isRemain,
+            isPayfirst: isPayfirst,
+          };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
+          console.log(this.form);
+          // return;
           if (this.form.id) {
-            updateShipment(this.form).then(response => {
-              this.buttonLoading = false;
-              this.msgSuccess('修改成功');
-              this.close();
-              this.$emit('refresh');
-            }).catch(() => {
-              this.buttonLoading = false;
-            });
+            updateShipment(this.form)
+              .then((response) => {
+                this.buttonLoading = false;
+                this.msgSuccess("修改成功");
+                this.close();
+                this.$emit("refresh");
+              })
+              .catch(() => {
+                this.buttonLoading = false;
+              });
           } else {
             if (!this.form.password && this.form.password !== undefined) {
               this.form.password = this.initialPassword;
             }
-            addShipment(this.form).then(response => {
-              this.buttonLoading = false;
-              this.msgSuccess('新增成功');
-              this.close();
-              this.$emit('refresh');
-            }).catch(() => {
-              this.buttonLoading = false;
-            });
+            addShipment(this.form)
+              .then((response) => {
+                this.buttonLoading = false;
+                this.msgSuccess("新增成功");
+                this.close();
+                this.$emit("refresh");
+              })
+              .catch(() => {
+                this.buttonLoading = false;
+              });
           }
         } else {
-          this.msgWarning('填写的信息不完整或有误，请核对后重新提交');
+          this.msgWarning("填写的信息不完整或有误，请核对后重新提交");
         }
       });
     },
@@ -1068,27 +1439,31 @@ export default {
     reviewForm(key) {
       // const flag = this.$refs.ChooseArea.submit();
       const flag = true;
-      this.$refs['form'].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (key === 2 || (valid && flag)) {
           this.authButtonLoading = true;
           this.form.authStatus = key;
-          this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
-          examine(this.form).then(response => {
-            this.msgSuccess('操作成功');
-            this.close();
-            this.$emit('refresh');
-            this.authButtonLoading = false;
-          }).catch(() => {
-            this.authButtonLoading = false;
-          });
+          this.form.identificationEffective = praseNumToBoolean(
+            this.form.identificationEffective
+          );
+          examine(this.form)
+            .then((response) => {
+              this.msgSuccess("操作成功");
+              this.close();
+              this.$emit("refresh");
+              this.authButtonLoading = false;
+            })
+            .catch(() => {
+              this.authButtonLoading = false;
+            });
         } else {
-          this.msgWarning('填写的信息不完整或有误，不能通过审核');
+          this.msgWarning("填写的信息不完整或有误，不能通过审核");
         }
       });
     },
     // 关闭弹窗
     close() {
-      this.$emit('update:open', false);
+      this.$emit("update:open", false);
     },
     // 表单重置
     reset() {
@@ -1133,7 +1508,7 @@ export default {
         isPrepaid: 1, // 是否预付运费，默认是
         isPayfirst: 0,
         repaidType: 0, // 预付运费类型
-        payInvoiceType: '7',
+        payInvoiceType: "7",
         isConsumption: null,
         consumptionUnit: null,
         consumptionMin: null,
@@ -1155,28 +1530,37 @@ export default {
         openAppPermissionControl: 0,
         openProjectMemberView: 0,
         openScanQuickLoadOrder: 1,
+        isInterval: 0, //设置时间间隔
+        isRemain: 0, //设置停留时间
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
         creditStartTime: null,
         creditEndTime: null,
         openTheElectronicFence: 1,
-        financialOption: 1
+        financialOption: 1,
         // branchCode: null
       };
-      this.resetForm('form');
+      this.resetForm("form");
       this.changeCheckboxValue();
     },
     // 表单赋值
     setForm(data) {
+      // data.isInterval = data.isInterval || 0;
+      // data.isRemain = data.isRemain || 0;
       this.form = data;
-      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
+      console.log('formdata', this.form)
+      this.form.identificationEffective = praseNumToBoolean(
+        this.form.identificationEffective
+      );
       this.changeCheckboxValue();
       if (this.form.branchCode && this.form.branchName) {
-        this.branchOptions = [{
-          code: this.form.branchCode,
-          name: this.form.branchName
-        }];
+        this.branchOptions = [
+          {
+            code: this.form.branchCode,
+            name: this.form.branchName,
+          },
+        ];
       }
       if (this.form.operateOrgCode) {
         this.form.marketId = this.marketList[this.form.operateOrgCode];
@@ -1230,6 +1614,17 @@ export default {
       } else {
         this.form.openScanQuickLoadOrder = false;
       }
+      if (this.form.isInterval === 1) {
+        this.form.isInterval = true;
+      } else {
+        this.form.isInterval = false;
+      }
+      if (this.form.isRemain) {
+        this.form.isRemain = true;
+      } else {
+        this.form.isRemain = false;
+      }
+
       if (this.form.openTheElectronicFence === 0) {
         this.form.openTheElectronicFence = true;
       } else {
@@ -1243,18 +1638,20 @@ export default {
     },
     // 已读
     authRead(data) {
-      data.identificationEffective = praseBooleanToNum(data.identificationEffective);
-      authRead(data).then(response => {
-        this.$emit('refresh');
+      data.identificationEffective = praseBooleanToNum(
+        data.identificationEffective
+      );
+      authRead(data).then((response) => {
+        this.$emit("refresh");
       });
     },
     // 查询网点列表
     getBranchOptions(query) {
-      if (query !== '') {
+      if (query !== "") {
         this.loading = true;
         getBranchList({
-          name: query
-        }).then(response => {
+          name: query,
+        }).then((response) => {
           this.loading = false;
           this.branchOptions = response.data;
         });
@@ -1265,59 +1662,75 @@ export default {
     // 图片识别后回填
     fillForm(type, data, side) {
       switch (type) {
-        case 'id-card':
-          if (side === 'front') {
+        case "id-card":
+          if (side === "front") {
             if (data.name) {
-              this.$set(this.form, 'adminName', data.name);
-              this.$set(this.form, 'artificialName', data.name);
+              this.$set(this.form, "adminName", data.name);
+              this.$set(this.form, "artificialName", data.name);
             } else {
-              this.$set(this.form, 'adminName', '');
-              this.$set(this.form, 'artificialName', '');
+              this.$set(this.form, "adminName", "");
+              this.$set(this.form, "artificialName", "");
             }
             if (data.number) {
-              this.$set(this.form, 'identificationNumber', data.number);
-              this.$set(this.form, 'artificialIdentificationNumber', data.number);
+              this.$set(this.form, "identificationNumber", data.number);
+              this.$set(
+                this.form,
+                "artificialIdentificationNumber",
+                data.number
+              );
             } else {
-              this.$set(this.form, 'identificationNumber', '');
-              this.$set(this.form, 'artificialIdentificationNumber', '');
+              this.$set(this.form, "identificationNumber", "");
+              this.$set(this.form, "artificialIdentificationNumber", "");
             }
             if (data.address) {
-              this.$set(this.form, 'area', data.address);
+              this.$set(this.form, "area", data.address);
             } else {
-              this.$set(this.form, 'area', '');
+              this.$set(this.form, "area", "");
             }
           }
-          if (side === 'back') {
+          if (side === "back") {
             if (data.valid_from) {
-              this.$set(this.form, 'identificationBeginTime', this.isPeriodFormate(data.valid_from));
+              this.$set(
+                this.form,
+                "identificationBeginTime",
+                this.isPeriodFormate(data.valid_from)
+              );
             } else {
-              this.$set(this.form, 'identificationBeginTime', '');
+              this.$set(this.form, "identificationBeginTime", "");
             }
             if (data.valid_to) {
               if (this.isPeriodAlways(data.valid_to)) {
-                this.$set(this.form, 'identificationEffective', true);
+                this.$set(this.form, "identificationEffective", true);
               } else {
-                this.$set(this.form, 'identificationEndTime', this.isPeriodFormate(data.valid_to));
+                this.$set(
+                  this.form,
+                  "identificationEndTime",
+                  this.isPeriodFormate(data.valid_to)
+                );
               }
             } else {
-              this.$set(this.form, 'identificationEffective', false);
-              this.$set(this.form, 'identificationEndTime', '');
+              this.$set(this.form, "identificationEffective", false);
+              this.$set(this.form, "identificationEndTime", "");
             }
           }
           break;
         // 营业执照
-        case 'business-license':
+        case "business-license":
           // 公司名称
           if (data.name) {
-            this.$set(this.form, 'companyName', data.name);
+            this.$set(this.form, "companyName", data.name);
           } else {
-            this.$set(this.form, 'companyName', '');
+            this.$set(this.form, "companyName", "");
           }
           // 统一信用代码
           if (data.registration_number) {
-            this.$set(this.form, 'organizationCodeNo', data.registration_number);
+            this.$set(
+              this.form,
+              "organizationCodeNo",
+              data.registration_number
+            );
           } else {
-            this.$set(this.form, 'organizationCodeNo', '');
+            this.$set(this.form, "organizationCodeNo", "");
           }
           // 法人姓名
           /* if (data.legal_representative) {
@@ -1332,47 +1745,52 @@ export default {
     },
     getUserAlreadyExist() {
       if (this.form.telphone) {
-        getUserAlreadyExist({ phoneNum: this.form.telphone, noUserCode: this.form.adminCode }).then(response => {
-          if (response.code === 500) {
+        getUserAlreadyExist({
+          phoneNum: this.form.telphone,
+          noUserCode: this.form.adminCode,
+        })
+          .then((response) => {
+            if (response.code === 500) {
+              this.phoneUniq = false;
+              this.msgWarning(response.msg);
+              this.$nextTick(() => {
+                this.$refs.telphone.focus();
+              });
+            } else {
+              this.phoneUniq = true;
+            }
+          })
+          .catch(() => {
             this.phoneUniq = false;
-            this.msgWarning(response.msg);
             this.$nextTick(() => {
               this.$refs.telphone.focus();
             });
-          } else {
-            this.phoneUniq = true;
-          }
-        }).catch(() => {
-          this.phoneUniq = false;
-          this.$nextTick(() => {
-            this.$refs.telphone.focus();
           });
-        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style lang="scss">
-.page-shipment-edit-dialog{
-  .el-drawer__header{
+.page-shipment-edit-dialog {
+  .el-drawer__header {
     margin-bottom: 20px;
   }
-  .el-drawer__body{
+  .el-drawer__body {
     padding: 0 20px;
     overflow-y: auto;
   }
   /* 全屏弹窗样式 */
-  .el-dialog{
+  .el-dialog {
     max-height: none;
     margin-top: 0 !important;
-    .el-dialog__body{
+    .el-dialog__body {
       padding-top: 0;
       padding-bottom: 0;
       max-height: calc(100vh - 62px - 64px);
       overflow-x: hidden;
-      .el-form-item__content{
+      .el-form-item__content {
         white-space: nowrap;
       }
     }
@@ -1381,54 +1799,54 @@ export default {
 </style>
 
 <style scoped lang="scss">
-.mr3{
+.mr3 {
   margin-right: 3%;
 }
-.mt{
+.mt {
   margin-top: 22px;
 }
-.width100{
+.width100 {
   width: 100%;
 }
-.width70{
+.width70 {
   width: 70%;
 }
-.width60{
+.width60 {
   width: 60%;
 }
-.width50{
+.width50 {
   width: 50%;
 }
-.width28{
+.width28 {
   width: 28%;
 }
-.width12{
+.width12 {
   width: 12%;
 }
 /* 计数器样式 */
-.el-input-number ::v-deep.el-input__inner{
+.el-input-number ::v-deep.el-input__inner {
   text-align: left;
 }
 /* 上传图片文字样式 */
-.upload-image-label{
+.upload-image-label {
   margin: 0;
   line-height: 24px;
 }
 /* 标题样式 */
-.g-card-title{
+.g-card-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
   white-space: nowrap;
-  >.h5-divider{
+  > .h5-divider {
     margin-left: 8px;
     height: 1px;
-    border-bottom: 1px dashed #DAD3D3;
+    border-bottom: 1px dashed #dad3d3;
   }
 }
 /* checkbox表单样式 */
-.no-label{
-  ::v-deep.el-form-item__content{
+.no-label {
+  ::v-deep.el-form-item__content {
     margin-left: 74px !important;
   }
 }
