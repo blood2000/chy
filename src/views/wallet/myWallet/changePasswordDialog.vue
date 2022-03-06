@@ -1,7 +1,7 @@
 <template>
   <el-dialog :title="title" :visible="visible" width="600px" append-to-body @close="cancel">
     <el-form ref="form" :model="form" :rules="rules" label-width="110px">
-      <el-form-item v-if="type === 'edit' && isEmptyPassword !==1" label="原密码" prop="passwordBefore" :rules="[{ required: true, trigger: 'blur', message: '原密码不能为空' }]">
+      <el-form-item v-if="type === 'edit' && isEmptyPassword === 0" label="原密码" prop="passwordBefore" :rules="[{ required: true, trigger: 'blur', message: '原密码不能为空' }]">
         <el-input v-model="form.passwordBefore" class="width90" placeholder="请输入原密码" type="password" clearable />
       </el-form-item>
       <el-form-item v-if="type === 'forget'" label="平台密码" prop="platformPassword" :rules="[{ required: true, trigger: 'blur', message: '平台密码不能为空' }]">
@@ -87,23 +87,12 @@ export default {
               id: this.amountId,
               password: sha1(this.form.password)
             };
-            if (this.isEmptyPassword !== 1) {
+            if (this.isEmptyPassword === 0) {
               Object.assign(params, { passwordBefore: sha1(this.form.passwordBefore) });
             }
 
-            // /* 测试s=  这段代码直接可删*/
-            // setTimeout(() => {
-            //   console.log(params);
-            //   this.msgSuccess('设置成功');
-            //   this.close();
-            //   this.$emit('refresh');
-            // }, 1000);
-
-            // return;
-            // /* 测试e= */
-
             editAmountPassword(params).then(response => {
-              if (this.isEmptyPassword !== 1) {
+              if (this.isEmptyPassword === 0) {
                 this.msgSuccess('修改成功');
               } else {
                 this.msgSuccess('设置成功');

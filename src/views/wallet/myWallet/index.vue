@@ -30,10 +30,10 @@
     <div class="app-container app-container--card">
       <h3 class="g-card-title g-card-header mb20">支付与安全</h3>
       <p class="g-text mb20">
-        <span class="g-color-blue">{{ isEmptyPassword ? '未设置' : '已设置' }}</span>
+        <span class="g-color-blue">{{ isEmptyPassword !== 0 ? '未设置' : '已设置' }}</span>
       </p>
       <p class="g-text mb20">保护账户财产安全，请设置一个与登录密码不同的支付密码</p>
-      <el-button v-has-permi="['myWallet:pay:reset']" type="primary" @click="handleChangePassword('edit')">{{ isEmptyPassword ? '设置支付密码' : '修改支付密码' }}</el-button>
+      <el-button v-has-permi="['myWallet:pay:reset']" type="primary" @click="handleChangePassword('edit')">{{ isEmptyPassword !== 0 ? '设置支付密码' : '修改支付密码' }}</el-button>
       <el-button v-has-permi="['myWallet:pay:forget']" @click="handleChangePassword('forget')">忘记密码</el-button>
     </div>
 
@@ -107,10 +107,11 @@ export default {
     },
     // 修改密码按钮
     handleChangePassword(type, now) {
+      console.log(this.isEmptyPassword);
       if (type === 'forget') {
         this.title = '忘记密码';
       } else if (type === 'edit') {
-        if (this.isEmptyPassword) {
+        if (this.isEmptyPassword !== 0) {
           this.title = '设置支付密码';
         } else {
           this.title = '修改支付密码';
