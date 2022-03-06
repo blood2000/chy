@@ -90,6 +90,18 @@ export default {
             if (this.isEmptyPassword !== 1) {
               Object.assign(params, { passwordBefore: sha1(this.form.passwordBefore) });
             }
+
+            // /* 测试s=  这段代码直接可删*/
+            // setTimeout(() => {
+            //   console.log(params);
+            //   this.msgSuccess('设置成功');
+            //   this.close();
+            //   this.$emit('refresh');
+            // }, 1000);
+
+            // return;
+            // /* 测试e= */
+
             editAmountPassword(params).then(response => {
               if (this.isEmptyPassword !== 1) {
                 this.msgSuccess('修改成功');

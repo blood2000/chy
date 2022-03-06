@@ -38,7 +38,7 @@
     </div>
 
     <!-- 账户提现弹窗 -->
-    <withdraw-dialog :open.sync="withdrawOpen" :user-code="userCode" :credi-amount="amount" @refresh="getWallet" />
+    <withdraw-dialog ref="refWithdrawDialog" :open.sync="withdrawOpen" :user-code="userCode" :credi-amount="amount" :is-empty-password="isEmptyPassword" @refresh="getWallet" @isNoPasswordToSet="isNoPasswordToSet" />
     <!-- 修改/忘记密码弹窗 -->
     <change-password-dialog :open.sync="changePasswordOpen" :amount-id="amountId" :title="title" :type="changePasswordType" :is-empty-password="isEmptyPassword" @refresh="getWallet" />
   </div>
@@ -69,20 +69,34 @@ export default {
       userCode: null,
       amount: null,
       // 支付密码是否设置
-      isEmptyPassword: null
+      isEmptyPassword: null,
+
+      // 临时变量控制
+      nowType: null
     };
   },
   created() {
     this.getWallet();
   },
   methods: {
+    // 未设置密码 去设置密码
+    isNoPasswordToSet(type = 'edit') {
+      this.isEmptyPassword = 1;
+      this.handleChangePassword(type, '提现触发');
+    },
+
     // 获取钱包信息
     getWallet() {
       const { user = {}} = getUserInfo() || {};
       const { userCode } = user;
       getWalletInfo({ code: userCode }).then(response => {
         this.walletInfo = response.data || {};
+
         this.isEmptyPassword = this.walletInfo.isEmptyPassword;
+
+        if (this.nowType && this.nowType === '提现触发') {
+          this.$refs.refWithdrawDialog.submitForm(this.isEmptyPassword);
+        }
       });
     },
     // 提现按钮
@@ -92,7 +106,7 @@ export default {
       this.withdrawOpen = true;
     },
     // 修改密码按钮
-    handleChangePassword(type) {
+    handleChangePassword(type, now) {
       if (type === 'forget') {
         this.title = '忘记密码';
       } else if (type === 'edit') {
@@ -105,6 +119,9 @@ export default {
       this.changePasswordType = type;
       this.amountId = this.walletInfo.id;
       this.changePasswordOpen = true;
+
+      this.nowType = null;
+      now && (this.nowType = now);
     },
     // 跳转页面
     handleJumpPage(url, query) {

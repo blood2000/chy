@@ -80,6 +80,10 @@ export default {
     crediAmount: {
       type: Number,
       default: null
+    },
+    isEmptyPassword: {
+      type: Number,
+      default: null
     }
   },
   data() {
@@ -159,8 +163,8 @@ export default {
       this.addBankOpen = true;
     },
     // 提交按钮
-    submitForm: function() {
-      this.$refs['form'].validate(valid => {
+    submitForm: function(type) {
+      this.$refs['form'].validate(async valid => {
         if (valid) {
           if (this.form.money > this.crediAmount) {
             this.msgWarning('提现金额不能大于可用余额!');
@@ -170,11 +174,35 @@ export default {
             this.msgWarning('提现金额不能为0');
             return;
           }
-          this.form.applyerCode = this.userCode;
-          this.confirmPasswordOpen = true;
+
+          // 判断是否有设置过密码? type = 0 是表示第二次进来(说明设置过密码了)
+          if (type === 0 || this.isEmptyPassword === 0) {
+            this.form.applyerCode = this.userCode;
+            this.confirmPasswordOpen = true;
+          } else {
+            // 打开设置密码的弹框
+            this.$emit('isNoPasswordToSet', 'edit');
+          }
         }
       });
     },
+
+    // 提现判断
+    // async isSetPassword(userCode) {
+    //   console.log(userCode);
+
+    //   let resData = false;
+    //   try {
+    //     const que = {
+    //       userCode
+    //     };
+    //     const res = await 提现判断api(que);
+    //     resData = res.data;
+    //   } catch (error) { console.log(error); }
+
+    //   return false && resData;
+    // },
+
     // 取消按钮
     cancel() {
       this.close();
