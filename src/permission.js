@@ -33,6 +33,17 @@ router.beforeEach((to, from, next) => {
       next({ path: '/' });
       NProgress.done();
     } else {
+      /* 针对是否初始密码进行处理 */
+      if (store.getters.isDefaultPassword) {
+        store.dispatch('LogOut').then(() => {
+          Message.error({
+            message: '初始密码不安全, 请重新登陆并修改密码',
+            duration: 5000
+          });
+          next({ path: '/' });
+        });
+      } else
+
       if (store.getters.roles.length === 0) {
         // 判断当前用户是否已拉取完user_info信息
         store.dispatch('GetInfo').then(res => {

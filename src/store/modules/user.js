@@ -16,7 +16,8 @@ const user = {
     isDispatcher: false, // 是否是调度者
     shipment: [], // 货主信息
     defaultRoleCode: '',
-    branch: [] // 网点
+    branch: [], // 网点
+    isDefaultPassword: undefined // 是否使用初始密码
   },
 
   mutations: {
@@ -64,6 +65,9 @@ const user = {
     },
     SET_BRANCH: (state, branch) => {
       state.branch = branch;
+    },
+    SET_IS_DEFAULTPASSWORD: (state, isDefaultPassword) => {
+      state.isDefaultPassword = isDefaultPassword;
     }
   },
 
@@ -81,7 +85,7 @@ const user = {
           commit('SET_TOKEN', data.access_token);
           setExpiresIn(data.expires_in);
           commit('SET_EXPIRES_IN', data.expires_in);
-          resolve();
+          resolve(res);
         }).catch(error => {
           reject(error);
         });
@@ -181,7 +185,7 @@ const user = {
             commit('SET_ROLE_NAME', '');
           }
           commit('SET_AVATAR', avatar);
-          console.log(user.branch);
+          // console.log(user.branch);
           if (user.branch) { // 网点
             commit('SET_BRANCH', user.branch);
           }
@@ -197,12 +201,14 @@ const user = {
             user: res.user
           });
 
+
           commit('SET_IS_ADMIN', res.isAdmin);
           commit('SET_IS_SHIPMENT', res.isShipment);
           commit('SET_IS_DRIVER', res.isDriver);
           commit('SET_IS_DISPATCHER', res.isDispatcher);
           commit('SET_SHIPMENT', res.shipment);
           commit('SET_DEFAULT_ROLE_CODE', res.defaultRoleCode);
+          commit('SET_IS_DEFAULTPASSWORD', res.isDefaultPassword);
           resolve(res);
         }).catch(error => {
           reject(error);

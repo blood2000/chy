@@ -1,5 +1,13 @@
 <template>
   <div class="login pr">
+    <div v-if="mosaic" class="mosaic pa">
+      <el-dialog title="修改密码" :visible="mosaic" width="600px" :append-to-body="false" :close-on-click-modal="false" @close="cancel">
+        <div v-if="mosaic">
+          <ResetPwd @setSuccess="setSuccess(false)" />
+        </div>
+      </el-dialog>
+    </div>
+
     <img class="m_log pa" src="../assets/images/login/chy-log.png" alt="chy-log">
 
     <!-- 注册界面 -->
@@ -236,11 +244,15 @@ import { encrypt, decrypt } from '@/utils/jsencrypt';
 
 import RetrievePassword from '@/components/Ddc/Tin/RetrievePassword';
 
+import ResetPwd from '@/views/system/user/profile/resetPwd.vue';
+
 export default {
   name: 'Login',
-  components: { RetrievePassword },
+  components: { RetrievePassword, ResetPwd },
   data() {
     return {
+      mosaic: false,
+
       isRpPage: false,
       Verification: true, // 通过v-show控制显示获取还是倒计时
       timer: 60, // 定义初始时间为60s
@@ -340,14 +352,37 @@ export default {
             this._remove();
           }
 
-          this.$store.dispatch('Login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+          this.$store.dispatch('Login', this.loginForm).then((res) => {
+            // this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+            // 成功前做一次判断是否是初始密码
+            if (res.data.is_default_password) {
+              this.mosaic = true;
+            } else {
+              this.setSuccess(res.data.is_default_password);
+            }
           }).catch(() => {
             this.loading = false;
             this.getCode();
           });
         }
       });
+    },
+
+    /* 跳转 */
+    setSuccess(bool = false) {
+      // 修改
+      this.$store.commit('SET_IS_DEFAULTPASSWORD', bool);
+      this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+      this.loading = false;
+      this.mosaic = false;
+    },
+
+    cancel() {
+      this.$store.dispatch('LogOut');
+      this.mosaic = false;
+      this.loading = false;
+      this.loginForm.code = undefined;
+      this.getCode();
     },
 
     /* 短信登录 */
@@ -448,6 +483,16 @@ export default {
   // background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
   font-family: PingFang SC;
+
+  .mosaic{
+    width: 100vw;
+    height: 100vh;
+    top: 0;
+    left: 0;
+    z-index: 99999999999999999;
+    background-color: rgba($color: #ccc, $alpha: .5)
+    // opacity: .5;
+  }
 
   video {
     position: absolute;

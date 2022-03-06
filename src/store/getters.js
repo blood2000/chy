@@ -12,6 +12,8 @@ const getters = {
   introduction: state => state.user.introduction,
   roles: state => state.user.roles,
   permissions: state => state.user.permissions,
+  isDefaultPassword: state => state.user.isDefaultPassword,
+
   permission_routes: state => state.permission.routes,
   sidebarRouters: state => state.permission.sidebarRouters,
   isAdmin: state => state.user.isAdmin,
@@ -24,5 +26,6 @@ const getters = {
   goodsBigType_option: state => state.orders.goodsBigType_option,
   branch: state => state.user.branch,
   parameters: state => state.util.parameters
+
 };
 export default getters;

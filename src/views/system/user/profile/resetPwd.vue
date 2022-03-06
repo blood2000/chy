@@ -1,5 +1,5 @@
 <template>
-  <el-form ref="form" :model="user" :rules="rules" label-width="80px">
+  <el-form ref="form" v-loading="loading" :model="user" :rules="rules" label-width="80px">
     <el-form-item label="旧密码" prop="oldPassword">
       <el-input v-model="user.oldPassword" placeholder="请输入旧密码" type="password" class="input-width" />
     </el-form-item>
@@ -29,6 +29,7 @@ export default {
       }
     };
     return {
+      loading: false,
       test: '1test',
       user: {
         oldPassword: undefined,
@@ -55,11 +56,14 @@ export default {
     submit() {
       this.$refs['form'].validate(valid => {
         if (valid) {
+          this.loading = true;
           updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
             response => {
+              this.loading = false;
               this.msgSuccess('修改成功');
+              this.$emit('setSuccess', response);
             }
-          );
+          ).catch(() => { this.loading = false; });
         }
       });
     },
