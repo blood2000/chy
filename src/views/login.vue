@@ -391,6 +391,7 @@ export default {
       this.mosaic = false;
       this.loading = false;
       this.loginForm.code = undefined;
+      this.loginForm.password = undefined;
       this.getCode();
     },
 
