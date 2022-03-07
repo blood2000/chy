@@ -65,7 +65,7 @@
               @blur="getUserAlreadyExist"
             />
           </el-form-item>
-          <el-form-item label="密码" prop="password">
+         <!-- <el-form-item label="密码" prop="password">
             <el-input
               v-model="form.password"
               type="password"
@@ -74,7 +74,7 @@
               clearable
             />
             <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
-          </el-form-item>
+          </el-form-item>-->
           <el-form-item v-if="disable">
             <!-- 只有图片上传禁用的时候才能使用v-viewer查看大图，复制两份判断 -->
             <el-row v-viewer>
@@ -1279,7 +1279,7 @@ export default {
     submitForm() {
       // const flag = this.$refs.ChooseArea.submit();
       // 手机号判断
-      
+
       // return;
       if (!this.phoneUniq) {
         return;
