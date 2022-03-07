@@ -760,6 +760,13 @@
                 </el-checkbox>
               </el-form-item>
             </el-col>
+            <el-col :span="12">
+              <el-form-item prop="isDriverBindCard" class="no-label">
+                <el-checkbox v-model="form.isDriverBindCard">
+                  是否司机接单前绑定银行卡
+                </el-checkbox>
+              </el-form-item>
+            </el-col>
             <el-col :span="24">
               <el-form-item
                 label="允许未审核司机/车辆接单"
@@ -1370,6 +1377,10 @@ export default {
           if (this.form.isRemain === true) {
             isRemain = 1;
           }
+          var isDriverBindCard = 0;
+          if (this.form.isDriverBindCard === true) {
+            isDriverBindCard = 1;
+          }
           var isPayfirst = 0;
           if (this.form.isPayfirst === true) {
             isPayfirst = 1;
@@ -1391,6 +1402,7 @@ export default {
             openScanQuickLoadOrder: openScanQuickLoadOrder,
             isInterval: isInterval,
             isRemain: isRemain,
+            isDriverBindCard: isDriverBindCard,
             isPayfirst: isPayfirst
           };
           // eslint-disable-next-line no-undef
@@ -1531,6 +1543,7 @@ export default {
         openScanQuickLoadOrder: 1,
         isInterval: 0, // 设置时间间隔
         isRemain: 0, // 设置停留时间
+        isDriverBindCard: 0, // 是否开启司机绑卡接单
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -1622,6 +1635,11 @@ export default {
         this.form.isRemain = true;
       } else {
         this.form.isRemain = false;
+      }
+      if (this.form.isDriverBindCard) {
+        this.form.isDriverBindCard = true;
+      } else {
+        this.form.isDriverBindCard = false;
       }
 
       if (this.form.openTheElectronicFence === 0) {
