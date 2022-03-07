@@ -48,10 +48,10 @@
       <!-- <el-form-item label="联系人固话" prop="fixedPhone">
         <el-input v-model="form.fixedPhone" placeholder="请输入固话" class="width90" clearable />
       </el-form-item> -->
-     <!-- <el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width59 mr3" clearable />
-        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
-      </el-form-item>-->
+     <el-form-item v-if="!form.id" label="密码" prop="password">
+        <el-input v-model="form.password" type="password" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width100" clearable />
+       <!-- <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>-->
+      </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
         <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
       </el-form-item>
@@ -554,7 +554,6 @@ import { listInfo as vehicleListInfo } from '@/api/assets/vehicle';
 import UploadImage from '@/components/UploadImage/index';
 // import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
-
 export default {
   components: {
     UploadImage
@@ -574,7 +573,7 @@ export default {
       buttonLoading: false,
       authButtonLoading: false,
       // 初始密码
-      initialPassword: 'abcd1234@',
+      initialPassword: '',
       // 司机类别字典
       driverTypeOptions: [
         { dictLabel: '零散司机', dictValue: 1 },
@@ -663,9 +662,9 @@ export default {
         /* transportPermitNo: [
           { required: true, message: '道路运输经营许可证不能为空', trigger: 'blur' }
         ],*/
-        password: [
+        /* password: [
           { validator: this.formValidate.passWord, trigger: 'blur' }
-        ]
+        ]*/
       },
       vehicleRules: {
         licenseNumber: [
@@ -799,6 +798,9 @@ export default {
                   driver.authStatus = 3;
                 } else {
                   driver.authStatus = 0;
+                }
+                if (this.form.password) {
+                  driver.password = btoa(this.form.password);
                 }
                 addDriver(Object.assign({}, driver, { fromSource: 2 })).then(response => {
                   this.buttonLoading = false;

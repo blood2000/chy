@@ -151,7 +151,7 @@ export default {
       buttonLoading: false,
       authButtonLoading: false,
       // 初始密码
-      initialPassword: 'abcd1234@',
+      initialPassword: '',
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: 0 },

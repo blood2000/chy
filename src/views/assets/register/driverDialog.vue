@@ -488,7 +488,7 @@ export default {
       buttonLoading: false,
       authButtonLoading: false,
       // 初始密码
-      initialPassword: 'abcd1234@',
+      initialPassword: '',
       // 司机类别字典
       driverTypeOptions: [
         { dictLabel: '零散司机', dictValue: 1 },

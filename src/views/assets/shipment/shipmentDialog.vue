@@ -65,16 +65,16 @@
               @blur="getUserAlreadyExist"
             />
           </el-form-item>
-         <!-- <el-form-item label="密码" prop="password">
+          <el-form-item v-if="!form.id" label="密码" prop="password">
             <el-input
               v-model="form.password"
               type="password"
               :placeholder="form.id ? '密码未修改可不填写' : '请输入密码'"
-              class="width60 mr3"
+              class="width100"
               clearable
             />
-            <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
-          </el-form-item>-->
+            <!--<span class="g-color-blue">(初始密码为{{ initialPassword }})</span>-->
+          </el-form-item>
           <el-form-item v-if="disable">
             <!-- 只有图片上传禁用的时候才能使用v-viewer查看大图，复制两份判断 -->
             <el-row v-viewer>
@@ -890,8 +890,7 @@
       slot="footer"
       class="dialog-footer"
     >
-      <el-button type="primary" :loading="buttonLoading" @click="submitForm"
-        >确 定</el-button
+      <el-button type='primary' :loading="buttonLoading" @click="submitForm">确 定</el-button
       >
       <el-button @click="cancel">取 消</el-button>
     </div>
@@ -925,17 +924,16 @@ import {
   getShipmentEnterprise,
   getMarket,
   getOperateOrg,
-  getOperateUser,
-} from "@/api/assets/shipment";
-import { getUserAlreadyExist } from "@/api/system/user";
+  getOperateUser
+} from '@/api/assets/shipment';
+import { getUserAlreadyExist } from '@/api/system/user';
 // import { getWaybillStatus } from '@/api/assets/shipment';
-import { listDeptAll } from "@/api/system/dept";
-import { getBranchList } from "@/api/system/branch";
-import UploadImage from "@/components/UploadImage/index";
+import { listDeptAll } from '@/api/system/dept';
+import { getBranchList } from '@/api/system/branch';
+import UploadImage from '@/components/UploadImage/index';
 // import ProvinceCityCounty from '@/components/ProvinceCityCounty';
-import { praseBooleanToNum, praseNumToBoolean } from "@/utils/ddc";
+import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 // import Treeselect from '@riophae/vue-treeselect';
-
 export default {
   components: {
     UploadImage,
@@ -945,7 +943,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: "",
+      default: '',
     },
     open: Boolean,
     disable: Boolean,
@@ -955,47 +953,47 @@ export default {
       buttonLoading: false,
       authButtonLoading: false,
       // 初始密码
-      initialPassword: "abcd1234@",
+      initialPassword: '',
       // 货主类型数据字典
       typeOptions: [
-        { dictLabel: "发货人", dictValue: 0 },
-        { dictLabel: "发货企业", dictValue: 1 },
+        { dictLabel: '发货人', dictValue: 0 },
+        { dictLabel: '发货企业', dictValue: 1 }
       ],
       // 是否冻结字典
       isFreezoneOptions: [
-        { dictLabel: "正常", dictValue: 0 },
-        { dictLabel: "冻结", dictValue: 1 },
+        { dictLabel: '正常', dictValue: 0 },
+        { dictLabel: '冻结', dictValue: 1 }
       ],
       // 票制类别字典
       ticketTypeOptions: [],
       // 是否字典
       isOptions: [
-        { dictLabel: "否", dictValue: 0 },
-        { dictLabel: "是", dictValue: 1 },
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
       ],
       // 预付运费
       // 1757bug 货主审核，新建/修改货主，预付运费类型选项将“接单前”文字改为“接单时”，“卸货前”文字改为“卸货时”
       repaidTypeOptions: [
-        { dictLabel: "接单时", dictValue: 0 },
-        { dictLabel: "卸货时", dictValue: 1 },
+        { dictLabel: '接单时', dictValue: 0 },
+        { dictLabel: '卸货时', dictValue: 1 }
       ],
       // 是否允许
       allowOptions: [
-        { dictLabel: "允许", dictValue: 0 },
-        { dictLabel: "不允许", dictValue: 1 },
+        { dictLabel: '允许', dictValue: 0 },
+        { dictLabel: '不允许', dictValue: 1 }
       ],
       needOptions: [
-        { dictLabel: "需要", dictValue: 0 },
-        { dictLabel: "不需要", dictValue: 1 },
+        { dictLabel: '需要', dictValue: 0 },
+        { dictLabel: '不需要', dictValue: 1 }
       ],
       payInvoiceTypeOptions: [
-        { dictLabel: "打款成功后", dictValue: "7" },
-        { dictLabel: "申请打款后", dictValue: "6" },
+        { dictLabel: '打款成功后', dictValue: '7' },
+        { dictLabel: '申请打款后', dictValue: '6' }
       ],
       financialOptionList: [
-        { dictLabel: "福建网商", dictValue: 1 },
-        { dictLabel: "民生", dictValue: 2 },
-        { dictLabel: "山西网商", dictValue: 3 },
+        { dictLabel: '福建网商', dictValue: 1 },
+        { dictLabel: '民生', dictValue: 2 },
+        { dictLabel: '山西网商', dictValue: 3 }
       ],
       // 核算方式字典
       accountTypeOptions: [],
@@ -1008,24 +1006,24 @@ export default {
       // 表单校验
       rules: {
         telphone: [
-          { required: true, message: "手机号/账号不能为空", trigger: "blur" },
-          { validator: this.formValidate.telphone, trigger: "blur" },
+          { required: true, message: '手机号/账号不能为空', trigger: 'blur' },
+          { validator: this.formValidate.telphone, trigger: 'blur' }
         ],
         adminName: [
           {
             required: true,
-            message: "姓名不能为空",
-            trigger: ["blur", "change"],
+            message: '姓名不能为空',
+            trigger: ['blur', 'change']
           },
-          { validator: this.formValidate.name, trigger: ["blur", "change"] },
+          { validator: this.formValidate.name, trigger: ['blur', 'change'] }
         ],
         identificationNumber: [
           {
             required: true,
-            message: "身份证号不能为空",
-            trigger: ["blur", "change"],
+            message: '身份证号不能为空',
+            trigger: ['blur', 'change']
           },
-          { validator: this.formValidate.idCard, trigger: ["blur", "change"] },
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
         ],
         identificationEndTime: [
           {
@@ -1037,7 +1035,7 @@ export default {
                 this.form.identificationBeginTime,
                 this.form.identificationEffective
               ),
-            trigger: ["change", "blur"],
+            trigger: ['change', 'blur']
           },
           {
             validator: (rules, value, callback) =>
@@ -1047,31 +1045,31 @@ export default {
                 callback,
                 this.form.identificationEffective
               ),
-            trigger: ["change", "blur"],
+            trigger: ['change', 'blur']
           },
         ],
         artificialIdentificationNumber: [
-          { validator: this.formValidate.idCard, trigger: ["blur", "change"] },
+          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
         ],
         creditAmount: [
-          { validator: this.formValidate.number, trigger: "blur" },
+          { validator: this.formValidate.number, trigger: 'blur' }
         ],
         ticketType: [
-          { required: true, message: "票制类别不能为空", trigger: "blur" },
+          { required: true, message: '票制类别不能为空', trigger: 'blur' }
         ],
         texPoint: [
           {
             required: true,
-            message: "平台服务费率不能为空",
-            trigger: ["change", "blur"],
+            message: '平台服务费率不能为空',
+            trigger: ['change', 'blur']
           },
         ],
-        password: [{ validator: this.formValidate.passWord, trigger: "blur" }],
+        // password: [{ validator: this.formValidate.passWord, trigger: 'blur' }],
         payInvoiceType: [
           {
             required: true,
-            message: "票务规则不能为空",
-            trigger: ["change", "blur"],
+            message: '票务规则不能为空',
+            trigger: ['change', 'blur']
           },
         ],
         creditEndTime: [
@@ -1082,9 +1080,9 @@ export default {
                 value,
                 callback,
                 this.form.creditStartTime,
-                "授信保护期"
+                '授信保护期'
               ),
-            trigger: ["change", "blur"],
+            trigger: ['change', 'blur']
           },
           // 填写授信金额后，保护期必填
           {
@@ -1098,16 +1096,16 @@ export default {
                 return callback();
               }
             },
-            trigger: ["change", "blur"],
-          },
+            trigger: ['change', 'blur']
+          }
         ],
         financialOption: [
           {
             required: true,
-            message: "金融体系配置不能为空",
-            trigger: ["change", "blur"],
-          },
-        ],
+            message: '金融体系配置不能为空',
+            trigger: ['change', 'blur']
+          }
+        ]
       },
       // 网点查询
       loading: false,
@@ -1123,10 +1121,10 @@ export default {
         return {
           id: node.code, // 键名转换，方法默认是label和children进行树状渲染
           label: node.label,
-          children: node.children,
+          children: node.children
         };
       },
-      phoneUniq: true,
+      phoneUniq: true
     };
   },
   computed: {
@@ -1135,7 +1133,7 @@ export default {
         return this.open;
       },
       set(v) {
-        this.$emit("update:open", v);
+        this.$emit('update:open', v);
       },
     },
   },
@@ -1167,7 +1165,7 @@ export default {
         this.form.marketId = this.marketList[data];
         this.getOperateUserList(data);
       }
-      this.$set(this.form, "operateUserCode", undefined);
+      this.$set(this.form, 'operateUserCode', undefined);
       /* this.$nextTick(() => {
         this.$refs.form.validateField('operateOrgCode');
         if (this.form.operateOrgCode) {
@@ -1182,48 +1180,48 @@ export default {
       });
     },
     changeTextPoint(value) {
-      if (this.form.ticketType === "1") {
+      if (this.form.ticketType === '1') {
         // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
-        this.$set(this.form, "dispatchPoints", value);
-        this.$set(this.form, "serviceRate", ""); // 服务费税率
-      } else if (this.form.ticketType === "2") {
+        this.$set(this.form, 'dispatchPoints', value);
+        this.$set(this.form, 'serviceRate', ''); // 服务费税率
+      } else if (this.form.ticketType === '2') {
         // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
-        this.$set(this.form, "dispatchPoints", value);
-      } else if (this.form.ticketType === "3") {
+        this.$set(this.form, 'dispatchPoints', value);
+      } else if (this.form.ticketType === '3') {
         // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
-        this.$set(this.form, "serviceRate", ""); // 服务费税率
-        if (value === "" || value === undefined || value === null) {
-          this.$set(this.form, "dispatchPoints", undefined);
+        this.$set(this.form, 'serviceRate', ''); // 服务费税率
+        if (value === '' || value === undefined || value === null) {
+          this.$set(this.form, 'dispatchPoints', undefined);
         } else {
           this.$set(
             this.form,
-            "dispatchPoints",
+            'dispatchPoints',
             ((value / (100 - value)) * 100).toFixed(2)
           );
         }
       }
     },
     changeTicketType(value) {
-      if (value === "1") {
+      if (value === '1') {
         // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
-        this.$set(this.form, "dispatchPoints", this.form.texPoint);
-        this.$set(this.form, "serviceRate", ""); // 服务费税率
-      } else if (value === "2") {
+        this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+        this.$set(this.form, 'serviceRate', ''); // 服务费税率
+      } else if (value === '2') {
         // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
-        this.$set(this.form, "dispatchPoints", this.form.texPoint);
-      } else if (value === "3") {
+        this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+      } else if (value === '3') {
         // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
-        this.$set(this.form, "serviceRate", ""); // 服务费税率
+        this.$set(this.form, 'serviceRate', ''); // 服务费税率
         if (
-          this.form.texPoint === "" ||
+          this.form.texPoint === '' ||
           this.form.texPoint === undefined ||
           this.form.texPoint === null
         ) {
-          this.$set(this.form, "dispatchPoints", undefined);
+          this.$set(this.form, 'dispatchPoints', undefined);
         } else {
           this.$set(
             this.form,
-            "dispatchPoints",
+            'dispatchPoints',
             ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(2)
           );
         }
@@ -1257,7 +1255,7 @@ export default {
         this.accountTypeOptions = response.data;
       }); */
       // 票制类别
-      this.getDicts("assets_ticket_type").then((response) => {
+      this.getDicts('assets_ticket_type').then((response) => {
         this.ticketTypeOptions = response.data;
       });
       // 票制规则
@@ -1285,7 +1283,7 @@ export default {
         return;
       }
       const flag = true;
-      this.$refs["form"].validate((valid) => {
+      this.$refs['form'].validate((valid) => {
         if (valid && flag) {
           this.buttonLoading = true;
           // 类型为发货人的时候，企业相关字段不能传
@@ -1306,19 +1304,19 @@ export default {
           this.form.identificationEffective = praseBooleanToNum(
             this.form.identificationEffective
           );
-          if (this.form.ticketType === "1") {
+          if (this.form.ticketType === '1') {
             // 一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例
-            this.$set(this.form, "dispatchPoints", this.form.texPoint);
-            this.$set(this.form, "serviceRate", ""); // 服务费税率
-          } else if (this.form.ticketType === "2") {
+            this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+            this.$set(this.form, 'serviceRate', ''); // 服务费税率
+          } else if (this.form.ticketType === '2') {
             // 二票制：服务费税率(%)、平台服务费比例=原来的『服务费比例』备注：运单结算使用的比例
-            this.$set(this.form, "dispatchPoints", this.form.texPoint);
-          } else if (this.form.ticketType === "3") {
+            this.$set(this.form, 'dispatchPoints', this.form.texPoint);
+          } else if (this.form.ticketType === '3') {
             // 非一票制：平台服务费比例=原来的『平台服务费率(%) 』备注：运单结算使用的比例是「合同平台服务费率/（1-合同平台服务费率）」
-            this.$set(this.form, "serviceRate", ""); // 服务费税率
+            this.$set(this.form, 'serviceRate', ''); // 服务费税率
             this.$set(
               this.form,
-              "dispatchPoints",
+              'dispatchPoints',
               ((this.form.texPoint / (100 - this.form.texPoint)) * 100).toFixed(
                 2
               )
@@ -1393,7 +1391,7 @@ export default {
             openScanQuickLoadOrder: openScanQuickLoadOrder,
             isInterval: isInterval,
             isRemain: isRemain,
-            isPayfirst: isPayfirst,
+            isPayfirst: isPayfirst
           };
           // eslint-disable-next-line no-undef
           this.form = Object.assign(this.form, extendForm);
@@ -1403,30 +1401,31 @@ export default {
             updateShipment(this.form)
               .then((response) => {
                 this.buttonLoading = false;
-                this.msgSuccess("修改成功");
+                this.msgSuccess('修改成功');
                 this.close();
-                this.$emit("refresh");
+                this.$emit('refresh');
               })
               .catch(() => {
                 this.buttonLoading = false;
               });
           } else {
-            if (!this.form.password && this.form.password !== undefined) {
-              this.form.password = this.initialPassword;
+            // 密码加密
+            if (this.form.password) {
+              this.form.password = btoa(this.form.password);
             }
             addShipment(this.form)
               .then((response) => {
                 this.buttonLoading = false;
-                this.msgSuccess("新增成功");
+                this.msgSuccess('新增成功');
                 this.close();
-                this.$emit("refresh");
+                this.$emit('refresh');
               })
               .catch(() => {
                 this.buttonLoading = false;
               });
           }
         } else {
-          this.msgWarning("填写的信息不完整或有误，请核对后重新提交");
+          this.msgWarning('填写的信息不完整或有误，请核对后重新提交');
         }
       });
     },
@@ -1439,7 +1438,7 @@ export default {
     reviewForm(key) {
       // const flag = this.$refs.ChooseArea.submit();
       const flag = true;
-      this.$refs["form"].validate((valid) => {
+      this.$refs['form'].validate((valid) => {
         if (key === 2 || (valid && flag)) {
           this.authButtonLoading = true;
           this.form.authStatus = key;
@@ -1448,22 +1447,22 @@ export default {
           );
           examine(this.form)
             .then((response) => {
-              this.msgSuccess("操作成功");
+              this.msgSuccess('操作成功');
               this.close();
-              this.$emit("refresh");
+              this.$emit('refresh');
               this.authButtonLoading = false;
             })
             .catch(() => {
               this.authButtonLoading = false;
             });
         } else {
-          this.msgWarning("填写的信息不完整或有误，不能通过审核");
+          this.msgWarning('填写的信息不完整或有误，不能通过审核');
         }
       });
     },
     // 关闭弹窗
     close() {
-      this.$emit("update:open", false);
+      this.$emit('update:open', false);
     },
     // 表单重置
     reset() {
@@ -1508,7 +1507,7 @@ export default {
         isPrepaid: 1, // 是否预付运费，默认是
         isPayfirst: 0,
         repaidType: 0, // 预付运费类型
-        payInvoiceType: "7",
+        payInvoiceType: '7',
         isConsumption: null,
         consumptionUnit: null,
         consumptionMin: null,
@@ -1530,8 +1529,8 @@ export default {
         openAppPermissionControl: 0,
         openProjectMemberView: 0,
         openScanQuickLoadOrder: 1,
-        isInterval: 0, //设置时间间隔
-        isRemain: 0, //设置停留时间
+        isInterval: 0, // 设置时间间隔
+        isRemain: 0, // 设置停留时间
         editDriverActualAmount: 1,
         allowNoAuditDriverToReceive: 1,
         isNeedApplicationForPayment: 0,
@@ -1541,7 +1540,7 @@ export default {
         financialOption: 1,
         // branchCode: null
       };
-      this.resetForm("form");
+      // this.resetForm('form');
       this.changeCheckboxValue();
     },
     // 表单赋值
@@ -1549,7 +1548,7 @@ export default {
       // data.isInterval = data.isInterval || 0;
       // data.isRemain = data.isRemain || 0;
       this.form = data;
-      console.log('formdata', this.form)
+      console.log('formdata', this.form);
       this.form.identificationEffective = praseNumToBoolean(
         this.form.identificationEffective
       );
@@ -1558,7 +1557,7 @@ export default {
         this.branchOptions = [
           {
             code: this.form.branchCode,
-            name: this.form.branchName,
+            name: this.form.branchName
           },
         ];
       }
@@ -1642,12 +1641,12 @@ export default {
         data.identificationEffective
       );
       authRead(data).then((response) => {
-        this.$emit("refresh");
+        this.$emit('refresh');
       });
     },
     // 查询网点列表
     getBranchOptions(query) {
-      if (query !== "") {
+      if (query !== '') {
         this.loading = true;
         getBranchList({
           name: query,
@@ -1662,75 +1661,75 @@ export default {
     // 图片识别后回填
     fillForm(type, data, side) {
       switch (type) {
-        case "id-card":
-          if (side === "front") {
+        case 'id-card':
+          if (side === 'front') {
             if (data.name) {
-              this.$set(this.form, "adminName", data.name);
-              this.$set(this.form, "artificialName", data.name);
+              this.$set(this.form, 'adminName', data.name);
+              this.$set(this.form, 'artificialName', data.name);
             } else {
-              this.$set(this.form, "adminName", "");
-              this.$set(this.form, "artificialName", "");
+              this.$set(this.form, 'adminName', '');
+              this.$set(this.form, 'artificialName', '');
             }
             if (data.number) {
-              this.$set(this.form, "identificationNumber", data.number);
+              this.$set(this.form, 'identificationNumber', data.number);
               this.$set(
                 this.form,
-                "artificialIdentificationNumber",
+                'artificialIdentificationNumber',
                 data.number
               );
             } else {
-              this.$set(this.form, "identificationNumber", "");
-              this.$set(this.form, "artificialIdentificationNumber", "");
+              this.$set(this.form, 'identificationNumber', '');
+              this.$set(this.form, 'artificialIdentificationNumber', '');
             }
             if (data.address) {
-              this.$set(this.form, "area", data.address);
+              this.$set(this.form, 'area', data.address);
             } else {
-              this.$set(this.form, "area", "");
+              this.$set(this.form, 'area', '');
             }
           }
-          if (side === "back") {
+          if (side === 'back') {
             if (data.valid_from) {
               this.$set(
                 this.form,
-                "identificationBeginTime",
+                'identificationBeginTime',
                 this.isPeriodFormate(data.valid_from)
               );
             } else {
-              this.$set(this.form, "identificationBeginTime", "");
+              this.$set(this.form, 'identificationBeginTime', '');
             }
             if (data.valid_to) {
               if (this.isPeriodAlways(data.valid_to)) {
-                this.$set(this.form, "identificationEffective", true);
+                this.$set(this.form, 'identificationEffective', true);
               } else {
                 this.$set(
                   this.form,
-                  "identificationEndTime",
+                  'identificationEndTime',
                   this.isPeriodFormate(data.valid_to)
                 );
               }
             } else {
-              this.$set(this.form, "identificationEffective", false);
-              this.$set(this.form, "identificationEndTime", "");
+              this.$set(this.form, 'identificationEffective', false);
+              this.$set(this.form, 'identificationEndTime', '');
             }
           }
           break;
         // 营业执照
-        case "business-license":
+        case 'business-license':
           // 公司名称
           if (data.name) {
-            this.$set(this.form, "companyName", data.name);
+            this.$set(this.form, 'companyName', data.name);
           } else {
-            this.$set(this.form, "companyName", "");
+            this.$set(this.form, 'companyName', '');
           }
           // 统一信用代码
           if (data.registration_number) {
             this.$set(
               this.form,
-              "organizationCodeNo",
+              'organizationCodeNo',
               data.registration_number
             );
           } else {
-            this.$set(this.form, "organizationCodeNo", "");
+            this.$set(this.form, 'organizationCodeNo', '');
           }
           // 法人姓名
           /* if (data.legal_representative) {
@@ -1747,7 +1746,7 @@ export default {
       if (this.form.telphone) {
         getUserAlreadyExist({
           phoneNum: this.form.telphone,
-          noUserCode: this.form.adminCode,
+          noUserCode: this.form.adminCode
         })
           .then((response) => {
             if (response.code === 500) {

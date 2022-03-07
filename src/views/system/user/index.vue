@@ -256,7 +256,7 @@
           <el-col :span="12">
             <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
               <el-input v-model="form.password" placeholder="请输入用户密码" type="password" />
-              <span class="g-color-blue">(初始密码为{{ initPassword }})</span>
+              <!--<span class="g-color-blue">(初始密码为{{ initPassword }})</span>-->
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -453,7 +453,7 @@ export default {
       // 部门名称
       deptName: undefined,
       // 默认密码
-      initPassword: 'abcd1234@',
+      initPassword: '',
       // 日期范围
       dateRange: [],
       // 状态数据字典

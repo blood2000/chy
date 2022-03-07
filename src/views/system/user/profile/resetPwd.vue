@@ -18,7 +18,6 @@
 
 <script>
 import { updateUserPwd } from '@/api/system/user';
-
 export default {
   data() {
     const equalToPassword = (rule, value, callback) => {
@@ -57,7 +56,7 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid) {
           this.loading = true;
-          updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
+          updateUserPwd(btoa(this.user.oldPassword), btoa(this.user.newPassword)).then(
             response => {
               this.loading = false;
               this.msgSuccess('修改成功, 请重新登陆');

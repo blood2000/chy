@@ -5,10 +5,10 @@
       <el-form-item label="手机号" prop="telphone">
         <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号" :disabled="form.id?true:false" class="width90" clearable @blur="getUserAlreadyExist" />
       </el-form-item>
-      <!--<el-form-item label="密码" prop="password">
-        <el-input v-model="form.password" type="password" :disabled="disable" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width60 mr3" clearable />
-        <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>
-      </el-form-item>-->
+      <el-form-item label="密码"  v-if="!form.id" prop="password">
+        <el-input v-model="form.password" type="password" :disabled="disable" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width100" clearable />
+        <!--<span class="g-color-blue">(初始密码为{{ initialPassword }})</span>-->
+      </el-form-item>
       <el-row :gutter="20">
         <el-col :span="10">
           <el-form-item label="状态">
@@ -181,7 +181,6 @@ import { addInfo, updateInfo, authRead, examine } from '@/api/assets/team';
 import { getUserAlreadyExist } from '@/api/system/user';
 import UploadImage from '@/components/UploadImage/index';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
-
 export default {
   components: {
     UploadImage
@@ -199,7 +198,7 @@ export default {
       buttonLoading: false,
       authButtonLoading: false,
       // 初始密码
-      initialPassword: 'abcd1234@',
+      initialPassword: '',
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: 0 },
@@ -300,6 +299,9 @@ export default {
               this.buttonLoading = false;
             });
           } else {
+            if (this.form.password) {
+              this.form.password = btoa(this.form.password);
+            }
             addInfo(this.form).then(response => {
               this.buttonLoading = false;
               this.msgSuccess('新增成功');
