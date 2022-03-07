@@ -287,7 +287,7 @@
           <span>{{ selectDictLabel(statusOptions, row.authStatus) }}</span>
         </template>
         <template #status="{row}">
-          <i v-show="row.status === '1'" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.status === '1' || row.status === '3'" class="el-icon-error g-color-error mr5" />
           <i v-show="row.status === '0'" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(userStatusOptions, row.status) }}</span>
         </template>
@@ -437,7 +437,8 @@ export default {
       ],
       userStatusOptions: [
         { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '冻结', dictValue: '1' }
+        { dictLabel: '冻结', dictValue: '1' },
+        { dictLabel: '冻结', dictValue: '3' }
       ],
       creditOptions: [
         { dictLabel: '已授信', dictValue: 1 },
@@ -600,7 +601,6 @@ export default {
     },
     /** 修改/详情/审核按钮操作 */
     handleDetail(row, flag) {
-      
       this.$refs.ShipmentDialog.reset();
       const id = row.id;
       getShipment(id).then(response => {
