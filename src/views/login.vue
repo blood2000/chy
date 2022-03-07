@@ -1,7 +1,7 @@
 <template>
   <div class="login pr">
     <div v-if="mosaic" class="mosaic pa">
-      <el-dialog title="修改密码" :visible="mosaic" width="600px" :append-to-body="false" :close-on-click-modal="false" @close="cancel">
+      <el-dialog title="请修改初始密码" :visible="mosaic" width="600px" :append-to-body="false" :close-on-click-modal="false" @close="cancel">
         <div v-if="mosaic">
           <ResetPwd @setSuccess="setSuccess(false)" />
         </div>
@@ -358,7 +358,9 @@ export default {
             if (res.data.is_default_password) {
               this.mosaic = true;
             } else {
-              this.setSuccess(res.data.is_default_password);
+              // this.setSuccess(res.data.is_default_password);
+              this.$store.commit('SET_IS_DEFAULTPASSWORD', res.data.is_default_password);
+              this.$router.push({ path: this.redirect || '/' }).catch(() => {});
             }
           }).catch(() => {
             this.loading = false;
@@ -371,10 +373,17 @@ export default {
     /* 跳转 */
     setSuccess(bool = false) {
       // 修改
-      this.$store.commit('SET_IS_DEFAULTPASSWORD', bool);
-      this.$router.push({ path: this.redirect || '/' }).catch(() => {});
-      this.loading = false;
-      this.mosaic = false;
+      // this.$store.commit('SET_IS_DEFAULTPASSWORD', bool);
+      // this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+      // this.loading = false;
+      // this.mosaic = false;
+      this.cancel();
+      // this.$alert('是否立即重新登陆', {
+      //   confirmButtonText: '确定',
+      //   callback: action => {
+      //     this.cancel();
+      //   }
+      // });
     },
 
     cancel() {

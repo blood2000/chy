@@ -60,7 +60,7 @@ export default {
           updateUserPwd(this.user.oldPassword, this.user.newPassword).then(
             response => {
               this.loading = false;
-              this.msgSuccess('修改成功');
+              this.msgSuccess('修改成功, 请重新登陆');
               this.$emit('setSuccess', response);
             }
           ).catch(() => { this.loading = false; });
