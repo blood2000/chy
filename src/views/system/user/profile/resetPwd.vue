@@ -61,6 +61,9 @@ export default {
               this.loading = false;
               this.msgSuccess('修改成功, 请重新登陆');
               this.$emit('setSuccess', response);
+              this.$store.dispatch('LogOut').then(() => {
+                location.href = '/index';
+              });
             }
           ).catch(() => { this.loading = false; });
         }
