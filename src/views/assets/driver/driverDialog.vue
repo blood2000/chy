@@ -1,6 +1,20 @@
 <template>
-  <el-dialog :class="[{'i-add':title==='新增'},{'i-check':title==='审核'}]" :title="title" :visible="visible" width="800px" append-to-body :close-on-click-modal="disable" @close="cancel">
-    <el-form ref="form" :model="form" :rules="rules" :disabled="disable" label-width="154px">
+  <el-dialog
+    :class="[{ 'i-add': title === '新增' }, { 'i-check': title === '审核' }]"
+    :title="title"
+    :visible="visible"
+    width="800px"
+    append-to-body
+    :close-on-click-modal="disable"
+    @close="cancel"
+  >
+    <el-form
+      ref="form"
+      :model="form"
+      :rules="rules"
+      :disabled="disable"
+      label-width="154px"
+    >
       <el-form-item label="司机类别" prop="driverType">
         <el-select v-model="form.driverType" class="width90">
           <el-option
@@ -16,7 +30,11 @@
         label="所属调度"
         prop="teamCode"
         :rules="[
-          { required: true, message: '所属调度不能为空', trigger: ['change', 'blur'] },
+          {
+            required: true,
+            message: '所属调度不能为空',
+            trigger: ['change', 'blur'],
+          },
         ]"
       >
         <el-select
@@ -40,10 +58,22 @@
         </el-select>
       </el-form-item>
       <el-form-item label="姓名" prop="name">
-        <el-input v-model="form.name" placeholder="支持自动识别" class="width90" clearable />
+        <el-input
+          v-model="form.name"
+          placeholder="支持自动识别"
+          class="width90"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="手机号" prop="telphone">
-        <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号" class="width90" clearable @blur="getUserAlreadyExistMethod" />
+        <el-input
+          ref="telphone"
+          v-model="form.telphone"
+          placeholder="请输入手机号"
+          class="width90"
+          clearable
+          @blur="getUserAlreadyExistMethod"
+        />
       </el-form-item>
       <!-- <el-form-item label="联系人固话" prop="fixedPhone">
         <el-input v-model="form.fixedPhone" placeholder="请输入固话" class="width90" clearable />
@@ -53,10 +83,17 @@
        <!-- <span class="g-color-blue">(初始密码为{{ initialPassword }})</span>-->
       </el-form-item>
       <el-form-item label="身份证号" prop="identificationNumber">
-        <el-input v-model="form.identificationNumber" placeholder="支持自动识别" class="width90" clearable />
+        <el-input
+          v-model="form.identificationNumber"
+          placeholder="支持自动识别"
+          class="width90"
+          clearable
+        />
       </el-form-item>
       <el-form-item prop="identificationEndTime">
-        <label slot="label"><span style="color: #ff4949">* </span>身份证有效期</label>
+        <label slot="label"
+          ><span style="color: #ff4949">* </span>身份证有效期</label
+        >
         <el-date-picker
           v-model="form.identificationBeginTime"
           clearable
@@ -75,7 +112,9 @@
           placeholder="支持自动识别"
           :disabled="!!form.identificationEffective"
         />
-        <el-checkbox v-model="form.identificationEffective">长期有效</el-checkbox>
+        <el-checkbox v-model="form.identificationEffective"
+          >长期有效</el-checkbox
+        >
       </el-form-item>
       <!-- 选择省/市/区 -->
       <!-- <province-city-county
@@ -93,16 +132,33 @@
         }"
       />-->
       <el-form-item label="所在区域" prop="homeAddress">
-        <el-input v-model="form.homeAddress" placeholder="支持自动识别" class="width90" clearable />
+        <el-input
+          v-model="form.homeAddress"
+          placeholder="支持自动识别"
+          class="width90"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="驾驶证号" prop="driverLicense">
-        <el-input v-model="form.driverLicense" placeholder="支持自动识别" class="width90" clearable />
+        <el-input
+          v-model="form.driverLicense"
+          placeholder="支持自动识别"
+          class="width90"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="驾驶证发证机关" prop="issuingOrganizations">
-        <el-input v-model="form.issuingOrganizations" placeholder="支持自动识别" class="width90" clearable />
+        <el-input
+          v-model="form.issuingOrganizations"
+          placeholder="支持自动识别"
+          class="width90"
+          clearable
+        />
       </el-form-item>
       <el-form-item prop="validPeriodTo">
-        <label slot="label"><span style="color: #ff4949">* </span>驾驶证有效期</label>
+        <label slot="label"
+          ><span style="color: #ff4949">* </span>驾驶证有效期</label
+        >
         <el-date-picker
           v-model="form.validPeriodFrom"
           clearable
@@ -124,7 +180,13 @@
         <el-checkbox v-model="form.validPeriodAlways">长期有效</el-checkbox>
       </el-form-item>
       <el-form-item label="驾驶证类型" prop="driverLicenseType">
-        <el-select v-model="form.driverLicenseType" class="width90" placeholder="支持自动识别" filterable clearable>
+        <el-select
+          v-model="form.driverLicenseType"
+          class="width90"
+          placeholder="支持自动识别"
+          filterable
+          clearable
+        >
           <el-option
             v-for="dict in driverLicenseTypeOptions"
             :key="dict.dictValue"
@@ -133,14 +195,28 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item v-show="form.driverType===2" label="工作单位" prop="workCompany">
-        <el-input v-model="form.workCompany" placeholder="请输入工作单位" class="width90" clearable />
+      <el-form-item
+        v-show="form.driverType === 2"
+        label="工作单位"
+        prop="workCompany"
+      >
+        <el-input
+          v-model="form.workCompany"
+          placeholder="请输入工作单位"
+          class="width90"
+          clearable
+        />
       </el-form-item>
       <!-- <el-form-item label="道路运输许可证号" prop="transportPermitNo">
         <el-input v-model="form.transportPermitNo" placeholder="请输入道路运输许可证号" class="width90" clearable />
       </el-form-item> -->
       <el-form-item label="从业资格证" prop="workLicense">
-        <el-input v-model="form.workLicense" placeholder="请输入从业资格证" class="width90" clearable />
+        <el-input
+          v-model="form.workLicense"
+          placeholder="请输入从业资格证"
+          class="width90"
+          clearable
+        />
       </el-form-item>
       <el-form-item label="从业证到期日期" prop="workLicenseDueDate">
         <el-date-picker
@@ -211,12 +287,7 @@
         />
       </el-form-item> -->
       <el-form-item label="是否冻结" prop="isFreeze">
-        <el-select
-          v-model="form.isFreeze"
-          clearable
-          filterable
-          class="width90"
-        >
+        <el-select v-model="form.isFreeze" clearable filterable class="width90">
           <el-option
             v-for="dict in isFreezoneOptions"
             :key="dict.dictValue"
@@ -230,23 +301,51 @@
         <el-row v-if="disable" v-viewer>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
-            <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
+            <upload-image
+              v-model="form.driverLicenseImage"
+              :disabled="disable"
+              image-type="driver-license"
+              icon-type="driver"
+              @fillForm="fillForm"
+            />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(人像面)</p>
-            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
+            <upload-image
+              v-model="form.identificationImage"
+              :disabled="disable"
+              image-type="id-card"
+              side="front"
+              icon-type="idcard"
+              @fillForm="fillForm"
+            />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(国徽面)</p>
-            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
+            <upload-image
+              v-model="form.identificationBackImage"
+              :disabled="disable"
+              image-type="id-card"
+              side="back"
+              icon-type="idcard_back"
+              @fillForm="fillForm"
+            />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
-            <upload-image v-model="form.peopleImage" :disabled="disable" icon-type="driver_head" />
+            <upload-image
+              v-model="form.peopleImage"
+              :disabled="disable"
+              icon-type="driver_head"
+            />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">从业资格证</p>
-            <upload-image v-model="form.workLicenseImage" :disabled="disable" icon-type="work" />
+            <upload-image
+              v-model="form.workLicenseImage"
+              :disabled="disable"
+              icon-type="work"
+            />
           </el-col>
             <el-col :span="7" v-if="title === '审核'">
                 <p class="upload-image-label">人脸识别照片</p>
@@ -256,23 +355,51 @@
         <el-row v-else>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">驾驶证</p>
-            <upload-image v-model="form.driverLicenseImage" :disabled="disable" image-type="driver-license" icon-type="driver" @fillForm="fillForm" />
+            <upload-image
+              v-model="form.driverLicenseImage"
+              :disabled="disable"
+              image-type="driver-license"
+              icon-type="driver"
+              @fillForm="fillForm"
+            />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(人像面)</p>
-            <upload-image v-model="form.identificationImage" :disabled="disable" image-type="id-card" side="front" icon-type="idcard" @fillForm="fillForm" />
+            <upload-image
+              v-model="form.identificationImage"
+              :disabled="disable"
+              image-type="id-card"
+              side="front"
+              icon-type="idcard"
+              @fillForm="fillForm"
+            />
           </el-col>
           <el-col :span="7" class="mb">
             <p class="upload-image-label">身份证(国徽面)</p>
-            <upload-image v-model="form.identificationBackImage" :disabled="disable" image-type="id-card" side="back" icon-type="idcard_back" @fillForm="fillForm" />
+            <upload-image
+              v-model="form.identificationBackImage"
+              :disabled="disable"
+              image-type="id-card"
+              side="back"
+              icon-type="idcard_back"
+              @fillForm="fillForm"
+            />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">司机照片</p>
-            <upload-image v-model="form.peopleImage" :disabled="disable" icon-type="driver_head" />
+            <upload-image
+              v-model="form.peopleImage"
+              :disabled="disable"
+              icon-type="driver_head"
+            />
           </el-col>
           <el-col :span="7">
             <p class="upload-image-label">从业资格证</p>
-            <upload-image v-model="form.workLicenseImage" :disabled="disable" icon-type="work" />
+            <upload-image
+              v-model="form.workLicenseImage"
+              :disabled="disable"
+              icon-type="work"
+            />
           </el-col>
         </el-row>
       </el-form-item>
@@ -282,15 +409,43 @@
       新增独立司机的时候, 必须且仅能绑定一辆车, 可以绑定已经存在的车(未被其他司机绑定)并修改, 也可以绑定不存在的车(等于新增一辆车)
       修改独立司机的时候, 可以修改他名下车辆的信息, 不能新增/删除车辆(在管理页新增/删除)
     -->
-    <el-form ref="vehicleForm" :model="vehicleForm" :rules="vehicleRules" label-width="154px">
-      <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
+    <el-form
+      ref="vehicleForm"
+      :model="vehicleForm"
+      :rules="vehicleRules"
+      label-width="154px"
+    >
+      <template
+        v-if="
+          form.driverType == 1 &&
+          (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))
+        "
+      >
         <h5 class="g-card-title g-strong mb20 ml10">
           车辆信息
           <div class="h5-divider" style="width: 91%" />
         </h5>
-        <el-form-item v-if="title === '新增'" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change', 'blur'] }]">
+        <el-form-item
+          v-if="title === '新增'"
+          label="车牌号"
+          prop="licenseNumber"
+          :rules="[
+            {
+              required: true,
+              message: '车牌号不能为空',
+              trigger: ['change', 'blur'],
+            },
+          ]"
+        >
           <!-- 新增车辆 -->
-          <el-input v-if="addVehicleType === 0" v-model="vehicleForm.licenseNumber" :disabled="disable" placeholder="支持自动识别" class="width70" clearable />
+          <el-input
+            v-if="addVehicleType === 0"
+            v-model="vehicleForm.licenseNumber"
+            :disabled="disable"
+            placeholder="支持自动识别"
+            class="width70"
+            clearable
+          />
           <!-- 选择已有车辆 -->
           <el-select
             v-else
@@ -315,7 +470,14 @@
             />
           </el-select>
           <!-- 切换按钮 -->
-          <el-button type="text" style="width: 20%;text-decoration: underline;" @click="changeAddVehicleType">{{ addVehicleType === 0 ? '选择已有车辆' : '手动添加车辆' }}</el-button>
+          <el-button
+            type="text"
+            style="width: 20%; text-decoration: underline"
+            @click="changeAddVehicleType"
+            >{{
+              addVehicleType === 0 ? "选择已有车辆" : "手动添加车辆"
+            }}</el-button
+          >
         </el-form-item>
         <!-- <el-form-item v-else-if="title !== '新增' && vehicleInfoList.length > 0" label="车牌号" prop="licenseNumber" :rules="[{ required: true, message: '车牌号不能为空', trigger: ['change','blur'] }]">
           <el-select v-model="vehicleForm.licenseNumber" class="width90" filterable @change="changeVehicle" @focus="saveVehicle">
@@ -327,11 +489,26 @@
             />
           </el-select>
         </el-form-item> -->
-        <el-tabs v-else-if="title !== '新增' && vehicleInfoList.length > 0" v-model="activeName" class="mb10" @tab-click="handleClickTab">
-          <el-tab-pane v-for="item in vehicleInfoList" :key="item.id" :label="item.licenseNumber" :name="item.licenseNumber" />
+        <el-tabs
+          v-else-if="title !== '新增' && vehicleInfoList.length > 0"
+          v-model="activeName"
+          class="mb10"
+          @tab-click="handleClickTab"
+        >
+          <el-tab-pane
+            v-for="item in vehicleInfoList"
+            :key="item.id"
+            :label="item.licenseNumber"
+            :name="item.licenseNumber"
+          />
         </el-tabs>
       </template>
-      <template v-if="form.driverType == 1 && (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))">
+      <template
+        v-if="
+          form.driverType == 1 &&
+          (title === '新增' || (title !== '新增' && vehicleInfoList.length > 0))
+        "
+      >
         <!-- <el-form-item label="车辆归属类型" prop="vehicleAscriptionType">
           <el-select v-model="vehicleForm.vehicleAscriptionType" placeholder="支持自动识别" class="width90" filterable clearable :disabled="disable">
             <el-option
@@ -342,8 +519,24 @@
             />
           </el-select>
         </el-form-item> -->
-        <el-form-item label="车牌颜色" prop="vehicleLicenseColorCode" :rules="[{ required: true, message: '车牌颜色不能为空', trigger: ['change', 'blur'] }]">
-          <el-select v-model="vehicleForm.vehicleLicenseColorCode" class="width90" filterable clearable :disabled="disable">
+        <el-form-item
+          label="车牌颜色"
+          prop="vehicleLicenseColorCode"
+          :rules="[
+            {
+              required: true,
+              message: '车牌颜色不能为空',
+              trigger: ['change', 'blur'],
+            },
+          ]"
+        >
+          <el-select
+            v-model="vehicleForm.vehicleLicenseColorCode"
+            class="width90"
+            filterable
+            clearable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in licenseColorOptions"
               :key="dict.dictValue"
@@ -352,8 +545,25 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="车辆类型" prop="vehicleTypeCode" :rules="[{ required: true, message: '车辆类型不能为空', trigger: ['change', 'blur'] }]">
-          <el-select v-model="vehicleForm.vehicleTypeCode" placeholder="支持自动识别" class="width90" clearable filterable :disabled="disable">
+        <el-form-item
+          label="车辆类型"
+          prop="vehicleTypeCode"
+          :rules="[
+            {
+              required: true,
+              message: '车辆类型不能为空',
+              trigger: ['change', 'blur'],
+            },
+          ]"
+        >
+          <el-select
+            v-model="vehicleForm.vehicleTypeCode"
+            placeholder="支持自动识别"
+            class="width90"
+            clearable
+            filterable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in vehicleTypeOptions"
               :key="dict.dictValue"
@@ -362,11 +572,43 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="车辆识别码" prop="chassisNumber" :rules="[{ required: true, message: '车辆识别码不能为空', trigger: ['change', 'blur'] }]">
-          <el-input v-model="vehicleForm.chassisNumber" placeholder="支持自动识别" class="width90" clearable :disabled="disable" />
+        <el-form-item
+          label="车辆识别码"
+          prop="chassisNumber"
+          :rules="[
+            {
+              required: true,
+              message: '车辆识别码不能为空',
+              trigger: ['change', 'blur'],
+            },
+          ]"
+        >
+          <el-input
+            v-model="vehicleForm.chassisNumber"
+            placeholder="支持自动识别"
+            class="width90"
+            clearable
+            :disabled="disable"
+          />
         </el-form-item>
-        <el-form-item label="车辆能源类型" prop="vehicleEnergyType" :rules="[{ required: true, message: '车辆能源类型不能为空', trigger: ['change', 'blur'] }]">
-          <el-select v-model="vehicleForm.vehicleEnergyType" class="width90" filterable clearable :disabled="disable">
+        <el-form-item
+          label="车辆能源类型"
+          prop="vehicleEnergyType"
+          :rules="[
+            {
+              required: true,
+              message: '车辆能源类型不能为空',
+              trigger: ['change', 'blur'],
+            },
+          ]"
+        >
+          <el-select
+            v-model="vehicleForm.vehicleEnergyType"
+            class="width90"
+            filterable
+            clearable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in energyTypesOptions"
               :key="dict.dictValue"
@@ -375,11 +617,26 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="道路运输许可证号" prop="roadTransportCertificateNumber">
-          <el-input v-model="vehicleForm.roadTransportCertificateNumber" placeholder="请输入道路运输许可证号" class="width90" clearable :disabled="disable" />
+        <el-form-item
+          label="道路运输许可证号"
+          prop="roadTransportCertificateNumber"
+        >
+          <el-input
+            v-model="vehicleForm.roadTransportCertificateNumber"
+            placeholder="请输入道路运输许可证号"
+            class="width90"
+            clearable
+            :disabled="disable"
+          />
         </el-form-item>
         <el-form-item label="车身颜色" prop="vehicleColorCode">
-          <el-select v-model="vehicleForm.vehicleColorCode" class="width90" filterable clearable :disabled="disable">
+          <el-select
+            v-model="vehicleForm.vehicleColorCode"
+            class="width90"
+            filterable
+            clearable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in carBodyColorOptions"
               :key="dict.dictValue"
@@ -389,7 +646,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车长" prop="vehicleLength">
-          <el-select v-model="vehicleForm.vehicleLength" placeholder="请选择车长" class="width90" clearable filterable :disabled="disable">
+          <el-select
+            v-model="vehicleForm.vehicleLength"
+            placeholder="请选择车长"
+            class="width90"
+            clearable
+            filterable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in vehicleLengthOptions"
               :key="dict.dictValue"
@@ -399,7 +663,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车宽" prop="vehicleWidth">
-          <el-select v-model="vehicleForm.vehicleWidth" placeholder="请选择车宽" class="width90" clearable filterable :disabled="disable">
+          <el-select
+            v-model="vehicleForm.vehicleWidth"
+            placeholder="请选择车宽"
+            class="width90"
+            clearable
+            filterable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in vehicleWidthOptions"
               :key="dict.dictValue"
@@ -409,7 +680,14 @@
           </el-select>
         </el-form-item>
         <el-form-item label="车高" prop="vehicleHeight">
-          <el-select v-model="vehicleForm.vehicleHeight" placeholder="请选择车高" class="width90" clearable filterable :disabled="disable">
+          <el-select
+            v-model="vehicleForm.vehicleHeight"
+            placeholder="请选择车高"
+            class="width90"
+            clearable
+            filterable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in vehicleHeightOptions"
               :key="dict.dictValue"
@@ -423,21 +701,63 @@
           prop="vehicleTotalWeight"
           :rules="[
             { required: true, message: '车辆总重量不能为空', trigger: 'blur' },
-            { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆总重量'), trigger: ['blur', 'change'] }
+            {
+              validator: (rules, value, callback) =>
+                formValidate.greaterThanZero(
+                  rules,
+                  value,
+                  callback,
+                  '车辆总重量'
+                ),
+              trigger: ['blur', 'change'],
+            },
           ]"
         >
-          <el-input-number v-model="vehicleForm.vehicleTotalWeight" :controls="false" :min="0" :precision="3" :max="1000000" placeholder="请输入车辆总重量" class="width90 unit-item" clearable :disabled="disable" />
+          <el-input-number
+            v-model="vehicleForm.vehicleTotalWeight"
+            :controls="false"
+            :min="0"
+            :precision="3"
+            :max="1000000"
+            placeholder="请输入车辆总重量"
+            class="width90 unit-item"
+            clearable
+            :disabled="disable"
+          />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
         <el-form-item
           label="车辆可载重量"
           prop="vehicleLoadWeight"
           :rules="[
-            { required: true, message: '车辆可载重量不能为空', trigger: 'blur' },
-            { validator: (rules, value, callback) => formValidate.greaterThanZero(rules, value, callback, '车辆可载重量'), trigger: ['blur', 'change'] }
+            {
+              required: true,
+              message: '车辆可载重量不能为空',
+              trigger: 'blur',
+            },
+            {
+              validator: (rules, value, callback) =>
+                formValidate.greaterThanZero(
+                  rules,
+                  value,
+                  callback,
+                  '车辆可载重量'
+                ),
+              trigger: ['blur', 'change'],
+            },
           ]"
         >
-          <el-input-number v-model="vehicleForm.vehicleLoadWeight" :controls="false" :min="0" :precision="3" :max="1000000" placeholder="请输入车辆可载重量" class="width90 unit-item" clearable :disabled="disable" />
+          <el-input-number
+            v-model="vehicleForm.vehicleLoadWeight"
+            :controls="false"
+            :min="0"
+            :precision="3"
+            :max="1000000"
+            placeholder="请输入车辆可载重量"
+            class="width90 unit-item"
+            clearable
+            :disabled="disable"
+          />
           <span class="unit-span g-color-gray">吨</span>
         </el-form-item>
         <!-- <el-form-item label="车辆可载平方" prop="vehicleLoadVolume">
@@ -445,7 +765,17 @@
           <span class="unit-span g-color-gray">m²</span>
         </el-form-item> -->
         <el-form-item label="车辆可载立方" prop="vehicleRemainingLoadVolume">
-          <el-input-number v-model="vehicleForm.vehicleRemainingLoadVolume" :controls="false" :min="0" :precision="3" :max="10000000" placeholder="请输入车辆可载立方" class="width90 unit-item" clearable :disabled="disable" />
+          <el-input-number
+            v-model="vehicleForm.vehicleRemainingLoadVolume"
+            :controls="false"
+            :min="0"
+            :precision="3"
+            :max="10000000"
+            placeholder="请输入车辆可载立方"
+            class="width90 unit-item"
+            clearable
+            :disabled="disable"
+          />
           <span class="unit-span g-color-gray">m³</span>
         </el-form-item>
         <!-- <el-form-item label="发动机号" prop="engineNumber">
@@ -458,7 +788,14 @@
           <el-input v-model="vehicleForm.vehiclePower" placeholder="请输入功率" class="width90" clearable :disabled="disable" />
         </el-form-item> -->
         <el-form-item label="轴数" prop="axesNumber">
-          <el-select v-model="vehicleForm.axesNumber" placeholder="请选择轴数" class="width90" clearable filterable :disabled="disable">
+          <el-select
+            v-model="vehicleForm.axesNumber"
+            placeholder="请选择轴数"
+            class="width90"
+            clearable
+            filterable
+            :disabled="disable"
+          >
             <el-option
               v-for="dict in axisTypeOptions"
               :key="dict.dictValue"
@@ -486,37 +823,81 @@
           <el-row v-if="disable" v-viewer>
             <el-col :span="7" class="mb">
               <p class="upload-image-label">行驶证</p>
-              <upload-image v-model="vehicleForm.vehicleLicenseImg" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
+              <upload-image
+                v-model="vehicleForm.vehicleLicenseImg"
+                :disabled="disable"
+                image-type="vehicle-license"
+                side="front"
+                icon-type="vehicle"
+                @fillForm="fillForm"
+              />
             </el-col>
             <el-col :span="7" class="mb">
               <p class="upload-image-label">行驶证副页</p>
-              <upload-image v-model="vehicleForm.vehicleLicenseSecondImg" :disabled="disable" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
+              <upload-image
+                v-model="vehicleForm.vehicleLicenseSecondImg"
+                :disabled="disable"
+                image-type="vehicle-license"
+                side="back"
+                icon-type="vehicle_back"
+                @fillForm="fillForm"
+              />
             </el-col>
             <el-col :span="7" class="mb">
               <p class="upload-image-label">道路运输许可证</p>
-              <upload-image v-model="vehicleForm.roadTransportCertificateImg" :disabled="disable" icon-type="transport" />
+              <upload-image
+                v-model="vehicleForm.roadTransportCertificateImg"
+                :disabled="disable"
+                icon-type="transport"
+              />
             </el-col>
             <el-col :span="7">
               <p class="upload-image-label">车头正面照</p>
-              <upload-image v-model="vehicleForm.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
+              <upload-image
+                v-model="vehicleForm.vehicleImage"
+                :disabled="disable"
+                icon-type="vehicle_head"
+              />
             </el-col>
           </el-row>
           <el-row v-else>
             <el-col :span="7" class="mb">
               <p class="upload-image-label">行驶证</p>
-              <upload-image v-model="vehicleForm.vehicleLicenseImg" :disabled="disable" image-type="vehicle-license" side="front" icon-type="vehicle" @fillForm="fillForm" />
+              <upload-image
+                v-model="vehicleForm.vehicleLicenseImg"
+                :disabled="disable"
+                image-type="vehicle-license"
+                side="front"
+                icon-type="vehicle"
+                @fillForm="fillForm"
+              />
             </el-col>
             <el-col :span="7" class="mb">
               <p class="upload-image-label">行驶证副页</p>
-              <upload-image v-model="vehicleForm.vehicleLicenseSecondImg" :disabled="disable" image-type="vehicle-license" side="back" icon-type="vehicle_back" @fillForm="fillForm" />
+              <upload-image
+                v-model="vehicleForm.vehicleLicenseSecondImg"
+                :disabled="disable"
+                image-type="vehicle-license"
+                side="back"
+                icon-type="vehicle_back"
+                @fillForm="fillForm"
+              />
             </el-col>
             <el-col :span="7" class="mb">
               <p class="upload-image-label">道路运输许可证</p>
-              <upload-image v-model="vehicleForm.roadTransportCertificateImg" :disabled="disable" icon-type="transport" />
+              <upload-image
+                v-model="vehicleForm.roadTransportCertificateImg"
+                :disabled="disable"
+                icon-type="transport"
+              />
             </el-col>
             <el-col :span="7">
               <p class="upload-image-label">车头正面照</p>
-              <upload-image v-model="vehicleForm.vehicleImage" :disabled="disable" icon-type="vehicle_head" />
+              <upload-image
+                v-model="vehicleForm.vehicleImage"
+                :disabled="disable"
+                icon-type="vehicle_head"
+              />
             </el-col>
           </el-row>
         </el-form-item>
@@ -536,10 +917,84 @@
         />
       </el-form-item>
     </el-form>
-
-    <div v-if="title === '新增' || title === '编辑'" slot="footer" class="dialog-footer">
-      <el-button v-if="title === '新增'" v-hasPermi="['assets:driver:addAndExamine']" type="primary" :loading="buttonLoading" @click="submitForm(1)">确定并审核</el-button>
-      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
+    <!-- 银行卡信息 -->
+    <block v-for="(item, index) in form.bankCardTemp" :key="index">
+      <el-form label-width="154px">
+        <h5 class="g-card-title g-strong mb20 ml10">
+          银行卡信息
+          <div class="h5-divider" style="width: 89%" />
+        </h5>
+        <el-form-item label="开户姓名" prop="name">
+          <el-input
+            v-model="item.name"
+            class="width90"
+            disabled
+          />
+        </el-form-item>
+        <el-form-item label="银行卡号" prop="name">
+          <el-input
+            v-model="item.account"
+            class="width90"
+            disabled
+          />
+        </el-form-item>
+        <el-form-item label="开户银行" prop="name">
+          <el-input
+            v-model="item.bankName"
+            class="width90"
+            disabled
+          />
+        </el-form-item>
+        <el-form-item label="绑定手机号" prop="telphone">
+          <el-input
+            v-model="item.mobile"
+            class="width90"
+            disabled
+          />
+        </el-form-item>
+        <el-form-item label="网点" prop="name">
+          <el-input
+            v-model="item.bankBranch"
+            placeholder="-"
+            class="width90"
+            disabled
+          />
+        </el-form-item>
+        <province-city-county
+          ref="ChooseArea"
+          :label-name="'开户城市'"
+          :visible="visible"
+          :disabled="true"
+          :label-width="'154px'"
+          :required="false"
+          :prop-province-code="item.province"
+          :prop-city-code="item.city"
+          :no-county="true"
+          @refresh="
+            (data) => {
+              form.province = data.provinceCode;
+              form.city = data.cityCode;
+            }
+          "
+        />
+      </el-form>
+    </block>
+    <div
+      v-if="title === '新增' || title === '编辑'"
+      slot="footer"
+      class="dialog-footer"
+    >
+      <el-button
+        v-if="title === '新增'"
+        v-hasPermi="['assets:driver:addAndExamine']"
+        type="primary"
+        :loading="buttonLoading"
+        @click="submitForm(1)"
+        >确定并审核</el-button
+      >
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm"
+        >确 定</el-button
+      >
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
@@ -551,26 +1006,32 @@
 </template>
 
 <script>
-import { addDriver, updateDriver, authRead, examine } from '@/api/assets/driver';
-import { getProvinceList } from '@/api/system/area';
-import { listInfo } from '@/api/assets/team';
-import { getUserAlreadyExist } from '@/api/system/user';
-import { listInfo as vehicleListInfo } from '@/api/assets/vehicle';
-import UploadImage from '@/components/UploadImage/index';
+import {
+  addDriver,
+  updateDriver,
+  authRead,
+  examine,
+} from "@/api/assets/driver";
+import { getProvinceList } from "@/api/system/area";
+import { listInfo } from "@/api/assets/team";
+import { getUserAlreadyExist } from "@/api/system/user";
+import { listInfo as vehicleListInfo } from "@/api/assets/vehicle";
+import UploadImage from "@/components/UploadImage/index";
 // import ProvinceCityCounty from '@/components/ProvinceCityCounty';
-import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
+import { praseBooleanToNum, praseNumToBoolean } from "@/utils/ddc";
+import ProvinceCityCounty from "@/components/ProvinceCityCounty";
 export default {
   components: {
-    UploadImage
-    // ProvinceCityCounty
+    UploadImage,
+    ProvinceCityCounty,
   },
   props: {
     title: {
       type: String,
-      default: ''
+      default: "",
     },
     open: Boolean,
-    disable: Boolean
+    disable: Boolean,
   },
   data() {
     return {
@@ -581,25 +1042,25 @@ export default {
       initialPassword: '',
       // 司机类别字典
       driverTypeOptions: [
-        { dictLabel: '零散司机', dictValue: 1 },
-        { dictLabel: '雇佣司机', dictValue: 2 }
+        { dictLabel: "零散司机", dictValue: 1 },
+        { dictLabel: "雇佣司机", dictValue: 2 },
       ],
       // 审核状态字典
       statusOptions: [
-        { dictLabel: '未审核', dictValue: 0 },
-        { dictLabel: '审核中', dictValue: 1 },
-        { dictLabel: '审核未通过', dictValue: 2 },
-        { dictLabel: '审核通过', dictValue: 3 }
+        { dictLabel: "未审核", dictValue: 0 },
+        { dictLabel: "审核中", dictValue: 1 },
+        { dictLabel: "审核未通过", dictValue: 2 },
+        { dictLabel: "审核通过", dictValue: 3 },
       ],
       // 是否冻结字典
       isFreezoneOptions: [
-        { dictLabel: '正常', dictValue: 0 },
-        { dictLabel: '冻结', dictValue: 1 }
+        { dictLabel: "正常", dictValue: 0 },
+        { dictLabel: "冻结", dictValue: 1 },
       ],
       // 是否
       isOption: [
-        { dictLabel: '否', dictValue: 0 },
-        { dictLabel: '是', dictValue: 1 }
+        { dictLabel: "否", dictValue: 0 },
+        { dictLabel: "是", dictValue: 1 },
       ],
       // 网点编码字典
       branchCodeOptions: [],
@@ -614,22 +1075,22 @@ export default {
       // 车身颜色字典
       carBodyColorOptions: [],
       // 车辆类型字典
-  	  vehicleTypeOptions: [],
+      vehicleTypeOptions: [],
       // 能源类型字典
-  	  energyTypesOptions: [],
-  	  // 车长字典
-  	  vehicleLengthOptions: [],
-  	  // 车宽字典
-  	  vehicleWidthOptions: [],
-  	  // 车高字典
-  	  vehicleHeightOptions: [],
-  	  // 轴数字典
-  	  axisTypeOptions: [],
-  	  // 车辆归属类型字典
-  	  vehicleAscriptionTypeOptions: [
-  	    { dictLabel: '自有', dictValue: 0 },
-  	    { dictLabel: '加盟', dictValue: 1 }
-  	  ],
+      energyTypesOptions: [],
+      // 车长字典
+      vehicleLengthOptions: [],
+      // 车宽字典
+      vehicleWidthOptions: [],
+      // 车高字典
+      vehicleHeightOptions: [],
+      // 轴数字典
+      axisTypeOptions: [],
+      // 车辆归属类型字典
+      vehicleAscriptionTypeOptions: [
+        { dictLabel: "自有", dictValue: 0 },
+        { dictLabel: "加盟", dictValue: 1 },
+      ],
       // 车队列表
       loading: false,
       teamOptions: [],
@@ -639,27 +1100,78 @@ export default {
       // 表单校验
       rules: {
         name: [
-          { required: true, message: '姓名不能为空', trigger: ['blur', 'change'] },
-          { validator: this.formValidate.name, trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: "姓名不能为空",
+            trigger: ["blur", "change"],
+          },
+          { validator: this.formValidate.name, trigger: ["blur", "change"] },
         ],
         telphone: [
-          { required: true, message: '手机号不能为空', trigger: 'blur' },
-          { validator: this.formValidate.telphone, trigger: 'blur' }
+          { required: true, message: "手机号不能为空", trigger: "blur" },
+          { validator: this.formValidate.telphone, trigger: "blur" },
         ],
         identificationNumber: [
-          { required: true, message: '身份证号不能为空', trigger: ['blur', 'change'] },
-          { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: "身份证号不能为空",
+            trigger: ["blur", "change"],
+          },
+          { validator: this.formValidate.idCard, trigger: ["blur", "change"] },
         ],
         identificationEndTime: [
-          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.identificationBeginTime, this.form.identificationEffective), trigger: ['change', 'blur'] },
-          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.identificationEffective), trigger: ['change', 'blur'] }
+          {
+            validator: (rules, value, callback) =>
+              this.formValidate.idCardValidate(
+                rules,
+                value,
+                callback,
+                this.form.identificationBeginTime,
+                this.form.identificationEffective
+              ),
+            trigger: ["change", "blur"],
+          },
+          {
+            validator: (rules, value, callback) =>
+              this.formValidate.isExpired(
+                rules,
+                value,
+                callback,
+                this.form.identificationEffective
+              ),
+            trigger: ["change", "blur"],
+          },
         ],
         issuingOrganizations: [
-          { required: true, message: '驾驶证发证机关不能为空', trigger: ['blur', 'change'] }
+          {
+            required: true,
+            message: "驾驶证发证机关不能为空",
+            trigger: ["blur", "change"],
+          },
         ],
         validPeriodTo: [
-          { validator: (rules, value, callback) => this.formValidate.idCardValidate(rules, value, callback, this.form.validPeriodFrom, this.form.validPeriodAlways, '驾驶证'), trigger: ['change', 'blur'] },
-          { validator: (rules, value, callback) => this.formValidate.isExpired(rules, value, callback, this.form.validPeriodAlways), trigger: ['change', 'blur'] }
+          {
+            validator: (rules, value, callback) =>
+              this.formValidate.idCardValidate(
+                rules,
+                value,
+                callback,
+                this.form.validPeriodFrom,
+                this.form.validPeriodAlways,
+                "驾驶证"
+              ),
+            trigger: ["change", "blur"],
+          },
+          {
+            validator: (rules, value, callback) =>
+              this.formValidate.isExpired(
+                rules,
+                value,
+                callback,
+                this.form.validPeriodAlways
+              ),
+            trigger: ["change", "blur"],
+          },
         ],
         /*  workCompany: [
           { required: true, message: '工作单位不能为空', trigger: 'blur' }
@@ -674,13 +1186,13 @@ export default {
       vehicleRules: {
         licenseNumber: [
           // { validator: this.formValidate.plateNo, trigger: ['blur', 'change'] }
-        ]
+        ],
       },
       // 远程搜索调度者分页
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        name: null
+        name: null,
       },
       // 一个司机绑定多个车辆list
       vehicleInfoList: [],
@@ -691,13 +1203,13 @@ export default {
       vehicleQueryParams: {
         pageNum: 1,
         pageSize: 10,
-        licenseNumber: null
+        licenseNumber: null,
       },
       // 添加车辆方式
       addVehicleType: 0, // 0input  1select
       // 当前选中tab
       activeName: null,
-      phoneUniq: true
+      phoneUniq: true,
     };
   },
   computed: {
@@ -706,9 +1218,9 @@ export default {
         return this.open;
       },
       set(v) {
-        this.$emit('update:open', v);
-      }
-    }
+        this.$emit("update:open", v);
+      },
+    },
   },
   created() {
     this.getDictsOptions();
@@ -721,7 +1233,7 @@ export default {
         this.provinceCodeOptions = response.rows;
       });
       // 驾驶证类型
-      this.getDicts('driver_license_type').then(response => {
+      this.getDicts("driver_license_type").then((response) => {
         this.driverLicenseTypeOptions = response.data;
       });
       // 车牌类型
@@ -729,54 +1241,58 @@ export default {
         this.licensePlateTypeOptions = response.data;
       });*/
       // 车牌颜色
-      this.getDicts('licenseColor').then(response => {
+      this.getDicts("licenseColor").then((response) => {
         this.licenseColorOptions = response.data;
       });
       // 车身颜色
-      this.getDicts('CarBodyColor').then(response => {
+      this.getDicts("CarBodyColor").then((response) => {
         this.carBodyColorOptions = response.data;
       });
       // 车辆类型
-      this.getDicts('vehicleClassification').then(response => {
+      this.getDicts("vehicleClassification").then((response) => {
         this.vehicleTypeOptions = response.data;
       });
       // 能源类型
-      this.getDicts('energyTypes').then(response => {
+      this.getDicts("energyTypes").then((response) => {
         this.energyTypesOptions = response.data;
       });
       // 车长
-      this.getDicts('vehicleLength').then(response => {
+      this.getDicts("vehicleLength").then((response) => {
         this.vehicleLengthOptions = response.data;
       });
       // 车宽
-      this.getDicts('vehicleWidth').then(response => {
+      this.getDicts("vehicleWidth").then((response) => {
         this.vehicleWidthOptions = response.data;
       });
       // 车高
-      this.getDicts('vehicleHeight').then(response => {
+      this.getDicts("vehicleHeight").then((response) => {
         this.vehicleHeightOptions = response.data;
       });
       // 轴数
-      this.getDicts('axis_type').then(response => {
+      this.getDicts("axis_type").then((response) => {
         this.axisTypeOptions = response.data;
       });
     },
     /** 提交按钮 */
-    submitForm: function(isReview) {
+    submitForm: function (isReview) {
       // const flag = this.$refs.ChooseArea.submit();
       // 手机号判断
       if (!this.phoneUniq) {
         return;
       }
       const flag = true;
-      this.$refs['form'].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (valid && flag) {
-          this.$refs['vehicleForm'].validate(valid => {
+          this.$refs["vehicleForm"].validate((valid) => {
             if (valid) {
               this.buttonLoading = true;
               const driver = { ...this.form };
-              driver.identificationEffective = praseBooleanToNum(driver.identificationEffective);
-              driver.validPeriodAlways = praseBooleanToNum(driver.validPeriodAlways);
+              driver.identificationEffective = praseBooleanToNum(
+                driver.identificationEffective
+              );
+              driver.validPeriodAlways = praseBooleanToNum(
+                driver.validPeriodAlways
+              );
 
               if (driver.id) {
                 if (driver.driverType === 1) {
@@ -785,14 +1301,16 @@ export default {
                 } else {
                   driver.vehicleInfoList = null;
                 }
-                updateDriver(driver).then(response => {
-                  this.buttonLoading = false;
-                  this.msgSuccess('修改成功');
-                  this.close();
-                  this.$emit('refresh');
-                }).catch(() => {
-                  this.buttonLoading = false;
-                });
+                updateDriver(driver)
+                  .then((response) => {
+                    this.buttonLoading = false;
+                    this.msgSuccess("修改成功");
+                    this.close();
+                    this.$emit("refresh");
+                  })
+                  .catch(() => {
+                    this.buttonLoading = false;
+                  });
               } else {
                 if (driver.driverType === 1) {
                   driver.vehicleInfo = { ...this.vehicleForm };
@@ -817,46 +1335,52 @@ export default {
                 });
               }
             } else {
-              this.msgWarning('填写的信息不完整或有误，请核对后重新提交');
+              this.msgWarning("填写的信息不完整或有误，请核对后重新提交");
             }
           });
         } else {
-          this.msgWarning('填写的信息不完整或有误，请核对后重新提交');
+          this.msgWarning("填写的信息不完整或有误，请核对后重新提交");
         }
       });
     },
     /** 已读 */
     authRead(data) {
-      authRead(data).then(response => {
-        this.$emit('refresh');
+      authRead(data).then((response) => {
+        this.$emit("refresh");
       });
     },
     /** 审核通过/未通过按钮 */
     reviewForm(key) {
       // const flag = this.$refs.ChooseArea.submit();
       const flag = true;
-      this.$refs['form'].validate(valid => {
+      this.$refs["form"].validate((valid) => {
         if (key === 2 || (valid && flag)) {
-          this.$refs['vehicleForm'].validate(valid => {
+          this.$refs["vehicleForm"].validate((valid) => {
             if (key === 2 || valid) {
               this.authButtonLoading = true;
               this.form.authStatus = key;
-              this.form.identificationEffective = praseBooleanToNum(this.form.identificationEffective);
-              this.form.validPeriodAlways = praseBooleanToNum(this.form.validPeriodAlways);
-              examine(this.form).then(response => {
-                this.msgSuccess('操作成功');
-                this.close();
-                this.$emit('refresh');
-                this.authButtonLoading = false;
-              }).catch(() => {
-                this.authButtonLoading = false;
-              });
+              this.form.identificationEffective = praseBooleanToNum(
+                this.form.identificationEffective
+              );
+              this.form.validPeriodAlways = praseBooleanToNum(
+                this.form.validPeriodAlways
+              );
+              examine(this.form)
+                .then((response) => {
+                  this.msgSuccess("操作成功");
+                  this.close();
+                  this.$emit("refresh");
+                  this.authButtonLoading = false;
+                })
+                .catch(() => {
+                  this.authButtonLoading = false;
+                });
             } else {
-              this.msgWarning('填写的信息不完整或有误，不能通过审核');
+              this.msgWarning("填写的信息不完整或有误，不能通过审核");
             }
           });
         } else {
-          this.msgWarning('填写的信息不完整或有误，不能通过审核');
+          this.msgWarning("填写的信息不完整或有误，不能通过审核");
         }
       });
     },
@@ -867,7 +1391,7 @@ export default {
     },
     // 关闭弹窗
     close() {
-      this.$emit('update:open', false);
+      this.$emit("update:open", false);
     },
     // 表单重置
     reset() {
@@ -925,9 +1449,9 @@ export default {
         identificationBackImage: null,
         peopleImage: null,
         workLicenseImage: null,
-        authRemark: null
+        authRemark: null,
       };
-      this.resetForm('form');
+      this.resetForm("form");
       this.resetVehicle();
     },
     resetVehicle() {
@@ -937,7 +1461,7 @@ export default {
         vehicleOwnerCode: null,
         vehicleAscriptionType: null,
         classificationCode: null,
-        vehicleLicenseColorCode: '1', // 车牌颜色默认为黄色
+        vehicleLicenseColorCode: "1", // 车牌颜色默认为黄色
         vehicleColorCode: null,
         vehicleTypeCode: null,
         vehicleEnergyType: null,
@@ -967,32 +1491,43 @@ export default {
         vehicleLicenseImg: null,
         vehicleLicenseSecondImg: null,
         roadTransportCertificateNumber: null,
-        roadTransportCertificateImg: null
+        roadTransportCertificateImg: null,
       };
-      this.resetForm('vehicleForm');
+      this.resetForm("vehicleForm");
     },
     // 表单赋值
     setForm(data) {
       this.form = data;
-      if (data.vehicleInfoList && data.vehicleInfoList.length && data.vehicleInfoList.length > 0) {
+      console.log("表单数据", data);
+      if (
+        data.vehicleInfoList &&
+        data.vehicleInfoList.length &&
+        data.vehicleInfoList.length > 0
+      ) {
         this.vehicleInfoList = data.vehicleInfoList;
         this.vehicleForm = { ...data.vehicleInfoList[0] };
         this.activeName = this.vehicleForm.licenseNumber;
       } else {
         this.vehicleInfoList = [];
       }
-      this.form.identificationEffective = praseNumToBoolean(this.form.identificationEffective);
-      this.form.validPeriodAlways = praseNumToBoolean(this.form.validPeriodAlways);
+      this.form.identificationEffective = praseNumToBoolean(
+        this.form.identificationEffective
+      );
+      this.form.validPeriodAlways = praseNumToBoolean(
+        this.form.validPeriodAlways
+      );
       if (this.form.teamCode && this.form.teamName) {
-        this.teamOptions = [{
-          code: this.form.teamCode,
-          name: this.form.teamName
-        }];
+        this.teamOptions = [
+          {
+            code: this.form.teamCode,
+            name: this.form.teamName,
+          },
+        ];
       }
     },
     // 远程搜索
     teamRemoteMethod(query) {
-      if (query !== '') {
+      if (query !== "") {
         this.loading = true;
         this.queryParams.name = query;
         this.queryParams.pageNum = 1;
@@ -1004,7 +1539,7 @@ export default {
     },
     // 查询调度者列表
     getTeamList() {
-      listInfo(this.queryParams).then(response => {
+      listInfo(this.queryParams).then((response) => {
         this.loading = false;
         this.teamOptions = [...this.teamOptions, ...response.rows];
       });
@@ -1018,134 +1553,167 @@ export default {
     fillForm(type, data, side) {
       switch (type) {
         // 身份证
-        case 'id-card':
-          if (side === 'front') {
+        case "id-card":
+          if (side === "front") {
             if (data.name) {
-              this.$set(this.form, 'name', data.name);
+              this.$set(this.form, "name", data.name);
             } else {
-              this.$set(this.form, 'name', '');
+              this.$set(this.form, "name", "");
             }
             if (data.number) {
-              this.$set(this.form, 'identificationNumber', data.number);
+              this.$set(this.form, "identificationNumber", data.number);
             } else {
-              this.$set(this.form, 'identificationNumber', '');
+              this.$set(this.form, "identificationNumber", "");
             }
             if (data.address) {
-              this.$set(this.form, 'homeAddress', data.address);
+              this.$set(this.form, "homeAddress", data.address);
             } else {
-              this.$set(this.form, 'homeAddress', '');
+              this.$set(this.form, "homeAddress", "");
             }
           }
-          if (side === 'back') {
+          if (side === "back") {
             if (data.valid_from) {
-              this.$set(this.form, 'identificationBeginTime', this.isPeriodFormate(data.valid_from));
+              this.$set(
+                this.form,
+                "identificationBeginTime",
+                this.isPeriodFormate(data.valid_from)
+              );
             } else {
-              this.$set(this.form, 'identificationBeginTime', '');
+              this.$set(this.form, "identificationBeginTime", "");
             }
             if (data.valid_to) {
               if (this.isPeriodAlways(data.valid_to)) {
-                this.$set(this.form, 'identificationEffective', true);
+                this.$set(this.form, "identificationEffective", true);
               } else {
-                this.$set(this.form, 'identificationEndTime', this.isPeriodFormate(data.valid_to));
+                this.$set(
+                  this.form,
+                  "identificationEndTime",
+                  this.isPeriodFormate(data.valid_to)
+                );
               }
             } else {
-              this.$set(this.form, 'identificationEffective', false);
-              this.$set(this.form, 'identificationBeginTime', '');
+              this.$set(this.form, "identificationEffective", false);
+              this.$set(this.form, "identificationBeginTime", "");
             }
           }
           break;
         // 驾驶证
-        case 'driver-license':
+        case "driver-license":
           if (data.number) {
-            this.$set(this.form, 'driverLicense', data.number);
+            this.$set(this.form, "driverLicense", data.number);
           } else {
-            this.$set(this.form, 'driverLicense', '');
+            this.$set(this.form, "driverLicense", "");
           }
           if (data.issuing_authority) {
-            this.$set(this.form, 'issuingOrganizations', data.issuing_authority);
+            this.$set(
+              this.form,
+              "issuingOrganizations",
+              data.issuing_authority
+            );
           } else {
-            this.$set(this.form, 'issuingOrganizations', '');
+            this.$set(this.form, "issuingOrganizations", "");
           }
           if (data.valid_from) {
-            this.$set(this.form, 'validPeriodFrom', this.isPeriodFormate(data.valid_from));
+            this.$set(
+              this.form,
+              "validPeriodFrom",
+              this.isPeriodFormate(data.valid_from)
+            );
           } else {
-            this.$set(this.form, 'validPeriodFrom', '');
+            this.$set(this.form, "validPeriodFrom", "");
           }
           if (data.valid_to) {
             if (this.isPeriodAlways(data.valid_to)) {
-              this.$set(this.form, 'validPeriodAlways', true);
+              this.$set(this.form, "validPeriodAlways", true);
             } else {
-              this.$set(this.form, 'validPeriodTo', this.isPeriodFormate(data.valid_to));
+              this.$set(
+                this.form,
+                "validPeriodTo",
+                this.isPeriodFormate(data.valid_to)
+              );
             }
           } else {
-            this.$set(this.form, 'validPeriodAlways', false);
-            this.$set(this.form, 'validPeriodTo', '');
+            this.$set(this.form, "validPeriodAlways", false);
+            this.$set(this.form, "validPeriodTo", "");
           }
           if (data.class) {
-            this.$set(this.form, 'driverLicenseType', data.class);
+            this.$set(this.form, "driverLicenseType", data.class);
           } else {
-            this.$set(this.form, 'driverLicenseType', '');
+            this.$set(this.form, "driverLicenseType", "");
           }
           break;
         // 行驶证
-        case 'vehicle-license':
+        case "vehicle-license":
           // 正面
-          if (side === 'front') {
+          if (side === "front") {
             // 车牌号
             if (data.number) {
-              this.$set(this.vehicleForm, 'licenseNumber', data.number);
+              this.$set(this.vehicleForm, "licenseNumber", data.number);
             } else {
-              this.$set(this.vehicleForm, 'licenseNumber', '');
+              this.$set(this.vehicleForm, "licenseNumber", "");
             }
             // 车辆类型 vehicleTypeCode
             if (data.vehicle_type) {
               // 车辆类型
-              this.$set(this.vehicleForm, 'vehicleTypeCode', this.getVehicleTypeKey(data.vehicle_type));
+              this.$set(
+                this.vehicleForm,
+                "vehicleTypeCode",
+                this.getVehicleTypeKey(data.vehicle_type)
+              );
             } else {
-              this.$set(this.vehicleForm, 'vehicleTypeCode', '');
+              this.$set(this.vehicleForm, "vehicleTypeCode", "");
             }
             // 车辆识别码 chassisNumber
             if (data.vin) {
-              this.$set(this.vehicleForm, 'chassisNumber', data.vin);
+              this.$set(this.vehicleForm, "chassisNumber", data.vin);
             } else {
-              this.$set(this.vehicleForm, 'chassisNumber', '');
+              this.$set(this.vehicleForm, "chassisNumber", "");
             }
             // 发动机号 engineNumber
             if (data.engine_no) {
-              this.$set(this.vehicleForm, 'engineNumber', data.engine_no);
+              this.$set(this.vehicleForm, "engineNumber", data.engine_no);
             } else {
-              this.$set(this.vehicleForm, 'engineNumber', '');
+              this.$set(this.vehicleForm, "engineNumber", "");
             }
             // vehicleAscriptionType
             if (data.name) {
-              if (data.name === this.form.name) { // 相同自有
-                this.$set(this.vehicleForm, 'vehicleAscriptionType', 0);
+              if (data.name === this.form.name) {
+                // 相同自有
+                this.$set(this.vehicleForm, "vehicleAscriptionType", 0);
               } else {
-                this.$set(this.vehicleForm, 'vehicleAscriptionType', 1);
+                this.$set(this.vehicleForm, "vehicleAscriptionType", 1);
               }
             }
           }
           // 副业
-          if (side === 'back') {
+          if (side === "back") {
             // 车辆总重量 vehicleTotalWeight
             if (data.gross_mass) {
-              var num = data.gross_mass.indexOf('kg');
+              var num = data.gross_mass.indexOf("kg");
               var value = data.gross_mass.substr(0, num);
-              this.$set(this.vehicleForm, 'vehicleTotalWeight', (value / 1000).toFixed(3));
+              this.$set(
+                this.vehicleForm,
+                "vehicleTotalWeight",
+                (value / 1000).toFixed(3)
+              );
             } else {
-              this.$set(this.vehicleForm, 'vehicleTotalWeight', '0');
+              this.$set(this.vehicleForm, "vehicleTotalWeight", "0");
             }
             // 车辆可载重量 vehicleLoadWeight
             if (data.unladen_mass) {
-              num = data.unladen_mass.indexOf('kg');
+              num = data.unladen_mass.indexOf("kg");
               value = data.unladen_mass.substr(0, num);
-              this.$set(this.vehicleForm, 'vehicleLoadWeight', (value / 1000).toFixed(3));
+              this.$set(
+                this.vehicleForm,
+                "vehicleLoadWeight",
+                (value / 1000).toFixed(3)
+              );
             }
           }
           // 车牌颜色 vehicleLicenseColorCode
           // 车辆能源类型 vehicleEnergyType
           if (data.energy_type) {
-            console.log('能源类型：' + data.energy_type);
+            console.log("能源类型：" + data.energy_type);
           }
           // 车身颜色 vehicleColorCode
           break;
@@ -1156,12 +1724,12 @@ export default {
     // 根据车牌类型的value值获取对应的key
     getVehicleTypeKey(value) {
       let key = null;
-      this.vehicleTypeOptions.forEach(el => {
+      this.vehicleTypeOptions.forEach((el) => {
         if (value === el.dictLabel) {
           key = el.dictValue;
         }
       });
-      return key || 'X99';
+      return key || "X99";
     },
     // 选中车辆回显
     changeVehicle(licenseNumber) {
@@ -1179,7 +1747,8 @@ export default {
     },
     // 查询车辆列表
     getVehicleList() {
-      this.vehicleQueryParams.licenseNumber = this.vehicleQueryParams.licenseNumber.toUpperCase();
+      this.vehicleQueryParams.licenseNumber =
+        this.vehicleQueryParams.licenseNumber.toUpperCase();
       vehicleListInfo(this.vehicleQueryParams).then((response) => {
         this.vehicleLoading = false;
         this.vehicleOptions = [...this.vehicleOptions, ...response.rows];
@@ -1187,7 +1756,7 @@ export default {
     },
     // 车辆远程搜索
     vehicleRemoteMethod(query) {
-      if (query !== '') {
+      if (query !== "") {
         this.vehicleLoading = true;
         this.vehicleQueryParams.licenseNumber = query;
         this.vehicleQueryParams.pageNum = 1;
@@ -1204,11 +1773,11 @@ export default {
     },
     // 获取选中的车辆回填
     vehicleChange(code) {
-      if (!code || code === '') {
+      if (!code || code === "") {
         this.resetVehicle();
         return;
       }
-      this.vehicleOptions.forEach(el => {
+      this.vehicleOptions.forEach((el) => {
         if (el.code === code) {
           this.vehicleForm = { ...el };
         }
@@ -1231,78 +1800,83 @@ export default {
     },
     getUserAlreadyExistMethod() {
       if (this.form.telphone) {
-        getUserAlreadyExist({ phoneNum: this.form.telphone, noUserCode: this.form.userCode }).then(response => {
-          if (response.code === 500) {
-            this.msgWarning(response.msg);
+        getUserAlreadyExist({
+          phoneNum: this.form.telphone,
+          noUserCode: this.form.userCode,
+        })
+          .then((response) => {
+            if (response.code === 500) {
+              this.msgWarning(response.msg);
+              this.$nextTick(() => {
+                this.phoneUniq = false;
+                this.$refs.telphone.focus();
+              });
+            } else {
+              this.phoneUniq = true;
+            }
+          })
+          .catch(() => {
+            // 被全局拦截器拦住了
+            this.phoneUniq = false;
             this.$nextTick(() => {
-              this.phoneUniq = false;
               this.$refs.telphone.focus();
             });
-          } else {
-            this.phoneUniq = true;
-          }
-        }).catch(() => {
-          // 被全局拦截器拦住了
-          this.phoneUniq = false;
-          this.$nextTick(() => {
-            this.$refs.telphone.focus();
           });
-        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 <style scoped lang="scss">
-.mr3{
+.mr3 {
   margin-right: 3%;
 }
-.mb{
+.mb {
   margin-bottom: 22px;
 }
-.width90{
+.width90 {
   width: 90%;
 }
-.width70{
+.width70 {
   width: 70%;
 }
-.width27{
+.width27 {
   width: 27%;
 }
-.width59{
+.width59 {
   width: 59%;
 }
 /* 计数器样式 */
-.el-input-number ::v-deep.el-input__inner{
+.el-input-number ::v-deep.el-input__inner {
   text-align: left;
 }
 /* 上传图片文字样式 */
-.upload-image-label{
+.upload-image-label {
   margin: 0;
   line-height: 24px;
 }
 /* 标题样式 */
-.g-card-title{
+.g-card-title {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  >.h5-divider{
+  > .h5-divider {
     margin-left: 8px;
     height: 1px;
-    border-bottom: 1px dashed #DAD3D3;
+    border-bottom: 1px dashed #dad3d3;
   }
 }
 /* 单位样式 */
-.unit-item{
-  ::v-deep .el-input__inner{
+.unit-item {
+  ::v-deep .el-input__inner {
     padding-right: 50px;
   }
-  ::v-deep .el-input__suffix{
+  ::v-deep .el-input__suffix {
     right: 30px !important;
   }
 }
-.unit-span{
+.unit-span {
   position: absolute;
   right: 75px;
   top: 0;
