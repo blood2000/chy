@@ -254,20 +254,23 @@
                 @addSetOK="(valid) => nextSe(valid, 0)"
               />
               <div class="ly-t-right">
-                <div style="display: inline-block" v-if="isOpenTheElectronicFence">
+                <div
+                  style="display: inline-block"
+                  v-if="isOpenTheElectronicFence"
+                >
                   <label>
                     装货停留时间
                     <el-input-number
-                    class="stay-input"
-                    v-model="formData.loadRemain"
-                    :precision="0"
-                    :disabled="!isDetail || !isRemain"
-                    size="mini"
-                    :min="1"
-                    :max="1800"
-                    label="请输入停留时间"
-                  />
-                  <span class="number-input-unit">秒</span>
+                      class="stay-input"
+                      v-model="formData.loadRemain"
+                      :precision="0"
+                      :disabled="!isDetail || !isRemain"
+                      size="mini"
+                      :min="1"
+                      :max="1800"
+                      label="请输入停留时间"
+                    />
+                    <span class="number-input-unit">秒</span>
                   </label>
                 </div>
                 <div style="display: inline-block">
@@ -407,20 +410,23 @@
               <!-- address.centerLocation = lnglat -->
 
               <div class="ly-t-right">
-                <div style="display: inline-block" v-if="isOpenTheElectronicFence">
+                <div
+                  style="display: inline-block"
+                  v-if="isOpenTheElectronicFence"
+                >
                   <label>
                     卸货停留时间
                     <el-input-number
-                    class="stay-input"
-                    v-model="formData.unloadRemain"
-                    :precision="0"
-                    :disabled="!isDetail || !isRemain"
-                    size="mini"
-                    :min="1"
-                    :max="1800"
-                    label="请输入停留时间"
-                  />
-                  <span class="number-input-unit">秒</span>
+                      class="stay-input"
+                      v-model="formData.unloadRemain"
+                      :precision="0"
+                      :disabled="!isDetail || !isRemain"
+                      size="mini"
+                      :min="1"
+                      :max="1800"
+                      label="请输入停留时间"
+                    />
+                    <span class="number-input-unit">秒</span>
                   </label>
                 </div>
                 <div style="display: inline-block">
@@ -768,7 +774,6 @@ export default {
         loadUnloadInterval: 300,
         loadRemain: 180,
         unloadRemain: 180,
-
       },
       rules: {
         tin1: [
@@ -783,8 +788,8 @@ export default {
       isMultiGoods: false, // 用来判断多商品还是单商品
 
       isDetail: false, // 编辑
-      isInterval: false,  //编辑间隔时间
-      isRemain: false,   //编辑停留时间
+      isInterval: false, //编辑间隔时间
+      isRemain: false, //编辑停留时间
       cloneLastData: null, // 保存一份原始数据(方便电子围栏使用)
 
       // 电子围栏编辑
@@ -982,11 +987,13 @@ export default {
 
   async created() {
     //获取用户详情
-    await getInfo().then(res => {
-      console.log('用户详情', res);
-      this.isInterval = res.shipment.info.isInterval;
-      this.isRemain = res.shipment.info.isRemain;
-    })
+    await getInfo().then((res) => {
+      console.log("用户详情", res);
+      if (res.shipment) {
+        this.isInterval = res.shipment.info.isInterval;
+        this.isRemain = res.shipment.info.isRemain;
+      }
+    });
     // eventBus的使用
     eventBus.$on("handlerRuleChang", () => {
       // !this.idCode && (this.active = 3);
@@ -1044,7 +1051,7 @@ export default {
 
   methods: {
     /** ================ s=基本获取数据 ================ */
-    
+
     // 通过货主的id获取详情 7/23 --chj
     getShipmentInfo(code) {
       return getShipmentByCode({ code }).then((res) => {
@@ -1245,7 +1252,7 @@ export default {
             this.msgError("未创建电子围栏,请确认");
             return;
           }
-          console.log(this.lastData, '<----lastData');
+          console.log(this.lastData, "<----lastData");
           // 判断电子围栏必须双开或者双关
           if (!this.openedDouble(this.lastData)) {
             this.msgError("电子围栏必须双开或者双关");
@@ -1873,9 +1880,9 @@ export default {
         projectCode,
         pubilshCode,
         remark,
-        loadUnloadInterval,  //装卸货时间间隔,
-        loadRemain,  //装货停留时间,
-        unloadRemain,  //卸货停留时间,
+        loadUnloadInterval, //装卸货时间间隔,
+        loadRemain, //装货停留时间,
+        unloadRemain, //卸货停留时间,
         redisOrderClassGoodsVoList,
         redisOrderGoodsVoListRest: redisOrderGoodsVoList,
         redisOrderSpecifiedVoList,
