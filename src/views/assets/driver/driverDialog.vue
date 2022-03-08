@@ -918,7 +918,7 @@
       </el-form-item>
     </el-form>
     <!-- 银行卡信息 -->
-    <block v-for="(item, index) in form.bankCardTemp" :key="index">
+    <div v-for="(item, index) in form.bankCardTemp" :key="index">
       <el-form label-width="154px">
         <h5 class="g-card-title g-strong mb20 ml10">
           银行卡信息
@@ -978,7 +978,7 @@
           "
         />
       </el-form>
-    </block>
+    </div>
     <div
       v-if="title === '新增' || title === '编辑'"
       slot="footer"
@@ -1095,7 +1095,7 @@ export default {
       loading: false,
       teamOptions: [],
       // 表单参数
-      form: {bankCardTemp: []},
+      form: {},
       vehicleForm: {},
       // 表单校验
       rules: {
