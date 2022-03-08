@@ -1095,7 +1095,7 @@ export default {
       loading: false,
       teamOptions: [],
       // 表单参数
-      form: {},
+      form: {bankCardTemp: []},
       vehicleForm: {},
       // 表单校验
       rules: {
