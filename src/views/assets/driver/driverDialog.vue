@@ -952,14 +952,6 @@
             disabled
           />
         </el-form-item>
-        <el-form-item label="网点" prop="name">
-          <el-input
-            v-model="item.bankBranch"
-            placeholder="-"
-            class="width90"
-            disabled
-          />
-        </el-form-item>
         <province-city-county
           ref="ChooseArea"
           :label-name="'开户城市'"
