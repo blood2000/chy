@@ -108,6 +108,15 @@ service.interceptors.response.use(res => {
   } else if (code === 404) {
     // 404时不弹出报错提示
     return Promise.reject(new Error(msg));
+  } else if (code === 406) {
+    MessageBox.confirm('您的IP无此操作权限', '系统提示', {
+      cancelButtonText: '取消',
+      type: 'warning'
+    }).then(() => {
+      /* store.dispatch('LogOut').then(() => {
+        location.href = '/index';
+      });*/
+    });
   } else if (code === 501) {
     return res.data;
   } else if (code !== 200) {
