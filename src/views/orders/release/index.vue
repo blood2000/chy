@@ -173,7 +173,7 @@
             <el-input-number
               :precision="0"
               v-model="formData.loadUnloadInterval"
-              :disabled="!isDetail || !isInterval"
+              :disabled="!isDetail || !shipmentInfo.isInterval"
               size="mini"
               :min="1"
               :max="300"
@@ -264,7 +264,7 @@
                       class="stay-input"
                       v-model="formData.loadRemain"
                       :precision="0"
-                      :disabled="!isDetail || !isRemain"
+                      :disabled="!isDetail || !shipmentInfo.isRemain"
                       size="mini"
                       :min="1"
                       :max="1800"
@@ -420,7 +420,7 @@
                       class="stay-input"
                       v-model="formData.unloadRemain"
                       :precision="0"
-                      :disabled="!isDetail || !isRemain"
+                      :disabled="!isDetail || !shipmentInfo.isRemain"
                       size="mini"
                       :min="1"
                       :max="1800"
@@ -987,13 +987,13 @@ export default {
 
   async created() {
     //获取用户详情
-    await getInfo().then((res) => {
-      console.log("用户详情", res);
-      if (res.shipment) {
-        this.isInterval = res.shipment.info.isInterval;
-        this.isRemain = res.shipment.info.isRemain;
-      }
-    });
+    // await getInfo().then((res) => {
+    //   console.log("用户详情", res);
+    //   if (res.shipment) {
+    //     this.isInterval = res.shipment.info.isInterval;
+    //     this.isRemain = res.shipment.info.isRemain;
+    //   }
+    // });
     // eventBus的使用
     eventBus.$on("handlerRuleChang", () => {
       // !this.idCode && (this.active = 3);
