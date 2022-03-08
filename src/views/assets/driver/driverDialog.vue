@@ -248,6 +248,10 @@
             <p class="upload-image-label">从业资格证</p>
             <upload-image v-model="form.workLicenseImage" :disabled="disable" icon-type="work" />
           </el-col>
+            <el-col :span="7" v-if="title === '审核'">
+                <p class="upload-image-label">人脸识别照片</p>
+                <upload-image v-model="form.faceAuthResultImg" :disabled="disable" icon-type="work" />
+            </el-col>
         </el-row>
         <el-row v-else>
           <el-col :span="7" class="mb">
@@ -539,6 +543,7 @@
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
+        <span style="margin-right: 10px;color: red;font-size: 12px;">请注意：人脸识别照片审核</span>
       <el-button type="primary" :loading="authButtonLoading" @click="reviewForm(3)">审核通过</el-button>
       <el-button type="danger" :loading="authButtonLoading" @click="reviewForm(2)">审核不通过</el-button>
     </div>
