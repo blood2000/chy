@@ -410,7 +410,7 @@ export default {
       driverDisable: true,
       query: undefined,
       throttle: undefined,
-      loadUnloadInterval: 0,  //装卸货最短时间间隔
+      loadUnloadInterval: 0 // 装卸货最短时间间隔
     };
   },
   computed: {
@@ -436,11 +436,10 @@ export default {
         const unloadtime = new Date(this.form.unloadTime);
         const unloadtimeLong = new Date(this.form.unloadTime.replace(new RegExp('-', 'gm'), '/')).getTime();
         const timeDifference = (unloadtimeLong - loadtimeLong) / 1000;
-        console.log(timeDifference, this.loadUnloadInterval)
+        console.log(timeDifference, this.loadUnloadInterval);
         if (loadtime >= unloadtime) {
           this.$message({ type: 'warning', message: '装货时间必须小于卸货时间！' });
           this.form.loadTime = null;
-        
         } else if (timeDifference < this.loadUnloadInterval) {
           this.$message({ type: 'warning', message: '装卸货间隔时间过短，请重新选择装货时间！' });
           this.form.loadTime = null;
@@ -605,7 +604,7 @@ export default {
           if (response.data) {
             this.form.orderCode = response.data.redisOrderInfoVo.code; // 货源编码赋值
             this.form.shipperCode = response.data.redisOrderInfoVo.pubilshCode; // 货主编码赋值
-            this.loadUnloadInterval = response.data.redisOrderInfoVo.loadUnloadInterval;   //装卸货最短时间间隔
+            this.loadUnloadInterval = response.data.redisOrderInfoVo.loadUnloadInterval; // 装卸货最短时间间隔
             // 获取货源底下的商品列表
             getGoods(response.data.redisOrderInfoVo.code).then(response => {
               // console.log(response);
