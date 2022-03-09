@@ -35,14 +35,20 @@ export default class ThreeMapLightBar extends ThreeMap {
     const ratio = this.colorIndex / this.pointsLength;
 
     this.flyGroup &&
-      this.flyGroup.children.forEach(d => {
-        d.geometry.colors = new Array(this.pointsLength).fill(1).map((d, i) => {
-          if (i !== this.colorIndex) {
-            return new THREE.Color('#005fc4');
+      this.flyGroup.children.forEach((d) => {
+        var colors = [];
+        var color = new THREE.Color();
+        for (var j = 0; j < this.pointsLength; j++) {
+          if (j !== this.colorIndex) {
+            color.setStyle('#005fc4');
+            colors.push(color.r, color.g, color.b);
           } else {
-            return new THREE.Color('#00f3ff');
+            color.setStyle('#00f3ff');
+            colors.push(color.r, color.g, color.b);
           }
-        });
+        }
+
+        d.geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(colors), 3, true));
         d.geometry.colorsNeedUpdate = true;
       });
 
