@@ -113,6 +113,7 @@ service.interceptors.response.use(res => {
       cancelButtonText: '取消',
       type: 'warning'
     }).then(() => {
+      return;
       /* store.dispatch('LogOut').then(() => {
         location.href = '/index';
       });*/
