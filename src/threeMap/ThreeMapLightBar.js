@@ -40,10 +40,10 @@ export default class ThreeMapLightBar extends ThreeMap {
         var color = new THREE.Color();
         for (var j = 0; j < this.pointsLength; j++) {
           if (j !== this.colorIndex) {
-            color.setStyle('#005fc4');
+            color.setStyle('#3b91ec');
             colors.push(color.r, color.g, color.b);
           } else {
-            color.setStyle('#00f3ff');
+            color.setStyle('#a6cefb');
             colors.push(color.r, color.g, color.b);
           }
         }
@@ -257,7 +257,7 @@ export default class ThreeMapLightBar extends ThreeMap {
       var color = new THREE.Color();
       for (var j = 0; j < points.length; j++) {
         // color.setHSL(0.81666 + j, 0.88, 0.715 + j * 0.0025); // 粉色
-        color.setStyle('#315990');
+        color.setStyle('#3b91ec');
         colors.push(color.r, color.g, color.b);
       }
       geometry.vertices = points;
