@@ -67,6 +67,7 @@
       </el-form-item>
       <el-form-item label="手机号" prop="telphone">
         <el-input
+                :disabled="form.id ? true:false"
           ref="telphone"
           v-model="form.telphone"
           placeholder="请输入手机号"

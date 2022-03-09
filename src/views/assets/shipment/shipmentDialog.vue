@@ -62,6 +62,7 @@
               placeholder="请输入手机号/账号"
               class="width100"
               clearable
+              :disabled="form.id ? true:false"
               @blur="getUserAlreadyExist"
             />
           </el-form-item>
@@ -618,6 +619,7 @@
             <el-col :span="12">
               <el-form-item label="授信金额(元)" prop="creditAmount">
                 <el-input-number
+                        :disabled="form.id ? true:false"
                   v-model="form.creditAmount"
                   class="width100"
                   :precision="2"
