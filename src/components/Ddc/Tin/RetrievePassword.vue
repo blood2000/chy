@@ -52,8 +52,10 @@
         <el-input
           v-model="setForm.newPwd"
           type="password"
+          maxlength="16"
+          minlength="8"
           auto-complete="off"
-          placeholder="请设置6-16位新位密码"
+          placeholder="请设置8-16位新位密码"
         />
       </el-form-item>
 
