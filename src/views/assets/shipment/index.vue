@@ -437,7 +437,7 @@ export default {
       ],
       userStatusOptions: [
         { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '冻结', dictValue: '1' },
+        { dictLabel: '禁用', dictValue: '1' },
         { dictLabel: '冻结', dictValue: '3' }
       ],
       creditOptions: [
@@ -685,8 +685,8 @@ export default {
     updateStatus(row) {
       var status = '0';
       if (row.status === '0') {
-        status = '1';
-      } else if (row.status === '1') {
+        status = '3';// 冻结
+      } else if (row.status === '1' || row.status === '3') {
         status = '0';
       }
       this.$confirm('是否确认' + (status === '0' ? '启用' : '冻结') + '货主"' + (row.adminName || row.telphone) + '"的账号?', '提示', {
