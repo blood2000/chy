@@ -6,11 +6,11 @@
         <el-input ref="telphone" v-model="form.telphone" placeholder="请输入手机号" :disabled="form.id?true:false" class="width90" clearable @blur="getUserAlreadyExist" />
       </el-form-item>
       <el-form-item label="密码"  v-if="!form.id" prop="password">
-        <el-input v-model="form.password" type="password" :disabled="disable" :placeholder="form.id?'密码未修改可不填写':'请输入密码'" class="width100" clearable />
+        <el-input v-model="form.password" type="password" :disabled="disable" class="width90" :placeholder="form.id?'密码未修改可不填写':'请输入密码'"  clearable />
         <!--<span class="g-color-blue">(初始密码为{{ initialPassword }})</span>-->
       </el-form-item>
       <el-row :gutter="20">
-        <el-col :span="10">
+        <el-col :span="12">
           <el-form-item label="状态">
             <el-radio-group v-model="form.status" :disabled="disable">
               <el-radio
@@ -21,7 +21,7 @@
             </el-radio-group>
           </el-form-item>
         </el-col>
-        <el-col :span="10">
+        <el-col :span="6">
           <el-form-item prop="openProjectDesignView">
             <el-checkbox v-model="form.openProjectDesignView" :disabled="disable">开启&nbsp;项目版统计视图</el-checkbox>
           </el-form-item>
@@ -202,7 +202,8 @@ export default {
       // 状态字典
       statusOptions: [
         { dictLabel: '启用', dictValue: 0 },
-        { dictLabel: '冻结', dictValue: 1 }
+        { dictLabel: '禁用', dictValue: 1 },
+        { dictLabel: '冻结', dictValue: 3 }
       ],
       isOptions: [
         { dictLabel: '否', dictValue: 0 },

@@ -328,7 +328,7 @@
           <span>{{ parseTime(row.isReportPersonDate, '{y}-{m}-{d}') }}</span>
         </template>
         <template #status="{row}">
-          <i v-show="row.status === '1'" class="el-icon-error g-color-error mr5" />
+          <i v-show="row.status === '1' || row.status === '3'" class="el-icon-error g-color-error mr5" />
           <i v-show="row.status === '0'" class="el-icon-success g-color-success mr5" />
           <span>{{ selectDictLabel(userStatusOptions, row.status) }}</span>
         </template>
@@ -554,7 +554,8 @@ export default {
       ],
       userStatusOptions: [
         { dictLabel: '启用', dictValue: '0' },
-        { dictLabel: '冻结', dictValue: '1' }
+        { dictLabel: '禁用', dictValue: '1' },
+        { dictLabel: '冻结', dictValue: '3' }
       ],
       // 网点编码字典
       branchCodeOptions: [],
@@ -932,8 +933,8 @@ export default {
     updateStatus(row) {
       var status = '0';
       if (row.status === '0') {
-        status = '1';
-      } else if (row.status === '1') {
+        status = '3';
+      } else if (row.status === '1' || row.status === '3') {
         status = '0';
       }
       this.$confirm('是否确认' + (status === '0' ? '启用' : '冻结') + '司机"' + (row.name || row.telphone) + '"的账号?', '提示', {
