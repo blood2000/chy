@@ -168,6 +168,14 @@
                   :loading="downloadLoading"
                   @click="handleDownloadAll"
                 >批量下载二维码</el-button>
+                <el-button
+                  type="warning"
+                  icon="el-icon-magic-stick"
+                  size="mini"
+                  :disabled="multiple"
+                  :loading="downloadLoading"
+                  @click="handleDownloadAllSVG"
+                >批量下载SVG二维码</el-button>
               </el-col>
               <right-toolbar :show-search.sync="showSearch" @queryTable="getList" />
             </el-row>
@@ -181,6 +189,11 @@
                     type="text"
                     @click="handleDownload(scope.row)"
                   >下载</el-button>
+                  <el-button
+                    size="mini"
+                    type="text"
+                    @click="handleDownloadSVG(scope.row)"
+                  >下载svg</el-button>
                 </template>
               </el-table-column>
               <!-- <el-table-column label="编码" align="center" prop="deviceNumber"></el-table-column>-->
@@ -367,6 +380,7 @@
   </div>
 </template>
 
+
 <script>
 import { getDeviceTypeTreeAll, getDeviceInfoList, getDeviceForm, addDeviceInfo, updateDeviceInfo, getDeviceDetail, delDriverInfo } from '@/api/assets/device.js';
 import Treeselect from '@riophae/vue-treeselect';
@@ -376,7 +390,6 @@ import UploadImage from '@/components/UploadImage/index';
 import JSZip from 'jszip';
 import FileSaver from 'file-saver';
 import { getFile } from '@/libs/batchCompression';
-
 export default {
   name: 'DeviceInfo',
   components: {
@@ -694,6 +707,54 @@ export default {
         });
       }).catch(() => {
         this.msgError('导出失败');
+        this.downloadLoading = false;
+      });
+    },
+    // 下载svg二维码
+    handleDownloadSVG(row) {
+      var Qrcodesvg = require('qrcodesvg');
+      var qrcode = new Qrcodesvg('https://api.chaohaoyun.cn/assets/grant/' + row.code, 250);
+      var data = qrcode.generate();
+      console.log(data);
+      var image = new Image();
+      image.src = 'data:image/svg+xml;base64,' + window.btoa(unescape(encodeURIComponent(data))); // 给图片对象写入base64编码的svg流
+      var a = document.createElement('a');
+      a.href = image.src; // 直接导出SVG
+      a.download = `${row.factory_only_code}_二维码`; // 设定下载名称
+      a.click(); // 点击触发下载
+    },
+    // 图片转base64
+    getBase64Image(img) {
+      console.log(img.width, img.height, img);
+      var canvas = document.createElement('canvas');
+      canvas.width = img.width;
+      canvas.height = img.height;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, img.width, img.height);
+      var ext = img.src.substring(img.src.lastIndexOf('.') + 1).toLowerCase();
+      console.log(ext);
+      var dataURL = canvas.toDataURL('image/' + ext);
+      console.log(dataURL);
+      return dataURL;
+    },
+    // 批量下载svg二维码
+    async handleDownloadAllSVG() {
+      this.msgInfo('导出中，请稍候');
+      this.downloadLoading = true;
+      const zip = new JSZip();
+      await this.selectList.forEach(item => {
+        var Qrcodesvg = require('qrcodesvg');
+        var qrcode = new Qrcodesvg('https://api.chaohaoyun.cn/assets/grant/' + item.code, 250);
+        var data = qrcode.generate();
+        const file_name = item.factory_only_code + '.svg';
+        zip.file(file_name, data, {
+          binary: true
+        }); // 逐个添加文件
+      });
+      zip.generateAsync({
+        type: 'blob'
+      }).then(content => { // 生成二进制流
+        FileSaver.saveAs(content, Date.now() + '.zip'); // 利用file-saver保存文件
         this.downloadLoading = false;
       });
     }
