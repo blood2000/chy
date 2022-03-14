@@ -26,6 +26,9 @@
       <el-tab-pane label="车辆管理" name="vehicle">
         <vehicle-page ref="VehiclePage" :team-code="teamCode" />
       </el-tab-pane>
+      <el-tab-pane label="FM历史" name="fmHistory">
+        <fm-page ref="FmHistory" :team-code="teamCode" />
+      </el-tab-pane>
     </el-tabs>
   </el-drawer>
 <!--  </el-dialog>-->
@@ -34,12 +37,14 @@
 <script>
 import DriverPage from '../driver/index.vue';
 import VehiclePage from '../vehicle/index.vue';
+import FmPage from './fmHistory.vue';
 
 export default {
   name: 'TeamManageDialog',
   components: {
     DriverPage,
-    VehiclePage
+    VehiclePage,
+    FmPage
   },
   props: {
     open: Boolean,
