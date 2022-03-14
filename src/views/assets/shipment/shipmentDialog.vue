@@ -168,9 +168,9 @@
             />
           </el-form-item>
           <el-form-item prop="identificationEndTime">
-            <label slot="label"
-              ><span style="color: #ff4949">* </span>身份证有效期</label
-            >
+            <label
+              slot="label"
+            ><span style="color: #ff4949">* </span>身份证有效期</label>
             <el-date-picker
               v-model="form.identificationBeginTime"
               clearable
@@ -189,9 +189,9 @@
               placeholder="支持自动识别"
               :disabled="!!form.identificationEffective"
             />
-            <el-checkbox v-model="form.identificationEffective"
-              >长期有效</el-checkbox
-            >
+            <el-checkbox
+              v-model="form.identificationEffective"
+            >长期有效</el-checkbox>
           </el-form-item>
           <!-- 选择省/市/区 -->
           <!-- <province-city-county
@@ -619,8 +619,8 @@
             <el-col :span="12">
               <el-form-item label="授信金额(元)" prop="creditAmount">
                 <el-input-number
-                        :disabled="form.id ? true:false"
                   v-model="form.creditAmount"
+                  :disabled="form.id ? true:false"
                   class="width100"
                   :precision="2"
                   :min="0"
@@ -691,23 +691,23 @@
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item prop="noNeedUnloadImg" class="no-label">
-                <el-checkbox v-model="form.noNeedUnloadImg"
-                  >扫码卸货时是否必须上传凭证</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.noNeedUnloadImg"
+                >扫码卸货时是否必须上传凭证</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="isNeedLoadingCertificate" class="no-label">
-                <el-checkbox v-model="form.isNeedLoadingCertificate"
-                  >扫码装货时是否必须上传凭证</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.isNeedLoadingCertificate"
+                >扫码装货时是否必须上传凭证</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="reviewNoNeedUnloadImg" class="no-label">
-                <el-checkbox v-model="form.reviewNoNeedUnloadImg"
-                  >复核时是否需要卸货凭证</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.reviewNoNeedUnloadImg"
+                >复核时是否需要卸货凭证</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -715,37 +715,37 @@
                 prop="reviewIsNeedLoadingCertificate"
                 class="no-label"
               >
-                <el-checkbox v-model="form.reviewIsNeedLoadingCertificate"
-                  >复核时是否需要装货凭证</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.reviewIsNeedLoadingCertificate"
+                >复核时是否需要装货凭证</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openAppPermissionControl" class="no-label">
-                <el-checkbox v-model="form.openAppPermissionControl"
-                  >是否开启货主APP权限控制</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.openAppPermissionControl"
+                >是否开启货主APP权限控制</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openProjectMemberView" class="no-label">
-                <el-checkbox v-model="form.openProjectMemberView"
-                  >是否开启项目成员视图</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.openProjectMemberView"
+                >是否开启项目成员视图</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openTheElectronicFence" class="no-label">
-                <el-checkbox v-model="form.openTheElectronicFence"
-                  >是否开启电子围栏</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.openTheElectronicFence"
+                >是否开启电子围栏</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openScanQuickLoadOrder" class="no-label">
-                <el-checkbox v-model="form.openScanQuickLoadOrder"
-                  >是否开启扫码快捷接单装货</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.openScanQuickLoadOrder"
+                >是否开启扫码快捷接单装货</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -779,16 +779,15 @@
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                    >{{ dict.dictLabel }}</el-radio
-                  >
+                  >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="isPayfirst" class="no-label">
-                <el-checkbox v-model="form.isPayfirst"
-                  >是否预付钱给司机</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.isPayfirst"
+                >是否预付钱给司机</el-checkbox>
               </el-form-item>
             </el-col>
           </el-row>
@@ -807,8 +806,7 @@
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                    >{{ dict.dictLabel }}</el-radio
-                  >
+                  >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -824,8 +822,7 @@
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                    >{{ dict.dictLabel }}</el-radio
-                  >
+                  >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -841,8 +838,7 @@
                     v-for="dict in allowOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                    >{{ dict.dictLabel }}</el-radio
-                  >
+                  >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -856,8 +852,7 @@
                     v-for="dict in needOptions"
                     :key="dict.dictValue"
                     :label="parseInt(dict.dictValue)"
-                    >{{ dict.dictLabel }}</el-radio
-                  >
+                  >{{ dict.dictLabel }}</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
@@ -878,16 +873,16 @@
                 </el-radio-group>
               </el-form-item>-->
               <el-form-item prop="editDriverActualAmount" class="no-label">
-                <el-checkbox v-model="form.editDriverActualAmount"
-                  >是否允许修改司机实收金额</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.editDriverActualAmount"
+                >是否允许修改司机实收金额</el-checkbox>
               </el-form-item>
             </el-col>
             <el-col :span="12">
               <el-form-item prop="openProjectDesignView" class="no-label">
-                <el-checkbox v-model="form.openProjectDesignView"
-                  >开启&nbsp;项目版统计视图</el-checkbox
-                >
+                <el-checkbox
+                  v-model="form.openProjectDesignView"
+                >开启&nbsp;项目版统计视图</el-checkbox>
               </el-form-item>
             </el-col>
           </el-row>
@@ -899,8 +894,7 @@
       slot="footer"
       class="dialog-footer"
     >
-      <el-button type='primary' :loading="buttonLoading" @click="submitForm">确 定</el-button
-      >
+      <el-button type="primary" :loading="buttonLoading" @click="submitForm">确 定</el-button>
       <el-button @click="cancel">取 消</el-button>
     </div>
     <div v-if="title === '审核'" slot="footer" class="dialog-footer">
@@ -908,14 +902,12 @@
         type="primary"
         :loading="authButtonLoading"
         @click="reviewForm(3)"
-        >审核通过</el-button
-      >
+      >审核通过</el-button>
       <el-button
         type="danger"
         :loading="authButtonLoading"
         @click="reviewForm(2)"
-        >审核不通过</el-button
-      >
+      >审核不通过</el-button>
     </div>
     <div v-if="title === '详情'" slot="footer" class="dialog-footer">
       <el-button @click="cancel">关 闭</el-button>
@@ -945,17 +937,17 @@ import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 // import Treeselect from '@riophae/vue-treeselect';
 export default {
   components: {
-    UploadImage,
+    UploadImage
     // ProvinceCityCounty
     // Treeselect
   },
   props: {
     title: {
       type: String,
-      default: '',
+      default: ''
     },
     open: Boolean,
-    disable: Boolean,
+    disable: Boolean
   },
   data() {
     return {
@@ -1002,7 +994,8 @@ export default {
       financialOptionList: [
         { dictLabel: '福建网商', dictValue: 1 },
         { dictLabel: '民生', dictValue: 2 },
-        { dictLabel: '山西网商', dictValue: 3 }
+        { dictLabel: '山西网商', dictValue: 3 },
+        { dictLabel: '浦发', dictValue: 4 }
       ],
       // 核算方式字典
       accountTypeOptions: [],
@@ -1055,7 +1048,7 @@ export default {
                 this.form.identificationEffective
               ),
             trigger: ['change', 'blur']
-          },
+          }
         ],
         artificialIdentificationNumber: [
           { validator: this.formValidate.idCard, trigger: ['blur', 'change'] }
@@ -1071,7 +1064,7 @@ export default {
             required: true,
             message: '平台服务费率不能为空',
             trigger: ['change', 'blur']
-          },
+          }
         ],
         // password: [{ validator: this.formValidate.passWord, trigger: 'blur' }],
         payInvoiceType: [
@@ -1079,7 +1072,7 @@ export default {
             required: true,
             message: '票务规则不能为空',
             trigger: ['change', 'blur']
-          },
+          }
         ],
         creditEndTime: [
           {
@@ -1143,8 +1136,8 @@ export default {
       },
       set(v) {
         this.$emit('update:open', v);
-      },
-    },
+      }
+    }
   },
   created() {
     this.getDictsOptions();
@@ -1552,7 +1545,7 @@ export default {
         creditStartTime: null,
         creditEndTime: null,
         openTheElectronicFence: 1,
-        financialOption: 1,
+        financialOption: 1
         // branchCode: null
       };
       // this.resetForm('form');
@@ -1573,7 +1566,7 @@ export default {
           {
             code: this.form.branchCode,
             name: this.form.branchName
-          },
+          }
         ];
       }
       if (this.form.operateOrgCode) {
@@ -1669,7 +1662,7 @@ export default {
       if (query !== '') {
         this.loading = true;
         getBranchList({
-          name: query,
+          name: query
         }).then((response) => {
           this.loading = false;
           this.branchOptions = response.data;
@@ -1786,8 +1779,8 @@ export default {
             });
           });
       }
-    },
-  },
+    }
+  }
 };
 </script>
 
