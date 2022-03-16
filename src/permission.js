@@ -41,9 +41,9 @@ router.beforeEach((to, from, next) => {
     } else {
       /* 针对是否初始密码进行处理 */
       if (!to.query.idp && store.getters.isDefaultPassword) {
-        MessageBox.confirm('初始密码不安全, 请修改密码，或者退出登录', '系统提示', {
+        MessageBox.confirm('初始密码不安全, 请修改密码，或者回到登录页', '系统提示', {
           confirmButtonText: '修改密码',
-          cancelButtonText: '退出登录',
+          cancelButtonText: '回到登录页',
           type: 'warning',
           closeOnClickModal: false,
           closeOnPressEscape: false
