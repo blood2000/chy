@@ -1,10 +1,9 @@
 import router from './router';
 import store from './store';
-import { Message } from 'element-ui';
+import { Message, MessageBox } from 'element-ui';
 import NProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import { getToken, setToken } from '@/utils/auth';
-
 
 NProgress.configure({ showSpinner: false });
 
@@ -28,20 +27,41 @@ if (token) {
 router.beforeEach((to, from, next) => {
   NProgress.start();
   if (getToken()) {
+    /* 满足条件, 在登录页面处理东西 */
+    if (to.query.idp && to.path === '/login' && store.getters.isDefaultPassword) {
+      next();
+      NProgress.done();
+      return;
+    }
+
     /* has token*/
     if (to.path === '/login') {
       next({ path: '/' });
       NProgress.done();
     } else {
       /* 针对是否初始密码进行处理 */
-      if (store.getters.isDefaultPassword) {
-        store.dispatch('LogOut').then(() => {
-          Message.error({
-            message: '初始密码不安全, 请重新登陆并修改密码',
-            duration: 5000
+      if (!to.query.idp && store.getters.isDefaultPassword) {
+        MessageBox.confirm('初始密码不安全, 请修改密码，或者退出登录', '系统提示', {
+          confirmButtonText: '修改密码',
+          cancelButtonText: '退出登录',
+          type: 'warning',
+          closeOnClickModal: false,
+          closeOnPressEscape: false
+        }
+        ).then(() => {
+          next(`/login?redirect=${to.fullPath}&idp=true&t=${Date.now()}`);
+        }).catch(() => {
+          store.dispatch('LogOut').then(() => {
+            location.href = '/index';
           });
-          next({ path: '/' });
         });
+        // store.dispatch('LogOut').then(() => {
+        //   Message.error({
+        //     message: '初始密码不安全, 请重新登陆并修改密码',
+        //     duration: 5000
+        //   });
+        //   next(`/login?redirect=${to.fullPath}&idp=true`);
+        // });
       } else
 
       if (store.getters.roles.length === 0) {

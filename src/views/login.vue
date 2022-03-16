@@ -312,6 +312,12 @@ export default {
     $route: {
       handler: function(route) {
         this.redirect = route.query && route.query.redirect;
+        const idp = route.query && route.query.idp;
+        if (idp && idp === 'true' && this.$store.getters.isDefaultPassword) {
+          this.mosaic = true;
+          this.loading = true;
+          this.open40200 = '40200';
+        }
       },
       immediate: true
     }
@@ -370,20 +376,20 @@ export default {
             } else {
               // this.setSuccess(res.data.is_default_password);
               this.$store.commit('SET_IS_DEFAULTPASSWORD', res.data.is_default_password);
+              this.redirect.idp && delete this.redirect.idp;
               this.$router.push({ path: this.redirect || '/' }).catch(() => {});
             }
           }).catch((error) => {
             if (error.code && (error.code + '') === '40300') {
               this.customerUuid = error.data;
               this.open40300 = true;
-            } else
-            if (error.code && (error.code + '') === '40200') {
+            } else if (error.code && (error.code + '') === '40200') {
               this.mosaic = true;
               this.open40200 = '40200';
+            } else {
+              this.getCode();
+              this.loading = false;
             }
-
-            this.loading = false;
-            this.getCode();
           });
         }
       });
@@ -392,21 +398,15 @@ export default {
     /* 跳转 */
     setSuccess(res) {
       // 修改
-      // this.$store.commit('SET_IS_DEFAULTPASSWORD', bool);
-      // this.$router.push({ path: this.redirect || '/' }).catch(() => {});
-      // this.loading = false;
-      // this.mosaic = false;
-      this.cancel();
-      // this.$alert('是否立即重新登陆', {
-      //   confirmButtonText: '确定',
-      //   callback: action => {
-      //     this.cancel();
-      //   }
-      // });
+
+      // this.cancel();
+
     },
     /* 密钥登陆 */
     loginSuccess(res) {
+      this.close40300();
       this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+      this.loading = false;
     },
 
     close40300() {
@@ -418,8 +418,8 @@ export default {
       this.$store.dispatch('LogOut');
       this.mosaic = false;
       this.loading = false;
-      this.loginForm.code = undefined;
-      this.loginForm.password = undefined;
+      // this.loginForm.code = undefined;
+      // this.loginForm.password = undefined;
       this.getCode();
     },
 
