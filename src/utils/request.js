@@ -120,6 +120,9 @@ service.interceptors.response.use(res => {
     });
   } else if (code === 501) {
     return res.data;
+  } else if (code === 40300) {
+    // 账号需要密钥验证
+    return Promise.reject(res.data);
   } else if (code !== 200) {
     Message({
       message: msg,

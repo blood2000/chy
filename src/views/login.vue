@@ -7,6 +7,11 @@
         </div>
       </el-dialog>
     </div>
+    <el-dialog title="密钥验证" :visible="open40300" width="600px" :append-to-body="true" :close-on-click-modal="false" @close="close40300">
+      <div v-if="open40300">
+        <CheckSec :customer-uuid="customerUuid" />
+      </div>
+    </el-dialog>
 
     <img class="m_log pa" src="../assets/images/login/chy-log.png" alt="chy-log">
 
@@ -245,13 +250,18 @@ import { encrypt, decrypt } from '@/utils/jsencrypt';
 import RetrievePassword from '@/components/Ddc/Tin/RetrievePassword';
 
 import ResetPwd from '@/views/system/user/profile/resetPwd.vue';
+import CheckSec from '@/views/system/user/profile/CheckSec.vue';
 
 export default {
   name: 'Login',
-  components: { RetrievePassword, ResetPwd },
+  components: { RetrievePassword, ResetPwd, CheckSec },
   data() {
     return {
       mosaic: false,
+      // s=40300
+      customerUuid: undefined,
+      open40300: false,
+      // e=40300
 
       isRpPage: false,
       Verification: true, // 通过v-show控制显示获取还是倒计时
@@ -362,7 +372,12 @@ export default {
               this.$store.commit('SET_IS_DEFAULTPASSWORD', res.data.is_default_password);
               this.$router.push({ path: this.redirect || '/' }).catch(() => {});
             }
-          }).catch(() => {
+          }).catch((error) => {
+            if (error.code && (error.code + '') === '40300') {
+              this.customerUuid = error.data;
+              this.open40300 = true;
+            }
+
             this.loading = false;
             this.getCode();
           });
@@ -384,6 +399,11 @@ export default {
       //     this.cancel();
       //   }
       // });
+    },
+
+    close40300() {
+      this.open40300 = false;
+      this.customerUuid = undefined;
     },
 
     cancel() {
