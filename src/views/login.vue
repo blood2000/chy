@@ -9,7 +9,7 @@
     </div>
     <el-dialog title="密钥验证" :visible="open40300" width="600px" :append-to-body="true" :close-on-click-modal="false" @close="close40300">
       <div v-if="open40300">
-        <CheckSec :customer-uuid="customerUuid" />
+        <CheckSec :customer-uuid="customerUuid" @loginSuccess="loginSuccess" />
       </div>
     </el-dialog>
 
@@ -399,6 +399,10 @@ export default {
       //     this.cancel();
       //   }
       // });
+    },
+    /* 密钥登陆 */
+    loginSuccess(res) {
+      this.$router.push({ path: this.redirect || '/' }).catch(() => {});
     },
 
     close40300() {

@@ -51,10 +51,9 @@ export default {
         if (valid) {
           this.loading = true;
           this.$store.dispatch('Login4', this.que).then((res) => {
-            this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+            this.$emit('loginSuccess', res);
             this.loading = false;
-          }).catch((error) => {
-            console.log(error);
+          }).catch(() => {
             this.loading = false;
           });
         }
