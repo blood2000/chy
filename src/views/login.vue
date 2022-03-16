@@ -3,7 +3,7 @@
     <div v-if="mosaic" class="mosaic pa">
       <el-dialog title="请修改初始密码" :visible="mosaic" width="600px" :append-to-body="false" :close-on-click-modal="false" @close="cancel">
         <div v-if="mosaic">
-          <ResetPwd @setSuccess="setSuccess(false)" />
+          <ResetPwd @setSuccess="setSuccess" />
         </div>
       </el-dialog>
     </div>
@@ -376,6 +376,10 @@ export default {
             if (error.code && (error.code + '') === '40300') {
               this.customerUuid = error.data;
               this.open40300 = true;
+            } else
+            if (error.code && (error.code + '') === '40200') {
+              this.mosaic = true;
+              this.open40200 = '40200';
             }
 
             this.loading = false;
@@ -386,7 +390,7 @@ export default {
     },
 
     /* 跳转 */
-    setSuccess(bool = false) {
+    setSuccess(res) {
       // 修改
       // this.$store.commit('SET_IS_DEFAULTPASSWORD', bool);
       // this.$router.push({ path: this.redirect || '/' }).catch(() => {});
