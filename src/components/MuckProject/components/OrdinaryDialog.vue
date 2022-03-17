@@ -223,7 +223,7 @@ export default {
         this.list = [
           {
             ...this.receiptData,
-            transactionType: '支付',
+            transactionType: '支付运费',
             ...res.data
           }];
         this.recData = {
