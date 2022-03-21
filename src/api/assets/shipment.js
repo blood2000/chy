@@ -121,4 +121,13 @@ export function getOperateUser(data) {
   });
 }
 
+export function createWallet(data) {
+  return request({
+    url: `/assets/shipment/registerAll`,
+    method: 'post',
+    data: data
+  });
+}
+
+
 

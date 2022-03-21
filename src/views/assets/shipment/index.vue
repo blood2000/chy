@@ -328,6 +328,13 @@
                 @click="handleDetail(row, 'detail')"
               >详情</el-button>
             </el-dropdown-item>
+              <el-button
+                      style="width: 105px"
+                      v-if="(!row.cmbcAccount || row.cmbcAccount == '') && row.authStatus === 3"
+                      size="mini"
+                      type="text"
+                      @click="handleCreateWallet(row)"
+              >创建民生账号</el-button>
             <el-dropdown-item>
               <el-button
                 v-hasPermi="['assets:shipment:examine']"
@@ -375,7 +382,7 @@
 </template>
 
 <script>
-import { listShipmentApi, listShipment, getShipment, delShipment } from '@/api/assets/shipment';
+import { listShipmentApi, listShipment, getShipment, delShipment, createWallet } from '@/api/assets/shipment';
 import { updateUserStatusByUserCode } from '@/api/system/user';
 import { getBranchList } from '@/api/system/branch';
 import ShipmentDialog from './shipmentDialog';
@@ -698,6 +705,23 @@ export default {
       }).then(() => {
         this.getList();
         this.msgSuccess(status === '0' ? '启用成功' : '冻结成功');
+      });
+    },
+    // 创建网商账号
+    handleCreateWallet(row) {
+      this.$confirm('是否确认创建"' + row.adminName + '"的民生账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        createWallet({ code: row.code }).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('操作成功');
+            this.getList();
+          } else {
+            this.msgError(response.msg);
+          }
+        });
       });
     }
   }
