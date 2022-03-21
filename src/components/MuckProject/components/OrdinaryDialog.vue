@@ -44,8 +44,8 @@
 
             <template #amount="{row}">
               <!-- <span class="g-color-require"> -->
-              <span v-if="row.deliveryFeePractical + ''">
-                RMB<count-to :end-val="row.deliveryFeePractical - 0" :decimal-places="2" :duration="0" />
+              <span v-if="row.deliveryCashFee + ''">
+                RMB<count-to :end-val="row.deliveryCashFee - 0" :decimal-places="2" :duration="0" />
                 <!-- {{ row.deliveryFeePractical - 0 }}
                 元 -->
               </span>
@@ -223,7 +223,7 @@ export default {
         this.list = [
           {
             ...this.receiptData,
-            transactionType: '支付',
+            transactionType: '支付运费',
             ...res.data
           }];
         this.recData = {

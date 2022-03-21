@@ -98,6 +98,7 @@ service.interceptors.response.use(res => {
         location.href = '/index';
       });
     });
+    return Promise.reject('error');
   } else if (code === 500) {
     Message({
       message: msg,
@@ -120,6 +121,12 @@ service.interceptors.response.use(res => {
     });
   } else if (code === 501) {
     return res.data;
+  } else if (code === 40300) {
+    // 账号需要密钥验证
+    return Promise.reject(res.data);
+  } else if (code === 40200) {
+    // 禁止使用默认密码
+    return Promise.reject(res.data);
   } else if (code !== 200) {
     Message({
       message: msg,
