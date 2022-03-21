@@ -140,6 +140,14 @@ export function createWallet(driverCode) {
   });
 }
 
+export function createCmbcWallet(data) {
+  return request({
+    url: `/assets/driver/registerAll`,
+    method: 'post',
+    data: data
+  });
+}
+
 // 收款委托函签署电子签章
 export function entrustElectron(query) {
   return request({

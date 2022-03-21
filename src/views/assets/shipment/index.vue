@@ -333,7 +333,7 @@
                       v-if="(!row.cmbcAccount || row.cmbcAccount == '') && row.authStatus === 3"
                       size="mini"
                       type="text"
-                      @click="handleCreateWallet(row)"
+                      @click="handleCreateCmbcWallet(row)"
               >创建民生账号</el-button>
             <el-dropdown-item>
               <el-button
@@ -707,8 +707,8 @@ export default {
         this.msgSuccess(status === '0' ? '启用成功' : '冻结成功');
       });
     },
-    // 创建网商账号
-    handleCreateWallet(row) {
+    // 创建民生账号
+    handleCreateCmbcWallet(row) {
       this.$confirm('是否确认创建"' + row.adminName + '"的民生账号?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
