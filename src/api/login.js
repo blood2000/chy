@@ -68,6 +68,16 @@ export function pwd_login(telno, password) {
   });
 }
 
+// 密钥登录
+export function sec_login({ customerSec, customerUuid }) {
+  return request({
+    url: '/auth/checkSec',
+    method: 'post',
+    data: { customerSec, customerUuid }
+  });
+}
+
+
 // 根据验证码修改密码
 export function updatePwdByCaptcha(telno, captcha, newPwd) {
   return request({

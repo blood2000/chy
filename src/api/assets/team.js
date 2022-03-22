@@ -114,3 +114,10 @@ export function delTeamReDriver(data) {
     params: data
   });
 }
+export function createCmbcWallet(data) {
+  return request({
+    url: `/assets/team/registerAll`,
+    method: 'post',
+    data: data
+  });
+}

@@ -3,10 +3,15 @@
     <div v-if="mosaic" class="mosaic pa">
       <el-dialog title="请修改初始密码" :visible="mosaic" width="600px" :append-to-body="false" :close-on-click-modal="false" @close="cancel">
         <div v-if="mosaic">
-          <ResetPwd @setSuccess="setSuccess(false)" />
+          <ResetPwd @setSuccess="setSuccess" />
         </div>
       </el-dialog>
     </div>
+    <el-dialog title="密钥验证" :visible="open40300" width="600px" :append-to-body="true" :close-on-click-modal="false" @close="close40300">
+      <div v-if="open40300">
+        <CheckSec :customer-uuid="customerUuid" @loginSuccess="loginSuccess" />
+      </div>
+    </el-dialog>
 
     <img class="m_log pa" src="../assets/images/login/chy-log.png" alt="chy-log">
 
@@ -245,13 +250,18 @@ import { encrypt, decrypt } from '@/utils/jsencrypt';
 import RetrievePassword from '@/components/Ddc/Tin/RetrievePassword';
 
 import ResetPwd from '@/views/system/user/profile/resetPwd.vue';
+import CheckSec from '@/views/system/user/profile/CheckSec.vue';
 
 export default {
   name: 'Login',
-  components: { RetrievePassword, ResetPwd },
+  components: { RetrievePassword, ResetPwd, CheckSec },
   data() {
     return {
       mosaic: false,
+      // s=40300
+      customerUuid: undefined,
+      open40300: false,
+      // e=40300
 
       isRpPage: false,
       Verification: true, // 通过v-show控制显示获取还是倒计时
@@ -302,6 +312,12 @@ export default {
     $route: {
       handler: function(route) {
         this.redirect = route.query && route.query.redirect;
+        const idp = route.query && route.query.idp;
+        if (idp && idp === 'true' && this.$store.getters.isDefaultPassword) {
+          this.mosaic = true;
+          this.loading = true;
+          this.open40200 = '40200';
+        }
       },
       immediate: true
     }
@@ -360,38 +376,50 @@ export default {
             } else {
               // this.setSuccess(res.data.is_default_password);
               this.$store.commit('SET_IS_DEFAULTPASSWORD', res.data.is_default_password);
+              this.redirect.idp && delete this.redirect.idp;
               this.$router.push({ path: this.redirect || '/' }).catch(() => {});
             }
-          }).catch(() => {
-            this.loading = false;
-            this.getCode();
+          }).catch((error) => {
+            if (error.code && (error.code + '') === '40300') {
+              this.customerUuid = error.data;
+              this.open40300 = true;
+            } else if (error.code && (error.code + '') === '40200') {
+              this.mosaic = true;
+              this.open40200 = '40200';
+            } else {
+              this.getCode();
+              this.loading = false;
+            }
           });
         }
       });
     },
 
     /* 跳转 */
-    setSuccess(bool = false) {
+    setSuccess(res) {
       // 修改
-      // this.$store.commit('SET_IS_DEFAULTPASSWORD', bool);
-      // this.$router.push({ path: this.redirect || '/' }).catch(() => {});
-      // this.loading = false;
-      // this.mosaic = false;
-      this.cancel();
-      // this.$alert('是否立即重新登陆', {
-      //   confirmButtonText: '确定',
-      //   callback: action => {
-      //     this.cancel();
-      //   }
-      // });
+
+      // this.cancel();
+
+    },
+    /* 密钥登陆 */
+    loginSuccess(res) {
+      this.close40300();
+      this.$router.push({ path: this.redirect || '/' }).catch(() => {});
+      this.loading = false;
+    },
+
+    close40300() {
+      this.open40300 = false;
+      this.customerUuid = undefined;
     },
 
     cancel() {
       this.$store.dispatch('LogOut');
       this.mosaic = false;
       this.loading = false;
-      this.loginForm.code = undefined;
-      this.loginForm.password = undefined;
+      // this.loginForm.code = undefined;
+      // this.loginForm.password = undefined;
       this.getCode();
     },
 

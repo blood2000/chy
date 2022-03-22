@@ -197,6 +197,15 @@
                 @click="handleDetail(row, 'detail')"
               >详情</el-button>
             </el-dropdown-item>
+              <el-dropdown-item>
+                  <el-button
+                          style="width: 105px"
+                          v-if="(!row.cmbcAccount || row.cmbcAccount == '') && row.authStatus === 3"
+                          size="mini"
+                          type="text"
+                          @click="handleCreateCmbcWallet(row)"
+                  >创建民生账号</el-button>
+              </el-dropdown-item>
             <el-dropdown-item>
               <el-button
                 v-if="row.status == 0 && row.authStatus == 3"
@@ -248,7 +257,7 @@
 </template>
 
 <script>
-import { listTeamApi, listInfo, getInfo, delInfo } from '@/api/assets/team';
+import { listTeamApi, listInfo, getInfo, delInfo, createCmbcWallet } from '@/api/assets/team';
 import TeamDialog from './teamDialog';
 import ManageDialog from './manageDialog';
 import AddDriverDialog from './addDriverDialog';
@@ -478,6 +487,23 @@ export default {
     handleDeal(row) {
       this.teamCode = row.code;
       this.applyDriverDialogOpen = true;
+    },
+    // 创建民生账号
+    handleCreateCmbcWallet(row) {
+      this.$confirm('是否确认创建"' + row.name + '"的民生账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        createCmbcWallet({ code: row.code, channel: 'CMBCRegisterHandler' }).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('操作成功');
+            this.getList();
+          } else {
+            this.msgError(response.msg);
+          }
+        });
+      });
     }
   }
 };

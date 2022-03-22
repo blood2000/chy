@@ -214,7 +214,7 @@
     </el-row>
 
     <!-- 添加或修改用户对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body :close-on-click-modal="false">
+    <el-dialog :title="title" :visible.sync="open" width="800px" append-to-body :close-on-click-modal="false">
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
@@ -260,8 +260,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择" clearable filterable>
+            <el-form-item label="用户性别" prop="sex">
+              <el-select style="width: 100%" v-model="form.sex" placeholder="请选择" clearable filterable>
                 <el-option
                   v-for="dict in sexOptions"
                   :key="dict.dictValue"
@@ -272,7 +272,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="状态">
+            <el-form-item label="状态" prop="status">
               <el-radio-group v-model="form.status">
                 <el-radio
                   v-for="dict in statusOptions"
@@ -508,7 +508,10 @@ export default {
         ],
         roleCodes: [
           { required: true, message: '角色不能为空', trigger: ['change', 'blur'] }
-        ]
+        ],
+        status: [
+          { required: true, message: '状态不能为空', trigger: 'blur' }
+        ],
       },
       // 重置密码
       pwTitle: '',
