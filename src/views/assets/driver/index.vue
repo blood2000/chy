@@ -1015,7 +1015,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        createCmbcWallet({ code: row.code }).then(response => {
+        createCmbcWallet({ code: row.code, channel: 'CMBCRegisterHandler' }).then(response => {
           if (response.code === 200) {
             this.msgSuccess('操作成功');
             this.getList();

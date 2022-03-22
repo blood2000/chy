@@ -714,7 +714,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        createWallet({ code: row.code }).then(response => {
+        createWallet({ code: row.code, channel: 'CMBCRegisterHandler' }).then(response => {
           if (response.code === 200) {
             this.msgSuccess('操作成功');
             this.getList();
