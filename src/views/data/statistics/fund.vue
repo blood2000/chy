@@ -201,7 +201,7 @@
         @sort-change="handleSortChange"
       ><!-- @selection-change="handleSelectionChange" -->
         <template #amount="{row}">
-          <span>{{ floor(row.amount) }}</span>
+          <span>{{ money(row.amount) }}</span>
         </template>
         <template #matching="{row}">
           <span>{{ selectDictLabel(matchingOptions, row.matching) }}</span>

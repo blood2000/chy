@@ -74,16 +74,16 @@
           <img src="~@/assets/images/icon/total.png">
         </el-col>
         <el-col :span="4">
-          <span style="line-height: 31px">总账号余额：{{ statistical.amount ? statistical.amount : 0 }}</span>
+          <span style="line-height: 31px">总账号余额：{{ statistical.amount ? money(statistical.amount) : 0 }}</span>
         </el-col>
         <el-col :span="4">
-          <span style="line-height: 31px">总保证金：{{ statistical.freezeAmount ? statistical.freezeAmount : 0 }}</span>
+          <span style="line-height: 31px">总保证金：{{ statistical.freezeAmount ? money(statistical.freezeAmount) : 0 }}</span>
         </el-col>
         <el-col :span="4">
-          <span style="line-height: 31px">总可用余额：{{ statistical.availableBalance ? statistical.availableBalance : 0 }}</span>
+          <span style="line-height: 31px">总可用余额：{{ statistical.availableBalance ? money(statistical.availableBalance) : 0 }}</span>
         </el-col>
         <el-col :span="4">
-          <span style="line-height: 31px">总授信余额：{{ statistical.crediBalance ? statistical.crediBalance : 0 }}</span>
+          <span style="line-height: 31px">总授信余额：{{ statistical.crediBalance ? money(statistical.crediBalance) : 0 }}</span>
         </el-col>
       </el-row>
 
@@ -97,27 +97,27 @@
       <RefactorTable :loading="loading" :data="dataList" :table-columns-config="tableColumnsConfig">
         <!-- 余额 -->
         <template #amount="{row}">
-          <span>{{ floor(row.amount) }}</span>
+          <span>{{ money(row.amount) }}</span>
         </template>
         <!-- 保证金 -->
         <template #freezeAmount="{row}">
-          <span>{{ floor(row.freezeAmount) }}</span>
+          <span>{{ money(row.freezeAmount) }}</span>
         </template>
         <!-- 可用余额 -->
         <template #availableBalance="{row}">
-          <span>{{ floor(row.availableBalance) }}</span>
+          <span>{{ money(row.availableBalance) }}</span>
         </template>
         <!-- 授信余额 -->
         <template #crediBalance="{row}">
-          <span>{{ floor(row.crediBalance) }}</span>
+          <span>{{ money(row.crediBalance) }}</span>
         </template>
         <!-- 本月已申请提现金额 -->
         <template #monthMoney="{row}">
-          <span>{{ floor(row.monthMoney) }}</span>
+          <span>{{ money(row.monthMoney) }}</span>
         </template>
         <!-- 本月剩余可提现金额 -->
         <template #residueMonthMoney="{row}">
-          <span>{{ floor(row.residueMonthMoney) }}</span>
+          <span>{{ money(row.residueMonthMoney) }}</span>
         </template>
         <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime) }}</span>

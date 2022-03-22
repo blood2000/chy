@@ -67,40 +67,40 @@
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
         </template> -->
         <template #balanceAmount="{row}">
-          <span>{{ floor(row.balanceAmount) }}</span>
+          <span>{{ money(row.balanceAmount) }}</span>
         </template>
         <template #closingBalance="{row}">
-          <span>{{ floor(row.closingBalance) }}</span>
+          <span>{{ money(row.closingBalance) }}</span>
         </template>
         <template #drawMoney="{row}">
-          <span>{{ floor(row.drawMoney) }}</span>
+          <span>{{ money(row.drawMoney) }}</span>
         </template>
         <template #freightAmount="{row}">
-          <span>{{ floor(row.freightAmount) }}</span>
+          <span>{{ money(row.freightAmount) }}</span>
         </template>
         <template #freightInvoiceAmount="{row}">
-          <span>{{ floor(row.freightInvoiceAmount) }}</span>
+          <span>{{ money(row.freightInvoiceAmount) }}</span>
         </template>
         <template #freightUnbilledAmount="{row}">
-          <span>{{ floor(row.freightUnbilledAmount) }}</span>
+          <span>{{ money(row.freightUnbilledAmount) }}</span>
         </template>
         <template #paidAmount="{row}">
-          <span>{{ floor(row.paidAmount) }}</span>
+          <span>{{ money(row.paidAmount) }}</span>
         </template>
         <template #rechargeNet="{row}">
-          <span>{{ floor(row.rechargeNet) }}</span>
+          <span>{{ money(row.rechargeNet) }}</span>
         </template>
         <template #serviceAmount="{row}">
-          <span>{{ floor(row.serviceAmount) }}</span>
+          <span>{{ money(row.serviceAmount) }}</span>
         </template>
         <template #serviceInvoiceAmount="{row}">
-          <span>{{ floor(row.serviceInvoiceAmount) }}</span>
+          <span>{{ money(row.serviceInvoiceAmount) }}</span>
         </template>
         <template #serviceUnbilledAmount="{row}">
-          <span>{{ floor(row.serviceUnbilledAmount) }}</span>
+          <span>{{ money(row.serviceUnbilledAmount) }}</span>
         </template>
         <template #transferAmount="{row}">
-          <span>{{ floor(row.transferAmount) }}</span>
+          <span>{{ money(row.transferAmount) }}</span>
         </template>
       </MoreRefactorTable>
 
@@ -211,40 +211,40 @@ export default {
         }
         switch (column.property) {
           case 'balanceAmount':
-            sums[index] = this.floor(this.consumptionCount.balanceStatisticsCount);
+            sums[index] = this.money(this.consumptionCount.balanceStatisticsCount);
             break;
           case 'closingBalance':
-            sums[index] = this.floor(this.consumptionCount.closingBalanceCount);
+            sums[index] = this.money(this.consumptionCount.closingBalanceCount);
             break;
           case 'paidAmount':
-            sums[index] = this.floor(this.consumptionCount.currentRechargeCount);
+            sums[index] = this.money(this.consumptionCount.currentRechargeCount);
             break;
           case 'freightAmount':
-            sums[index] = this.floor(this.consumptionCount.freightCount);
+            sums[index] = this.money(this.consumptionCount.freightCount);
             break;
           case 'freightInvoiceAmount':
-            sums[index] = this.floor(this.consumptionCount.freightInvoicedCount);
+            sums[index] = this.money(this.consumptionCount.freightInvoicedCount);
             break;
           case 'freightUnbilledAmount':
-            sums[index] = this.floor(this.consumptionCount.freightNotInvoicedCount);
+            sums[index] = this.money(this.consumptionCount.freightNotInvoicedCount);
             break;
           case 'rechargeNet':
-            sums[index] = this.floor(this.consumptionCount.netRechargeCount);
+            sums[index] = this.money(this.consumptionCount.netRechargeCount);
             break;
           case 'serviceAmount':
-            sums[index] = this.floor(this.consumptionCount.serviceChargeCount);
+            sums[index] = this.money(this.consumptionCount.serviceChargeCount);
             break;
           case 'serviceInvoiceAmount':
-            sums[index] = this.floor(this.consumptionCount.serviceChargeInvoicedCount);
+            sums[index] = this.money(this.consumptionCount.serviceChargeInvoicedCount);
             break;
           case 'serviceUnbilledAmount':
-            sums[index] = this.floor(this.consumptionCount.serviceChargeNotInvoicedCount);
+            sums[index] = this.money(this.consumptionCount.serviceChargeNotInvoicedCount);
             break;
           case 'transferAmount':
-            sums[index] = this.floor(this.consumptionCount.totalConsumptionCount);
+            sums[index] = this.money(this.consumptionCount.totalConsumptionCount);
             break;
           case 'drawMoney':
-            sums[index] = this.floor(this.consumptionCount.withdrawalAmountCount);
+            sums[index] = this.money(this.consumptionCount.withdrawalAmountCount);
             break;
           default:
             break;
