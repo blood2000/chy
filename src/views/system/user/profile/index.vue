@@ -7,7 +7,7 @@
       <div class="text-center left-panel-name">
         {{ user.nickName }}
       </div>
-      <div v-if="user.org.orgName" class="text-center left-panel-org">
+      <div v-if="user && user.org && user.org.orgName" class="text-center left-panel-org">
         {{ user.org.orgName }}
       </div>
       <ul class="list-group list-group-striped">
@@ -19,11 +19,11 @@
           用户邮箱
           <div class="pull-right">{{ user.email }}</div>
         </li>
-        <li class="list-group-item">
+        <li class="list-group-item"  v-if="user.org">
           所属组织
-          <div v-if="user.org" class="pull-right">{{ user.org.orgName }}</div>
+          <div class="pull-right">{{ user.org.orgName }}</div>
         </li>
-        <li class="list-group-item">
+        <li class="list-group-item" v-if="user.org">
           所属角色
           <div class="pull-right">{{ roleGroup }}</div>
         </li>
