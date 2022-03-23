@@ -23,7 +23,7 @@ import './assets/icons'; // icon
 import './permission'; // permission control
 import { getDicts, listByDict, getDictsByType } from '@/api/system/dict/data';
 import { getConfigKey } from '@/api/system/config';
-import { parseTime, isPeriodAlways, isPeriodFormate, resetForm, addDateRange, selectDictLabel, selectDictLabels, selectProvinceLabel, selectCityLabel, handleTree, tableHeaderConfig, floor, fixed } from '@/utils/ddc';
+import { parseTime, isPeriodAlways, isPeriodFormate, resetForm, addDateRange, selectDictLabel, selectDictLabels, selectProvinceLabel, selectCityLabel, handleTree, tableHeaderConfig, floor, fixed, money } from '@/utils/ddc';
 // 本地缓存
 import { setLocalStorage, getLocalStorage, removeLocalStorage } from '@/utils/auth';
 // 表单校验
@@ -109,6 +109,7 @@ Vue.prototype.getLocalStorage = getLocalStorage;
 Vue.prototype.removeLocalStorage = removeLocalStorage;
 Vue.prototype.formValidate = formValidate;
 Vue.prototype.floor = floor;
+Vue.prototype.money = money;
 Vue.prototype.fixed = fixed;
 Vue.prototype.wgs84_to_gcj02 = wgs84_to_gcj02;
 Vue.prototype.domtoimage = domtoimage;

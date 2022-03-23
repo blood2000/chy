@@ -102,19 +102,19 @@
           </span>
         </template>
         <template #balanceAmount="{row}">
-          <span>{{ floor(row.balanceAmount) }}</span>
+          <span>{{ money(row.balanceAmount) }}</span>
         </template>
         <template #closingBalance="{row}">
-          <span>{{ floor(row.closingBalance) }}</span>
+          <span>{{ money(row.closingBalance) }}</span>
         </template>
         <template #issueIncome="{row}">
-          <span>{{ floor(row.issueIncome) }}</span>
+          <span>{{ money(row.issueIncome) }}</span>
         </template>
         <template #distributionPay="{row}">
-          <span>{{ floor(row.distributionPay) }}</span>
+          <span>{{ money(row.distributionPay) }}</span>
         </template>
         <template #issueWithdrawal="{row}">
-          <span>{{ floor(row.issueWithdrawal) }}</span>
+          <span>{{ money(row.issueWithdrawal) }}</span>
         </template>
         <!-- <template #updateTime="{row}">
           <span>{{ parseTime(row.updateTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -205,19 +205,19 @@ export default {
         }
         switch (column.property) {
           case 'balanceAmount':
-            sums[index] = this.floor(this.drivertoCount.balanceStatisticsCount);
+            sums[index] = this.money(this.drivertoCount.balanceStatisticsCount);
             break;
           case 'closingBalance':
-            sums[index] = this.floor(this.drivertoCount.closingBalanceCount);
+            sums[index] = this.money(this.drivertoCount.closingBalanceCount);
             break;
           case 'issueIncome':
-            sums[index] = this.floor(this.drivertoCount.currentIncomeCount);
+            sums[index] = this.money(this.drivertoCount.currentIncomeCount);
             break;
           case 'distributionPay':
-            sums[index] = this.floor(this.drivertoCount.sortingOutExpensesCount);
+            sums[index] = this.money(this.drivertoCount.sortingOutExpensesCount);
             break;
           case 'issueWithdrawal':
-            sums[index] = this.floor(this.drivertoCount.withdrawalCurrentPeriodCount);
+            sums[index] = this.money(this.drivertoCount.withdrawalCurrentPeriodCount);
             break;
           default:
             break;
