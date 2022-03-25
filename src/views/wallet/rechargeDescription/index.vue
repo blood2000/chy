@@ -5,6 +5,7 @@
       <p v-if="companyName" class="g-text mb20">{{ companyName }}：</p>
       <p class="g-text mb20">您好！这是贵司充值运费的账号，必须使用与超好运注册账户一致的企业对公户进行充值，充值成功后在超好运货主端APP的个人中心即可显示充值的金额。</p>
       <el-button class="mb20" type="primary" size="small" @click="copy">复制账号信息</el-button>
+      <span class="ml10">（双击或拖动列表文字，通过鼠标右键选择复制，也可复制信息）</span>
       <!-- 网商显示 -->
       <template v-if="form.paymentChannels === 'WSBK' || form.paymentChannels === 'SXWSBK'">
         <table class="table-style mb20">
@@ -40,8 +41,8 @@
           style="width: 100px;"
         >
       </template>
-      <!-- 民生显示/浦发银行 -->
-      <template v-if="form.paymentChannels === 'CMBC' || form.paymentChannels === 'SPDB'">
+      <!-- 民生显示-->
+      <template v-if="form.paymentChannels === 'CMBC'">
         <table class="table-style mb20">
           <tr>
             <td class="label">银行账号</td>
@@ -53,12 +54,45 @@
           </tr>
           <tr>
             <td class="label">开户行</td>
-            <td v-if="form.paymentChannels === 'CMBC'" class="text">民生银行</td>
-            <td v-if="form.paymentChannels === 'SPDB'" class="text">浦发银行</td>
+            <td class="text">民生银行</td>
           </tr>
           <tr>
             <td class="label">当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）</td>
             <td class="text">{{ form.atBindBankCard ? form.atBindBankCard : '' }}</td>
+          </tr>
+        </table>
+        <input
+          id="table-inner-id"
+          :value="inputValue"
+          style="width: 100px;"
+        >
+      </template>
+      <!-- 浦发银行 -->
+      <template v-if="form.paymentChannels === 'SPDB'">
+        <table class="table-style mb20">
+          <tr>
+            <td class="label">银行账号</td>
+            <td class="text">171913247</td>
+          </tr>
+          <tr>
+            <td class="label">开户名称</td>
+            <td class="text">福建大道成物流科技有限公司</td>
+          </tr>
+          <tr>
+            <td class="label">开户行</td>
+            <td class="text">中国民生银行福州福清龙田支行</td>
+          </tr>
+          <tr>
+            <td class="label">省份选</td>
+            <td class="text">福建省</td>
+          </tr>
+          <tr>
+            <td class="label">城市选</td>
+            <td class="text">福州市</td>
+          </tr>
+          <tr>
+            <td class="label">联行号</td>
+            <td class="text">305391015267</td>
           </tr>
         </table>
         <input
@@ -143,8 +177,11 @@ export default {
       if (this.form.paymentChannels === 'WSBK' || this.form.paymentChannels === 'SXWSBK') {
         result = `银行账号：${this.form.account ? this.form.account : ''}; 开户名称：${this.form.paymentChannels === 'WSBK' ? '福建大道成物流科技有限公司' : '山西道承信息技术有限公司'}; 开户行：浙江网商银行; 省份：浙江省; 城市：杭州市; 联行号：323331000001`;
       }
-      if (this.form.paymentChannels === 'CMBC' || this.form.paymentChannels === 'SPDB') {
-        result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：${this.form.paymentChannels === 'CMBC' ? '民生银行' : '浦发银行'}; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;
+      if (this.form.paymentChannels === 'CMBC') {
+        result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：民生银行; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;
+      }
+      if (this.form.paymentChannels === 'SPDB') {
+        result = `银行账号：171913247; 开户名称：福建大道成物流科技有限公司; 开户行：中国民生银行福州福清龙田支行; 省份选：福建省; 城市选：福州市; 联行号：305391015267`;
       }
       return result;
     }
