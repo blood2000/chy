@@ -68,7 +68,7 @@
         >
       </template>
       <!-- 浦发银行 -->
-      <template v-if="form.paymentChannels === 'SPDB'">
+      <!-- <template v-if="form.paymentChannels === 'SPDB'">
         <table class="table-style mb20">
           <tr>
             <td class="label">银行账号</td>
@@ -100,7 +100,7 @@
           :value="inputValue"
           style="width: 100px;"
         >
-      </template>
+      </template> -->
       <div style="width: 110px; height: 30px; background: #fff; position: absolute; left: 15px; bottom: 15px" />
     </div>
 
@@ -180,9 +180,9 @@ export default {
       if (this.form.paymentChannels === 'CMBC') {
         result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：民生银行; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;
       }
-      if (this.form.paymentChannels === 'SPDB') {
-        result = `银行账号：171913247; 开户名称：福建大道成物流科技有限公司; 开户行：中国民生银行福州福清龙田支行; 省份选：福建省; 城市选：福州市; 联行号：305391015267`;
-      }
+      // if (this.form.paymentChannels === 'SPDB') {
+      //   result = `银行账号：171913247; 开户名称：福建大道成物流科技有限公司; 开户行：中国民生银行福州福清龙田支行; 省份选：福建省; 城市选：福州市; 联行号：305391015267`;
+      // }
       return result;
     }
   },
