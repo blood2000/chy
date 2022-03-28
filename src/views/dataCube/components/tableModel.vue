@@ -1,5 +1,5 @@
 <template>
-  <el-table v-loading="loading" highlight-current-row border :data="dataList" :height="88">
+  <el-table v-loading="loading" highlight-current-row border :data="dataList" :height="setHeight ? 88 : ''">
     <el-table-column type="index" label="序号" fixed="left" align="center" width="50" />
     <el-table-column
       v-for="(item, index) in dataModelDto.tableFields"
@@ -36,6 +36,10 @@ export default {
           }
         };
       }
+    },
+    setHeight: {
+      type: Boolean,
+      default: false
     }
   }
 };
