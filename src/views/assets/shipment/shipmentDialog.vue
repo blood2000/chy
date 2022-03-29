@@ -364,6 +364,21 @@
               />
             </el-select>
           </el-form-item>
+          <el-form-item label="开票类型" prop="isOpenTicket">
+            <el-select
+              v-model="form.isOpenTicket"
+              filterable
+              clearable
+              class="width100"
+            >
+              <el-option
+                v-for="dict in openTicketOptions"
+                :key="dict.dictValue"
+                :label="dict.dictLabel"
+                :value="dict.dictValue"
+              />
+            </el-select>
+          </el-form-item>
           <el-row :gutter="20">
             <el-col :span="12">
               <el-form-item label="留存运费比例(%)" prop="texPoint">
@@ -967,6 +982,11 @@ export default {
       ],
       // 票制类别字典
       ticketTypeOptions: [],
+      //开票类型字段
+      openTicketOptions: [
+        { dictLabel: '不开票', dictValue: 0 },
+        { dictLabel: '开票', dictValue: 1 }
+      ],
       // 是否字典
       isOptions: [
         { dictLabel: '否', dictValue: 0 },
@@ -1058,6 +1078,13 @@ export default {
         ],
         ticketType: [
           { required: true, message: '票制类别不能为空', trigger: 'blur' }
+        ],
+        isOpenTicket: [
+          {
+            required: true,
+            message: '请选择开票类型',
+            trigger: ['change', 'blur']
+          }
         ],
         texPoint: [
           {
@@ -1505,6 +1532,7 @@ export default {
         provinceCode: null,
         cityCode: null,
         countyCode: null,
+        isOpenTicket: null,  //是否开票/开票类型
         isAccount: 1, // 是否独立核算，默认是
         accountType: null,
         isWipe: null,
