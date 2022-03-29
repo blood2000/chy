@@ -334,7 +334,7 @@ export default {
         order: null,
         prop: null,
         ticketType: null,
-        financialOption: 1,
+        financialOption: '',
         operateOrgCode: undefined
       },
       height: undefined,

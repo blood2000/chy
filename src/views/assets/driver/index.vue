@@ -200,6 +200,16 @@
             />
           </el-select>
         </el-form-item>
+        <!-- <el-form-item label="是否税务登记" prop="driverTaxRegistration">
+          <el-select v-model="queryParams.driverTaxRegistration" placeholder="请选择" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in isTaxRegistrationOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item> -->
         <el-form-item>
           <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
           <el-button type="primary" plain icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -317,6 +327,10 @@
         </template>
         <template #isFreeze="{row}">
           <span>{{ selectDictLabel(isFreezoneOptions, row.isFreeze) }}</span>
+        </template>
+        <template #driverTaxRegistration="{row}">
+          <span>{{ selectDictLabel(isTaxRegistrationOptions, row.driverTaxRegistration) }}</span>
+          <!-- <span>{{ row.driverTaxRegistration ? '是' : '否' }}</span> -->
         </template>
         <template #createTime="{row}">
           <span>{{ parseTime(row.createTime, '{y}-{m}-{d} {h}:{i}:{s}') }}</span>
@@ -532,7 +546,8 @@ export default {
         { dictLabel: '未审核', dictValue: 0 },
         { dictLabel: '审核中', dictValue: 1 },
         { dictLabel: '审核未通过', dictValue: 2 },
-        { dictLabel: '审核通过', dictValue: 3 }
+        { dictLabel: '审核通过', dictValue: 3 },
+        // { dictLabel: '证件即将到期', dictValue: 4 },
       ],
       // 处理状态字典
       applyStatusOptions: [
@@ -554,6 +569,11 @@ export default {
       isFreezoneOptions: [
         { dictLabel: '正常', dictValue: 0 },
         { dictLabel: '冻结', dictValue: 1 }
+      ],
+      // 是否税务登记字典
+      isTaxRegistrationOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
       ],
       // 是否
       isOption: [
@@ -619,7 +639,8 @@ export default {
         createTimeBegin: undefined,
         createTimeEnd: undefined,
         isIdentityEffective: undefined,
-        isDriverLicenseEffective: undefined
+        isDriverLicenseEffective: undefined,
+        // driverTaxRegistration: undefined
       },
       height: undefined,
       // 表单是否禁用
@@ -709,6 +730,7 @@ export default {
     /** 搜索按钮操作 */
     handleQuery() {
       this.queryParams.pageNum = 1;
+      console.log(this.queryParams)
       if (this.teamCode) {
         this.queryParams.teamCode = this.teamCode;
         if (this.teamName) {
@@ -733,6 +755,7 @@ export default {
       this.resetForm('queryForm');
       this.queryParams.authStatus = null;
       this.queryParams.isBindBankCard = null;
+      // this.queryParams.driverTaxRegistration = undefined;
     },
     /** 新增按钮操作 */
     handleAdd() {

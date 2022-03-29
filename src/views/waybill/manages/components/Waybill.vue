@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-show="showSearch" class="app-container app-container--search">
-      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="90px">
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="110px">
         <el-form-item v-show="!isShipment" label="下单用户" prop="orderClient">
           <el-input
             v-model.trim="queryParams.orderClient"
@@ -222,6 +222,16 @@
           >
             <el-option
               v-for="dict in isWarningOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="是否税务登记" prop="driverTaxRegistration">
+          <el-select v-model="queryParams.driverTaxRegistration" placeholder="请选择" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in isTaxRegistrationOptions"
               :key="dict.dictValue"
               :label="dict.dictLabel"
               :value="dict.dictValue"
@@ -552,6 +562,11 @@ export default {
         // { 'dictLabel': '子单', 'dictValue': 1 },
         { 'dictLabel': '是', 'dictValue': 2 }
       ],
+      // 是否税务登记字典
+      isTaxRegistrationOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
       // 给超载的子单排序用字典
       'childSortOptions': [
         { 'dictLabel': '车辆核载装货数量的子单', 'dictValue': 1 },
@@ -630,6 +645,7 @@ export default {
         'driverPhone': null,
         'status': null,
         'invoiceStatus': null,
+        'driverTaxRegistration': null,
         'teamName': null
       },
       height: undefined,
@@ -719,6 +735,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
+      console.log(this.queryParams)
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -737,6 +754,7 @@ export default {
       this.markTime = [];
       this.queryParams.startMarkTime = null;
       this.queryParams.endMarkTime = null;
+      this.queryParams.driverTaxRegistration = null;
       this.handleQuery();
     },
     // 多选框选中数据
@@ -819,3 +837,7 @@ export default {
   }
 };
 </script>
+<style scoped>
+
+  
+</style>

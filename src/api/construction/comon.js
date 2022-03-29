@@ -8,3 +8,13 @@ export function webGetMachineProjectList(query) {
     params: query
   });
 }
+
+
+//根据主单修改子单状态
+export function updateSubMenuStatus(data) {
+  return request({
+    url: '/transportation/waybillOper/flowSyncWaybillStatus',
+    method: 'post',
+    data: data
+  });
+}

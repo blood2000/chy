@@ -12,8 +12,8 @@
             style="width: 200px"
             size="small"
           />
-          <!-- 整数类型|浮点类型 -->
-          <template v-else-if="item.dataItemInfo.itemType === 'number' || item.dataItemInfo.itemType === 'float' || item.dataItemInfo.itemType === 'float4'">
+          <!-- 整数类型|浮点类型|money -->
+          <template v-else-if="item.dataItemInfo.itemType === 'number' || item.dataItemInfo.itemType === 'float' || item.dataItemInfo.itemType === 'float4' || item.dataItemInfo.itemType === 'money'">
             <el-input
               v-model="item.start"
               :placeholder="`请输入${item.dataItemInfo.itemCn}开始值`"

@@ -34,6 +34,8 @@ function compareTime(time) {
 const plateNoReg = /^(([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z](([0-9]{5}[DF])|([DF]([A-HJ-NP-Z0-9])[0-9]{4})))|([京津沪渝冀豫云辽黑湘皖鲁新苏浙赣鄂桂甘晋蒙陕吉闽贵粤青藏川宁琼使领][A-Z][A-HJ-NP-Z0-9]{4}[A-HJ-NP-Z0-9挂学警港澳使领]))$/;
 // 银行卡
 // const bankCardReg = /^([1-9]{1})(\d{15}|\d{16}|\d{18})$/;
+//银行卡号，包含-
+const bankCardReg = /^[0-9\\-]+$/;
 // 驾驶证
 const driverCardReg = /^[1-8]\d{11}$/;
 // 行驶证
@@ -183,7 +185,7 @@ export const formValidate = {
       callback();
     }
     const ptr_length = /^.{0,50}$/;
-    if (!numberReg.test(value)) {
+    if (!bankCardReg.test(value)) {
       callback(new Error('请输入正确的银行卡号'));
     } else if (!ptr_length.test(value)) {
       callback(new Error('银行卡号长度应小于50位'));
