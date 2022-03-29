@@ -128,6 +128,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
+            v-hasPermi="['payment:pay:toCard']"
             type="warning"
             icon="el-icon-upload2"
             size="mini"
@@ -138,6 +139,7 @@
         </el-col>
         <el-col :span="1.5">
           <el-button
+            v-hasPermi="['payment:pay:turnDown']"
             type="info"
             icon="el-icon-upload2"
             size="mini"
@@ -201,6 +203,7 @@
         </template>
         <template #edit="{row}">
           <el-button
+            v-hasPermi="['payment:pay:reTie']"
             size="mini"
             type="text"
             @click="handleReBindCard(row)"

@@ -59,11 +59,14 @@ export default {
           updateUserPwd(btoa(this.user.oldPassword), btoa(this.user.newPassword)).then(
             response => {
               this.loading = false;
-              this.msgSuccess('修改成功, 请重新登陆');
+              this.msgSuccess('修改成功, 即将跳转到登陆页');
               this.$emit('setSuccess', response);
-              this.$store.dispatch('LogOut').then(() => {
-                location.href = '/index';
-              });
+              const a = setTimeout(() => {
+                clearTimeout(a);
+                this.$store.dispatch('LogOut').then(() => {
+                  location.href = '/index';
+                });
+              }, 1000);
             }
           ).catch(() => { this.loading = false; });
         }

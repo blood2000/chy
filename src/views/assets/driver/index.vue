@@ -444,6 +444,15 @@
                   @click="handleCreateWallet(row)"
                 >创建网商账号</el-button>
               </el-dropdown-item>
+                <el-dropdown-item>
+                <el-button
+                        style="width: 105px"
+                        v-if="(!row.cmbcAccount || row.cmbcAccount == '') && row.authStatus === 3"
+                        size="mini"
+                        type="text"
+                        @click="handleCreateCmbcWallet(row)"
+                >创建民生账号</el-button>
+                </el-dropdown-item>
               <el-dropdown-item>
                 <el-button
                   v-hasPermi="['assets:driver:remove']"
@@ -491,7 +500,7 @@
 </template>
 
 <script>
-import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered, createWallet, getUpdateDriverExamine } from '@/api/assets/driver';
+import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered, createWallet, getUpdateDriverExamine, createCmbcWallet } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
 import { waybillReportDriverByCode } from '@/api/data/report';
 import { updateUserStatusByUserCode } from '@/api/system/user';
@@ -1013,6 +1022,23 @@ export default {
         type: 'warning'
       }).then(() => {
         createWallet(row.code).then(response => {
+          if (response.code === 200) {
+            this.msgSuccess('操作成功');
+            this.getList();
+          } else {
+            this.msgError(response.msg);
+          }
+        });
+      });
+    },
+    // 创建民生账号
+    handleCreateCmbcWallet(row) {
+      this.$confirm('是否确认创建"' + row.name + '"的民生账号?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        createCmbcWallet({ code: row.code, channel: 'CMBCRegisterHandler' }).then(response => {
           if (response.code === 200) {
             this.msgSuccess('操作成功');
             this.getList();

@@ -163,28 +163,28 @@
         :table-columns-config="tableColumnsConfig"
       >
         <!-- 余额 -->
-        <template #amount="{ row }">
-          <span>{{ floor(row.amount) }}</span>
+        <template #amount="{row}">
+          <span>{{ money(row.amount) }}</span>
         </template>
         <!-- 保证金 -->
-        <template #freezeAmount="{ row }">
-          <span>{{ floor(row.freezeAmount) }}</span>
+        <template #freezeAmount="{row}">
+          <span>{{ money(row.freezeAmount) }}</span>
         </template>
         <!-- 可用余额 -->
-        <template #availableBalance="{ row }">
-          <span>{{ floor(row.availableBalance) }}</span>
+        <template #availableBalance="{row}">
+          <span>{{ money(row.availableBalance) }}</span>
         </template>
         <!-- 授信余额 -->
-        <template #crediBalance="{ row }">
-          <span>{{ floor(row.crediBalance) }}</span>
+        <template #crediBalance="{row}">
+          <span>{{ money(row.crediBalance) }}</span>
         </template>
         <!-- 本月已申请提现金额 -->
-        <template #monthMoney="{ row }">
-          <span>{{ floor(row.monthMoney) }}</span>
+        <template #monthMoney="{row}">
+          <span>{{ money(row.monthMoney) }}</span>
         </template>
         <!-- 本月剩余可提现金额 -->
-        <template #residueMonthMoney="{ row }">
-          <span>{{ floor(row.residueMonthMoney) }}</span>
+        <template #residueMonthMoney="{row}">
+          <span>{{ money(row.residueMonthMoney) }}</span>
         </template>
         <template #updateTime="{ row }">
           <span>{{ parseTime(row.updateTime) }}</span>
