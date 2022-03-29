@@ -126,7 +126,7 @@
       </div>
 
       <div class="app-container">
-        <div class="header mb8">发布集其他信息</div>
+        <div class="header mb8">发布及其他信息</div>
         <el-form-item label="发布至" prop="publishMode">
           <el-radio-group
             v-model="formData.publishMode"
@@ -198,6 +198,13 @@
 
 
         <el-row v-if="!isShipment">
+          <el-col :span="6">
+            <el-form-item label="开票类型" label-width="170px">
+              <el-switch
+                v-model="formData.isOpenTicket"
+              />
+            </el-form-item>
+          </el-col>
           <el-col :span="6">
             <el-form-item label="装货时是否必须上传凭证" label-width="170px">
               <el-switch
@@ -355,7 +362,7 @@ export default {
         tin6_1: [], // 调度者
         tin6_2: [], // 司机
         tin6: '', // 货集码
-
+        isOpenTicket: false,   //开票类型
         uploadLoadVoucher: true, // 装货时是否必须上传凭证 7/8追加字段
         uploadUnloadVoucher: true, // 卸货时是否必须上传凭证 7/8追加字段
 
@@ -464,6 +471,7 @@ export default {
           this.formData.reviewIsNeedLoadingCertificate = info.reviewIsNeedLoadingCertificate === 0;
           this.formData.reviewNoNeedUnloadImg = info.reviewNoNeedUnloadImg === 0;
           this.formData.openScanQuickLoadOrder = info.openScanQuickLoadOrder === 1;
+          this.formData.isOpenTicket = info.isOpenTicket === 1;
 
 
           this.formData.uploadLoadVoucher = isNeedLoadingCertificate === 0;
@@ -501,6 +509,7 @@ export default {
     // 回填数据
     cbData: {
       async handler(val) {
+        console.log('回填数据', val)
         await this.api_dictInit();
 
         if (!this.cbData) return;
@@ -517,6 +526,7 @@ export default {
 
         // 1.基本的赋值
 
+        this.formData.isOpenTicket = this.cbData.isOpenTicket === 1;
         this.formData.uploadLoadVoucher = this.cbData.uploadLoadVoucher + '' === '1';
         this.formData.uploadUnloadVoucher = this.cbData.uploadUnloadVoucher + '' === '1';
 
@@ -940,7 +950,7 @@ export default {
               projectCode: this.formData.tin3 === '0' ? '' : this.formData.tin3,
               pubilshCode: this.pubilshCode,
               remark: this.formData.remark,
-
+              isOpenTicket: this.formData.isOpenTicket,
               uploadLoadVoucher: this.formData.uploadLoadVoucher,
               uploadUnloadVoucher: this.formData.uploadUnloadVoucher,
 

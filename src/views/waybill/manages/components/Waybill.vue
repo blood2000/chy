@@ -735,7 +735,7 @@ export default {
     },
     /** 搜索按钮操作 */
     handleQuery() {
-      console.log(this.queryParams)
+      console.log(this.queryParams);
       this.queryParams.pageNum = 1;
       this.getList();
     },
@@ -837,7 +837,4 @@ export default {
   }
 };
 </script>
-<style scoped>
 
-  
-</style>

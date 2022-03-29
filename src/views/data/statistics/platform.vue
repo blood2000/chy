@@ -116,6 +116,23 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
+        <el-form-item label="开票类型" prop="isOpenTicket">
+          <el-select
+            v-model="queryParams.isOpenTicket"
+            placeholder="请选择开票"
+            clearable
+            filterable
+            size="small"
+            style="width: 228px"
+          >
+            <el-option
+              v-for="dict in ticketOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button
             type="primary"
@@ -310,6 +327,7 @@ export default {
         credit: null,
         creditBalanceCondition: null,
         creditBalance: null,
+        isOpenTicket: null,
         order: null,
         prop: null
       },
@@ -327,6 +345,10 @@ export default {
         { 'dictLabel': '大于', 'dictValue': '1' },
         { 'dictLabel': '等于', 'dictValue': '2' },
         { 'dictLabel': '小于', 'dictValue': '3' }
+      ],
+      ticketOptions: [
+        { 'dictLabel': '不开票', 'dictValue': 0 },
+        { 'dictLabel': '开票', 'dictValue': 1 },
       ]
     };
   },

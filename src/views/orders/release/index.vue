@@ -1576,6 +1576,7 @@ export default {
         projectCode,
         orgCode: this.orgCode,
         pubilshCode,
+        isOpenTicket: this.basicInfor.isOpenTicket ? 1 : 0,
         uploadLoadVoucher: this.basicInfor.uploadLoadVoucher ? 1 : 0,
         uploadUnloadVoucher: this.basicInfor.uploadUnloadVoucher ? 1 : 0,
 
@@ -1871,6 +1872,7 @@ export default {
 
     // 1.处理 cbOrderBasic 要的数据
     async handlerOrderBasic(data) {
+      console.log('data--->', data)
       const {
         code,
         isPublic,
@@ -1910,7 +1912,7 @@ export default {
         }),
         isSpecified,
         remark,
-
+        isOpenTicket: data.isOpenTicket,
         uploadLoadVoucher: data.uploadLoadVoucher,
         uploadUnloadVoucher: data.uploadUnloadVoucher,
 
