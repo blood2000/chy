@@ -68,6 +68,7 @@
               <div class="receipt-row-i">付款方：{{ recData.orgName || '--' }}</div>
               <div class="receipt-row-i">电话号码：{{ recData.payPhone || '--' }}</div>
               <div class="receipt-row-i">付款账号：{{ recData.payAccount || '--' }}</div>
+              <div class="receipt-row-i">运输单号：{{ recData.waybillNo || '--' }}</div>
             </div>
           </div>
           <div class="receipt-row">
@@ -219,6 +220,7 @@ export default {
         // console.log(shipmentInfo, driverInfo);
 
         // console.log(this.receiptData.paymentChannels);
+        console.log(this.receiptData);
 
         this.list = [
           {
@@ -235,7 +237,8 @@ export default {
           finishDate: this.parseTime(this.receiptData.finishDate),
           payeeName: this.receiptData.payeeName,
           payeeMobile: this.receiptData.payeeMobile,
-          orgName: this.receiptData.orgName
+          orgName: this.receiptData.orgName,
+          waybillNo: this.receiptData.waybillNo
           // driverName: this.receiptData.driverName,
           // goodsBigTypeStr: this.receiptData.goodsBigTypeStr,
           // goodsTypeStr: this.receiptData.goodsTypeStr
