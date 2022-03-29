@@ -297,6 +297,16 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="是否税务登记" prop="driverTaxRegistration">
+        <el-select v-model="form.driverTaxRegistration" clearable filterable class="width90">
+          <el-option
+            v-for="dict in isTaxRegistrationOptions"
+            :key="dict.dictValue"
+            :label="dict.dictLabel"
+            :value="dict.dictValue"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item>
         <!-- 只有图片上传禁用的时候才能使用v-viewer查看大图，复制两份判断 -->
         <el-row v-if="disable" v-viewer>
@@ -1050,6 +1060,11 @@ export default {
         { dictLabel: "正常", dictValue: 0 },
         { dictLabel: "冻结", dictValue: 1 },
       ],
+      // 是否税务登记字典
+      isTaxRegistrationOptions: [
+        { dictLabel: '否', dictValue: 0 },
+        { dictLabel: '是', dictValue: 1 }
+      ],
       // 是否
       isOption: [
         { dictLabel: "否", dictValue: 0 },
@@ -1430,6 +1445,7 @@ export default {
         workLicenseProvinceName: null,
         authStatus: 0,
         isFreeze: null,
+        driverTaxRegistration: null,
         createCode: null,
         createTime: null,
         updateCode: null,
@@ -1474,6 +1490,7 @@ export default {
         transportMeson: null,
         authStatus: 0,
         isFreeze: 0, // 0正常1冻结
+        driverTaxRegistration: null, // 0正常1冻结
         createCode: null,
         createTime: null,
         updateCode: null,

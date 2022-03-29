@@ -83,6 +83,24 @@ export function user(data) {
   });
 }
 
+// 查询财务统计报表列表
+export const financialDetailReportListApi = '/transportation/platformDataFinancial/financialDetailReportList';
+export function financialDetailReportList(query) {
+  return request({
+    url: '/transportation/platformDataFinancial/financialDetailReportList',
+    method: 'get',
+    params: query
+  });
+}
+//查询财务统计合计
+export function financialDetailReportCount(query) {
+  return request({
+    url: '/transportation/platformDataFinancial/financialDetailReportCount',
+    method: 'get',
+    params: query
+  });
+}
+
 // 查询平台统计报表列表
 export const teamDetailReportListApi = '/transportation/platformDataSummary/teamDetailReportList';
 export function teamDetailReportList(query) {
