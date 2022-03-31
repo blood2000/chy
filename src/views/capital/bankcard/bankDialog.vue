@@ -84,6 +84,13 @@
       >
         <el-input v-model="form.bankLineNo" placeholder="请输入银行支行号" class="width90" clearable />
       </el-form-item>
+      <el-form-item
+        v-if="form.bankType === 1"
+        label="银行支行号"
+        prop="bankLineNo1"
+      >
+        <el-input v-model="form.bankLineNo" placeholder="请输入银行支行号" class="width90" clearable />
+      </el-form-item>
       <el-form-item label="是否默认" prop="isDefault">
         <el-switch v-model="form.isDefault" />
       </el-form-item>
@@ -98,7 +105,7 @@
 
 <script>
 import { addBank, updateBank } from '@/api/capital/bankcard';
-import { listUser, listAllUser } from '@/api/system/user';
+import { listUser, listAllUser, checkUser } from '@/api/system/user';
 import ProvinceCityCounty from '@/components/ProvinceCityCounty';
 import { praseBooleanToNum, praseNumToBoolean } from '@/utils/ddc';
 
@@ -115,7 +122,7 @@ export default {
     disable: Boolean,
     userCode: {
       type: String,
-      default: null
+      default: ''
     }
   },
   data() {
@@ -193,9 +200,9 @@ export default {
       this.$refs['form'].validate(valid => {
         if (valid && flag) {
           this.buttonLoading = true;
-          if (this.form.bankType === 1) {
-            this.form.bankLineNo = null;
-          }
+          // if (this.form.bankType === 1) {
+          //   this.form.bankLineNo = null;
+          // }
           const params = {
             ...this.form,
             isDefault: praseBooleanToNum(this.form.isDefault)
@@ -290,12 +297,21 @@ export default {
     },
     // 获取选中的人员回填
     userChange(code) {
+      console.log('userCode===>>', code)
       this.personOptions.forEach(el => {
         if (el.userCode === code) {
           this.form.name = el.nickName || el.userName;
           this.form.mobile = el.phonenumber;
         }
       });
+      checkUser(code).then(res => {
+        console.log('是否货主', res)
+        if (res.data) {
+          this.$set(this.form, 'bankType', 2);
+        } else {
+          this.$set(this.form, 'bankType', 1);
+        }
+      })
     },
     // 获取选中银行卡的名称
     changeBanK(name) {

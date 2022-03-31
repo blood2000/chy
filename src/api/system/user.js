@@ -19,6 +19,14 @@ export function listAllUser(data) {
   });
 }
 
+//查询用户是否货主
+export function checkUser(userCode) {
+  return request({
+    url: '/assets/shipment/isShipment/' + praseStrEmpty(userCode),
+    method: 'get',
+  });
+}
+
 // 查询用户详细
 export function getUser(userId, query) {
   return request({
