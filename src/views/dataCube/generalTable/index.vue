@@ -24,6 +24,8 @@
         :loading="loading"
         :data-list="dataList"
         :data-model-dto="dataModelDto"
+        :is-jump-to="isJumpTo"
+        :data-model-jump-to-vo="dataModelJumpToVo"
       />
       <PaginationModel
         :total="total"

@@ -187,7 +187,7 @@ export function updateDataModel(id, data) {
 // 获取数据集信息
 export function getDataModel(id) {
   return request({
-    url: `/analysis/dataModelInfos/${id}`,
+    url: `/analysis/dataModelInfos/get/${id}`,
     method: 'get'
   });
 }

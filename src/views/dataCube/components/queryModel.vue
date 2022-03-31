@@ -76,26 +76,9 @@
               default-time="23:59:59"
             />
           </template>
-          <!-- 枚举类型 -->
+          <!-- 枚举类型|自定义枚举类型 -->
           <el-select
-            v-else-if="item.dataItemInfo.itemType === 'enum'"
-            v-model="item.multiple"
-            :placeholder="`请选择${item.dataItemInfo.itemCn}`"
-            clearable
-            multiple
-            style="width: 200px"
-            size="small"
-          >
-            <el-option
-              v-for="dict in item.itemOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-            />
-          </el-select>
-          <!-- 自定义枚举类型 -->
-          <el-select
-            v-else-if="item.dataItemInfo.itemType === 'custom'"
+            v-else-if="item.dataItemInfo.itemType === 'enum' || item.dataItemInfo.itemType === 'custom'"
             v-model="item.multiple"
             :placeholder="`请选择${item.dataItemInfo.itemCn}`"
             clearable

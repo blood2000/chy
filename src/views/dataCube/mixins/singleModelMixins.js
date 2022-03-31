@@ -24,6 +24,12 @@ export default {
           pageSize: 10
         }
       },
+      isJumpTo: 0,
+      dataModelJumpToVo: {
+        jumpToModelId: null,
+        modelId: null,
+        jumpToOperateParams: []
+      },
       // 图表类型
       chartAlias: null,
       chartId: null,
@@ -40,6 +46,10 @@ export default {
       getDataModel(this.modelId).then(async res => {
         if (res.data && res.data.dataModelDto) {
           this.chartAlias = res.data.chartAlias;
+          this.isJumpTo = res.data.isJumpTo;
+          if (res.data.dataModelJumpToVo) {
+            this.dataModelJumpToVo = res.data.dataModelJumpToVo;
+          }
           const dataModelDto = res.data.dataModelDto;
           // 图表
           if (this.chartAlias !== 'table') {
@@ -69,9 +79,36 @@ export default {
             const { queryFields, tableFields } = dataModelDto;
             this.queryFields = queryFields || [];
             this.tableFields = tableFields || [];
+            // 如果是模型跳模型，则接收参数作为查询条件
+            this.getQueryParams();
             this.dataModelDto = deepClone(dataModelDto);
             this.resetQuery();
           });
+        }
+      });
+    },
+    getQueryParams() {
+      const query = this.$route.query;
+      console.log('query: ', query);
+      if (!query || JSON.stringify(query) === '{}') return;
+      this.queryFields = this.queryFields.map(el => {
+        if (!query[el.dataItemInfo.itemEn]) {
+          return el;
+        } else {
+          if (el.dataItemInfo.itemType === 'string') {
+            el.value = query[el.dataItemInfo.itemEn];
+          } else if (el.dataItemInfo.itemType === 'number' || el.dataItemInfo.itemType === 'float' || el.dataItemInfo.itemType === 'float4' || el.dataItemInfo.itemType === 'money') {
+            el.start = query[el.dataItemInfo.itemEn];
+            el.end = query[el.dataItemInfo.itemEn];
+          } else if (el.dataItemInfo.itemType === 'date' || el.dataItemInfo.itemType === 'timestamp') {
+            el.startTime = query[el.dataItemInfo.itemEn];
+            el.endTime = query[el.dataItemInfo.itemEn];
+          } else if (el.dataItemInfo.itemType === 'enum' || el.dataItemInfo.itemType === 'custom') {
+            el.multiple = query[el.dataItemInfo.itemEn];
+          } else {
+            el.value = query[el.dataItemInfo.itemEn];
+          }
+          return el;
         }
       });
     },
