@@ -339,6 +339,8 @@ export default {
     isT: [Boolean],
     idCode: [Boolean]
   },
+
+  
   data() {
     return {
       'orderSpecifiedList': [], // 选中的调度
@@ -362,7 +364,7 @@ export default {
         tin6_1: [], // 调度者
         tin6_2: [], // 司机
         tin6: '', // 货集码
-        isOpenTicket: false,   //开票类型
+        isOpenTicket: true,   //开票类型
         uploadLoadVoucher: true, // 装货时是否必须上传凭证 7/8追加字段
         uploadUnloadVoucher: true, // 卸货时是否必须上传凭证 7/8追加字段
 

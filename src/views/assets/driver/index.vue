@@ -200,6 +200,16 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="司机来源" prop="produceCode">
+          <el-select v-model="queryParams.produceCode" filterable clearable size="small" class="input-width">
+            <el-option
+              v-for="dict in driverSourceList"
+              :key="dict.produceCode"
+              :label="dict.name"
+              :value="dict.produceCode"
+            />
+          </el-select>
+        </el-form-item>
         <!-- <el-form-item label="是否税务登记" prop="driverTaxRegistration">
           <el-select v-model="queryParams.driverTaxRegistration" placeholder="请选择" filterable clearable size="small" class="input-width">
             <el-option
@@ -500,7 +510,7 @@
 </template>
 
 <script>
-import { listDriverApi, listDriver, getDriver, delDriver, getAgreementWord, reRegistered, createWallet, getUpdateDriverExamine, createCmbcWallet } from '@/api/assets/driver';
+import { listDriverApi, listDriver, getDriverSource, getDriver, delDriver, getAgreementWord, reRegistered, createWallet, getUpdateDriverExamine, createCmbcWallet } from '@/api/assets/driver';
 import { listInfo, delTeamReDriver } from '@/api/assets/team';
 import { waybillReportDriverByCode } from '@/api/data/report';
 import { updateUserStatusByUserCode } from '@/api/system/user';
@@ -590,6 +600,8 @@ export default {
       branchCodeOptions: [],
       // 驾驶证类型字典
       driverLicenseTypeOptions: [],
+      //司机来源列表
+      driverSourceList: [],
       // 遮罩层
       loading: true,
       // 选中数组
@@ -630,6 +642,7 @@ export default {
         authStatus: null,
         licenseNumber: undefined,
         driverLicenseType: undefined,
+        produceCode: '776ca8e240574192b6e0f69b417163df',   //司机来源code
         teamCode: undefined,
         applyStatus: undefined,
         isBindBankCard: null,
@@ -693,6 +706,7 @@ export default {
       this.isShowAgreementNo();
     });
     this.getDictsOptions();
+    this.getSourceList();
     if (!this.teamCode) {
       // 如果这个页面是以组件形式展示在调度者管理弹窗里面，则这里不加载列表
 
@@ -711,6 +725,13 @@ export default {
       this.getDicts('driver_license_type').then(response => {
         this.driverLicenseTypeOptions = response.data;
       });
+    },
+    // 查询司机来源列表
+    getSourceList() {
+      getDriverSource().then(res => {
+        console.log('司机来源', res);
+        this.driverSourceList = res.data;
+      })
     },
     /** 查询参数列表 */
     getList() {

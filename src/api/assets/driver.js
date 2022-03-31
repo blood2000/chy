@@ -18,6 +18,14 @@ export function getDriver(id) {
   });
 }
 
+//查询司机来源列表
+export function getDriverSource() {
+  return request({
+    url: '/assets/driver/buildProduceCode',
+    method: 'get'
+  });
+}
+
 // 新增司机
 export function addDriver(data) {
   return request({
