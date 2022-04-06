@@ -55,19 +55,7 @@
             @keyup.enter.native="handleQuery"
           />
         </el-form-item>
-        <el-form-item label="打款时间" prop="queryTime">
-          <el-date-picker
-            v-model="queryTime"
-            type="daterange"
-            unlink-panels
-            :picker-options="pickerOptions"
-            range-separator="-"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            style="width: 228px"
-            @change="datechoose"
-          />
-        </el-form-item>
+        
         <el-form-item label="余额区间">
           <el-input
             v-model.trim="queryParams.minAmount"
@@ -85,6 +73,21 @@
             size="small"
             style="width: 103px"
             @keyup.enter.native="handleQuery"
+          />
+        </el-form-item>
+
+        <el-form-item label="打款时间" prop="queryTime">
+          <el-date-picker
+            v-model="queryTime"
+            type="datetimerange"
+            unlink-panels
+            :picker-options="pickerTimeOptions"
+            range-separator="-"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            style="width: 360px"
+            :default-time="defaultTime"
+            @change="datechoose"
           />
         </el-form-item>
 
@@ -231,7 +234,7 @@ import {
 } from "@/api/capital/ubalance";
 import ChangeDetailDialog from "../components/changeDetailDialog";
 import CheckBalanceDialog from "../components/checkBalanceDialog";
-import { pickerOptions } from "@/utils/dateRange";
+import { pickerTimeOptions } from "@/utils/dateRange";
 export default {
   name: "Ubalance",
   components: {
@@ -240,7 +243,8 @@ export default {
   },
   data() {
     return {
-      pickerOptions,
+      pickerTimeOptions,
+      defaultTime: ['00:00:00', '23:59:59'],
       queryTime: [],
       tableColumnsConfig: [],
       api: balanceListApi,
@@ -315,9 +319,10 @@ export default {
     },
     // 搜索时间选择
     datechoose(date) {
+      console.log(date)
       if (date) {
-        this.queryParams.startTime = this.parseTime(date[0], "{y}-{m}-{d}");
-        this.queryParams.endTime = this.parseTime(date[1], "{y}-{m}-{d}");
+        this.queryParams.startTime = this.parseTime(date[0]);
+        this.queryParams.endTime = this.parseTime(date[1]);
       } else {
         this.queryParams.startTime = null;
         this.queryParams.endTime = null;
