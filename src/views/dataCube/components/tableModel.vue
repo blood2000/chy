@@ -9,7 +9,7 @@
       :label="item.fieldLabel"
       :formatter="(row, column, cellValue, index) => moneyFormatter(row, column, cellValue, index, item)"
     />
-    <!-- <el-table-column v-if="isJumpTo" label="操作" fixed="right" align="center" width="100">
+    <el-table-column v-if="isJumpTo" label="操作" fixed="right" align="center" width="100">
       <template slot-scope="scope">
         <el-button
           size="mini"
@@ -17,7 +17,7 @@
           @click="handleJumpModel(scope.row)"
         >详情</el-button>
       </template>
-    </el-table-column> -->
+    </el-table-column>
   </el-table>
 </template>
 
@@ -81,7 +81,7 @@ export default {
         query[el.targetParam] = row[el.sourceParam];
       });
       this.$router.push({
-        path: '/DataGeneralTable/' + this.dataModelJumpToVo.jumpToModelId,
+        name: 'DataGeneralTable/' + this.dataModelJumpToVo.jumpToModelId,
         query: query
       });
     }

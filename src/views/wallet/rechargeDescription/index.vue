@@ -68,31 +68,27 @@
         >
       </template>
       <!-- 浦发银行 -->
-      <!-- <template v-if="form.paymentChannels === 'SPDB'">
+      <template v-if="form.paymentChannels === 'SPDB'">
         <table class="table-style mb20">
           <tr>
             <td class="label">银行账号</td>
-            <td class="text">171913247</td>
+            <td class="text">{{ form.bankAcc ? form.bankAcc : '' }}</td>
           </tr>
           <tr>
             <td class="label">开户名称</td>
-            <td class="text">福建大道成物流科技有限公司</td>
+            <td class="text">{{ form.accName ? form.accName : '' }}</td>
           </tr>
           <tr>
             <td class="label">开户行</td>
-            <td class="text">中国民生银行福州福清龙田支行</td>
-          </tr>
-          <tr>
-            <td class="label">省份选</td>
-            <td class="text">福建省</td>
-          </tr>
-          <tr>
-            <td class="label">城市选</td>
-            <td class="text">福州市</td>
+            <td class="text">上海浦东发展银行股份有限公司福州福清支行</td>
           </tr>
           <tr>
             <td class="label">联行号</td>
-            <td class="text">305391015267</td>
+            <td class="text">310391000045</td>
+          </tr>
+          <tr>
+            <td class="label">当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）</td>
+            <td class="text">43060078801400001078</td>
           </tr>
         </table>
         <input
@@ -100,7 +96,7 @@
           :value="inputValue"
           style="width: 100px;"
         >
-      </template> -->
+      </template>
       <div style="width: 110px; height: 30px; background: #fff; position: absolute; left: 15px; bottom: 15px" />
     </div>
 
@@ -180,9 +176,9 @@ export default {
       if (this.form.paymentChannels === 'CMBC') {
         result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：民生银行; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：${this.form.atBindBankCard ? this.form.atBindBankCard : ''}`;
       }
-      // if (this.form.paymentChannels === 'SPDB') {
-      //   result = `银行账号：171913247; 开户名称：福建大道成物流科技有限公司; 开户行：中国民生银行福州福清龙田支行; 省份选：福建省; 城市选：福州市; 联行号：305391015267`;
-      // }
+      if (this.form.paymentChannels === 'SPDB') {
+        result = `银行账号：${this.form.bankAcc ? this.form.bankAcc : ''}; 开户名称：${this.form.accName ? this.form.accName : ''}; 开户行：上海浦东发展银行股份有限公司福州福清支行; 联行号：310391000045; 当前绑定卡号（请使用当前绑定卡号充值，否则无法到账）：43060078801400001078`;
+      }
       return result;
     }
   },
