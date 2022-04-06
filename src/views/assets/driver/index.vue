@@ -201,7 +201,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="司机来源" prop="produceCode">
-          <el-select v-model="queryParams.produceCode" filterable clearable size="small" class="input-width">
+          <el-select v-model="queryParams.produceCode" filterable  size="small" class="input-width">
             <el-option
               v-for="dict in driverSourceList"
               :key="dict.produceCode"
@@ -776,6 +776,7 @@ export default {
       this.resetForm('queryForm');
       this.queryParams.authStatus = null;
       this.queryParams.isBindBankCard = null;
+      this.queryParams.produceCode = '776ca8e240574192b6e0f69b417163df';
       // this.queryParams.driverTaxRegistration = undefined;
     },
     /** 新增按钮操作 */
